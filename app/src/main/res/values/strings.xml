@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">WooDong2</string>
+
+    //chat
+    <string name="chat_txt_title">채팅</string>
+
+    //mypage
+    <string name="my_page_txt_title">마이페이지</string>
+    <string name="my_page_txt_views">누적 조회수</string>
+    <string name="my_page_txt_comment">작성글/댓글</string>
+    <string name="my_page_txt_heart">받은 공감</string>
+    <string name="my_page_btn_update_profile">프로필 수정</string>
+    <string name="my_page_txt_views_count">0</string>
+    <string name="my_page_txt_comment_count">0</string>
+    <string name="my_page_txt_heart_count">0</string>
 </resources>
