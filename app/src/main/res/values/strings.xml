@@ -10,6 +10,8 @@
     <string name="map_bottom_sheet_near_location_count"> 12 </string>
     <string name="map_bottom_sheet_near_location_set_2"> 개 </string>
 
+    <string name="group_hint_search_group">우리 동네 모임을 검색해보세요.</string>
+
     <string name="chat_txt_title">채팅</string>
 
     <string name="my_page_txt_title">마이페이지</string>
