@@ -4,11 +4,24 @@
     <string name="bottom_menu_group">모임</string>
     <string name="bottom_menu_chat">채팅</string>
     <string name="bottom_menu_my_page">우동이</string>
-    <string name="map_bottom_sheet_title"> 내 동네 </string>
-    <string name="map_bottom_sheet_btn_location"> 군자동 </string>
-    <string name="map_bottom_sheet_near_location_set_1"> 과 근처 동네 </string>
-    <string name="map_bottom_sheet_near_location_count"> 12 </string>
-    <string name="map_bottom_sheet_near_location_set_2"> 개 </string>
+    <string name="toolbar_menu_search">검색</string>
+    <string name="toolbar_menu_notice">알림</string>
+
+    <string name="home_list_item_btn_tag_name">같이해요</string>
+    <string name="home_list_item_thumbnail_count">99</string>
+    <string name="home_list_item_tv_title">런닝메이트 구합니다.</string>
+    <string name="home_list_item_tv_description">주로 한강 뛰실 분 구해요</string>
+    <string name="home_list_item_tv_time_stamp">14시간전</string>
+    <string name="home_list_item_tv_views">조회 199</string>
+    <string name="home_list_item_tv_thumb">99</string>
+    <string name="home_list_item_tv_chat">99</string>
+
+    <string name="home_map_bottom_sheet_title"> 내 동네 </string>
+    <string name="home_map_toolbar_title"> 내 동네 설정 </string>
+    <string name="home_map_bottom_sheet_btn_location"> 군자동 </string>
+    <string name="home_map_bottom_sheet_near_location_set_1"> 과 근처 동네 </string>
+    <string name="home_map_bottom_sheet_near_location_count"> 12 </string>
+    <string name="home_map_bottom_sheet_near_location_set_2"> 개 </string>
 
     <string name="chat_txt_title">채팅</string>
 
