@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">WooDong2</string>
     <string name="bottom_menu_home">홈</string>
-    <string name="bottom_menu_1">동네 생활</string>
-    <string name="bottom_menu_2">채팅</string>
-    <string name="bottom_menu_3">나의 당근</string>
+    <string name="bottom_menu_group">모임</string>
+    <string name="bottom_menu_chat">채팅</string>
+    <string name="bottom_menu_my_page">우동이</string>
     <string name="map_bottom_sheet_title"> 내 동네 </string>
     <string name="map_bottom_sheet_btn_location"> 군자동 </string>
     <string name="map_bottom_sheet_near_location_set_1"> 과 근처 동네 </string>

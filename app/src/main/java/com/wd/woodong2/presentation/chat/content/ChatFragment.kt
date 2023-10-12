@@ -1,4 +1,4 @@
-package com.wd.woodong2.chat
+package com.wd.woodong2.presentation.chat.content
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
