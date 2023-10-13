@@ -6,27 +6,57 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/main_tool_bar"
-        android:layout_width="match_parent"
+        android:id="@+id/main_map_toolbar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/jet"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/home_map_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/home_map_bottom_sheet_btn_ic_close"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/home_map_toolbar_title"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.45"
+                app:layout_constraintStart_toEndOf="@+id/home_map_close"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
 
     <ImageView
-        android:id="@+id/fragment_map_sample"
+        android:id="@+id/home_map_iv_sample"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
         android:src="@drawable/home_map_sample_fragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_tool_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/main_map_toolbar" />
 
     <LinearLayout
-        android:id="@+id/bottom_sheet_layout"
+        android:id="@+id/home_map_bottom_sheet_layout"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:background="@drawable/home_map_shape_bottom_sheet_fragment"
+        android:background="@drawable/home_map_bottom_sheet_shape"
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical"
@@ -38,69 +68,69 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/fragment_map_bottom_sheet_tv_title"
+            android:id="@+id/home_map_bottom_sheet_tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:gravity="center"
-            android:text="@string/map_bottom_sheet_title"
+            android:text="@string/home_map_bottom_sheet_title"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <LinearLayout
-            android:id="@+id/fragment_map_btn_set"
+            android:id="@+id/home_map_btn_set"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/fragment_map_btn_first"
+                android:id="@+id/home_map_btn_first"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/fragment_map_btn_first_location"
+                    android:id="@+id/home_map_first_btn_tv_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="@string/map_bottom_sheet_btn_location" />
+                    android:text="@string/home_map_bottom_sheet_btn_location" />
 
                 <ImageView
-                    android:id="@+id/fragment_map_btn_first_iv"
+                    android:id="@+id/home_map_first_btn_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:layout_gravity="end"
                     android:layout_margin="10dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/home_map_bottom_sheet_btn_ic_close_fragment" />
+                    android:src="@drawable/home_map_bottom_sheet_btn_ic_close" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/fragment_map_btn_second"
+                android:id="@+id/home_map_second_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/fragment_map_btn_second_location"
+                    android:id="@+id/home_map_second_btn_location_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp" />
 
                 <ImageView
-                    android:id="@+id/fragment_map_btn_second_iv"
+                    android:id="@+id/home_map_second_btn_location_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/home_map_bottom_sheet_btn_ic_add_fragment" />
+                    android:src="@drawable/home_map_bottom_sheet_btn_ic_add" />
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
@@ -110,46 +140,42 @@
             android:layout_margin="10dp">
 
             <TextView
-                android:id="@+id/near_location"
+                android:id="@+id/home_map_near_location_tv_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/map_bottom_sheet_btn_location"
+                android:text="@string/home_map_bottom_sheet_btn_location"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/near_location_set_1"
+                android:id="@+id/home_map_near_location_tv_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/map_bottom_sheet_near_location_set_1"
+                android:text="@string/home_map_bottom_sheet_near_location_set_1"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/near_location"
+                app:layout_constraintStart_toEndOf="@+id/home_map_near_location_tv_1"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/near_location_count"
+                android:id="@+id/home_map_near_location_tv_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/map_bottom_sheet_near_location_count"
+                android:text="@string/home_map_bottom_sheet_near_location_count"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/near_location_set_1"
+                app:layout_constraintStart_toEndOf="@+id/home_map_near_location_tv_2"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/near_location_set_2"
+                android:id="@+id/home_map_near_location_tv_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/map_bottom_sheet_near_location_set_2"
+                android:text="@string/home_map_bottom_sheet_near_location_set_2"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/near_location_count"
+                app:layout_constraintStart_toEndOf="@+id/home_map_near_location_tv_3"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.slider.RangeSlider
-            android:id="@+id/near_location_range_slider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
