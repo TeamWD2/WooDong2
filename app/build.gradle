@@ -47,7 +47,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx:20.2.2'
 
     //viewModel
-    implementation 'androidx.activity:activity-ktx:1.8.0'
+    implementation 'androidx.activity:activity-ktx:1.7.2'
     implementation 'androidx.fragment:fragment-ktx:1.6.1'
 
     //firebase
