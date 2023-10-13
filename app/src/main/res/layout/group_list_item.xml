@@ -119,13 +119,13 @@
         android:layout_height="wrap_content"
         android:background="#C5C5C5"
         app:layout_constraintBottom_toBottomOf="@id/txt_tag_location"
-        app:layout_constraintEnd_toStartOf="@id/txt_tag_age"
+        app:layout_constraintEnd_toStartOf="@id/txt_tag_capacity"
         app:layout_constraintStart_toEndOf="@id/txt_tag_location"
         app:layout_constraintTop_toTopOf="@id/txt_tag_location"
         tools:text="동네친구" />
 
     <TextView
-        android:id="@+id/txt_tag_age"
+        android:id="@+id/txt_tag_capacity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -133,5 +133,5 @@
         app:layout_constraintBottom_toBottomOf="@id/txt_tag_category"
         app:layout_constraintStart_toEndOf="@id/txt_tag_category"
         app:layout_constraintTop_toTopOf="@id/txt_tag_category"
-        tools:text="2~30대" />
+        tools:text="잔여 8" />
 </androidx.constraintlayout.widget.ConstraintLayout>
