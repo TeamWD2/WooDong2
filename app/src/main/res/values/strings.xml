@@ -22,7 +22,7 @@
     <string name="home_map_bottom_sheet_near_location_set_1"> 과 근처 동네 </string>
     <string name="home_map_bottom_sheet_near_location_count"> 12 </string>
     <string name="home_map_bottom_sheet_near_location_set_2"> 개 </string>
-
+    <string name="home_map_search_btn">동명(읍, 면)으로 검색(ex. 서초동)</string>
     <string name="chat_txt_title">채팅</string>
 
     <string name="my_page_txt_title">마이페이지</string>
