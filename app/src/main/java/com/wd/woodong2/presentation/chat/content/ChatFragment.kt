@@ -35,11 +35,7 @@ class ChatFragment : Fragment() {
         when (item) {
             is ChatItem.GroupChatItem -> {
                 val intent = Intent(requireContext(), ChatDetailActivity::class.java)
-                intent.putExtra("title", item.title)
-                intent.putExtra("thumbnail", item.thumbnail)
-                intent.putExtra("location", item.location)
-                intent.putExtra("contents", item.contents)
-                intent.putExtra("timeStamp", item.timeStamp)
+                intent.putExtra("chat_item", item)
                 startActivity(intent)
             }
         }
@@ -65,8 +61,10 @@ class ChatFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
-        recyclerViewChat.adapter = chatItemListAdapter
-        recyclerViewChat.layoutManager = LinearLayoutManager(requireContext())
+        recyclerViewChat.apply {
+            adapter = chatItemListAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
     private fun initModel() {
