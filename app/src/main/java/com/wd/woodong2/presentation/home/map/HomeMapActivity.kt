@@ -1,38 +1,46 @@
 package com.wd.woodong2.presentation.home.map
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.wd.woodong2.databinding.HomeMapFragmentBinding
+import androidx.appcompat.app.AppCompatActivity
+import com.wd.woodong2.R
+import com.wd.woodong2.databinding.HomeMapActivityBinding
+import com.wd.woodong2.presentation.home.content.HomeItem
+import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
 
 
-class HomeMapActivity : Fragment() {
+class HomeMapActivity : AppCompatActivity() {
+    companion object {
+        //private lateinit var HomeMapItem: HomeItem
+        fun homeMapActivityNewIntent(context: Context?)=//, homeItem: HomeItem) =
+            Intent(context, HomeMapActivity::class.java).apply {
 
-    private var _binding : HomeMapFragmentBinding? = null
-    private val binding get() = _binding!!
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = HomeMapFragmentBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        bottomSheetSet()
+                //HomeMapItem = homeItem
+            }
     }
 
-    private fun bottomSheetSet(){
+    private lateinit var binding : HomeMapActivityBinding
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = HomeMapActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        overridePendingTransition(
+            R.anim.home_map_slide_up_fragment,
+            R.anim.home_map_none_fragment
+        )
+        initView()
     }
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
+    private fun initView(){
+        binding.homeMapClose.setOnClickListener{
+            finish()
+            overridePendingTransition(
+                R.anim.home_map_none_fragment,
+                R.anim.home_map_slide_down_fragment
+            )
+        }
     }
 
 }
