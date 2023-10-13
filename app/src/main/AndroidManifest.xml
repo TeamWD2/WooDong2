@@ -24,6 +24,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".presentation.chat.detail.ChatDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.home.map.HomeMapActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

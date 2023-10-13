@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="5sp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -27,11 +28,13 @@
         android:id="@+id/txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/txt_description"
         app:layout_constraintEnd_toStartOf="@id/txt_locale"
         app:layout_constraintStart_toEndOf="@id/cardView"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="요우" />
+        tools:text="모임 이름" />
 
     <TextView
         android:id="@+id/txt_locale"
@@ -61,13 +64,4 @@
         app:layout_constraintTop_toBottomOf="@id/txt_name"
         tools:text="네 수고하세요~" />
 
-    <ImageView
-        android:id="@+id/img_photo"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
 </androidx.constraintlayout.widget.ConstraintLayout>
