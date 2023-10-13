@@ -10,6 +10,7 @@ fun GroupItemsResponse.toEntity() = GroupItemsEntity(
 )
 
 fun GroupResponse.toEntity() = GroupEntity(
+    id = id,
     groupProfile = groupProfile,
     title = title,
     memberProfile1 = memberProfile1,
@@ -18,5 +19,5 @@ fun GroupResponse.toEntity() = GroupEntity(
     memberCount = memberCount,
     tagLocation = tagLocation,
     tagCategory = tagCategory,
-    tagCapacity = tagCapacity,
+    tagCapacity = tagCapacity
 )

@@ -49,10 +49,6 @@ class GroupFragment : Fragment() {
         }
     }
 
-    fun addGroupItem() {
-//        viewModel.addGroupItem()
-    }
-
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

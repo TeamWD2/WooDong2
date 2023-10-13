@@ -12,16 +12,14 @@ import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.GroupRepository
 
-class GroupRepositoryImpl(private val databaseReference: DatabaseReference): GroupRepository {
+class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : GroupRepository {
 
     override fun getGroupItems(
         entityResult: (GroupItemsEntity?) -> Unit
     ) {
-        Log.d("sinw", "repositoryImpl")
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    Log.d("sinw", "snapshot / $snapshot")
                     val gson = GsonBuilder().create()
                     val groupResponses = snapshot.children.mapNotNull { childSnapshot ->
                         val jsonString = gson.toJson(childSnapshot.value)
@@ -30,15 +28,11 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference): Gro
                     }
                     val entity = GroupItemsResponse(groupResponses).toEntity()
                     entityResult(entity)
-//                    val jsonString = gson.toJson(snapshot.value)
-//                    Log.d("sinw", "snapshot / $jsonString")
-//                    val entity = gson.fromJson(jsonString, GroupItemsResponse::class.java).toEntity()
-//                    entityResult(entity)
                 } else {
                     entityResult(null)
                 }
-
             }
+
             override fun onCancelled(error: DatabaseError) {
                 Log.e("sinw", "$error")
                 entityResult(null)

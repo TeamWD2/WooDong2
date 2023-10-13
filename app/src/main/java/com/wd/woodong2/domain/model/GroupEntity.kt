@@ -5,6 +5,7 @@ data class GroupItemsEntity(
 )
 
 data class GroupEntity(
+    val id: String?,
     val groupProfile: String?,
     val title: String?,
     val memberProfile1: String?,
