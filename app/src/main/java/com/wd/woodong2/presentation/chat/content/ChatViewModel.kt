@@ -5,44 +5,52 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.wd.woodong2.data.repository.ChatRepositoryImpl
+import com.wd.woodong2.domain.usecase.ChatGetItemsUseCase
+import kotlinx.coroutines.launch
 
-class ChatViewModel : ViewModel(
-//    private val chat: GetSearchImageUseCase,
+class ChatViewModel(
+    private val chatItem: ChatGetItemsUseCase
+) : ViewModel(
 ) {
     private val _chatList = MutableLiveData<MutableList<ChatItem>>()
     val chatList: LiveData<MutableList<ChatItem>>
         get() = _chatList
 
     init {
-        val testChatItems = mutableListOf<ChatItem>()
-        for (i in 1..10) {
-            val chatItem = ChatItem.GroupChatItem(
-                title = "Chat Title $i",
-                thumbnail = "Thumbnail URL $i",
-                location = "Location $i",
-                contents = "Chat Contents $i",
-                timeStamp = "Time Stamp $i"
-            )
-            testChatItems.add(chatItem)
-        }
-        _chatList.value = testChatItems
+        getChatItem()
     }
 
-    fun onClickSearchItem(item: ChatItem) {
-//        val appContext = MyApplication.instance.applicationContext
-//        val intent = Intent(context, ChatDetailActivity::class.java)
-//        intent.putExtra("chatItem", item)
-//        context.startActivity(intent)
-
-        Log.d("test", "아이템 클릭 됨")
+    fun getChatItem() = viewModelScope.launch {
+        runCatching {
+            chatItem { items ->
+                val chatItemList = items?.chatItems?.map {
+                    ChatItem.GroupChatItem(
+                        title = it.id,
+                        imgProfile = it.imgProfile,
+                        lastMassage = it.lastMassage,
+                        location = it.location,
+                        timeStamp = it.timestamp,
+                    )
+                }.orEmpty()
+                _chatList.postValue(chatItemList.toMutableList())
+            }
+        }.onFailure {
+            Log.e("sinw", it.message.toString())
+        }
     }
 }
 
 
-class ChatViewModelFactory() : ViewModelProvider.Factory {
+class ChatViewModelFactory(
+    private val repository: ChatRepositoryImpl
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
-            return ChatViewModel() as T
+            return ChatViewModel(
+                ChatGetItemsUseCase(repository)
+            ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
         }

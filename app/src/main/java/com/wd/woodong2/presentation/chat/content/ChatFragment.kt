@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.database.FirebaseDatabase
+import com.wd.woodong2.data.repository.ChatRepositoryImpl
 import com.wd.woodong2.databinding.ChatFragmentBinding
 import com.wd.woodong2.presentation.chat.detail.ChatDetailActivity
 
@@ -21,8 +23,12 @@ class ChatFragment : Fragment() {
     private var _binding: ChatFragmentBinding? = null
     private val binding get() = _binding!!
 
+    private val databaseReference by lazy {
+        FirebaseDatabase.getInstance().getReference("chats")
+    }
+
     private val chatViewModel: ChatViewModel by viewModels {
-        ChatViewModelFactory()
+        ChatViewModelFactory(ChatRepositoryImpl(databaseReference))
     }
 
     private val chatItemListAdapter by lazy {
@@ -34,6 +40,12 @@ class ChatFragment : Fragment() {
     private fun onClickChatItem(item: ChatItem) {
         when (item) {
             is ChatItem.GroupChatItem -> {
+                val intent = Intent(requireContext(), ChatDetailActivity::class.java)
+                intent.putExtra("chat_item", item)
+                startActivity(intent)
+            }
+
+            is ChatItem.PrivateChatItem -> {
                 val intent = Intent(requireContext(), ChatDetailActivity::class.java)
                 intent.putExtra("chat_item", item)
                 startActivity(intent)

@@ -3,13 +3,23 @@ package com.wd.woodong2.presentation.chat.content
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
-sealed class ChatItem : Parcelable {
+
+sealed class ChatItem {
+    @Parcelize
     data class GroupChatItem(
         val title: String?,
-        val thumbnail: String?,
+        val imgProfile: String?,
         val location: String?,
-        val contents: String?,
         val timeStamp: String?,
-    ) : ChatItem()
+        val lastMassage: String?,
+        ) : Parcelable, ChatItem()
+
+    @Parcelize
+    data class PrivateChatItem(
+        val userName: String?,
+        val imgProfile: String?,
+        val location: String?,
+        val timeStamp: String?,
+        val lastMassage: String?,
+    ) : Parcelable, ChatItem()
 }
