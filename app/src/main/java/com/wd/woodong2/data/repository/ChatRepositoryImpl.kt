@@ -14,7 +14,7 @@ import com.wd.woodong2.domain.repository.ChatRepository
 
 class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : ChatRepository {
 
-    override fun getChatItems(entityResult: (ChatItemsEntity?) -> Unit) {
+    override fun getChatItems(chatIds: List<String>, entityResult: (ChatItemsEntity?) -> Unit) {
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -24,7 +24,12 @@ class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : Cha
                         val response = gson.fromJson(jsonString, ChatResponse::class.java)
                         response.copy(id = childSnapshot.key)
                     }
-                    val entity = ChatItemsResponse(chatResponses).toEntity()
+
+                    val filteredChatResponses = chatResponses.filter { chatResponse ->
+                        chatResponse.id in chatIds
+                    }
+
+                    val entity = ChatItemsResponse(filteredChatResponses).toEntity()
                     entityResult(entity)
                 } else {
                     entityResult(null)

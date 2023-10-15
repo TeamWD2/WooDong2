@@ -15,6 +15,7 @@ import com.wd.woodong2.domain.repository.UserRepository
 class UserRepositoryImpl(private val databaseReference: DatabaseReference) : UserRepository {
 
     override fun getUserItems(
+        userId: String,
         entityResult: (UserItemsEntity?) -> Unit
     ) {
         databaseReference.addValueEventListener(object : ValueEventListener {
@@ -25,6 +26,8 @@ class UserRepositoryImpl(private val databaseReference: DatabaseReference) : Use
                         val jsonString = gson.toJson(childSnapshot.value)
                         val response = gson.fromJson(jsonString, UserResponse::class.java)
                         response.copy(id = childSnapshot.key)
+                    }.filter {
+                        it.id == userId
                     }
                     val entity = UserItemsResponse(userResponses).toEntity()
                     entityResult(entity)

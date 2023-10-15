@@ -6,8 +6,8 @@ import com.wd.woodong2.domain.repository.UserRepository
 class UserGetItemsUseCase(
     private val repository: UserRepository
 ) {
-    operator fun invoke(entityResult: (UserItemsEntity?) -> Unit) {
-        return repository.getUserItems { result ->
+    operator fun invoke(userId: String, entityResult: (UserItemsEntity?) -> Unit) {
+        return repository.getUserItems(userId) { result ->
             entityResult(result)
         }
     }

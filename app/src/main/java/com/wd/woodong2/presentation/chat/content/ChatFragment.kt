@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.FirebaseDatabase
 import com.wd.woodong2.data.repository.ChatRepositoryImpl
+import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.databinding.ChatFragmentBinding
 import com.wd.woodong2.presentation.chat.detail.ChatDetailActivity
 
@@ -23,12 +24,18 @@ class ChatFragment : Fragment() {
     private var _binding: ChatFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val databaseReference by lazy {
+    private val chatDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("chats")
+    }
+    private val userDatabaseReference by lazy {
+        FirebaseDatabase.getInstance().getReference("users")
     }
 
     private val chatViewModel: ChatViewModel by viewModels {
-        ChatViewModelFactory(ChatRepositoryImpl(databaseReference))
+        ChatViewModelFactory(
+            ChatRepositoryImpl(chatDatabaseReference),
+            UserRepositoryImpl(userDatabaseReference),
+        )
     }
 
     private val chatItemListAdapter by lazy {
