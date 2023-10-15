@@ -22,7 +22,7 @@ class ChatViewModel(
         get() = _chatList
 
     // test
-    val userId = "user2"
+    val userId = "user1"
     lateinit var user: UserItem
 
     init {
@@ -49,6 +49,7 @@ class ChatViewModel(
     }
 
     private fun getUserItem() = viewModelScope.launch {
+        // userId로 채팅방 찾기
         runCatching {
             userItem(userId) { items ->
                 val userItem = items?.userItems?.map {
@@ -63,6 +64,7 @@ class ChatViewModel(
 
                 user = userItem[0]
 
+                // chatId로 채팅방 로드
                 runCatching {
                     chatItem(user.chatIds.orEmpty()) { items ->
                         val chatItemList = items?.chatItems?.map {
@@ -83,7 +85,6 @@ class ChatViewModel(
         }.onFailure {
             Log.e("sinw", it.message.toString())
         }
-
     }
 }
 
