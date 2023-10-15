@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.chat.content
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -18,7 +19,13 @@ import com.wd.woodong2.presentation.chat.detail.ChatDetailActivity
 class ChatFragment : Fragment() {
 
     companion object {
+
+        private const val CHAT_ITEM = "chat_item"
         fun newInstance() = ChatFragment()
+        fun newIntentForDetail(context: Context, item: ChatItem): Intent =
+            Intent(context, ChatDetailActivity::class.java).apply {
+                putExtra(CHAT_ITEM, item)
+            }
     }
 
     private var _binding: ChatFragmentBinding? = null
@@ -46,16 +53,8 @@ class ChatFragment : Fragment() {
 
     private fun onClickChatItem(item: ChatItem) {
         when (item) {
-            is ChatItem.GroupChatItem -> {
-                val intent = Intent(requireContext(), ChatDetailActivity::class.java)
-                intent.putExtra("chat_item", item)
-                startActivity(intent)
-            }
-
-            is ChatItem.PrivateChatItem -> {
-                val intent = Intent(requireContext(), ChatDetailActivity::class.java)
-                intent.putExtra("chat_item", item)
-                startActivity(intent)
+            is ChatItem.GroupChatItem, is ChatItem.PrivateChatItem -> {
+                startActivity(newIntentForDetail(requireContext(), item))
             }
         }
     }

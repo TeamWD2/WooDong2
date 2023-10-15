@@ -7,6 +7,10 @@ import com.wd.woodong2.databinding.ChatDetailActivityBinding
 import com.wd.woodong2.presentation.chat.content.ChatItem
 
 class ChatDetailActivity : AppCompatActivity() {
+    companion object {
+        const val CHAT_ITEM = "chat_item"
+    }
+
     private lateinit var binding: ChatDetailActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,9 +23,9 @@ class ChatDetailActivity : AppCompatActivity() {
 
     private fun initView() = with(binding) {
         val receivedChatItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("chat_item", ChatItem::class.java)
+            intent.getParcelableExtra(CHAT_ITEM, ChatItem::class.java)
         } else {
-            intent.getParcelableExtra("chat_item")
+            intent.getParcelableExtra(CHAT_ITEM)
         }
         if (receivedChatItem != null) {
 
