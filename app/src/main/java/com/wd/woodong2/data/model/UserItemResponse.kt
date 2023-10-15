@@ -9,4 +9,8 @@ data class UserItemsResponse(
 data class UserResponse(
     val id: String?,
     @SerializedName("name") val name: String?,
+    @SerializedName("imgProfile") val imgProfile: String?,
+    @SerializedName("email") val email: String?,
+    // 유저가 보유한 채팅방 IDs
+    @SerializedName("chatIds") val chatIds: List<String>?,
 )

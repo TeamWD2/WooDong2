@@ -13,4 +13,7 @@ fun UserItemsResponse.toEntity() = UserItemsEntity(
 fun UserResponse.toEntity() = UserEntity(
     id = id,
     name = name,
+    imgProfile = imgProfile,
+    email = email,
+    chatIds = chatIds,
 )

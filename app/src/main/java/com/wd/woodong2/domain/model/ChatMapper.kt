@@ -12,8 +12,9 @@ fun ChatItemsResponse.toEntity() = ChatItemsEntity(
 fun ChatResponse.toEntity() = ChatEntity(
     id = id,
     imgProfile = imgProfile,
-    sender = sender,
+    senderId = senderId,
     location = location,
     timestamp = timestamp,
     lastMassage = lastMassage,
+    massage = massage,
 )
