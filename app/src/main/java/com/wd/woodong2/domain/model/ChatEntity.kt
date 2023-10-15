@@ -12,10 +12,10 @@ data class ChatEntity(
     val location: String?,
     val timestamp: String?,
     val lastMassage: String?,
-    val massage: List<Massage>?,
+    val message: List<Message>?,
 )
 
-data class Massage(
+data class Message(
     val id: String?,
     val massage: String?,
     val timestamp: String?,

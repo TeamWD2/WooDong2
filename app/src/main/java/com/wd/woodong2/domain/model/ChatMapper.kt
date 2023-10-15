@@ -16,5 +16,5 @@ fun ChatResponse.toEntity() = ChatEntity(
     location = location,
     timestamp = timestamp,
     lastMassage = lastMassage,
-    massage = massage,
+    message = message,
 )

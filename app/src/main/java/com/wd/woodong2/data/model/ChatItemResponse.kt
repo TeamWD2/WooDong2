@@ -1,7 +1,7 @@
 package com.wd.woodong2.data.model
 
 import com.google.gson.annotations.SerializedName
-import com.wd.woodong2.domain.model.Massage
+import com.wd.woodong2.domain.model.Message
 
 data class ChatItemsResponse(
     val chatItems: List<ChatResponse>?
@@ -16,10 +16,10 @@ data class ChatResponse(
     @SerializedName("location") val location: String?,
     @SerializedName("timestamp") val timestamp: String?,
     @SerializedName("lastMassage") val lastMassage: String?,
-    @SerializedName("massage") val massage: List<Massage>?,
+    @SerializedName("message") val message: List<Message>?,
 )
 
-data class MassageResponse(
+data class MessageResponse(
     val id: String?,
     val message: String?,
     val timestamp: String?,
