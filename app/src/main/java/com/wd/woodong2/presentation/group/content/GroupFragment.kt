@@ -50,6 +50,11 @@ class GroupFragment : Fragment() {
         groupList.observe(viewLifecycleOwner) {
             groupListAdapter.submitList(it)
         }
+        loadingState.observe(viewLifecycleOwner) { loadingState ->
+            if(!loadingState) {
+                binding.progressBar.visibility = View.GONE
+            }
+        }
     }
 
     override fun onDestroyView() {

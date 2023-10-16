@@ -18,7 +18,11 @@ class GroupViewModel(
     private val _groupList: MutableLiveData<List<GroupItem>> = MutableLiveData()
     val groupList: LiveData<List<GroupItem>> get() = _groupList
 
+    private val _loadingState: MutableLiveData<Boolean> = MutableLiveData()
+    val loadingState: LiveData<Boolean> get() = _loadingState
+
     fun getGroupItem() = viewModelScope.launch {
+        _loadingState.value = true
         runCatching {
             val items = groupItem()
             val groupItemList = items.groupItems?.map {
@@ -38,6 +42,8 @@ class GroupViewModel(
             _groupList.postValue(groupItemList)
         }.onFailure {
             Log.e("sinw", it.message.toString())
+        }.also {
+            _loadingState.value = false
         }
     }
 }
