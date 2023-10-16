@@ -9,6 +9,6 @@ data class MessageItemsResponse(
 data class MessageResponse(
     @SerializedName("id") val id: String?,
     @SerializedName("message") val message: String?,
-    @SerializedName("timestamp") val timestamp: String?,
     @SerializedName("senderId") val senderId: String?,
+    @SerializedName("timestamp") val timestamp: String?,
 )
