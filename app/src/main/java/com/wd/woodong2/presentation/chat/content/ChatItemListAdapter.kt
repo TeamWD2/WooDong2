@@ -30,7 +30,7 @@ class ChatItemListAdapter(
 ) {
 
     enum class ChatItemViewType {
-        GROUP,
+        GROUP, PRIVATE
     }
 
     abstract class ViewHolder(
@@ -41,12 +41,23 @@ class ChatItemListAdapter(
 
     override fun getItemViewType(position: Int): Int = when (getItem(position)) {
         is ChatItem.GroupChatItem -> ChatItemViewType.GROUP.ordinal
+        is ChatItem.PrivateChatItem -> ChatItemViewType.PRIVATE.ordinal
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         when (viewType) {
             ChatItemViewType.GROUP.ordinal ->
                 GroupChatViewHolder(
+                    ChatListItemBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    ),
+                    onClick
+                )
+
+            ChatItemViewType.PRIVATE.ordinal ->
+                PrivateChatViewHolder(
                     ChatListItemBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
@@ -78,7 +89,25 @@ class ChatItemListAdapter(
         override fun onBind(item: ChatItem) = with(binding) {
             if (item is ChatItem.GroupChatItem) {
                 txtName.text = item.title
-                txtDescription.text = item.contents
+                txtDescription.text = item.lastMassage
+                txtLocale.text = item.location
+                txtDate.text = item.timeStamp
+            }
+            itemView.setOnClickListener {
+                onClick(item)
+            }
+        }
+    }
+
+    class PrivateChatViewHolder(
+        private val binding: ChatListItemBinding,
+        private val onClick: (ChatItem) -> Unit
+    ) : ViewHolder(binding.root) {
+
+        override fun onBind(item: ChatItem) = with(binding) {
+            if (item is ChatItem.PrivateChatItem) {
+                txtName.text = item.userName
+                txtDescription.text = item.lastMassage
                 txtLocale.text = item.location
                 txtDate.text = item.timeStamp
             }

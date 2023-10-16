@@ -13,7 +13,7 @@ import com.wd.woodong2.presentation.mypage.content.MyPageFragment
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : MainActivityBinding
+    private lateinit var binding: MainActivityBinding
 
     private val homeFragment by lazy {
         HomeFragment.newInstance()
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
 //
 //            }
         }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MainActivityBinding.inflate(layoutInflater)
@@ -44,8 +45,8 @@ class MainActivity : AppCompatActivity() {
         initView()
 
     }
-    private fun initView() = with(binding) {
 
+    private fun initView() = with(binding) {
 //        // Toolbar 설정
 //        setSupportActionBar(mainToolbar)
 //        supportActionBar?.setDisplayShowTitleEnabled(false)
