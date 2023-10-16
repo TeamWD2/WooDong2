@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.database.FirebaseDatabase
 import com.wd.woodong2.data.repository.ChatRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.usecase.ChatGetItemsUseCase
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class ChatViewModel(
     private val chatItem: ChatGetItemsUseCase,
-    private val userItem: UserGetItemsUseCase
+    private val userItem: UserGetItemsUseCase,
 ) : ViewModel(
 ) {
     private val _chatList = MutableLiveData<MutableList<ChatItem>>()
@@ -22,7 +23,7 @@ class ChatViewModel(
         get() = _chatList
 
     // test
-    val userId = "user1"
+    val userId = "user2"
     lateinit var user: UserItem
 
     init {
@@ -89,15 +90,20 @@ class ChatViewModel(
 }
 
 
-class ChatViewModelFactory(
-    private val chatRepository: ChatRepositoryImpl,
-    private val userRepository: UserRepositoryImpl
-) : ViewModelProvider.Factory {
+class ChatViewModelFactory() : ViewModelProvider.Factory {
+
+    private val chatDatabaseReference by lazy {
+        FirebaseDatabase.getInstance().getReference("chats")
+    }
+    private val userDatabaseReference by lazy {
+        FirebaseDatabase.getInstance().getReference("users")
+    }
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
             return ChatViewModel(
-                ChatGetItemsUseCase(chatRepository),
-                UserGetItemsUseCase(userRepository)
+                ChatGetItemsUseCase(ChatRepositoryImpl(chatDatabaseReference)),
+                UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference))
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
