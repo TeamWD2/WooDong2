@@ -19,30 +19,14 @@ import com.wd.woodong2.presentation.chat.detail.ChatDetailActivity
 class ChatFragment : Fragment() {
 
     companion object {
-
-        private const val CHAT_ITEM = "chat_item"
         fun newInstance() = ChatFragment()
-        fun newIntentForDetail(context: Context, item: ChatItem): Intent =
-            Intent(context, ChatDetailActivity::class.java).apply {
-                putExtra(CHAT_ITEM, item)
-            }
     }
 
     private var _binding: ChatFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val chatDatabaseReference by lazy {
-        FirebaseDatabase.getInstance().getReference("chats")
-    }
-    private val userDatabaseReference by lazy {
-        FirebaseDatabase.getInstance().getReference("users")
-    }
-
     private val chatViewModel: ChatViewModel by viewModels {
-        ChatViewModelFactory(
-            ChatRepositoryImpl(chatDatabaseReference),
-            UserRepositoryImpl(userDatabaseReference),
-        )
+        ChatViewModelFactory()
     }
 
     private val chatItemListAdapter by lazy {
@@ -54,7 +38,12 @@ class ChatFragment : Fragment() {
     private fun onClickChatItem(item: ChatItem) {
         when (item) {
             is ChatItem.GroupChatItem, is ChatItem.PrivateChatItem -> {
-                startActivity(newIntentForDetail(requireContext(), item))
+                startActivity(
+                    ChatDetailActivity.newIntentForDetail(
+                        requireContext(),
+                        item
+                    )
+                )
             }
         }
     }
