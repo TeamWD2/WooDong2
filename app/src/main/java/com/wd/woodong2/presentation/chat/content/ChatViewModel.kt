@@ -22,8 +22,8 @@ class ChatViewModel(
     val chatList: LiveData<MutableList<ChatItem>>
         get() = _chatList
 
-    // test
-    val userId = "user2"
+    // User test
+    val userId = "user1"
     lateinit var user: UserItem
 
     init {

@@ -7,9 +7,7 @@ import com.wd.woodong2.domain.repository.MessageRepository
 class MessageGetItemsUseCase(
     private val repository: MessageRepository
 ) {
-    operator fun invoke(chatId: String, entityResult: (MessageItemsEntity?) -> Unit) {
-        return repository.getMessageItems(chatId) { result ->
-            entityResult(result)
-        }
+    suspend operator fun invoke(chatId: String): MessageItemsEntity {
+        return repository.getMessageItems(chatId)
     }
 }
