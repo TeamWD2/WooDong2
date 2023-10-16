@@ -18,18 +18,12 @@ class GroupFragment : Fragment() {
     private var _binding : GroupFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val databaseReference by lazy {
-        FirebaseDatabase.getInstance().getReference("items")
-    }
-
-    private val viewModel: GroupViewModel by viewModels {
-        GroupViewModelFactory(GroupRepositoryImpl(databaseReference))
-    }
+    private val viewModel: GroupViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = GroupFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }

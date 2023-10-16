@@ -11,33 +11,19 @@ import com.wd.woodong2.data.model.GroupResponse
 import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.GroupRepository
+import kotlinx.coroutines.tasks.await
 
 class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : GroupRepository {
 
-    override fun getGroupItems(
-        entityResult: (GroupItemsEntity?) -> Unit
-    ) {
-        databaseReference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val gson = GsonBuilder().create()
-                    val groupResponses = snapshot.children.mapNotNull { childSnapshot ->
-                        val jsonString = gson.toJson(childSnapshot.value)
-                        val response = gson.fromJson(jsonString, GroupResponse::class.java)
-                        response.copy(id = childSnapshot.key)
-                    }
-                    val entity = GroupItemsResponse(groupResponses).toEntity()
-                    entityResult(entity)
-                } else {
-                    entityResult(null)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("sinw", "$error")
-                entityResult(null)
-            }
-        })
+    override suspend fun getGroupItems(): GroupItemsEntity {
+        val snapshot = databaseReference.get().await()
+        val gson = GsonBuilder().create()
+        val groupResponses = snapshot.children.mapNotNull { childSnapshot ->
+            val jsonString = gson.toJson(childSnapshot.value)
+            val response = gson.fromJson(jsonString, GroupResponse::class.java)
+            response.copy(id = childSnapshot.key)
+        }
+        return GroupItemsResponse(groupResponses).toEntity()
     }
 }
 
