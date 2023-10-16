@@ -23,6 +23,7 @@ class GroupViewModel(
             val items = groupItem()
             val groupItemList = items.groupItems?.map {
                 GroupItem(
+                    id = it.id,
                     imgGroupProfile = it.groupProfile,
                     txtTitle = it.title,
                     imgMemberProfile1 = it.memberProfile1,

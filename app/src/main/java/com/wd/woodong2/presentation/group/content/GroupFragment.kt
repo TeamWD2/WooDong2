@@ -18,7 +18,15 @@ class GroupFragment : Fragment() {
     private var _binding : GroupFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: GroupViewModel by viewModels()
+    private val viewModel: GroupViewModel by viewModels { GroupViewModelFactory() }
+
+    private val groupListAdapter by lazy {
+        GroupListAdapter(
+            itemClickListener = { item ->
+                // GroupDetailActivity 이동
+            }
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,12 +42,13 @@ class GroupFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
+        recyclerViewGroup.adapter = groupListAdapter
         viewModel.getGroupItem()
     }
 
     private fun initViewModel() = with(viewModel) {
         groupList.observe(viewLifecycleOwner) {
-            Log.d("sinw", "observe / $it")
+            groupListAdapter.submitList(it)
         }
     }
 
