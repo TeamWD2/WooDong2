@@ -26,6 +26,8 @@
 
     <string name="group_hint_search_group">우리 동네 모임을 검색해보세요.</string>
 
+    <string name="group_add_btn_add_group">모임 만들기</string>
+
     <string name="chat_txt_title">채팅</string>
 
     <string name="my_page_txt_title">마이페이지</string>

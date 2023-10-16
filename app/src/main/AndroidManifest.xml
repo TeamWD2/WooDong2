@@ -33,10 +33,13 @@
             android:exported="false" />
         <activity
             android:name=".presentation.home.map.HomeMapActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".presentation.home.map.HomeMapSearchActivity"
-            android:exported="false"/>
+            android:exported="false" />
+        <activity
+            android:name=".presentation.group.add.GroupAddActivity"
+            android:exported="false" />
 
     </application>
 
