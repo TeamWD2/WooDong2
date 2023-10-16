@@ -27,12 +27,6 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeMapActivityBinding
-import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.Locale
 
 
@@ -40,18 +34,20 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
         //private lateinit var HomeMapItem: HomeItem
-        fun homeMapActivityNewIntent(context: Context?)=//, homeItem: HomeItem) =
+        fun newIntent(context: Context?)=//, homeItem: HomeItem) =
             Intent(context, HomeMapActivity::class.java).apply {
                 //HomeMapItem = homeItem
-
-
             }
+
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
+
+    private var firstLocation : String? =null
+    private var secondLocation : String? =null
 
     private lateinit var binding : HomeMapActivityBinding
     private lateinit var naverMap: NaverMap
     private val marker = Marker()
-    private val LOCATION_PERMISSION_REQUEST_CODE = 1000
     private lateinit var locationSource: FusedLocationSource
     private val PERMISSIONS = arrayOf(
         ACCESS_FINE_LOCATION,
@@ -62,7 +58,8 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var check : String? = null
     private var reverseCheck : LatLng? = null
-    //    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    //    private lateinit var fusedLocationClient: FusedLocationProviderClient         // 사용자 실시간 위치 반영때 사용됨
 
     private val homeMapSearchLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -83,18 +80,20 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             R.anim.home_map_none_fragment
         )
 
-        initView()
         if (isPermitted()) {
-            initMapView()
+            initHomeMapView()
         } else {
-            ActivityCompat.requestPermissions(this, PERMISSIONS, LOCATION_PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(this, PERMISSIONS,
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
         }
 
     }
 
-    private fun initView() = with(binding){
 
-        homeMapClose.setOnClickListener{
+    private fun initHomeMapView(){
+
+        binding.homeMapClose.setOnClickListener{
             finish()
             overridePendingTransition(
                 R.anim.home_map_none_fragment,
@@ -102,14 +101,12 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         }
 
-        homeMapSecondBtn.setOnClickListener{
+        binding.homeMapSecondBtn.setOnClickListener{
             homeMapSearchLauncher.launch(
-                HomeMapSearchActivity.homeMapSearchActivityNewIntent(this@HomeMapActivity)
+                HomeMapSearchActivity.newIntent(this@HomeMapActivity)
             )
         }
-    }
 
-    private fun initMapView(){
         //NAVER 지도 API 호출 및 ID 지정
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NaverCloudPlatformClient(clientId)
@@ -120,9 +117,10 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             ?: MapFragment.newInstance().also {
                 fm.beginTransaction().add(R.id.home_map_view, it).commit()
             }
+
         //인터페이스 객체
         mapFragment.getMapAsync(this)
-        locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
+        locationSource = FusedLocationSource(this, Companion.LOCATION_PERMISSION_REQUEST_CODE)
     }
 
     private fun isPermitted(): Boolean {
@@ -141,11 +139,13 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 grantResults)) {
             if (!locationSource.isActivated) { // 권한 거부됨
                 naverMap.locationTrackingMode = LocationTrackingMode.None
+                finish()
             }
             return
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
 
@@ -177,7 +177,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         binding.homeMapFirstBtn.setOnClickListener{
 
-            check = getAddress(naverMap.cameraPosition.target.latitude,
+            check = getAddressFromLocation(naverMap.cameraPosition.target.latitude,
                 naverMap.cameraPosition.target.longitude)
             makeText(this, "${check}, $check",
                 Toast.LENGTH_SHORT).show()
@@ -199,58 +199,41 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         marker.position = LatLng(latitude, longitude)
         marker.map = naverMap
 
-        getAddress(latitude, longitude)
+        getAddressFromLocation(latitude, longitude)
     }
 
     // 좌표 -> 주소 변환
-    private fun getAddress(lat: Double, lng: Double): String {
-        val geoCoder = Geocoder(this, Locale.KOREA)
-        val address: ArrayList<Address>
-        var addressResult = "주소를 가져 올 수 없습니다."
-        try {
-            //세번째 파라미터는 좌표에 대해 주소를 리턴 받는 갯수로
-            //한좌표에 대해 두개이상의 이름이 존재할수있기에 주소배열을 리턴받기 위해 최대갯수 설정
-            address = geoCoder.getFromLocation(lat, lng, 1) as ArrayList<Address>
-            if (address.size > 0) {
-                // 주소 받아오기
-                val currentLocationAddress = address[0].getAddressLine(0)
-                    .toString()
-                addressResult = currentLocationAddress
-
+    private fun getAddressFromLocation(lat: Double, lng: Double): String {
+        return runCatching {
+            val geoCoder = Geocoder(this, Locale.KOREA)
+            val address: MutableList<Address>? = geoCoder.getFromLocation(lat, lng, 1)
+            if (address!!.isNotEmpty()) {
+                return address[0].getAddressLine(0).toString()
+            } else {
+                return "주소를 가져 올 수 없습니다."
             }
-
-        } catch (e: IOException) {
-            e.printStackTrace()
+        }.getOrElse {
+            it.printStackTrace()
+            "주소를 가져 오는 도중 오류가 발생했습니다."
         }
-        return addressResult
     }
 
     //주소-> 좌표
     private fun getLocationFromAddress(context: Context, addressStr: String): LatLng? {
-        val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses: List<Address>?
+        return runCatching {
+            val geocoder = Geocoder(context, Locale.getDefault())
+            val addresses: MutableList<Address>? = geocoder.getFromLocationName(addressStr, 1)
 
-        try {
-            // 주소 문자열을 이용해 좌표 리스트를 가져옵니다.
-            addresses = geocoder.getFromLocationName(addressStr, 1)
-
-            if (!addresses.isNullOrEmpty()) {
+            if (addresses!!.isNotEmpty()) {
                 val latitude = addresses[0].latitude
                 val longitude = addresses[0].longitude
                 return LatLng(latitude, longitude)
+            } else {
+                return null
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
+        }.getOrElse {
+            it.printStackTrace()
+            null
         }
-
-        return null
     }
-
-
-
-
-
-
-
-
 }

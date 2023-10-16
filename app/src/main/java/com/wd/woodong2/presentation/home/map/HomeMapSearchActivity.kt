@@ -13,7 +13,7 @@ import com.wd.woodong2.databinding.HomeMapSearchActivityBinding
 class HomeMapSearchActivity : AppCompatActivity() {
     companion object {
         //private lateinit var HomeMapItem: HomeItem
-        fun homeMapSearchActivityNewIntent(context: Context)=//, homeItem: HomeItem) =
+        fun newIntent(context: Context)=//, homeItem: HomeItem) =
         Intent(context, HomeMapSearchActivity::class.java).apply {
                 //HomeMapItem = homeItem
             }
