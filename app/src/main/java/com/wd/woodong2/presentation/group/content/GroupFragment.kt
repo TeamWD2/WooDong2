@@ -1,14 +1,11 @@
 package com.wd.woodong2.presentation.group.content
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.google.firebase.database.FirebaseDatabase
-import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.databinding.GroupFragmentBinding
 
 class GroupFragment : Fragment() {
@@ -42,6 +39,12 @@ class GroupFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
+        // TODO("toolbar 설정")
+
+        fabAddGroup.setOnClickListener {
+            // GroupAddActivity 이동
+        }
+
         recyclerViewGroup.adapter = groupListAdapter
         viewModel.getGroupItem()
     }

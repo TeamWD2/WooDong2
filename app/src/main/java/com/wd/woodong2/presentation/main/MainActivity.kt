@@ -46,16 +46,16 @@ class MainActivity : AppCompatActivity() {
     }
     private fun initView() = with(binding) {
 
-        // Toolbar 설정
-        setSupportActionBar(mainToolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        mainToolbarLocation.setOnClickListener{
-            homeMapLauncher.launch(
-                HomeMapActivity.homeMapActivityNewIntent(
-                    this@MainActivity
-                )
-            )
-        }
+//        // Toolbar 설정
+//        setSupportActionBar(mainToolbar)
+//        supportActionBar?.setDisplayShowTitleEnabled(false)
+//        mainToolbarLocation.setOnClickListener{
+//            homeMapLauncher.launch(
+//                HomeMapActivity.homeMapActivityNewIntent(
+//                    this@MainActivity
+//                )
+//            )
+//        }
 
         //BottomNavigation 설정
         supportFragmentManager.beginTransaction().add(frameLayout.id, homeFragment).commit()
@@ -72,9 +72,5 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-
-        // fabAddTodo 버튼에 대한 코드
-
-
     }
 }
