@@ -18,10 +18,3 @@ data class ChatResponse(
     @SerializedName("lastMassage") val lastMassage: String?,
     @SerializedName("message") val message: List<Message>?,
 )
-
-data class MessageResponse(
-    @SerializedName("id") val id: String?,
-    @SerializedName("message") val message: String?,
-    @SerializedName("timestamp") val timestamp: String?,
-    @SerializedName("senderId") val senderId: String?,
-)
