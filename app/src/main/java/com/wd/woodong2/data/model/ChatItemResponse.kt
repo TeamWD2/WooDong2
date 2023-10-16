@@ -20,8 +20,8 @@ data class ChatResponse(
 )
 
 data class MessageResponse(
-    val id: String?,
-    val message: String?,
-    val timestamp: String?,
+    @SerializedName("id") val id: String?,
+    @SerializedName("message") val message: String?,
+    @SerializedName("timestamp") val timestamp: String?,
     @SerializedName("senderId") val senderId: String?,
 )
