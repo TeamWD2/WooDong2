@@ -40,7 +40,7 @@ class GroupFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
-        viewModel.getGroupItem()
+//        viewModel.getGroupItem()
     }
 
     private fun initViewModel() = with(viewModel) {
