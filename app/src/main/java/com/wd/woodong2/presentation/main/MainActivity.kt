@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         mainToolbarLocation.setOnClickListener {
             homeMapLauncher.launch(
-                HomeMapActivity.homeMapActivityNewIntent(
+                HomeMapActivity.newIntent(
                     this@MainActivity
                 )
             )

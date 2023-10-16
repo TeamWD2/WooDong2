@@ -26,6 +26,11 @@ class HomeFragment : Fragment() {
             HomeViewModelFactory(requireContext())
         )[HomeViewModel::class.java]
     }
+//    by viewModels {
+//        HomeViewModelFactory(requireContext())
+//    }
+
+
 
     private val listAdapter by lazy {
         HomeListAdapter(requireContext(),
