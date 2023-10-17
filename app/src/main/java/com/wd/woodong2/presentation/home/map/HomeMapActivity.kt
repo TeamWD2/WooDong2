@@ -2,6 +2,7 @@ package com.wd.woodong2.presentation.home.map
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
@@ -14,8 +15,10 @@ import android.widget.Toast
 import android.widget.Toast.makeText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import coil.load
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
@@ -33,6 +36,7 @@ import java.util.Locale
 class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
+
         //private lateinit var HomeMapItem: HomeItem
         fun newIntent(context: Context?)=//, homeItem: HomeItem) =
             Intent(context, HomeMapActivity::class.java).apply {
@@ -42,8 +46,8 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
-    private var firstLocation : String? =null
-    private var secondLocation : String? =null
+    private var firstLocation : String? ="Unknown Location"
+    private var secondLocation : String? ="Unknown Location"
 
     private lateinit var binding : HomeMapActivityBinding
     private lateinit var naverMap: NaverMap
@@ -59,16 +63,46 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var check : String? = null
     private var reverseCheck : LatLng? = null
 
-    //    private lateinit var fusedLocationClient: FusedLocationProviderClient         // 사용자 실시간 위치 반영때 사용됨
+    // 임의로 위치 설정 초기화
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
+
+
+    // 사용자 실시간 위치 반영때 사용됨
+    //    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val homeMapSearchLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-//            if(result.resultCode == Acitivty.RESULT_OK){
-//
-//            }
+            if(result.resultCode == Activity.RESULT_OK){
+                var receivedData = result.data!!.getStringExtra("Address")
+                getLocationFromAddress(this, receivedData!!)
+                Log.d("itemSet", receivedData.toString())
+
+                // 카메라 이동 설정
+                naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
+                marker(latitude, longitude)
+
+                receivedData = extractLocationInfo(receivedData)
+                Log.d("itemSet", receivedData.toString())
+                // 버튼 설정
+                if(binding.homeMapFirstBtnTvLocation.text.toString().isEmpty()){
+                    firstLocation = receivedData
+                    binding.homeMapFirstBtnTvLocation.text = receivedData
+                    binding.homeMapFirstBtnIvLocation.load(R.drawable.home_map_btn_ic_close){ size(24, 24) }
+                    (binding.homeMapFirstBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0.99f
+                }
+                else{
+                    secondLocation = receivedData
+                    binding.homeMapSecondBtnTvLocation.text = receivedData
+                    binding.homeMapSecondBtnIvLocation.load(R.drawable.home_map_btn_ic_close){ size(24, 24) }
+                    (binding.homeMapSecondBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0.99f
+                }
+            }
+            //예외 처리
+            else{
+
+            }
         }
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +124,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-
     private fun initHomeMapView(){
 
         binding.homeMapClose.setOnClickListener{
@@ -101,12 +134,67 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         }
 
-        binding.homeMapSecondBtn.setOnClickListener{
-            homeMapSearchLauncher.launch(
-                HomeMapSearchActivity.newIntent(this@HomeMapActivity)
-            )
+        binding.homeMapFirstBtn.setOnClickListener{
+            Log.d("locationFirst", firstLocation!!)
+            if(binding.homeMapFirstBtnTvLocation.text.toString().isEmpty()){
+                homeMapSearchLauncher.launch(
+                    HomeMapSearchActivity.newIntent(this@HomeMapActivity)
+                )
+            }
+            else{
+                firstLocation = binding.homeMapFirstBtnTvLocation.text.toString()
+                getLocationFromAddress(this, firstLocation!!)
+                naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
+                marker(latitude, longitude)
+            }
         }
 
+        binding.homeMapFirstBtnIvLocation.setOnClickListener{
+            if(binding.homeMapFirstBtnTvLocation.text.toString().isEmpty()){
+                homeMapSearchLauncher.launch(
+                    HomeMapSearchActivity.newIntent(this@HomeMapActivity)
+                )
+            }
+            else{
+                if(binding.homeMapSecondBtnTvLocation.text.toString().isNotEmpty()){
+                    binding.homeMapFirstBtnTvLocation.text = binding.homeMapSecondBtnTvLocation.text.toString()
+                    secondLocation = ""
+                    binding.homeMapSecondBtnTvLocation.text = ""
+                    binding.homeMapSecondBtnIvLocation.load(R.drawable.home_map_btn_ic_add) { size(24, 24) }
+                    (binding.homeMapSecondBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0f
+
+                }
+            }
+        }
+
+        binding.homeMapSecondBtn.setOnClickListener{
+            Log.d("locationSecond", secondLocation!!)
+            if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
+                homeMapSearchLauncher.launch(
+                    HomeMapSearchActivity.newIntent(this@HomeMapActivity)
+                )
+            }
+            else{
+                secondLocation = binding.homeMapSecondBtnTvLocation.text.toString()
+                getLocationFromAddress(this, secondLocation!!)
+                naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
+                marker(latitude, longitude)
+            }
+        }
+
+        binding.homeMapSecondBtnIvLocation.setOnClickListener{
+            if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
+                homeMapSearchLauncher.launch(
+                    HomeMapSearchActivity.newIntent(this@HomeMapActivity)
+                )
+            }
+            else{
+                secondLocation = ""
+                binding.homeMapSecondBtnTvLocation.text = ""
+                binding.homeMapSecondBtnIvLocation.load(R.drawable.home_map_btn_ic_add){ size(24, 24) }
+                (binding.homeMapSecondBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0f
+            }
+        }
         //NAVER 지도 API 호출 및 ID 지정
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NaverCloudPlatformClient(clientId)
@@ -148,52 +236,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
-
-        // 임의로 위치 설정 초기화
-        var latitude: Double //= 37.123456
-        var longitude: Double //= 127.654321
-
-        //현재 위치 초기화
-        naverMap.locationSource = locationSource
-        naverMap.uiSettings.isLocationButtonEnabled = true
-
-        //위치 추적
-        //naverMap.locationTrackingMode = LocationTrackingMode.Follow
-
-        //특정 위치로 이동
-        val cameraUpdate = CameraUpdate.scrollAndZoomTo(LatLng(37.5666102, 126.9783881), 15.0)
-
-        //위치 변경 확인
-        naverMap.addOnLocationChangeListener { location ->
-
-            //위치 변경
-            latitude = location.latitude
-            longitude = location.longitude
-
-            makeText(this, "${latitude}, $longitude",
-                Toast.LENGTH_SHORT).show()
-            Log.d(TAG, "${latitude}, $longitude")
-
-        }
-        binding.homeMapFirstBtn.setOnClickListener{
-
-            check = getAddressFromLocation(naverMap.cameraPosition.target.latitude,
-                naverMap.cameraPosition.target.longitude)
-            makeText(this, "${check}, $check",
-                Toast.LENGTH_SHORT).show()
-
-            reverseCheck = getLocationFromAddress(this, "군자동")//check!!)
-            makeText(this, "${reverseCheck}, $reverseCheck",
-                Toast.LENGTH_SHORT).show()
-
-        }
-
-
-        naverMap.setOnMapClickListener { point, coord ->
-            marker(coord.latitude, coord.longitude)
-        }
-
-
     }
     private fun marker(latitude: Double, longitude: Double) {
         marker.position = LatLng(latitude, longitude)
@@ -225,8 +267,8 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             val addresses: MutableList<Address>? = geocoder.getFromLocationName(addressStr, 1)
 
             if (addresses!!.isNotEmpty()) {
-                val latitude = addresses[0].latitude
-                val longitude = addresses[0].longitude
+                latitude = addresses[0].latitude
+                longitude = addresses[0].longitude
                 return LatLng(latitude, longitude)
             } else {
                 return null
@@ -235,5 +277,16 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             it.printStackTrace()
             null
         }
+    }
+
+    // 동, 읍, 면 추출하기
+    private fun extractLocationInfo(address: String): String {
+        val parts = address.split(" ")
+        for (part in parts) {
+            if (part.contains("동") || part.contains("읍") || part.contains("면")) {
+                return part
+            }
+        }
+        return ""
     }
 }
