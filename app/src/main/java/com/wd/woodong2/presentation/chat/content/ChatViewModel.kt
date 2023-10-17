@@ -30,25 +30,25 @@ class ChatViewModel(
         getUserItem()
     }
 
-    private fun getChatItem() = viewModelScope.launch {
-        runCatching {
-            chatItem(user.chatIds.orEmpty()) { items ->
-                val chatItemList = items?.chatItems?.map {
-                    ChatItem.GroupChatItem(
-                        id = it.id,
-                        title = it.id,
-                        imgProfile = it.imgProfile,
-                        lastMessage = it.lastMessage,
-                        location = it.location,
-                        timeStamp = it.timestamp,
-                    )
-                }.orEmpty()
-                _chatList.postValue(chatItemList.toMutableList())
-            }
-        }.onFailure {
-            Log.e("sinw", it.message.toString())
-        }
-    }
+//    private fun getChatItem() = viewModelScope.launch {
+//        runCatching {
+//            chatItem(user.chatIds.orEmpty()) { items ->
+//                val chatItemList = items?.chatItems?.map {
+//                    ChatItem.GroupChatItem(
+//                        id = it.id,
+//                        title = it.id,
+//                        imgProfile = it.imgProfile,
+//                        lastMessage = it.lastMessage,
+//                        location = it.location,
+//                        timeStamp = it.timestamp,
+//                    )
+//                }.orEmpty()
+//                _chatList.postValue(chatItemList.toMutableList())
+//            }
+//        }.onFailure {
+//            Log.e("sinw", it.message.toString())
+//        }
+//    }
 
     private fun getUserItem() = viewModelScope.launch {
         // userId로 채팅방 찾기

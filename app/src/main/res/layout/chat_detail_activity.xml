@@ -70,7 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraint_product"
-        tools:listitem="@layout/chat_detail_item" />
+        tools:listitem="@layout/chat_detail_opponent_item" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_add_chat"

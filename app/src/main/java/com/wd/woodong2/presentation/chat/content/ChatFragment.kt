@@ -1,7 +1,5 @@
 package com.wd.woodong2.presentation.chat.content
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,9 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.database.FirebaseDatabase
-import com.wd.woodong2.data.repository.ChatRepositoryImpl
-import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.databinding.ChatFragmentBinding
 import com.wd.woodong2.presentation.chat.detail.ChatDetailActivity
 
@@ -21,6 +16,9 @@ class ChatFragment : Fragment() {
     companion object {
         fun newInstance() = ChatFragment()
     }
+
+    // User Test
+    val userId = "user1"
 
     private var _binding: ChatFragmentBinding? = null
     private val binding get() = _binding!!
@@ -41,7 +39,8 @@ class ChatFragment : Fragment() {
                 startActivity(
                     ChatDetailActivity.newIntentForDetail(
                         requireContext(),
-                        item
+                        item,
+                        userId
                     )
                 )
             }

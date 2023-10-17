@@ -13,20 +13,26 @@ import com.wd.woodong2.presentation.chat.content.ChatItem
 class ChatDetailActivity : AppCompatActivity() {
     companion object {
         const val CHAT_ITEM = "chat_item"
-        fun newIntentForDetail(context: Context, item: ChatItem): Intent =
+        const val USER_ID = "user_id"
+
+        fun newIntentForDetail(context: Context, item: ChatItem, userId: String): Intent =
             Intent(context, ChatDetailActivity::class.java).apply {
                 putExtra(CHAT_ITEM, item)
+                putExtra(USER_ID, userId)
             }
     }
+
+    // Test
+    var receivedUserId = ""
 
     private var _binding: ChatDetailActivityBinding? = null
     private val binding get() = _binding!!
 
-    private var chatKey: String? = ""
+    var chatKey: String = ""
 
     private val chatDetailViewModel: ChatDetailViewModel by viewModels {
         // 후에 null 처리
-        ChatDetailViewModelFactory(chatKey!!)
+        ChatDetailViewModelFactory(chatKey, receivedUserId)
     }
 
     private val chatDetailItemListAdapter by lazy {
@@ -49,11 +55,11 @@ class ChatDetailActivity : AppCompatActivity() {
             intent.getParcelableExtra(CHAT_ITEM)
         }
 
+        // Test
+        receivedUserId = intent.getStringExtra(USER_ID) ?: ""
+
         if (receivedChatItem != null) {
-            chatKey = when (receivedChatItem) {
-                is ChatItem.GroupChatItem -> receivedChatItem.id
-                is ChatItem.PrivateChatItem -> receivedChatItem.id
-            }
+            chatKey = receivedChatItem.id ?: ""
         }
 
         recyclerViewChat.apply {

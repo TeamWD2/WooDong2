@@ -5,8 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 sealed class ChatItem : Parcelable {
+    abstract val id: String?
+
     data class GroupChatItem(
-        val id: String?,
+        override val id: String?,
         val title: String?,
         val imgProfile: String?,
         val location: String?,
@@ -15,7 +17,7 @@ sealed class ChatItem : Parcelable {
     ) : ChatItem()
 
     data class PrivateChatItem(
-        val id: String?,
+        override val id: String?,
         val userName: String?,
         val imgProfile: String?,
         val location: String?,
