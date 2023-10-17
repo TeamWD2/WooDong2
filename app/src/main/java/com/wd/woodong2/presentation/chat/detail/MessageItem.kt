@@ -5,4 +5,5 @@ data class MessageItem(
     val message: String?,
     val senderId: String?,
     val timestamp: String?,
+    val isMyMessage: Boolean,
 )
