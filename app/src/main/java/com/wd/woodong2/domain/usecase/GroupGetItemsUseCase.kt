@@ -6,9 +6,7 @@ import com.wd.woodong2.domain.repository.GroupRepository
 class GroupGetItemsUseCase(
     private val repository: GroupRepository
 ) {
-    operator fun invoke(entityResult: (GroupItemsEntity?) -> Unit) {
-        return repository.getGroupItems { result ->
-            entityResult(result)
-        }
+    suspend operator fun invoke(): GroupItemsEntity {
+        return repository.getGroupItems()
     }
 }

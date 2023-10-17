@@ -22,32 +22,33 @@ class ChatViewModel(
     val chatList: LiveData<MutableList<ChatItem>>
         get() = _chatList
 
-    // test
-    val userId = "user2"
+    // User test
+    val userId = "user1"
     lateinit var user: UserItem
 
     init {
         getUserItem()
     }
 
-    private fun getChatItem() = viewModelScope.launch {
-        runCatching {
-            chatItem(user.chatIds.orEmpty()) { items ->
-                val chatItemList = items?.chatItems?.map {
-                    ChatItem.GroupChatItem(
-                        title = it.id,
-                        imgProfile = it.imgProfile,
-                        lastMassage = it.lastMassage,
-                        location = it.location,
-                        timeStamp = it.timestamp,
-                    )
-                }.orEmpty()
-                _chatList.postValue(chatItemList.toMutableList())
-            }
-        }.onFailure {
-            Log.e("sinw", it.message.toString())
-        }
-    }
+//    private fun getChatItem() = viewModelScope.launch {
+//        runCatching {
+//            chatItem(user.chatIds.orEmpty()) { items ->
+//                val chatItemList = items?.chatItems?.map {
+//                    ChatItem.GroupChatItem(
+//                        id = it.id,
+//                        title = it.id,
+//                        imgProfile = it.imgProfile,
+//                        lastMessage = it.lastMessage,
+//                        location = it.location,
+//                        timeStamp = it.timestamp,
+//                    )
+//                }.orEmpty()
+//                _chatList.postValue(chatItemList.toMutableList())
+//            }
+//        }.onFailure {
+//            Log.e("sinw", it.message.toString())
+//        }
+//    }
 
     private fun getUserItem() = viewModelScope.launch {
         // userId로 채팅방 찾기
@@ -70,9 +71,10 @@ class ChatViewModel(
                     chatItem(user.chatIds.orEmpty()) { items ->
                         val chatItemList = items?.chatItems?.map {
                             ChatItem.GroupChatItem(
+                                id = it.id,
                                 title = it.id,
                                 imgProfile = it.imgProfile,
-                                lastMassage = it.lastMassage,
+                                lastMessage = it.lastMessage,
                                 location = it.location,
                                 timeStamp = it.timestamp,
                             )
