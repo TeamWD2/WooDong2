@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface MessageRepository {
     suspend fun getMessageItems(chatId: String): Flow<MessageItemsEntity?>
+    suspend fun addMessageItem(chatId: String, userId: String, message: String)
 }

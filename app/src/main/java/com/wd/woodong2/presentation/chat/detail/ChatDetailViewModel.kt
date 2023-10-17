@@ -9,10 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
 import com.wd.woodong2.data.repository.MessageRepositoryImpl
 import com.wd.woodong2.domain.usecase.MessageGetItemsUseCase
+import com.wd.woodong2.domain.usecase.MessageSendItemsUseCase
 import kotlinx.coroutines.launch
 
 class ChatDetailViewModel(
-    private val messageItem: MessageGetItemsUseCase,
+    private val messageGetItem: MessageGetItemsUseCase,
+    private val messageSendItem: MessageSendItemsUseCase,
     private val chatKey: String,
     private val userId: String
 ) : ViewModel(
@@ -28,7 +30,7 @@ class ChatDetailViewModel(
     private fun getMessageItem() = viewModelScope.launch {
         runCatching {
 //            리스너 없는 코드
-            messageItem(chatKey).collect { items ->
+            messageGetItem(chatKey).collect { items ->
                 val messageItemList = items?.messageItems?.map { messageResponse ->
                     MessageItem(
                         id = messageResponse.id,
@@ -37,9 +39,18 @@ class ChatDetailViewModel(
                         timestamp = messageResponse.timestamp,
                         isMyMessage = messageResponse.senderId == userId
                     )
-                } ?: emptyList()
+                }?.sortedBy { it.timestamp } ?: emptyList()
                 _massageList.postValue(messageItemList.toMutableList())
             }
+        }.onFailure {
+            Log.e("danny", it.message.toString())
+        }
+    }
+
+    fun sendMessage(message: String) = viewModelScope.launch {
+        runCatching {
+            messageSendItem(chatKey, userId, message)
+            _massageList.postValue(_massageList.value.orEmpty().toMutableList())
         }.onFailure {
             Log.e("danny", it.message.toString())
         }
@@ -59,6 +70,7 @@ class ChatDetailViewModelFactory(
         if (modelClass.isAssignableFrom(ChatDetailViewModel::class.java)) {
             return ChatDetailViewModel(
                 MessageGetItemsUseCase(MessageRepositoryImpl(chatDatabaseReference)),
+                MessageSendItemsUseCase(MessageRepositoryImpl(chatDatabaseReference)),
                 chatKey,
                 userId
             ) as T
