@@ -59,10 +59,7 @@ class ChatDetailActivity : AppCompatActivity() {
         receivedUserId = intent.getStringExtra(USER_ID) ?: ""
 
         if (receivedChatItem != null) {
-            chatKey = when (receivedChatItem) {
-                is ChatItem.GroupChatItem -> receivedChatItem.id ?: ""
-                is ChatItem.PrivateChatItem -> receivedChatItem.id ?: ""
-            }
+            chatKey = receivedChatItem.id ?: ""
         }
 
         recyclerViewChat.apply {
