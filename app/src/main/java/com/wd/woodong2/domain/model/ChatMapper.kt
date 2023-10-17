@@ -16,5 +16,5 @@ fun ChatResponse.toEntity() = ChatEntity(
     location = location,
     timestamp = timestamp,
     lastMessage = lastMassage,
-    message = message?.map { it.toMessage() } ?: emptyList(),
+    message = message.values.toList().map { it.toMessage() }
 )

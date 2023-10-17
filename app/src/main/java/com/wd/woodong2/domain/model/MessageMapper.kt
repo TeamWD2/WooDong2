@@ -4,7 +4,7 @@ import com.wd.woodong2.data.model.MessageItemsResponse
 import com.wd.woodong2.data.model.MessageResponse
 
 fun MessageItemsResponse.toEntity() = MessageItemsEntity(
-    messageItems = messageItems?.map {
+    messageItems = messageItems?.values?.map {
         it.toEntity()
     }
 )
