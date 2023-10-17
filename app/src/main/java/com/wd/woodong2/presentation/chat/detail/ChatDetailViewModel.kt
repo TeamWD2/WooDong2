@@ -17,6 +17,7 @@ class ChatDetailViewModel(
     private val messageItem: MessageGetItemsUseCase,
     private val messageItemTest: MessageGetItemsUseCaseTest,
     private val chatKey: String,
+    private val userId: String
 ) : ViewModel(
 ) {
     private val _massageList = MutableLiveData<MutableList<MessageItem>>()
@@ -51,9 +52,11 @@ class ChatDetailViewModel(
                     id = messageResponse.id,
                     message = messageResponse.message,
                     senderId = messageResponse.senderId,
-                    timestamp = messageResponse.timestamp
+                    timestamp = messageResponse.timestamp,
+                    isMyMessage = messageResponse.senderId == userId
                 )
             } ?: emptyList()
+
             _massageList.postValue(messageItemList.toMutableList())
 
         }.onFailure {
@@ -64,18 +67,23 @@ class ChatDetailViewModel(
 
 
 class ChatDetailViewModelFactory(
-    private val chatKey: String
+    private val chatKey: String,
+    private val userId: String
 ) : ViewModelProvider.Factory {
 
     private val chatDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("chats")
     }
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatDetailViewModel::class.java)) {
+
+
             return ChatDetailViewModel(
                 MessageGetItemsUseCase(MessageRepositoryImpl(chatDatabaseReference)),
                 MessageGetItemsUseCaseTest(MessageRepositoryImplTest(chatDatabaseReference)),
-                chatKey
+                chatKey,
+                userId
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
