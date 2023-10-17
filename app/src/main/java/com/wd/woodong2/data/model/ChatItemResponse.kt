@@ -16,5 +16,5 @@ data class ChatResponse(
     @SerializedName("location") val location: String?,
     @SerializedName("timestamp") val timestamp: String?,
     @SerializedName("lastMassage") val lastMassage: String?,
-    @SerializedName("message") val message: List<Message>?,
+    @SerializedName("message") val message: List<MessageResponse>?,
 )

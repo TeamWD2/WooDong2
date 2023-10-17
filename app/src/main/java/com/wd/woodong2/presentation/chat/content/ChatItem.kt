@@ -6,18 +6,20 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 sealed class ChatItem : Parcelable {
     data class GroupChatItem(
+        val id: String?,
         val title: String?,
         val imgProfile: String?,
         val location: String?,
         val timeStamp: String?,
-        val lastMassage: String?,
+        val lastMessage: String?,
     ) : ChatItem()
 
     data class PrivateChatItem(
+        val id: String?,
         val userName: String?,
         val imgProfile: String?,
         val location: String?,
         val timeStamp: String?,
-        val lastMassage: String?,
+        val lastMessage: String?,
     ) : ChatItem()
 }

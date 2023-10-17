@@ -22,8 +22,8 @@ class ChatViewModel(
     val chatList: LiveData<MutableList<ChatItem>>
         get() = _chatList
 
-    // test
-    val userId = "user2"
+    // User test
+    val userId = "user1"
     lateinit var user: UserItem
 
     init {
@@ -35,9 +35,10 @@ class ChatViewModel(
             chatItem(user.chatIds.orEmpty()) { items ->
                 val chatItemList = items?.chatItems?.map {
                     ChatItem.GroupChatItem(
+                        id = it.id,
                         title = it.id,
                         imgProfile = it.imgProfile,
-                        lastMassage = it.lastMassage,
+                        lastMessage = it.lastMessage,
                         location = it.location,
                         timeStamp = it.timestamp,
                     )
@@ -70,9 +71,10 @@ class ChatViewModel(
                     chatItem(user.chatIds.orEmpty()) { items ->
                         val chatItemList = items?.chatItems?.map {
                             ChatItem.GroupChatItem(
+                                id = it.id,
                                 title = it.id,
                                 imgProfile = it.imgProfile,
-                                lastMassage = it.lastMassage,
+                                lastMessage = it.lastMessage,
                                 location = it.location,
                                 timeStamp = it.timestamp,
                             )

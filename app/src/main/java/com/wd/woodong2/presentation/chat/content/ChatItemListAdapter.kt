@@ -17,7 +17,7 @@ class ChatItemListAdapter(
             oldItem: ChatItem,
             newItem: ChatItem
         ): Boolean = if (oldItem is ChatItem.GroupChatItem && newItem is ChatItem.GroupChatItem) {
-            oldItem.title == newItem.title
+            oldItem.id == newItem.id
         } else {
             oldItem == newItem
         }
@@ -89,7 +89,7 @@ class ChatItemListAdapter(
         override fun onBind(item: ChatItem) = with(binding) {
             if (item is ChatItem.GroupChatItem) {
                 txtName.text = item.title
-                txtDescription.text = item.lastMassage
+                txtDescription.text = item.lastMessage
                 txtLocale.text = item.location
                 txtDate.text = item.timeStamp
             }
@@ -107,7 +107,7 @@ class ChatItemListAdapter(
         override fun onBind(item: ChatItem) = with(binding) {
             if (item is ChatItem.PrivateChatItem) {
                 txtName.text = item.userName
-                txtDescription.text = item.lastMassage
+                txtDescription.text = item.lastMessage
                 txtLocale.text = item.location
                 txtDate.text = item.timeStamp
             }
