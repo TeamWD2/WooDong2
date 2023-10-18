@@ -16,10 +16,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class MessageRepositoryImpl(
     private val databaseReference: DatabaseReference
 ) : MessageRepository {
+
+    /*
+    * databaseReference => chats
+    */
     override suspend fun getMessageItems(chatId: String): Flow<MessageItemsEntity?> = callbackFlow {
         val listener = databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -54,19 +59,21 @@ class MessageRepositoryImpl(
 
     override suspend fun addMessageItem(chatId: String, userId: String, message: String) {
 
+        val messageRef = databaseReference.child(chatId).child("message").push()
+
         val currentTimeMillis = System.currentTimeMillis()
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA)
         val timestampString = sdf.format(Date(currentTimeMillis))
 
+
         val messageData = Message(
-            "Test",
+            messageRef.key,
             message,
             timestampString,
             userId,
         )
 
-        val chatRef = databaseReference.child(chatId)
-        chatRef.child("message").push().setValue(messageData)
+        messageRef.setValue(messageData)
     }
 }
 
