@@ -24,11 +24,8 @@ import com.wd.woodong2.databinding.GroupAddUnknownItemBinding
 import java.util.regex.Pattern
 
 class GroupAddListAdapter(
-    private val onChipGroupChecked: (Int, String) -> Unit,
-    private val onEditTextChanged: (Int, String) -> Unit,
-    private val onPasswordChanged: (Int, String) -> Unit,
+    private val onCreateGroupAdd: (Int, String) -> Unit,
     private val onCheckBoxChecked: (Int, GroupAddGetItem.Password) -> Unit,
-    private val onImageClicked: (Int) -> Unit
 ) : ListAdapter<GroupAddGetItem, GroupAddListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<GroupAddGetItem>() {
         override fun areItemsTheSame(
@@ -86,21 +83,21 @@ class GroupAddListAdapter(
                 GroupAddChipGroupItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 ),
-                onChipGroupChecked
+                onCreateGroupAdd
             )
 
             GroupAddItemViewType.EDITTEXT.ordinal -> EditTextViewHolder(
                 GroupAddEditTextItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 ),
-                onEditTextChanged
+                onCreateGroupAdd
             )
 
             GroupAddItemViewType.PASSWORD.ordinal -> PasswordViewHolder(
                 GroupAddPasswordItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 ),
-                onPasswordChanged,
+                onCreateGroupAdd,
                 onCheckBoxChecked
             )
 
@@ -108,7 +105,7 @@ class GroupAddListAdapter(
                 GroupAddImageItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 ),
-                onImageClicked
+                onCreateGroupAdd
             )
 
             GroupAddItemViewType.DIVIDER.ordinal -> DividerViewHolder(
@@ -148,7 +145,7 @@ class GroupAddListAdapter(
 
     class ChipGroupViewHolder(
         private val binding: GroupAddChipGroupItemBinding,
-        private val onChipGroupChecked: (Int, String) -> Unit
+        private val onCreateGroupAdd: (Int, String) -> Unit
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupAddGetItem) = with(binding) {
             if (item is GroupAddGetItem.ChipGroup) {
@@ -158,7 +155,10 @@ class GroupAddListAdapter(
                         text = chipButton
                         isCheckable = true
                         setOnClickListener {
-                            onChipGroupChecked(adapterPosition, text.toString())
+                            onCreateGroupAdd(
+                                adapterPosition,
+                                text.toString()
+                            )
                         }
                     }
                     chipGroup.addView(chip)
@@ -169,7 +169,7 @@ class GroupAddListAdapter(
 
     class EditTextViewHolder(
         private val binding: GroupAddEditTextItemBinding,
-        private val onEditTextChanged: (Int, String) -> Unit
+        private val onCreateGroupAdd: (Int, String) -> Unit
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupAddGetItem) = with(binding) {
             if (item is GroupAddGetItem.EditText) {
@@ -179,7 +179,7 @@ class GroupAddListAdapter(
                     hint = item.hint
                     setOnFocusChangeListener { _, hasFocus ->
                         if (!hasFocus) { //focus가 다른 뷰로 이동될 때
-                            onEditTextChanged(
+                            onCreateGroupAdd(
                                 adapterPosition,
                                 edtText.text.toString()
                             )
@@ -192,7 +192,7 @@ class GroupAddListAdapter(
 
     class PasswordViewHolder(
         private val binding: GroupAddPasswordItemBinding,
-        private val onPasswordChanged: (Int, String) -> Unit,
+        private val onCreateGroupAdd: (Int, String) -> Unit,
         private val onCheckBoxChecked: (Int, GroupAddGetItem.Password) -> Unit
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupAddGetItem) = with(binding) {
@@ -219,7 +219,7 @@ class GroupAddListAdapter(
                                     txtPwValid.apply {
                                         setText(R.string.group_add_password_valid)
                                         setTextColor(Color.GREEN)
-                                        onPasswordChanged(
+                                        onCreateGroupAdd(
                                             adapterPosition,
                                             edtPassword.text.toString()
                                         )
@@ -238,6 +238,10 @@ class GroupAddListAdapter(
                         hint = item.passwordHint
                         isEnabled = false
                         setBackgroundResource(R.drawable.group_border_box_disabled)
+                        onCreateGroupAdd(
+                            adapterPosition,
+                            "[WD2] No Password"
+                        )
                     }
                     txtPwValid.text = ""
                 }
@@ -259,7 +263,7 @@ class GroupAddListAdapter(
 
     class ImageViewHolder(
         private val binding: GroupAddImageItemBinding,
-        private val onImageClicked: (Int) -> Unit
+        private val onCreateGroupAdd: (Int, String) -> Unit
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupAddGetItem) = with(binding) {
             if (item is GroupAddGetItem.Image) {
@@ -267,8 +271,9 @@ class GroupAddListAdapter(
                     error(R.drawable.group_ic_no_image)
                 }
                 imgImage.setOnClickListener {
-                    onImageClicked(
-                        adapterPosition
+                    onCreateGroupAdd(
+                        adapterPosition,
+                        ""
                     )
                 }
             }
