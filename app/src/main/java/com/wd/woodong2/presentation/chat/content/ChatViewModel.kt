@@ -12,9 +12,6 @@ import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.usecase.ChatGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class ChatViewModel(
     private val chatItem: ChatGetItemsUseCase,
@@ -36,7 +33,7 @@ class ChatViewModel(
     )
 
     init {
-        getChatItem()
+        getChatItems()
     }
 
     private fun getUserItem() = viewModelScope.launch {
@@ -59,7 +56,7 @@ class ChatViewModel(
         }
     }
 
-    private fun getChatItem() = viewModelScope.launch {
+    private fun getChatItems() = viewModelScope.launch {
         runCatching {
             chatItem(user.chatIds.orEmpty()).collect { items ->
                 val chatItemList = items?.chatItems?.map {
@@ -69,7 +66,7 @@ class ChatViewModel(
                         imgProfile = it.imgProfile,
                         lastMessage = it.lastMessage,
                         location = it.location,
-                        timeStamp = formatTimestamp(it.timestamp ?: System.currentTimeMillis()),
+                        timeStamp = it.timestamp,
                     )
                 }.orEmpty()
                 _chatList.postValue(chatItemList.toMutableList())
@@ -79,31 +76,27 @@ class ChatViewModel(
         }
     }
 
-    fun formatTimestamp(timestamp: Long): String {
-        val currentTimeMillis = System.currentTimeMillis()
-
-        val currentTime = Date(currentTimeMillis)
-        val messageTime = Date(timestamp)
-
-        val diff = currentTime.time - messageTime.time
-        val minute = 60 * 1000
-        val hour = minute * 60
-        val day = hour * 24
-        val year = day * 365
-
-        return when {
-            diff < minute -> "방금 전"
-            diff < 2 * minute -> "1분 전"
-            diff < hour -> "${diff / minute}분 전"
-            diff < 2 * hour -> "1시간 전"
-            diff < day -> "${diff / hour}시간 전"
-            diff < 2 * day -> "어제"
-            diff < year -> SimpleDateFormat("MM월 dd일", Locale.KOREA).format(messageTime)
-            else -> SimpleDateFormat("yyyy.MM.dd", Locale.KOREA).format(messageTime)
+    fun reloadChatItems() = viewModelScope.launch {
+        _chatList.value = mutableListOf()
+        runCatching {
+            chatItem(user.chatIds.orEmpty()).collect { items ->
+                val chatItemList = items?.chatItems?.map {
+                    ChatItem.GroupChatItem(
+                        id = it.id,
+                        title = it.id,
+                        imgProfile = it.imgProfile,
+                        lastMessage = it.lastMessage,
+                        location = it.location,
+                        timeStamp = it.timestamp,
+                    )
+                }.orEmpty()
+                _chatList.postValue(chatItemList.toMutableList())
+            }
+        }.onFailure {
+            Log.e("danny", it.message.toString())
         }
     }
 }
-
 
 class ChatViewModelFactory() : ViewModelProvider.Factory {
 

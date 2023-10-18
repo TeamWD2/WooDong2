@@ -78,4 +78,9 @@ class ChatFragment : Fragment() {
             chatItemListAdapter.submitList(itemList.toMutableList())
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        chatViewModel.reloadChatItems()
+    }
 }
