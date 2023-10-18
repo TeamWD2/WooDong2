@@ -8,6 +8,6 @@ data class MessageItemsEntity(
 data class MessageEntity(
     val id: String?,
     val senderId: String?,
-    val timestamp: String?,
+    val timestamp: Long?,
     val message: String?,
 )
