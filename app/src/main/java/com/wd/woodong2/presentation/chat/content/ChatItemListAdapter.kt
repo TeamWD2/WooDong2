@@ -89,7 +89,7 @@ class ChatItemListAdapter(
         override fun onBind(item: ChatItem) = with(binding) {
             if (item is ChatItem.GroupChatItem) {
                 txtName.text = item.title
-                txtDescription.text = item.lastMessage
+                txtLastMassage.text = item.lastMessage
                 txtLocale.text = item.location
                 txtDate.text = item.timeStamp
             }
@@ -107,7 +107,7 @@ class ChatItemListAdapter(
         override fun onBind(item: ChatItem) = with(binding) {
             if (item is ChatItem.PrivateChatItem) {
                 txtName.text = item.userName
-                txtDescription.text = item.lastMessage
+                txtLastMassage.text = item.lastMessage
                 txtLocale.text = item.location
                 txtDate.text = item.timeStamp
             }
