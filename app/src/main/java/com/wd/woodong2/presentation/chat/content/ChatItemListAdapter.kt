@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.wd.woodong2.databinding.ChatListItemBinding
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ChatItemListAdapter(
     private val onClick: (ChatItem) -> Unit
@@ -79,9 +82,33 @@ class ChatItemListAdapter(
         holder.onBind(getItem(position))
     }
 
+    private fun formatTimestamp(timestamp: Long): String {
+        val currentTimeMillis = System.currentTimeMillis()
+
+        val currentTime = Date(currentTimeMillis)
+        val messageTime = Date(timestamp)
+
+        val diff = currentTime.time - messageTime.time
+        val minute = 60 * 1000
+        val hour = minute * 60
+        val day = hour * 24
+        val year = day * 365
+
+        return when {
+            diff < minute -> "방금 전"
+            diff < 2 * minute -> "1분 전"
+            diff < hour -> "${diff / minute}분 전"
+            diff < 2 * hour -> "1시간 전"
+            diff < day -> "${diff / hour}시간 전"
+            diff < 2 * day -> "어제"
+            diff < year -> SimpleDateFormat("MM월 dd일", Locale.KOREA).format(messageTime)
+            else -> SimpleDateFormat("yyyy.MM.dd", Locale.KOREA).format(messageTime)
+        }
+    }
+
 
     // 뷰 홀더
-    class GroupChatViewHolder(
+    inner class GroupChatViewHolder(
         private val binding: ChatListItemBinding,
         private val onClick: (ChatItem) -> Unit
     ) : ViewHolder(binding.root) {
@@ -91,7 +118,7 @@ class ChatItemListAdapter(
                 txtName.text = item.title
                 txtLastMassage.text = item.lastMessage
                 txtLocale.text = item.location
-                txtDate.text = item.timeStamp
+                txtDate.text = formatTimestamp(item.timeStamp ?: System.currentTimeMillis())
             }
             itemView.setOnClickListener {
                 onClick(item)
@@ -99,7 +126,7 @@ class ChatItemListAdapter(
         }
     }
 
-    class PrivateChatViewHolder(
+    inner class PrivateChatViewHolder(
         private val binding: ChatListItemBinding,
         private val onClick: (ChatItem) -> Unit
     ) : ViewHolder(binding.root) {
@@ -109,7 +136,7 @@ class ChatItemListAdapter(
                 txtName.text = item.userName
                 txtLastMassage.text = item.lastMessage
                 txtLocale.text = item.location
-                txtDate.text = item.timeStamp
+                txtDate.text = formatTimestamp(item.timeStamp ?: System.currentTimeMillis())
             }
             itemView.setOnClickListener {
                 onClick(item)
