@@ -7,6 +7,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
 import com.wd.woodong2.data.model.ChatItemsResponse
 import com.wd.woodong2.data.model.ChatResponse
+import com.wd.woodong2.domain.model.ChatEntity
 import com.wd.woodong2.domain.model.ChatItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.ChatRepository
@@ -49,5 +50,27 @@ class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : Cha
                 databaseReference.removeEventListener(listener)
             }
         }
+
+    override suspend fun addChatItem(
+        senderId: String,
+        imgProfile: String,
+        location: String,
+    ) {
+        val currentTimeMillis = System.currentTimeMillis()
+
+        val chatRef = databaseReference.push()
+
+        val chatEntity = ChatEntity(
+            id = chatRef.key,
+            imgProfile = imgProfile,
+            senderId = senderId,
+            location = location,
+            timestamp = currentTimeMillis,
+            lastMessage = "",
+            message = emptyMap()
+        )
+
+        chatRef.setValue(chatEntity)
+    }
 }
 
