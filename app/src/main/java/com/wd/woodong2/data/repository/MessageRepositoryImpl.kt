@@ -14,9 +14,6 @@ import com.wd.woodong2.domain.repository.MessageRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class MessageRepositoryImpl(
     private val databaseReference: DatabaseReference
@@ -58,22 +55,21 @@ class MessageRepositoryImpl(
     }
 
     override suspend fun addMessageItem(chatId: String, userId: String, message: String) {
-
-        val messageRef = databaseReference.child(chatId).child("message").push()
+        val chatRef = databaseReference.child(chatId)
+        val messageRef = chatRef.child("message").push()
 
         val currentTimeMillis = System.currentTimeMillis()
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA)
-        val timestampString = sdf.format(Date(currentTimeMillis))
-
 
         val messageData = Message(
             messageRef.key,
             message,
-            timestampString,
-            userId,
+            currentTimeMillis,
+            userId
         )
 
         messageRef.setValue(messageData)
+        chatRef.child("lastMessage").setValue(message)
+        chatRef.child("timestamp").setValue(currentTimeMillis)
     }
 }
 
