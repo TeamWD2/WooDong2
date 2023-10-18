@@ -98,7 +98,7 @@ class ChatViewModel(
     }
 }
 
-class ChatViewModelFactory() : ViewModelProvider.Factory {
+class ChatViewModelFactory : ViewModelProvider.Factory {
 
     private val chatDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("chats")

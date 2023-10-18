@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.wd.woodong2.databinding.ChatListItemBinding
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -92,7 +93,12 @@ class ChatItemListAdapter(
         val minute = 60 * 1000
         val hour = minute * 60
         val day = hour * 24
-        val year = day * 365
+
+        val calendar = Calendar.getInstance()
+        calendar.time = messageTime
+        val messageYear = calendar.get(Calendar.YEAR)
+        calendar.time = Date(currentTimeMillis)
+        val currentYear = calendar.get(Calendar.YEAR)
 
         return when {
             diff < minute -> "방금 전"
@@ -101,7 +107,10 @@ class ChatItemListAdapter(
             diff < 2 * hour -> "1시간 전"
             diff < day -> "${diff / hour}시간 전"
             diff < 2 * day -> "어제"
-            diff < year -> SimpleDateFormat("MM월 dd일", Locale.KOREA).format(messageTime)
+            messageYear == currentYear -> SimpleDateFormat("MM월 dd일", Locale.KOREA).format(
+                messageTime
+            )
+
             else -> SimpleDateFormat("yyyy.MM.dd", Locale.KOREA).format(messageTime)
         }
     }

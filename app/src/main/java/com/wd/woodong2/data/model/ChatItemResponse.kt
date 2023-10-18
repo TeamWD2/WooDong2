@@ -1,7 +1,6 @@
 package com.wd.woodong2.data.model
 
 import com.google.gson.annotations.SerializedName
-import com.wd.woodong2.domain.model.Message
 
 data class ChatItemsResponse(
     val chatItems: List<ChatResponse>?
