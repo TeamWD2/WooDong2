@@ -13,7 +13,7 @@ data class ChatResponse(
     @SerializedName("imgProfile") val imgProfile: String?,
     @SerializedName("senderId") val senderId: String?,
     @SerializedName("location") val location: String?,
-    @SerializedName("timestamp") val timestamp: String?,
-    @SerializedName("lastMassage") val lastMassage: String?,
-    @SerializedName("message") val message: Map<String, MessageResponse>
+    @SerializedName("timestamp") val timestamp: Long?,
+    @SerializedName("lastMessage") val lastMessage: String?,
+    @SerializedName("message") val message: Map<String, MessageResponse>?,
 )

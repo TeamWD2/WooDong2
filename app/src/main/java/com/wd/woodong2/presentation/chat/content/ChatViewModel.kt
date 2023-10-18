@@ -12,6 +12,9 @@ import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.usecase.ChatGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ChatViewModel(
     private val chatItem: ChatGetItemsUseCase,
@@ -57,27 +60,6 @@ class ChatViewModel(
     }
 
     private fun getChatItem() = viewModelScope.launch {
-        // userId로 채팅방 찾기
-//        runCatching {
-//            runBlocking {
-//                userItem(userId) { items ->
-//                    val userItem = items?.userItems?.map {
-//                        UserItem(
-//                            id = it.id,
-//                            name = it.name,
-//                            imgProfile = it.imgProfile,
-//                            email = it.email,
-//                            chatIds = it.chatIds,
-//                        )
-//                    }.orEmpty()
-//                    user = userItem[0]
-//                    Log.d("danny", "User 받아오기 성공 : $user")
-//                }
-//            }
-//        }.onFailure {
-//            Log.e("danny", it.message.toString())
-//        }
-
         runCatching {
             chatItem(user.chatIds.orEmpty()).collect { items ->
                 val chatItemList = items?.chatItems?.map {
@@ -87,13 +69,37 @@ class ChatViewModel(
                         imgProfile = it.imgProfile,
                         lastMessage = it.lastMessage,
                         location = it.location,
-                        timeStamp = it.timestamp,
+                        timeStamp = formatTimestamp(it.timestamp ?: System.currentTimeMillis()),
                     )
                 }.orEmpty()
                 _chatList.postValue(chatItemList.toMutableList())
             }
         }.onFailure {
             Log.e("danny", it.message.toString())
+        }
+    }
+
+    fun formatTimestamp(timestamp: Long): String {
+        val currentTimeMillis = System.currentTimeMillis()
+
+        val currentTime = Date(currentTimeMillis)
+        val messageTime = Date(timestamp)
+
+        val diff = currentTime.time - messageTime.time
+        val minute = 60 * 1000
+        val hour = minute * 60
+        val day = hour * 24
+        val year = day * 365
+
+        return when {
+            diff < minute -> "방금 전"
+            diff < 2 * minute -> "1분 전"
+            diff < hour -> "${diff / minute}분 전"
+            diff < 2 * hour -> "1시간 전"
+            diff < day -> "${diff / hour}시간 전"
+            diff < 2 * day -> "어제"
+            diff < year -> SimpleDateFormat("MM월 dd일", Locale.KOREA).format(messageTime)
+            else -> SimpleDateFormat("yyyy.MM.dd", Locale.KOREA).format(messageTime)
         }
     }
 }
