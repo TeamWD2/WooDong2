@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.wd.woodong2.databinding.GroupFragmentBinding
 import com.wd.woodong2.presentation.group.add.GroupAddActivity
@@ -14,10 +15,13 @@ class GroupFragment : Fragment() {
     companion object {
         fun newInstance() = GroupFragment()
     }
-    private var _binding : GroupFragmentBinding? = null
+
+    private var _binding: GroupFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: GroupViewModel by viewModels { GroupViewModelFactory() }
+    private val viewModel: GroupViewModel by viewModels {
+        GroupViewModelFactory()
+    }
 
     private val groupListAdapter by lazy {
         GroupListAdapter(
@@ -34,6 +38,7 @@ class GroupFragment : Fragment() {
         _binding = GroupFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
@@ -56,9 +61,7 @@ class GroupFragment : Fragment() {
             groupListAdapter.submitList(it)
         }
         loadingState.observe(viewLifecycleOwner) { loadingState ->
-            if(!loadingState) {
-                binding.progressBar.visibility = View.GONE
-            }
+            binding.progressBar.isVisible = loadingState
         }
     }
 
