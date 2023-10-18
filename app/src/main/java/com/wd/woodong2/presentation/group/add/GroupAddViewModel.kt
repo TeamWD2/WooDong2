@@ -1,19 +1,20 @@
 package com.wd.woodong2.presentation.group.add
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class GroupAddViewModel : ViewModel() {
-    private val _groupAddList: MutableLiveData<List<GroupAddItem>> = MutableLiveData()
-    val groupAddList: LiveData<List<GroupAddItem>> get() = _groupAddList
+    private val _groupAddList: MutableLiveData<List<GroupAddGetItem>> = MutableLiveData()
+    val groupAddList: LiveData<List<GroupAddGetItem>> get() = _groupAddList
 
-    fun initGroupAddItem(groupAddItems: List<GroupAddItem>) {
-        _groupAddList.value = groupAddItems
+    fun initGroupAddItem(groupAddGetItems: List<GroupAddGetItem>) {
+        _groupAddList.value = groupAddGetItems
     }
 
-    fun updateGroupAddItem(position: Int, item: GroupAddItem.Password) {
-        if(position < 0) {
+    fun updatePasswordChecked(position: Int, item: GroupAddGetItem.Password) {
+        if (position < 0) {
             return
         }
         val currentList = _groupAddList.value.orEmpty().toMutableList()

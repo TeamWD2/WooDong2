@@ -1,5 +1,9 @@
 package com.wd.woodong2.presentation.group.add
 
+import android.graphics.Color
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,27 +21,27 @@ import com.wd.woodong2.databinding.GroupAddImageItemBinding
 import com.wd.woodong2.databinding.GroupAddPasswordItemBinding
 import com.wd.woodong2.databinding.GroupAddTitleItemBinding
 import com.wd.woodong2.databinding.GroupAddUnknownItemBinding
+import java.util.regex.Pattern
 
 class GroupAddListAdapter(
-    private val onCheckBoxChecked: (Int, GroupAddItem.Password) -> Unit
-) : ListAdapter<GroupAddItem, GroupAddListAdapter.ViewHolder>(
-    object : DiffUtil.ItemCallback<GroupAddItem>() {
+    private val onChipGroupChecked: (Int, String) -> Unit,
+    private val onEditTextChanged: (Int, String) -> Unit,
+    private val onPasswordChanged: (Int, String) -> Unit,
+    private val onCheckBoxChecked: (Int, GroupAddGetItem.Password) -> Unit,
+    private val onImageClicked: (Int) -> Unit
+) : ListAdapter<GroupAddGetItem, GroupAddListAdapter.ViewHolder>(
+    object : DiffUtil.ItemCallback<GroupAddGetItem>() {
         override fun areItemsTheSame(
-            oldItem: GroupAddItem,
-            newItem: GroupAddItem
-        ): Boolean = if (oldItem is GroupAddItem.EditText && newItem is GroupAddItem.EditText) {
+            oldItem: GroupAddGetItem,
+            newItem: GroupAddGetItem
+        ): Boolean =
             oldItem.id == newItem.id
-        } else if (oldItem is GroupAddItem.Password && newItem is GroupAddItem.Password) {
-            oldItem.id == newItem.id
-        } else if (oldItem is GroupAddItem.Image && newItem is GroupAddItem.Image) {
-            oldItem.id == newItem.id
-        } else {
-            oldItem == newItem
-        }
 
-        override fun areContentsTheSame(oldItem: GroupAddItem, newItem: GroupAddItem): Boolean {
-            return oldItem == newItem
-        }
+        override fun areContentsTheSame(
+            oldItem: GroupAddGetItem,
+            newItem: GroupAddGetItem
+        ): Boolean =
+            oldItem == newItem
     }
 ) {
     enum class GroupAddItemViewType {
@@ -51,17 +55,17 @@ class GroupAddListAdapter(
     }
 
     abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        abstract fun bind(item: GroupAddItem)
+        abstract fun bind(item: GroupAddGetItem)
     }
 
     override fun getItemViewType(position: Int): Int = when (getItem(position)) {
-        is GroupAddItem.Title -> GroupAddItemViewType.TITLE.ordinal
-        is GroupAddItem.Description -> GroupAddItemViewType.DESCRIPTION.ordinal
-        is GroupAddItem.ChipGroup -> GroupAddItemViewType.CHIP_GROUP.ordinal
-        is GroupAddItem.EditText -> GroupAddItemViewType.EDITTEXT.ordinal
-        is GroupAddItem.Password -> GroupAddItemViewType.PASSWORD.ordinal
-        is GroupAddItem.Image -> GroupAddItemViewType.IMAGE.ordinal
-        is GroupAddItem.Divider -> GroupAddItemViewType.DIVIDER.ordinal
+        is GroupAddGetItem.Title -> GroupAddItemViewType.TITLE.ordinal
+        is GroupAddGetItem.Description -> GroupAddItemViewType.DESCRIPTION.ordinal
+        is GroupAddGetItem.ChipGroup -> GroupAddItemViewType.CHIP_GROUP.ordinal
+        is GroupAddGetItem.EditText -> GroupAddItemViewType.EDITTEXT.ordinal
+        is GroupAddGetItem.Password -> GroupAddItemViewType.PASSWORD.ordinal
+        is GroupAddGetItem.Image -> GroupAddItemViewType.IMAGE.ordinal
+        is GroupAddGetItem.Divider -> GroupAddItemViewType.DIVIDER.ordinal
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -81,26 +85,30 @@ class GroupAddListAdapter(
             GroupAddItemViewType.CHIP_GROUP.ordinal -> ChipGroupViewHolder(
                 GroupAddChipGroupItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
-                )
+                ),
+                onChipGroupChecked
             )
 
             GroupAddItemViewType.EDITTEXT.ordinal -> EditTextViewHolder(
                 GroupAddEditTextItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
-                )
+                ),
+                onEditTextChanged
             )
 
             GroupAddItemViewType.PASSWORD.ordinal -> PasswordViewHolder(
                 GroupAddPasswordItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 ),
+                onPasswordChanged,
                 onCheckBoxChecked
             )
 
             GroupAddItemViewType.IMAGE.ordinal -> ImageViewHolder(
                 GroupAddImageItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
-                )
+                ),
+                onImageClicked
             )
 
             GroupAddItemViewType.DIVIDER.ordinal -> DividerViewHolder(
@@ -122,8 +130,8 @@ class GroupAddListAdapter(
 
     class TitleViewHolder(private val binding: GroupAddTitleItemBinding) :
         ViewHolder(binding.root) {
-        override fun bind(item: GroupAddItem) = with(binding) {
-            if (item is GroupAddItem.Title) {
+        override fun bind(item: GroupAddGetItem) = with(binding) {
+            if (item is GroupAddGetItem.Title) {
                 txtTitle.text = item.title
             }
         }
@@ -131,40 +139,52 @@ class GroupAddListAdapter(
 
     class DescriptionViewHolder(private val binding: GroupAddDescriptionItemBinding) :
         ViewHolder(binding.root) {
-        override fun bind(item: GroupAddItem) = with(binding) {
-            if (item is GroupAddItem.Description) {
+        override fun bind(item: GroupAddGetItem) = with(binding) {
+            if (item is GroupAddGetItem.Description) {
                 txtDescription.text = item.description
             }
         }
     }
 
-    class ChipGroupViewHolder(private val binding: GroupAddChipGroupItemBinding) :
-        ViewHolder(binding.root) {
-        override fun bind(item: GroupAddItem) = with(binding) {
-            if (item is GroupAddItem.ChipGroup) {
-                chipGroup.isSingleSelection = item.isSingleSelection ?: true
+    class ChipGroupViewHolder(
+        private val binding: GroupAddChipGroupItemBinding,
+        private val onChipGroupChecked: (Int, String) -> Unit
+    ) : ViewHolder(binding.root) {
+        override fun bind(item: GroupAddGetItem) = with(binding) {
+            if (item is GroupAddGetItem.ChipGroup) {
                 chipGroup.removeAllViews()
-                item.chipButtons?.forEach { chipButton ->
-                    val chip = Chip(chipGroup.context)
-                    chipGroup.addView(
-                        chip.apply {
-                            text = chipButton
-                            isCheckable = true
+                item.chipButtons.forEach { chipButton ->
+                    val chip = Chip(chipGroup.context).apply {
+                        text = chipButton
+                        isCheckable = true
+                        setOnClickListener {
+                            onChipGroupChecked(adapterPosition, text.toString())
                         }
-                    )
+                    }
+                    chipGroup.addView(chip)
                 }
             }
         }
     }
 
-    class EditTextViewHolder(private val binding: GroupAddEditTextItemBinding) :
-        ViewHolder(binding.root) {
-        override fun bind(item: GroupAddItem) = with(binding) {
-            if (item is GroupAddItem.EditText) {
+    class EditTextViewHolder(
+        private val binding: GroupAddEditTextItemBinding,
+        private val onEditTextChanged: (Int, String) -> Unit
+    ) : ViewHolder(binding.root) {
+        override fun bind(item: GroupAddGetItem) = with(binding) {
+            if (item is GroupAddGetItem.EditText) {
                 edtText.apply {
                     maxLines = item.maxLines ?: Int.MAX_VALUE
                     minLines = item.minLines ?: 1
                     hint = item.hint
+                    setOnFocusChangeListener { _, hasFocus ->
+                        if (!hasFocus) { //focus가 다른 뷰로 이동될 때
+                            onEditTextChanged(
+                                adapterPosition,
+                                edtText.text.toString()
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -172,37 +192,84 @@ class GroupAddListAdapter(
 
     class PasswordViewHolder(
         private val binding: GroupAddPasswordItemBinding,
-        private val onCheckBoxChecked: (Int, GroupAddItem.Password) -> Unit
+        private val onPasswordChanged: (Int, String) -> Unit,
+        private val onCheckBoxChecked: (Int, GroupAddGetItem.Password) -> Unit
     ) : ViewHolder(binding.root) {
-        override fun bind(item: GroupAddItem) = with(binding) {
-            if (item is GroupAddItem.Password) {
-                edtPassword.apply {
-                    hint = item.passwordHint
-                    isEnabled = !(item.isChecked ?: true)
-                    setBackgroundResource(
-                        if (item.isChecked == true) R.drawable.group_border_box_disabled else R.drawable.group_border_box
-                    )
+        override fun bind(item: GroupAddGetItem) = with(binding) {
+            if (item is GroupAddGetItem.Password) {
+                if (!item.isChecked) {
+                    edtPassword.apply {
+                        hint = item.passwordHint
+                        isEnabled = true
+                        setBackgroundResource(R.drawable.group_border_box)
+                        addTextChangedListener(object : TextWatcher {
+                            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                            }
+
+                            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                            }
+
+                            override fun afterTextChanged(p0: Editable?) {
+                                Log.d("sinw", "afterTextChanged")
+                                val pwdPattern = Pattern.matches(
+                                    "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{8,16}$",
+                                    text.toString().trim()
+                                )
+                                if (pwdPattern) {
+                                    txtPwValid.apply {
+                                        setText(R.string.group_add_password_valid)
+                                        setTextColor(Color.GREEN)
+                                        onPasswordChanged(
+                                            adapterPosition,
+                                            edtPassword.text.toString()
+                                        )
+                                    }
+                                } else {
+                                    txtPwValid.apply {
+                                        setText(R.string.group_add_password_invalid)
+                                        setTextColor(Color.RED)
+                                    }
+                                }
+                            }
+                        })
+                    }
+                } else {
+                    edtPassword.apply {
+                        hint = item.passwordHint
+                        isEnabled = false
+                        setBackgroundResource(R.drawable.group_border_box_disabled)
+                    }
+                    txtPwValid.text = ""
                 }
-                checkBox.text = item.chkBoxText
-                checkBox.isChecked = item.isChecked ?: false
-                checkBox.setOnCheckedChangeListener { _, isChkBox ->
-                    if (item.isChecked != isChkBox) {
-                        onCheckBoxChecked(
-                            adapterPosition,
-                            item.copy(isChecked = isChkBox)
-                        )
+                checkBox.apply {
+                    text = item.chkBoxText
+                    isChecked = item.isChecked
+                    setOnCheckedChangeListener { _, isChkBox ->
+                        if (item.isChecked != isChkBox) {
+                            onCheckBoxChecked(
+                                adapterPosition,
+                                item.copy(isChecked = isChkBox)
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    class ImageViewHolder(private val binding: GroupAddImageItemBinding) :
-        ViewHolder(binding.root) {
-        override fun bind(item: GroupAddItem) = with(binding) {
-            if (item is GroupAddItem.Image) {
+    class ImageViewHolder(
+        private val binding: GroupAddImageItemBinding,
+        private val onImageClicked: (Int) -> Unit
+    ) : ViewHolder(binding.root) {
+        override fun bind(item: GroupAddGetItem) = with(binding) {
+            if (item is GroupAddGetItem.Image) {
                 imgImage.load(item.image) {
                     error(R.drawable.group_ic_no_image)
+                }
+                imgImage.setOnClickListener {
+                    onImageClicked(
+                        adapterPosition
+                    )
                 }
             }
         }
@@ -210,11 +277,11 @@ class GroupAddListAdapter(
 
     class DividerViewHolder(private val binding: GroupAddDividerItemBinding) :
         ViewHolder(binding.root) {
-        override fun bind(item: GroupAddItem) = Unit
+        override fun bind(item: GroupAddGetItem) = Unit
     }
 
     class UnknownViewHolder(private val binding: GroupAddUnknownItemBinding) :
         ViewHolder(binding.root) {
-        override fun bind(item: GroupAddItem) = Unit
+        override fun bind(item: GroupAddGetItem) = Unit
     }
 }
