@@ -32,8 +32,8 @@ class ChatDetailActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private val chatDetailViewModel: ChatDetailViewModel by viewModels {
-        // 후에 null 처리
-        ChatDetailViewModelFactory(chatKey, receivedUserId)
+        // Test 후에 null 처리
+        ChatDetailViewModelFactory(receiveItem!!, receivedUserId)
     }
 
     private val chatDetailItemListAdapter by lazy {
