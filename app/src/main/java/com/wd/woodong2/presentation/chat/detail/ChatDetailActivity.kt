@@ -23,6 +23,7 @@ class ChatDetailActivity : AppCompatActivity() {
     }
 
     // Test
+    var receiveItem: ChatItem? = null
     var receivedUserId = ""
     var chatKey: String = ""
 
@@ -57,6 +58,7 @@ class ChatDetailActivity : AppCompatActivity() {
         }
 
         // Test
+        receiveItem = receivedChatItem
         receivedUserId = intent.getStringExtra(USER_ID) ?: ""
 
         if (receivedChatItem != null) {
@@ -65,6 +67,22 @@ class ChatDetailActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
+
+        when (receiveItem) {
+            is ChatItem.GroupChatItem -> {
+                txtChatType.text = (receiveItem as ChatItem.GroupChatItem).title
+                txtMemberNum.text = "## / ##명"
+            }
+
+            is ChatItem.PrivateChatItem -> {
+                txtChatType.text = (receiveItem as ChatItem.PrivateChatItem).title
+                txtMemberNum.text = "## / ##명"
+            }
+
+            null -> {
+                //TODO
+            }
+        }
 
         recyclerViewChat.apply {
             adapter = chatDetailItemListAdapter
@@ -76,6 +94,10 @@ class ChatDetailActivity : AppCompatActivity() {
                 edtAddChat.text.toString()
             )
             edtAddChat.text.clear()
+        }
+
+        btnBack.setOnClickListener {
+            finish()
         }
     }
 
