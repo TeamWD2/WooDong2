@@ -34,7 +34,7 @@ class ChatDetailViewModel(
                 val messageItemList = items?.messageItems?.map { messageResponse ->
                     MessageItem(
                         id = messageResponse.id,
-                        message = messageResponse.message,
+                        content = messageResponse.content,
                         senderId = messageResponse.senderId,
                         timestamp = messageResponse.timestamp,
                         isMyMessage = messageResponse.senderId == userId
@@ -49,7 +49,8 @@ class ChatDetailViewModel(
 
     fun sendMessage(message: String) = viewModelScope.launch {
         runCatching {
-            messageSendItem(chatKey, userId, message)
+            // Test
+            messageSendItem(true, chatKey, userId, message)
         }.onFailure {
             Log.e("danny", it.message.toString())
         }
@@ -62,7 +63,7 @@ class ChatDetailViewModelFactory(
 ) : ViewModelProvider.Factory {
 
     private val messageRepository by lazy {
-        MessageRepositoryImpl(FirebaseDatabase.getInstance().getReference("chats"))
+        MessageRepositoryImpl(FirebaseDatabase.getInstance().getReference("chat_list"))
     }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
