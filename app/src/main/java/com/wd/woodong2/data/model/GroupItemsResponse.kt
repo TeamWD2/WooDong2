@@ -8,13 +8,12 @@ data class GroupItemsResponse(
 
 data class GroupResponse(
     val id: String?, //Firebase Realtime Database에서 자동 생성되는 고유 키
-    @SerializedName("imgGroupProfile") val groupProfile: String?,
-    @SerializedName("txtTitle") val title: String?,
-    @SerializedName("imgMemberProfile1") val memberProfile1: String?,
-    @SerializedName("imgMemberProfile2") val memberProfile2: String?,
-    @SerializedName("imgMemberProfile3") val memberProfile3: String?,
-    @SerializedName("txtMemberCount") val memberCount: Int?,
-    @SerializedName("txtTagLocation") val tagLocation: String?,
-    @SerializedName("txtTagCategory") val tagCategory: String?,
-    @SerializedName("txtTagCapacity") val tagCapacity: Int?,
+    @SerializedName("title") val title: String?,
+    @SerializedName("introduce") val introduce: String?,
+    @SerializedName("groupTag") val groupTag: String?,
+    @SerializedName("ageLimit") val ageLimit: String?,
+    @SerializedName("memberLimit") val memberLimit: String?,
+    @SerializedName("password") val password: String?,
+    @SerializedName("mainImage") val mainImage: String?,
+    @SerializedName("backgroundImage") val backgroundImage: String?
 )

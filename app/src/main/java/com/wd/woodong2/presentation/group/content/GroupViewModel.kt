@@ -13,7 +13,7 @@ import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
 import kotlinx.coroutines.launch
 
 class GroupViewModel(
-    private val groupItem: GroupGetItemsUseCase
+    private val groupGetItems: GroupGetItemsUseCase
 ) : ViewModel() {
     private val _groupList: MutableLiveData<List<GroupItem>> = MutableLiveData()
     val groupList: LiveData<List<GroupItem>> get() = _groupList
@@ -24,7 +24,7 @@ class GroupViewModel(
     fun getGroupItem() = viewModelScope.launch {
         _loadingState.value = true
         runCatching {
-            groupItem().collect { items ->
+            groupGetItems().collect { items ->
                 _groupList.postValue(readGroupItems(items))
                 _loadingState.value = false
             }
@@ -42,22 +42,21 @@ class GroupViewModel(
     ) = items.groupItems?.map {
         GroupItem(
             id = it.id,
-            imgGroupProfile = it.groupProfile,
-            txtTitle = it.title,
-            imgMemberProfile1 = it.memberProfile1,
-            imgMemberProfile2 = it.memberProfile2,
-            imgMemberProfile3 = it.memberProfile3,
-            txtMemberCount = it.memberCount,
-            txtTagLocation = it.tagLocation,
-            txtTagCategory = it.tagCategory,
-            txtTagCapacity = it.tagCapacity
+            title = it.title,
+            introduce = it.introduce,
+            groupTag = it.groupTag,
+            ageLimit = it.ageLimit,
+            memberLimit = it.memberLimit,
+            password = it.password,
+            mainImage = it.mainImage,
+            backgroundImage = it.backgroundImage,
         )
     }.orEmpty()
 }
 
 class GroupViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val databaseReference = FirebaseDatabase.getInstance().getReference("items")
+        val databaseReference = FirebaseDatabase.getInstance().getReference("group_list")
         val repository = GroupRepositoryImpl(databaseReference)
         if (modelClass.isAssignableFrom(GroupViewModel::class.java)) {
             return GroupViewModel(
