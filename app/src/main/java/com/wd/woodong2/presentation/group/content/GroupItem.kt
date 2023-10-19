@@ -1,6 +1,7 @@
 package com.wd.woodong2.presentation.group.content
 
 data class GroupItem(
+    val id: String?,
     val imgGroupProfile: String?,
     val txtTitle: String?,
     val imgMemberProfile1: String?,

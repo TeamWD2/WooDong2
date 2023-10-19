@@ -16,7 +16,8 @@ import com.wd.woodong2.presentation.mypage.content.MyPageFragment
 class MainActivity : AppCompatActivity() {
 
 
-    private lateinit var binding : MainActivityBinding
+    private lateinit var binding: MainActivityBinding
+
 
     private val homeFragment by lazy {
         HomeFragment.newInstance()
@@ -48,18 +49,18 @@ class MainActivity : AppCompatActivity() {
         initView()
 
     }
-    private fun initView() = with(binding) {
 
-        // Toolbar 설정
-        setSupportActionBar(mainToolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        mainToolbarLocation.setOnClickListener{
-            homeMapLauncher.launch(
-                HomeMapActivity.homeMapActivityNewIntent(
-                    this@MainActivity
-                )
-            )
-        }
+    private fun initView() = with(binding) {
+//        // Toolbar 설정
+//        setSupportActionBar(mainToolbar)
+//        supportActionBar?.setDisplayShowTitleEnabled(false)
+//        mainToolbarLocation.setOnClickListener{
+//            homeMapLauncher.launch(
+//                HomeMapActivity.homeMapActivityNewIntent(
+//                    this@MainActivity
+//                )
+//            )
+//        }
 
         //BottomNavigation 설정
         supportFragmentManager.beginTransaction().add(frameLayout.id, homeFragment).commit()
@@ -82,7 +83,6 @@ class MainActivity : AppCompatActivity() {
             val intent = HomeAddActivity.homeAddActivityNewIntent(this@MainActivity)
             startActivity(intent)
         }
-
 
     }
 }

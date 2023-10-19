@@ -1,6 +1,5 @@
 package com.wd.woodong2.presentation.chat.content
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,6 +17,9 @@ class ChatFragment : Fragment() {
         fun newInstance() = ChatFragment()
     }
 
+    // User Test
+    val userId = "user1"
+
     private var _binding: ChatFragmentBinding? = null
     private val binding get() = _binding!!
 
@@ -33,14 +35,14 @@ class ChatFragment : Fragment() {
 
     private fun onClickChatItem(item: ChatItem) {
         when (item) {
-            is ChatItem.GroupChatItem -> {
-                val intent = Intent(requireContext(), ChatDetailActivity::class.java)
-                intent.putExtra("title", item.title)
-                intent.putExtra("thumbnail", item.thumbnail)
-                intent.putExtra("location", item.location)
-                intent.putExtra("contents", item.contents)
-                intent.putExtra("timeStamp", item.timeStamp)
-                startActivity(intent)
+            is ChatItem.GroupChatItem, is ChatItem.PrivateChatItem -> {
+                startActivity(
+                    ChatDetailActivity.newIntentForDetail(
+                        requireContext(),
+                        item,
+                        userId
+                    )
+                )
             }
         }
     }
@@ -65,8 +67,10 @@ class ChatFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
-        recyclerViewChat.adapter = chatItemListAdapter
-        recyclerViewChat.layoutManager = LinearLayoutManager(requireContext())
+        recyclerViewChat.apply {
+            adapter = chatItemListAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
     private fun initModel() {

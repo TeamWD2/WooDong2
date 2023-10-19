@@ -18,6 +18,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -39,18 +40,25 @@ android {
 }
 
 dependencies {
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    implementation 'com.naver.maps:map-sdk:3.17.0'
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation 'io.coil-kt:coil:1.1.0'
+
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:firebase-database-ktx:20.2.2'
 
-    //viewModel
+    // viewModel
     implementation 'androidx.activity:activity-ktx:1.7.2'
     implementation 'androidx.fragment:fragment-ktx:1.6.1'
 
-    //firebase
+    // firebase
     implementation platform('com.google.firebase:firebase-bom:31.1.1')
     implementation 'com.google.firebase:firebase-analytics-ktx:21.3.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.2.2'
@@ -58,6 +66,9 @@ dependencies {
 
     // google gson
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    // image loader
+    implementation 'io.coil-kt:coil:2.4.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

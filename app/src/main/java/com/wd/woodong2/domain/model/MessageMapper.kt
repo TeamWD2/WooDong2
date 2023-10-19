@@ -1,0 +1,24 @@
+package com.wd.woodong2.domain.model
+
+import com.wd.woodong2.data.model.MessageItemsResponse
+import com.wd.woodong2.data.model.MessageResponse
+
+fun MessageItemsResponse.toEntity() = MessageItemsEntity(
+    messageItems = messageItems?.values?.map {
+        it.toEntity()
+    }
+)
+
+fun MessageResponse.toEntity() = MessageEntity(
+    id = id,
+    senderId = senderId,
+    timestamp = timestamp,
+    message = message,
+)
+
+fun MessageResponse.toMessage() = Message(
+    id = id,
+    senderId = senderId,
+    timestamp = timestamp,
+    message = message,
+)

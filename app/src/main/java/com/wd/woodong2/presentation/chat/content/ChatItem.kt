@@ -1,12 +1,27 @@
 package com.wd.woodong2.presentation.chat.content
 
-// 추후 개인 채팅 추가를 위해 sealed로 선언
-sealed class ChatItem {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+sealed class ChatItem : Parcelable {
+    abstract val id: String?
+
     data class GroupChatItem(
+        override val id: String?,
         val title: String?,
-        val thumbnail: String?,
+        val imgProfile: String?,
         val location: String?,
-        val contents: String?,
         val timeStamp: String?,
+        val lastMessage: String?,
+    ) : ChatItem()
+
+    data class PrivateChatItem(
+        override val id: String?,
+        val userName: String?,
+        val imgProfile: String?,
+        val location: String?,
+        val timeStamp: String?,
+        val lastMessage: String?,
     ) : ChatItem()
 }
