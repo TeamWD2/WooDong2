@@ -13,7 +13,14 @@ data class GroupResponse(
     @SerializedName("groupTag") val groupTag: String?,
     @SerializedName("ageLimit") val ageLimit: String?,
     @SerializedName("memberLimit") val memberLimit: String?,
+    @SerializedName("memberList") val memberList: List<MemberResponse>?,
     @SerializedName("password") val password: String?,
     @SerializedName("mainImage") val mainImage: String?,
     @SerializedName("backgroundImage") val backgroundImage: String?
+)
+
+data class MemberResponse(
+    @SerializedName("userId") val userId: String?,
+    @SerializedName("userName") val userName: String?,
+    @SerializedName("userProfile") val userProfile: String?
 )

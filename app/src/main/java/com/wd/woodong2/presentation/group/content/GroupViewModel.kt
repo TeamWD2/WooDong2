@@ -47,6 +47,13 @@ class GroupViewModel(
             groupTag = it.groupTag,
             ageLimit = it.ageLimit,
             memberLimit = it.memberLimit,
+            memberList = it.memberList?.map { member ->
+                Member(
+                    userId = member.userId ?: "",
+                    userName = member.userName ?: "",
+                    userProfile = member.userProfile ?: ""
+                )
+            },
             password = it.password,
             mainImage = it.mainImage,
             backgroundImage = it.backgroundImage,
