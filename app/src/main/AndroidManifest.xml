@@ -24,6 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".presentation.home.add.HomeAddActivity" />
 
         <activity
             android:name=".presentation.chat.detail.ChatDetailActivity"
