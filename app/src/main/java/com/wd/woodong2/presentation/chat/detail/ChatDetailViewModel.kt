@@ -50,7 +50,6 @@ class ChatDetailViewModel(
     fun sendMessage(message: String) = viewModelScope.launch {
         runCatching {
             messageSendItem(chatKey, userId, message)
-            _massageList.postValue(_massageList.value.orEmpty().toMutableList())
         }.onFailure {
             Log.e("danny", it.message.toString())
         }
@@ -62,15 +61,15 @@ class ChatDetailViewModelFactory(
     private val userId: String
 ) : ViewModelProvider.Factory {
 
-    private val chatDatabaseReference by lazy {
-        FirebaseDatabase.getInstance().getReference("chats")
+    private val messageRepository by lazy {
+        MessageRepositoryImpl(FirebaseDatabase.getInstance().getReference("chats"))
     }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatDetailViewModel::class.java)) {
             return ChatDetailViewModel(
-                MessageGetItemsUseCase(MessageRepositoryImpl(chatDatabaseReference)),
-                MessageSendItemsUseCase(MessageRepositoryImpl(chatDatabaseReference)),
+                MessageGetItemsUseCase(messageRepository),
+                MessageSendItemsUseCase(messageRepository),
                 chatKey,
                 userId
             ) as T
