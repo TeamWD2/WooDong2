@@ -27,21 +27,21 @@ class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : Cha
 
                         val gson = GsonBuilder().create()
 
-                        val groupResponses =
+                        val groupChatResponses =
                             snapshot.child("group").children.mapNotNull { childSnapshot ->
                                 val jsonString = gson.toJson(childSnapshot.value)
                                 val response = gson.fromJson(jsonString, ChatResponse::class.java)
                                 response.copy(id = childSnapshot.key)
                             }
 
-                        val privateResponses =
+                        val privateChatResponses =
                             snapshot.child("private").children.mapNotNull { childSnapshot ->
                                 val jsonString = gson.toJson(childSnapshot.value)
                                 val response = gson.fromJson(jsonString, ChatResponse::class.java)
                                 response.copy(id = childSnapshot.key)
                             }
 
-                        val filteredChatResponses = groupResponses.filter {
+                        val filteredChatResponses = groupChatResponses.filter {
                             it.id in chatIds
                         }
 
