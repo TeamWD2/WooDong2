@@ -20,7 +20,7 @@ class MessageRepositoryImpl(
 ) : MessageRepository {
 
     /*
-    * databaseReference => chats
+    * databaseReference => chat_list
     */
     override suspend fun getMessageItems(chatId: String): Flow<MessageItemsEntity?> = callbackFlow {
         val listener = databaseReference.addValueEventListener(object : ValueEventListener {
@@ -28,14 +28,22 @@ class MessageRepositoryImpl(
                 if (snapshot.exists()) {
                     val gson = GsonBuilder().create()
 
-                    val chatResponses = snapshot.children.mapNotNull { childSnapshot ->
-                        val jsonString = gson.toJson(childSnapshot.value)
-                        val response = gson.fromJson(jsonString, ChatResponse::class.java)
-                        response.copy(id = childSnapshot.key)
-                    }
+                    val groupResponses =
+                        snapshot.child("group").children.mapNotNull { childSnapshot ->
+                            val jsonString = gson.toJson(childSnapshot.value)
+                            val response = gson.fromJson(jsonString, ChatResponse::class.java)
+                            response.copy(id = childSnapshot.key)
+                        }
 
-                    val messageResponses = chatResponses.find { chatResponse ->
-                        chatResponse.id == chatId
+                    val privateResponses =
+                        snapshot.child("private").children.mapNotNull { childSnapshot ->
+                            val jsonString = gson.toJson(childSnapshot.value)
+                            val response = gson.fromJson(jsonString, ChatResponse::class.java)
+                            response.copy(id = childSnapshot.key)
+                        }
+
+                    val messageResponses = groupResponses.find {
+                        it.id == chatId
                     }?.message
 
                     val entity = MessageItemsResponse(messageResponses).toEntity()
@@ -54,22 +62,33 @@ class MessageRepositoryImpl(
         }
     }
 
-    override suspend fun addMessageItem(chatId: String, userId: String, message: String) {
-        val chatRef = databaseReference.child(chatId)
+    override suspend fun addMessageItem(
+        isGroup: Boolean,
+        chatId: String,
+        userId: String,
+        message: String
+    ) {
+        //
+        val chatRef = if (isGroup) {
+            databaseReference.child("group").child(chatId)
+        } else {
+            databaseReference.child("private").child(chatId)
+        }
         val messageRef = chatRef.child("message").push()
 
         val currentTimeMillis = System.currentTimeMillis()
 
         val messageData = Message(
-            messageRef.key,
             message,
             currentTimeMillis,
             userId
         )
 
+        // message 추가
         messageRef.setValue(messageData)
-        chatRef.child("lastMessage").setValue(message)
-        chatRef.child("timestamp").setValue(currentTimeMillis)
+
+        // lastMessage 업데이트
+        chatRef.child("last").setValue(messageData)
     }
 }
 
