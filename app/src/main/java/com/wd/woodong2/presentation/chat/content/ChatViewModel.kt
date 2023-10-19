@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
 import com.wd.woodong2.data.repository.ChatRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.domain.model.ChatItemsEntity
 import com.wd.woodong2.domain.usecase.ChatGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 import kotlinx.coroutines.launch
@@ -26,7 +27,9 @@ class ChatViewModel(
     val userId = "user1"
     var user = UserItem(
         id = "user1",
-        chatIds = listOf("chat1", "chat2"),
+        chatIds = listOf(
+            "-chat_list-group-TestData0", "-chat_list-group-TestData1"
+        ),
         email = "대니주@example.com",
         name = "주찬영",
         imgProfile = "URL_TO_USER_1_IMAGE"
@@ -58,18 +61,10 @@ class ChatViewModel(
 
     private fun getChatItems() = viewModelScope.launch {
         runCatching {
-            chatItem(user.chatIds.orEmpty()).collect { items ->
-                val chatItemList = items?.chatItems?.map {
-                    ChatItem.GroupChatItem(
-                        id = it.id,
-                        title = it.id,
-                        imgProfile = it.imgProfile,
-                        lastMessage = it.lastMessage,
-                        location = it.location,
-                        timeStamp = it.timestamp,
-                    )
-                }.orEmpty()
-                _chatList.postValue(chatItemList.toMutableList())
+            chatItem(user.chatIds.orEmpty()).collect {
+                chatItem(user.chatIds.orEmpty()).collect { items ->
+                    _chatList.postValue(readChatItems(items).toMutableList())
+                }
             }
         }.onFailure {
             Log.e("danny", it.message.toString())
@@ -77,31 +72,38 @@ class ChatViewModel(
     }
 
     fun reloadChatItems() = viewModelScope.launch {
-        _chatList.value = mutableListOf()
+        _chatList.value?.clear()
         runCatching {
             chatItem(user.chatIds.orEmpty()).collect { items ->
-                val chatItemList = items?.chatItems?.map {
-                    ChatItem.GroupChatItem(
-                        id = it.id,
-                        title = it.id,
-                        imgProfile = it.imgProfile,
-                        lastMessage = it.lastMessage,
-                        location = it.location,
-                        timeStamp = it.timestamp,
-                    )
-                }.orEmpty()
-                _chatList.postValue(chatItemList.toMutableList())
+                _chatList.postValue(readChatItems(items).toMutableList())
             }
         }.onFailure {
             Log.e("danny", it.message.toString())
         }
     }
+
+    /**
+     * Firebase 에서 chat 목록 read
+     */
+    private fun readChatItems(
+        items: ChatItemsEntity?
+    ) = items?.chatItems?.map {
+        ChatItem.GroupChatItem(
+            id = it.id,
+            groupId = it.groupId,
+            lastMessage = it.last?.content ?: "",
+            timeStamp = it.last?.timestamp,
+            mainImage = it.mainImage,
+            memberLimit = it.memberLimit,
+            title = it.title,
+        )
+    }.orEmpty()
 }
 
 class ChatViewModelFactory : ViewModelProvider.Factory {
 
     private val chatDatabaseReference by lazy {
-        FirebaseDatabase.getInstance().getReference("chats")
+        FirebaseDatabase.getInstance().getReference("chat_list")
     }
     private val userDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("users")
