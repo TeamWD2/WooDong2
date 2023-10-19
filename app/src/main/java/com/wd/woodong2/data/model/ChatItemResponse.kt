@@ -15,12 +15,6 @@ data class ChatResponse(
     @SerializedName("message") val message: Map<String, MessageResponse>?,
     @SerializedName("title") val title: String?
 )
-
-data class LastResponse(
-    @SerializedName("content") val content: String?,
-    @SerializedName("timestamp") val timestamp: Long?
-)
-
 data class MessageResponse(
     val id: String?,
     @SerializedName("content") val content: String?,
