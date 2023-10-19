@@ -7,7 +7,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
 import com.wd.woodong2.data.model.ChatItemsResponse
 import com.wd.woodong2.data.model.ChatResponse
-import com.wd.woodong2.domain.model.ChatEntity
 import com.wd.woodong2.domain.model.ChatItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.ChatRepository
@@ -17,6 +16,9 @@ import kotlinx.coroutines.flow.callbackFlow
 
 class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : ChatRepository {
 
+    /*
+    * "chat_list"
+    * */
     override suspend fun getChatItems(chatIds: List<String>): Flow<ChatItemsEntity?> =
         callbackFlow {
             val listener = databaseReference.addValueEventListener(object : ValueEventListener {
@@ -25,14 +27,22 @@ class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : Cha
 
                         val gson = GsonBuilder().create()
 
-                        val chatResponses = snapshot.children.mapNotNull { childSnapshot ->
-                            val jsonString = gson.toJson(childSnapshot.value)
-                            val response = gson.fromJson(jsonString, ChatResponse::class.java)
-                            response.copy(id = childSnapshot.key)
-                        }
+                        val groupResponses =
+                            snapshot.child("group").children.mapNotNull { childSnapshot ->
+                                val jsonString = gson.toJson(childSnapshot.value)
+                                val response = gson.fromJson(jsonString, ChatResponse::class.java)
+                                response.copy(id = childSnapshot.key)
+                            }
 
-                        val filteredChatResponses = chatResponses.filter { chatResponse ->
-                            chatResponse.id in chatIds
+                        val privateResponses =
+                            snapshot.child("private").children.mapNotNull { childSnapshot ->
+                                val jsonString = gson.toJson(childSnapshot.value)
+                                val response = gson.fromJson(jsonString, ChatResponse::class.java)
+                                response.copy(id = childSnapshot.key)
+                            }
+
+                        val filteredChatResponses = groupResponses.filter {
+                            it.id in chatIds
                         }
 
                         val entity = ChatItemsResponse(filteredChatResponses).toEntity()
@@ -56,21 +66,21 @@ class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : Cha
         imgProfile: String,
         location: String,
     ) {
-        val currentTimeMillis = System.currentTimeMillis()
-
-        val chatRef = databaseReference.push()
-
-        val chatEntity = ChatEntity(
-            id = chatRef.key,
-            imgProfile = imgProfile,
-            senderId = senderId,
-            location = location,
-            timestamp = currentTimeMillis,
-            lastMessage = "",
-            message = emptyMap()
-        )
-
-        chatRef.setValue(chatEntity)
+//        val currentTimeMillis = System.currentTimeMillis()
+//
+//        val chatRef = databaseReference.push()
+//
+//        val chatEntity = ChatEntity(
+//            id = chatRef.key,
+//            groupId = imgProfile,
+//            last = senderId,
+//            mainImage = location,
+//            memberLimit = currentTimeMillis,
+//            title = "",
+//            message = emptyMap()
+//        )
+//
+//        chatRef.setValue(chatEntity)
     }
 }
 
