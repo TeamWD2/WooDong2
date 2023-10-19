@@ -9,19 +9,21 @@ sealed class ChatItem : Parcelable {
 
     data class GroupChatItem(
         override val id: String?,
-        val title: String?,
-        val imgProfile: String?,
-        val location: String?,
-        val timeStamp: Long?,
+        val groupId: String?,
         val lastMessage: String?,
+        val timeStamp: Long?,
+        val mainImage: String?,
+        val memberLimit: String?,
+        val title: String?,
     ) : ChatItem()
 
     data class PrivateChatItem(
         override val id: String?,
-        val userName: String?,
-        val imgProfile: String?,
-        val location: String?,
-        val timeStamp: Long?,
+        val groupId: String?,
         val lastMessage: String?,
+        val timeStamp: Long?,
+        val mainImage: String?,
+        val memberLimit: String?,
+        val title: String?,
     ) : ChatItem()
 }
