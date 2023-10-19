@@ -10,5 +10,5 @@ data class MessageResponse(
     @SerializedName("id") val id: String?,
     @SerializedName("message") val message: String?,
     @SerializedName("senderId") val senderId: String?,
-    @SerializedName("timestamp") val timestamp: String?,
+    @SerializedName("timestamp") val timestamp: Long?,
 )

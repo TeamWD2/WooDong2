@@ -8,7 +8,6 @@ import com.wd.woodong2.databinding.MainActivityBinding
 import com.wd.woodong2.presentation.chat.content.ChatFragment
 import com.wd.woodong2.presentation.group.content.GroupFragment
 import com.wd.woodong2.presentation.home.content.HomeFragment
-import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.mypage.content.MyPageFragment
 
 class MainActivity : AppCompatActivity() {

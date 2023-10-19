@@ -12,7 +12,7 @@ sealed class ChatItem : Parcelable {
         val title: String?,
         val imgProfile: String?,
         val location: String?,
-        val timeStamp: String?,
+        val timeStamp: Long?,
         val lastMessage: String?,
     ) : ChatItem()
 
@@ -21,7 +21,7 @@ sealed class ChatItem : Parcelable {
         val userName: String?,
         val imgProfile: String?,
         val location: String?,
-        val timeStamp: String?,
+        val timeStamp: Long?,
         val lastMessage: String?,
     ) : ChatItem()
 }
