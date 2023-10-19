@@ -24,23 +24,23 @@ class GroupListAdapter(
 ) {
     inner class ViewHolder(private val binding: GroupListItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: GroupItem) = with(binding) {
-            imgGroupProfile.load(item.imgGroupProfile) {
+            imgGroupProfile.load(item.mainImage) {
                 error(R.drawable.group_ic_no_image)
             }
-            txtTitle.text = item.txtTitle
-            imgMemberProfile1.load(item.imgMemberProfile1) {
-                error(R.drawable.group_ic_no_profile)
-            }
-            imgMemberProfile2.load(item.imgMemberProfile2) {
-                error(R.drawable.group_ic_no_profile)
-            }
-            imgMemberProfile3.load(item.imgMemberProfile3) {
-                error(R.drawable.group_ic_no_profile)
-            }
-            txtMemberCount.text = item.txtMemberCount.toString()
-            txtTagLocation.text = item.txtTagLocation
-            txtTagCategory.text = item.txtTagCategory
-            txtTagCapacity.text = item.txtTagCapacity.toString()
+            txtTitle.text = item.title
+//            imgMemberProfile1.load(item.imgMemberProfile1) {
+//                error(R.drawable.group_ic_no_profile)
+//            }
+//            imgMemberProfile2.load(item.imgMemberProfile2) {
+//                error(R.drawable.group_ic_no_profile)
+//            }
+//            imgMemberProfile3.load(item.imgMemberProfile3) {
+//                error(R.drawable.group_ic_no_profile)
+//            }
+//            txtMemberCount.text = item.txtMemberCount.toString()
+            txtTagCategory.text = item.groupTag
+            txtTagAge.text = item.ageLimit
+            txtTagMemberLimit.text = item.memberLimit.toString()
 
             root.setOnClickListener {
                 itemClickListener(item)

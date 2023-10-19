@@ -155,7 +155,7 @@
                             android:layout_margin="10dp"
                             android:clickable="true"
                             android:focusable="true"
-                            android:src="@drawable/home_map_btn_ic_add"
+                            android:src="@drawable/public_ic_add"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/home_map_second_btn_tv_location"
