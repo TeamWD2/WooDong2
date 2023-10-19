@@ -14,12 +14,14 @@ import com.wd.woodong2.domain.repository.MessageRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import java.text.SimpleDateFormat
-import java.util.Date
 
 class MessageRepositoryImpl(
     private val databaseReference: DatabaseReference
 ) : MessageRepository {
+
+    /*
+    * databaseReference => chats
+    */
     override suspend fun getMessageItems(chatId: String): Flow<MessageItemsEntity?> = callbackFlow {
         val listener = databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -53,20 +55,21 @@ class MessageRepositoryImpl(
     }
 
     override suspend fun addMessageItem(chatId: String, userId: String, message: String) {
+        val chatRef = databaseReference.child(chatId)
+        val messageRef = chatRef.child("message").push()
 
         val currentTimeMillis = System.currentTimeMillis()
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val timestampString = sdf.format(Date(currentTimeMillis))
 
         val messageData = Message(
-            "Test",
+            messageRef.key,
             message,
-            timestampString,
-            userId,
+            currentTimeMillis,
+            userId
         )
 
-        val chatRef = databaseReference.child(chatId)
-        chatRef.child("message").push().setValue(messageData)
+        messageRef.setValue(messageData)
+        chatRef.child("lastMessage").setValue(message)
+        chatRef.child("timestamp").setValue(currentTimeMillis)
     }
 }
 

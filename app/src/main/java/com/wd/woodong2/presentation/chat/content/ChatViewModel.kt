@@ -33,7 +33,7 @@ class ChatViewModel(
     )
 
     init {
-        getChatItem()
+        getChatItems()
     }
 
     private fun getUserItem() = viewModelScope.launch {
@@ -56,28 +56,28 @@ class ChatViewModel(
         }
     }
 
-    private fun getChatItem() = viewModelScope.launch {
-        // userId로 채팅방 찾기
-//        runCatching {
-//            runBlocking {
-//                userItem(userId) { items ->
-//                    val userItem = items?.userItems?.map {
-//                        UserItem(
-//                            id = it.id,
-//                            name = it.name,
-//                            imgProfile = it.imgProfile,
-//                            email = it.email,
-//                            chatIds = it.chatIds,
-//                        )
-//                    }.orEmpty()
-//                    user = userItem[0]
-//                    Log.d("danny", "User 받아오기 성공 : $user")
-//                }
-//            }
-//        }.onFailure {
-//            Log.e("danny", it.message.toString())
-//        }
+    private fun getChatItems() = viewModelScope.launch {
+        runCatching {
+            chatItem(user.chatIds.orEmpty()).collect { items ->
+                val chatItemList = items?.chatItems?.map {
+                    ChatItem.GroupChatItem(
+                        id = it.id,
+                        title = it.id,
+                        imgProfile = it.imgProfile,
+                        lastMessage = it.lastMessage,
+                        location = it.location,
+                        timeStamp = it.timestamp,
+                    )
+                }.orEmpty()
+                _chatList.postValue(chatItemList.toMutableList())
+            }
+        }.onFailure {
+            Log.e("danny", it.message.toString())
+        }
+    }
 
+    fun reloadChatItems() = viewModelScope.launch {
+        _chatList.value = mutableListOf()
         runCatching {
             chatItem(user.chatIds.orEmpty()).collect { items ->
                 val chatItemList = items?.chatItems?.map {
@@ -98,8 +98,7 @@ class ChatViewModel(
     }
 }
 
-
-class ChatViewModelFactory() : ViewModelProvider.Factory {
+class ChatViewModelFactory : ViewModelProvider.Factory {
 
     private val chatDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("chats")
