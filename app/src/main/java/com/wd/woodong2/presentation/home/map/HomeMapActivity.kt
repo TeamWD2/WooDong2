@@ -160,7 +160,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     binding.homeMapFirstBtnTvLocation.text = binding.homeMapSecondBtnTvLocation.text.toString()
                     secondLocation = ""
                     binding.homeMapSecondBtnTvLocation.text = ""
-                    binding.homeMapSecondBtnIvLocation.load(R.drawable.home_map_btn_ic_add) { size(24, 24) }
+                    binding.homeMapSecondBtnIvLocation.load(R.drawable.public_ic_add) { size(24, 24) }
                     (binding.homeMapSecondBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0f
 
                 }
@@ -191,7 +191,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             else{
                 secondLocation = ""
                 binding.homeMapSecondBtnTvLocation.text = ""
-                binding.homeMapSecondBtnIvLocation.load(R.drawable.home_map_btn_ic_add){ size(24, 24) }
+                binding.homeMapSecondBtnIvLocation.load(R.drawable.public_ic_add){ size(24, 24) }
                 (binding.homeMapSecondBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0f
             }
         }
