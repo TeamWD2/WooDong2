@@ -74,6 +74,16 @@ class GroupAddActivity : AppCompatActivity() {
         viewModel.initGroupAddItem(groupAddGetItems)
 
         groupAddSetItem = GroupAddSetItem()
+        //테스트용 임시 사용자 계정 추가 (모임 생성하는 방장 - 최소 멤버로 가입)
+        groupAddSetItem = groupAddSetItem.copy(
+            memberList = listOf(
+                Member(
+                    "-NhImSiData",
+                    "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
+                    "sinw"
+                )
+            )
+        )
 
         btnAddGroup.setOnClickListener {
             if(isCorrectGroupAddItem(groupAddSetItem)) {

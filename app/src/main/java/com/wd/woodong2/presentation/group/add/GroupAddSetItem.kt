@@ -6,7 +6,14 @@ data class GroupAddSetItem(
     val introduce: String? = null,
     val ageLimit: String? = null,
     val memberLimit: String? = null,
+    val memberList: List<Member>? = null,
     val password: String? = null,
     val mainImage: String? = null,
     val backgroundImage: String? = null
+)
+
+data class Member(
+    val userId: String?,
+    val userProfile: String?,
+    val userName: String?
 )
