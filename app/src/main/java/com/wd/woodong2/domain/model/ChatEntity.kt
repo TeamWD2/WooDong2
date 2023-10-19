@@ -11,7 +11,7 @@ data class ChatEntity(
     val last: Message?,
     val mainImage: String?,
     val memberLimit: String?,
-    val message: Map<String, Message>?,
+    val message: List<Message>?,
     val title: String?,
 )
 

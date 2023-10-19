@@ -61,10 +61,8 @@ class ChatViewModel(
 
     private fun getChatItems() = viewModelScope.launch {
         runCatching {
-            chatItem(user.chatIds.orEmpty()).collect {
-                chatItem(user.chatIds.orEmpty()).collect { items ->
-                    _chatList.postValue(readChatItems(items).toMutableList())
-                }
+            chatItem(user.chatIds.orEmpty()).collect { items ->
+                _chatList.postValue(readChatItems(items).toMutableList())
             }
         }.onFailure {
             Log.e("danny", it.message.toString())

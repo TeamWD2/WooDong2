@@ -15,6 +15,11 @@ data class ChatResponse(
     @SerializedName("message") val message: Map<String, MessageResponse>?,
     @SerializedName("title") val title: String?
 )
+
+data class MessageItemsResponse(
+    val messageItems: List<MessageResponse>?
+)
+
 data class MessageResponse(
     val id: String?,
     @SerializedName("content") val content: String?,

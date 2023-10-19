@@ -7,15 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
-import com.wd.woodong2.data.repository.MessageRepositoryImpl
-import com.wd.woodong2.domain.usecase.MessageGetItemsUseCase
-import com.wd.woodong2.domain.usecase.MessageSendItemsUseCase
+import com.wd.woodong2.data.repository.ChatRepositoryImpl
+import com.wd.woodong2.domain.usecase.ChatGetMessageItemsUseCase
+import com.wd.woodong2.domain.usecase.ChatSendMessageUseCase
+import com.wd.woodong2.presentation.chat.content.ChatItem
 import kotlinx.coroutines.launch
 
 class ChatDetailViewModel(
-    private val messageGetItem: MessageGetItemsUseCase,
-    private val messageSendItem: MessageSendItemsUseCase,
-    private val chatKey: String,
+    private val getMessageItem: ChatGetMessageItemsUseCase,
+    private val sendMessageItem: ChatSendMessageUseCase,
     private val userId: String
 ) : ViewModel(
 ) {
@@ -30,7 +30,7 @@ class ChatDetailViewModel(
     private fun getMessageItem() = viewModelScope.launch {
         runCatching {
 //            리스너 없는 코드
-            messageGetItem(chatKey).collect { items ->
+            getMessageItem.invoke().collect { items ->
                 val messageItemList = items?.messageItems?.map { messageResponse ->
                     MessageItem(
                         id = messageResponse.id,
@@ -50,7 +50,7 @@ class ChatDetailViewModel(
     fun sendMessage(message: String) = viewModelScope.launch {
         runCatching {
             // Test
-            messageSendItem(true, chatKey, userId, message)
+            sendMessageItem(userId, message)
         }.onFailure {
             Log.e("danny", it.message.toString())
         }
@@ -58,20 +58,31 @@ class ChatDetailViewModel(
 }
 
 class ChatDetailViewModelFactory(
-    private val chatKey: String,
-    private val userId: String
+    private val chatItem: ChatItem,
+    private val userId: String,
 ) : ViewModelProvider.Factory {
 
-    private val messageRepository by lazy {
-        MessageRepositoryImpl(FirebaseDatabase.getInstance().getReference("chat_list"))
+    private val chatRepository by lazy {
+        ChatRepositoryImpl(
+            when (chatItem) {
+                is ChatItem.GroupChatItem -> {
+                    FirebaseDatabase.getInstance().getReference("chat_list").child("group")
+                        .child(chatItem.id.orEmpty())
+                }
+
+                is ChatItem.PrivateChatItem -> {
+                    FirebaseDatabase.getInstance().getReference("chat_list").child("private")
+                        .child(chatItem.id.orEmpty())
+                }
+            }
+        )
     }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatDetailViewModel::class.java)) {
             return ChatDetailViewModel(
-                MessageGetItemsUseCase(messageRepository),
-                MessageSendItemsUseCase(messageRepository),
-                chatKey,
+                ChatGetMessageItemsUseCase(chatRepository),
+                ChatSendMessageUseCase(chatRepository),
                 userId
             ) as T
         } else {
