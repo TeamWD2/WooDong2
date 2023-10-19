@@ -13,7 +13,9 @@ class GroupAddActivity : AppCompatActivity() {
 
     private lateinit var binding: GroupAddActivityBinding
 
-    private val viewModel: GroupAddViewModel by viewModels()
+    private val viewModel: GroupAddViewModel by viewModels {
+        GroupAddViewModelFactory()
+    }
 
     private lateinit var groupAddSetItem: GroupAddSetItem
 
@@ -74,29 +76,31 @@ class GroupAddActivity : AppCompatActivity() {
         groupAddSetItem = GroupAddSetItem()
 
         btnAddGroup.setOnClickListener {
-            Toast.makeText(
-                this@GroupAddActivity,
-                if (isCorrectGroupAddItem(groupAddSetItem)) "모임이 생성되었습니다." else "입력되지 않은 정보가 있습니다.",
-                Toast.LENGTH_SHORT
-            ).show()
+            if(isCorrectGroupAddItem(groupAddSetItem)) {
+                Toast.makeText(this@GroupAddActivity, "모임이 생성되었습니다.", Toast.LENGTH_SHORT).show()
+                viewModel.setGroupAddItem(groupAddSetItem)
+                finish()
+            } else {
+                Toast.makeText(this@GroupAddActivity, "입력되지 않은 정보가 있습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     private fun initViewModel() = with(viewModel) {
         groupAddList.observe(this@GroupAddActivity) {
-            groupAddListAdapter.submitList(it.toMutableList())
+            groupAddListAdapter.submitList(it)
         }
     }
 
     private fun isCorrectGroupAddItem(groupAddSetItem: GroupAddSetItem) =
-        !groupAddSetItem.groupTag.isNullOrBlank()
-                && !groupAddSetItem.title.isNullOrBlank()
-                && !groupAddSetItem.introduce.isNullOrBlank()
-                && !groupAddSetItem.ageLimit.isNullOrBlank()
-                && !groupAddSetItem.memberLimit.isNullOrBlank()
-                && !groupAddSetItem.password.isNullOrBlank()
-                && !groupAddSetItem.mainImage.isNullOrBlank()
-                && !groupAddSetItem.backgroundImage.isNullOrBlank()
+        groupAddSetItem.groupTag.isNullOrBlank().not()
+                && groupAddSetItem.title.isNullOrBlank().not()
+                && groupAddSetItem.introduce.isNullOrBlank().not()
+                && groupAddSetItem.ageLimit.isNullOrBlank().not()
+                && groupAddSetItem.memberLimit.isNullOrBlank().not()
+                && groupAddSetItem.password.isNullOrBlank().not()
+                && groupAddSetItem.mainImage.isNullOrBlank().not()
+                && groupAddSetItem.backgroundImage.isNullOrBlank().not()
 
     private fun createGroupAdd(position: Int, text: String) {
         groupAddSetItem = when (groupAddGetItems[position].id) {

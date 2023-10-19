@@ -25,7 +25,7 @@ import java.util.regex.Pattern
 
 class GroupAddListAdapter(
     private val onCreateGroupAdd: (Int, String) -> Unit,
-    private val onCheckBoxChecked: (Int, GroupAddGetItem.Password) -> Unit,
+    private val onCheckBoxChecked: (Int, GroupAddGetItem.Password) -> Unit
 ) : ListAdapter<GroupAddGetItem, GroupAddListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<GroupAddGetItem>() {
         override fun areItemsTheSame(
@@ -273,7 +273,7 @@ class GroupAddListAdapter(
                 imgImage.setOnClickListener {
                     onCreateGroupAdd(
                         adapterPosition,
-                        ""
+                        "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg" //임시데이터
                     )
                 }
             }
