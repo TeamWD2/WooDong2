@@ -22,31 +22,18 @@ class ChatViewModel(
     val chatList: LiveData<MutableList<ChatItem>>
         get() = _chatList
 
-    // test
-    val userId = "user2"
-    lateinit var user: UserItem
+    // User test
+    val userId = "user1"
+    var user = UserItem(
+        id = "user1",
+        chatIds = listOf("chat1", "chat2"),
+        email = "대니주@example.com",
+        name = "주찬영",
+        imgProfile = "URL_TO_USER_1_IMAGE"
+    )
 
     init {
-        getUserItem()
-    }
-
-    private fun getChatItem() = viewModelScope.launch {
-        runCatching {
-            chatItem(user.chatIds.orEmpty()) { items ->
-                val chatItemList = items?.chatItems?.map {
-                    ChatItem.GroupChatItem(
-                        title = it.id,
-                        imgProfile = it.imgProfile,
-                        lastMassage = it.lastMassage,
-                        location = it.location,
-                        timeStamp = it.timestamp,
-                    )
-                }.orEmpty()
-                _chatList.postValue(chatItemList.toMutableList())
-            }
-        }.onFailure {
-            Log.e("sinw", it.message.toString())
-        }
+        getChatItem()
     }
 
     private fun getUserItem() = viewModelScope.launch {
@@ -62,29 +49,51 @@ class ChatViewModel(
                         chatIds = it.chatIds,
                     )
                 }.orEmpty()
-
                 user = userItem[0]
-
-                // chatId로 채팅방 로드
-                runCatching {
-                    chatItem(user.chatIds.orEmpty()) { items ->
-                        val chatItemList = items?.chatItems?.map {
-                            ChatItem.GroupChatItem(
-                                title = it.id,
-                                imgProfile = it.imgProfile,
-                                lastMassage = it.lastMassage,
-                                location = it.location,
-                                timeStamp = it.timestamp,
-                            )
-                        }.orEmpty()
-                        _chatList.postValue(chatItemList.toMutableList())
-                    }
-                }.onFailure {
-                    Log.e("sinw", it.message.toString())
-                }
             }
         }.onFailure {
             Log.e("sinw", it.message.toString())
+        }
+    }
+
+    private fun getChatItem() = viewModelScope.launch {
+        // userId로 채팅방 찾기
+//        runCatching {
+//            runBlocking {
+//                userItem(userId) { items ->
+//                    val userItem = items?.userItems?.map {
+//                        UserItem(
+//                            id = it.id,
+//                            name = it.name,
+//                            imgProfile = it.imgProfile,
+//                            email = it.email,
+//                            chatIds = it.chatIds,
+//                        )
+//                    }.orEmpty()
+//                    user = userItem[0]
+//                    Log.d("danny", "User 받아오기 성공 : $user")
+//                }
+//            }
+//        }.onFailure {
+//            Log.e("danny", it.message.toString())
+//        }
+
+        runCatching {
+            chatItem(user.chatIds.orEmpty()).collect { items ->
+                val chatItemList = items?.chatItems?.map {
+                    ChatItem.GroupChatItem(
+                        id = it.id,
+                        title = it.id,
+                        imgProfile = it.imgProfile,
+                        lastMessage = it.lastMessage,
+                        location = it.location,
+                        timeStamp = it.timestamp,
+                    )
+                }.orEmpty()
+                _chatList.postValue(chatItemList.toMutableList())
+            }
+        }.onFailure {
+            Log.e("danny", it.message.toString())
         }
     }
 }

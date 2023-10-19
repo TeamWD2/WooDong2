@@ -11,13 +11,13 @@ data class ChatEntity(
     val senderId: String?,
     val location: String?,
     val timestamp: String?,
-    val lastMassage: String?,
+    val lastMessage: String?,
     val message: List<Message>?,
 )
 
 data class Message(
     val id: String?,
-    val massage: String?,
+    val message: String?,
     val timestamp: String?,
     val senderId: String?,
 )
