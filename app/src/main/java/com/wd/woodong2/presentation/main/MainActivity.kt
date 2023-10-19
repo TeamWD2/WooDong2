@@ -30,12 +30,7 @@ class MainActivity : AppCompatActivity() {
     private val myPageFragment by lazy {
         MyPageFragment.newInstance()
     }
-    private val homeMapLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-//            if(result.resultCode == Acitivty.RESULT_OK){
-//
-//            }
-        }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,16 +42,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
-//        // Toolbar 설정
-//        setSupportActionBar(mainToolbar)
-//        supportActionBar?.setDisplayShowTitleEnabled(false)
-//        mainToolbarLocation.setOnClickListener{
-//            homeMapLauncher.launch(
-//                HomeMapActivity.homeMapActivityNewIntent(
-//                    this@MainActivity
-//                )
-//            )
-//        }
+
 
         //BottomNavigation 설정
         supportFragmentManager.beginTransaction().add(frameLayout.id, homeFragment).commit()

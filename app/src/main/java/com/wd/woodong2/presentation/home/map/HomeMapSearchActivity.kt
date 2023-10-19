@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.R
@@ -22,9 +23,6 @@ class HomeMapSearchActivity : AppCompatActivity() {
 
     companion object {
 
-        const val BASE_URL = "https://dapi.kakao.com/"
-        const val API_KEY = "KakaoAK 2944f118955b6cf31d773eea99bcc7d2"  // REST API 키
-
         //private lateinit var HomeMapItem: HomeItem
         fun newIntent(context: Context)=//, homeItem: HomeItem) =
         Intent(context, HomeMapSearchActivity::class.java).apply {
@@ -34,11 +32,14 @@ class HomeMapSearchActivity : AppCompatActivity() {
     }
 
     private lateinit var binding : HomeMapSearchActivityBinding
-    private val listItems = arrayListOf<HomeMapSearchItem>()
+    //private val listItems = arrayListOf<HomeMapSearchItem.MapSearchItem>()
+    private val viewModel : HomeMapSearchViewModel by viewModels{
+        HomeMapSearchViewModelFactory()
+    }
     private val listAdapter : HomeMapSearchListAdapter by lazy{
         HomeMapSearchListAdapter(
             onClickItem = { _, item ->
-                Log.d("itemSet", item.toString())
+
             val intent = Intent().apply{
                 putExtra(
                     "Address",
@@ -47,8 +48,7 @@ class HomeMapSearchActivity : AppCompatActivity() {
             }
             setResult(Activity.RESULT_OK, intent)
             finish()
-        },
-            itemList = listItems
+        }
         )
     }
     private var address = ""
@@ -65,6 +65,7 @@ class HomeMapSearchActivity : AppCompatActivity() {
         )
 
         initView()
+        initViewModel()
     }
     private fun initView(){
         binding.homeMapSearchRc.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -77,65 +78,25 @@ class HomeMapSearchActivity : AppCompatActivity() {
                 R.anim.home_map_search_left
             )
         }
-        binding.etSearch.setOnClickListener {
+        binding.homeMapEtSearch.setOnClickListener {
             hideKeyboard()
         }
         binding.homeMapSearchBtn.setOnClickListener{
-            address = binding.etSearch.text.toString()
-            addressSearch(address)
+            address = binding.homeMapEtSearch.text.toString()
+            viewModel.search(address)
         }
     }
+    private fun initViewModel() {
+        viewModel.list.observe(this) {
+            listAdapter.submitList(it)
+        }
+    }
+
     private fun hideKeyboard() {
         val view = this.currentFocus
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
-    //검색 함수
-    private fun addressSearch(keyword: String) {
-        val retrofit = Retrofit.Builder()   // Retrofit 구성
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val api = retrofit.create(KakaoAPI::class.java)   // 통신 인터페이스를 객체로 생성
-        val call = api.getAddressSearch(API_KEY, keyword)   // 검색 조건 입력
 
-        // API 서버에 요청
-        call.enqueue(object: Callback<AddressSearchResponse> {
-            override fun onResponse(
-                call: Call<AddressSearchResponse>,
-                response: Response<AddressSearchResponse>
-            ) {
-                addItems(response.body())
-                Log.d("Test", "Raw: ${response.raw()}")
-                Log.d("Test", "Body: ${response.body()}")
-            }
 
-            override fun onFailure(call: Call<AddressSearchResponse>, t: Throwable) {
-                // 통신 실패
-                Log.w("MainActivity", "통신 실패: ${t.message}")
-            }
-        })
-    }
-    // 검색 결과 처리 함수
-    private fun addItems(searchResult: AddressSearchResponse?) {
-        if (!searchResult?.documents.isNullOrEmpty()) {
-            // 검색 결과 있음
-            listItems.clear()
-            for (document in searchResult!!.documents) {
-                // 결과를 리사이클러 뷰에 추가
-                val item = HomeMapSearchItem(
-                    document.address_name,
-                    document.x.toDouble(),
-                    document.y.toDouble()
-                )
-                listItems.add(item)
-
-                listAdapter.notifyDataSetChanged()
-            }
-        }
-        else{
-            // 검색 결과 없음
-            Toast.makeText(this, "검색 결과가 없습니다", Toast.LENGTH_SHORT).show()
-        }
-    }
 }

@@ -1,16 +1,19 @@
 package com.wd.woodong2.presentation.home.content
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.databinding.HomeFragmentBinding
 import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
+import com.wd.woodong2.presentation.home.map.HomeMapActivity
 
 
 class HomeFragment : Fragment() {
@@ -24,14 +27,16 @@ class HomeFragment : Fragment() {
     private val viewModel : HomeViewModel by viewModels {
         HomeViewModelFactory(requireContext())
     }
+    private val homeMapLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val receivedDataFirstLocation = result.data!!.getStringExtra("firstLocation")
+                val receivedDataSecondLocation = result.data!!.getStringExtra("secondLocation")
+                binding.toolbarTvLocation.text = receivedDataFirstLocation
+            } else {
 
-//            by lazy{
-//                ViewModelProvider(
-//                    this,
-//                    HomeViewModelFactory(requireContext())
-//                )[HomeViewModel::class.java]
-//            }
-
+            }
+        }
     private val listAdapter by lazy {
         HomeListAdapter(requireContext(),
             onClickItem = { item ->
@@ -65,6 +70,17 @@ class HomeFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
+        // Toolbar 설정
+        (activity as AppCompatActivity).setSupportActionBar(toolbarHome)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+        toolbarLayout.setOnClickListener{
+            homeMapLauncher.launch(
+                HomeMapActivity.newIntent(
+                    requireContext()
+                )
+            )
+        }
+
         homeRecyclerView.adapter = listAdapter
     }
 
@@ -72,7 +88,6 @@ class HomeFragment : Fragment() {
         with(viewModel){
             list.observe(viewLifecycleOwner){
                 listAdapter.submitList(it)
-                //
             }
         }
     }
