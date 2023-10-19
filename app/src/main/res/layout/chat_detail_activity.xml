@@ -5,24 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/img_back"
+    <ImageButton
+        android:id="@+id/btn_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/chat_detail_ic_back"
+        android:src="@drawable/public_ic_back"
+        android:layout_margin="5sp"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toTopOf="@id/constraint_product"
-        app:layout_constraintEnd_toStartOf="@id/txt_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/constraint_product"
-        app:layout_constraintStart_toEndOf="@id/img_back"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="중고거래 만랩" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_product"
@@ -31,26 +24,36 @@
         app:layout_constraintBottom_toTopOf="@id/recyclerView_chat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_back">
+        app:layout_constraintTop_toBottomOf="@id/btn_back">
 
         <ImageView
             android:id="@+id/img_product"
             android:layout_width="50dp"
             android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/txt_description"
+            app:layout_constraintEnd_toStartOf="@id/txt_chat_type"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/txt_description"
+            android:id="@+id/txt_chat_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/txt_price"
             app:layout_constraintStart_toEndOf="@id/img_product"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="에어팟 프로 21년 8월 제조품" />
+            tools:text="모임명: or 닉네임: " />
+
+        <TextView
+            android:id="@+id/txt_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/txt_price"
+            app:layout_constraintStart_toEndOf="@id/txt_chat_type"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="**모임 or ***님" />
 
         <TextView
             android:id="@+id/txt_price"
@@ -58,7 +61,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/img_product"
-            app:layout_constraintTop_toBottomOf="@id/txt_description"
+            app:layout_constraintTop_toBottomOf="@id/txt_chat_type"
             tools:text="110,000원" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -84,7 +87,7 @@
             android:id="@+id/img_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/chat_detail_ic_add"
+            android:src="@drawable/public_ic_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/edt_add_chat"
             app:layout_constraintStart_toStartOf="parent"
@@ -96,18 +99,20 @@
             android:layout_height="wrap_content"
             android:hint="메세지를 입력하세요."
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/img_send"
+            app:layout_constraintEnd_toStartOf="@id/btn_send"
             app:layout_constraintStart_toEndOf="@id/img_add"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/img_send"
+        <ImageButton
+            android:id="@+id/btn_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:src="@drawable/chat_detail_ic_send"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/edt_add_chat"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,14 +10,14 @@ data class ChatEntity(
     val imgProfile: String?,
     val senderId: String?,
     val location: String?,
-    val timestamp: String?,
+    val timestamp: Long?,
     val lastMessage: String?,
-    val message: List<Message>?,
+    val message: Map<String, Message>?,
 )
 
 data class Message(
     val id: String?,
     val message: String?,
-    val timestamp: String?,
+    val timestamp: Long?,
     val senderId: String?,
 )

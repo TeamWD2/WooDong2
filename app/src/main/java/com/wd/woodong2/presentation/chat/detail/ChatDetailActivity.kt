@@ -24,11 +24,11 @@ class ChatDetailActivity : AppCompatActivity() {
 
     // Test
     var receivedUserId = ""
+    var chatKey: String = ""
+
 
     private var _binding: ChatDetailActivityBinding? = null
     private val binding get() = _binding!!
-
-    var chatKey: String = ""
 
     private val chatDetailViewModel: ChatDetailViewModel by viewModels {
         // 후에 null 처리
@@ -44,11 +44,12 @@ class ChatDetailActivity : AppCompatActivity() {
         _binding = ChatDetailActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initInfo()
         initView()
         initModel()
     }
 
-    private fun initView() = with(binding) {
+    private fun initInfo() {
         val receivedChatItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(CHAT_ITEM, ChatItem::class.java)
         } else {
@@ -61,10 +62,20 @@ class ChatDetailActivity : AppCompatActivity() {
         if (receivedChatItem != null) {
             chatKey = receivedChatItem.id ?: ""
         }
+    }
+
+    private fun initView() = with(binding) {
 
         recyclerViewChat.apply {
             adapter = chatDetailItemListAdapter
             layoutManager = LinearLayoutManager(context)
+        }
+
+        btnSend.setOnClickListener {
+            chatDetailViewModel.sendMessage(
+                edtAddChat.text.toString()
+            )
+            edtAddChat.text.clear()
         }
     }
 

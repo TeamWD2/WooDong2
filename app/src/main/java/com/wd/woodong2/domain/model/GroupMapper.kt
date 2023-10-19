@@ -11,13 +11,12 @@ fun GroupItemsResponse.toEntity() = GroupItemsEntity(
 
 fun GroupResponse.toEntity() = GroupEntity(
     id = id,
-    groupProfile = groupProfile,
     title = title,
-    memberProfile1 = memberProfile1,
-    memberProfile2 = memberProfile2,
-    memberProfile3 = memberProfile3,
-    memberCount = memberCount,
-    tagLocation = tagLocation,
-    tagCategory = tagCategory,
-    tagCapacity = tagCapacity
+    introduce = introduce,
+    groupTag = groupTag,
+    ageLimit = ageLimit,
+    memberLimit = memberLimit,
+    password = password,
+    mainImage = mainImage,
+    backgroundImage = backgroundImage
 )

@@ -24,31 +24,17 @@ class ChatViewModel(
 
     // User test
     val userId = "user1"
-    lateinit var user: UserItem
+    var user = UserItem(
+        id = "user1",
+        chatIds = listOf("chat1", "chat2"),
+        email = "대니주@example.com",
+        name = "주찬영",
+        imgProfile = "URL_TO_USER_1_IMAGE"
+    )
 
     init {
-        getUserItem()
+        getChatItems()
     }
-
-//    private fun getChatItem() = viewModelScope.launch {
-//        runCatching {
-//            chatItem(user.chatIds.orEmpty()) { items ->
-//                val chatItemList = items?.chatItems?.map {
-//                    ChatItem.GroupChatItem(
-//                        id = it.id,
-//                        title = it.id,
-//                        imgProfile = it.imgProfile,
-//                        lastMessage = it.lastMessage,
-//                        location = it.location,
-//                        timeStamp = it.timestamp,
-//                    )
-//                }.orEmpty()
-//                _chatList.postValue(chatItemList.toMutableList())
-//            }
-//        }.onFailure {
-//            Log.e("sinw", it.message.toString())
-//        }
-//    }
 
     private fun getUserItem() = viewModelScope.launch {
         // userId로 채팅방 찾기
@@ -63,36 +49,56 @@ class ChatViewModel(
                         chatIds = it.chatIds,
                     )
                 }.orEmpty()
-
                 user = userItem[0]
-
-                // chatId로 채팅방 로드
-                runCatching {
-                    chatItem(user.chatIds.orEmpty()) { items ->
-                        val chatItemList = items?.chatItems?.map {
-                            ChatItem.GroupChatItem(
-                                id = it.id,
-                                title = it.id,
-                                imgProfile = it.imgProfile,
-                                lastMessage = it.lastMessage,
-                                location = it.location,
-                                timeStamp = it.timestamp,
-                            )
-                        }.orEmpty()
-                        _chatList.postValue(chatItemList.toMutableList())
-                    }
-                }.onFailure {
-                    Log.e("sinw", it.message.toString())
-                }
             }
         }.onFailure {
             Log.e("sinw", it.message.toString())
         }
     }
+
+    private fun getChatItems() = viewModelScope.launch {
+        runCatching {
+            chatItem(user.chatIds.orEmpty()).collect { items ->
+                val chatItemList = items?.chatItems?.map {
+                    ChatItem.GroupChatItem(
+                        id = it.id,
+                        title = it.id,
+                        imgProfile = it.imgProfile,
+                        lastMessage = it.lastMessage,
+                        location = it.location,
+                        timeStamp = it.timestamp,
+                    )
+                }.orEmpty()
+                _chatList.postValue(chatItemList.toMutableList())
+            }
+        }.onFailure {
+            Log.e("danny", it.message.toString())
+        }
+    }
+
+    fun reloadChatItems() = viewModelScope.launch {
+        _chatList.value = mutableListOf()
+        runCatching {
+            chatItem(user.chatIds.orEmpty()).collect { items ->
+                val chatItemList = items?.chatItems?.map {
+                    ChatItem.GroupChatItem(
+                        id = it.id,
+                        title = it.id,
+                        imgProfile = it.imgProfile,
+                        lastMessage = it.lastMessage,
+                        location = it.location,
+                        timeStamp = it.timestamp,
+                    )
+                }.orEmpty()
+                _chatList.postValue(chatItemList.toMutableList())
+            }
+        }.onFailure {
+            Log.e("danny", it.message.toString())
+        }
+    }
 }
 
-
-class ChatViewModelFactory() : ViewModelProvider.Factory {
+class ChatViewModelFactory : ViewModelProvider.Factory {
 
     private val chatDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("chats")

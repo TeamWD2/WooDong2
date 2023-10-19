@@ -7,6 +7,8 @@
     <string name="toolbar_menu_search">검색</string>
     <string name="toolbar_menu_notice">알림</string>
 
+    <string name="main_toast_permission">권한 설정이 필요합니다.</string>
+
     <string name="home_list_item_btn_tag_name">같이해요</string>
     <string name="home_list_item_thumbnail_count">99</string>
     <string name="home_list_item_tv_title">런닝메이트 구합니다.</string>
@@ -27,6 +29,10 @@
     <string name="home_map_naver_api">kdzwicc7da</string>
 
     <string name="group_hint_search_group">우리 동네 모임을 검색해보세요.</string>
+
+    <string name="group_add_btn_add_group">모임 만들기</string>
+    <string name="group_add_password_valid">사용 가능한 비밀번호입니다.</string>
+    <string name="group_add_password_invalid">영문+숫자+특수문자 조합으로 입력해주세요.(8~16자리)</string>
 
     <string name="chat_txt_title">채팅</string>
 
