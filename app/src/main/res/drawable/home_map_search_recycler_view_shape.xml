@@ -8,8 +8,8 @@
         android:color="@color/mustard"/>
 
     <corners
-        android:topLeftRadius="16dp"
-        android:topRightRadius="16dp" />
+        android:topLeftRadius="25dp"
+        android:topRightRadius="25dp" />
 
     <padding
         android:left="10dp"

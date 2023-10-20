@@ -50,6 +50,8 @@ class ChatViewModel(
                         imgProfile = it.imgProfile,
                         email = it.email,
                         chatIds = it.chatIds,
+                        firstLocation = it.firstLocation,
+                        secondLocation = it.secondLocation
                     )
                 }.orEmpty()
                 user = userItem[0]
