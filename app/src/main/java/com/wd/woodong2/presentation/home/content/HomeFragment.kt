@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.wd.woodong2.databinding.HomeFragmentBinding
+import com.wd.woodong2.presentation.home.add.HomeAddActivity
 import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
 
 
@@ -71,39 +72,20 @@ class HomeFragment : Fragment() {
         initView()
         initViewModel()
 
-        val layoutManager = LinearLayoutManager(context)
-        binding.homeRecyclerView.layoutManager = layoutManager
-        binding.homeRecyclerView.adapter = listAdapter
-
-
-        val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
-
-        databaseReference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val dataList = ArrayList<HomeItem>()
-
-                for (postSnapshot in dataSnapshot.children) {
-                    val firebaseData = postSnapshot.getValue(HomeItem::class.java)
-                    if (firebaseData != null) {
-                        dataList.add(firebaseData)
-                    }
-                }
-
-                // RecyclerView 어댑터에 데이터 설정
-                listAdapter.submitList(dataList)
-
-                binding.homeRecyclerView.requestLayout()
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // 처리중 에러 발생시 처리
-            }
-        })
-
     }
 
     private fun initView() = with(binding) {
         homeRecyclerView.adapter = listAdapter
+
+        binding.homeRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = listAdapter
+        }
+
+        binding.fabHomeadd.setOnClickListener {
+            val intent = HomeAddActivity.homeAddActivityNewIntent(this@HomeFragment.requireContext())
+            startActivity(intent)
+        }
     }
 
     private fun initViewModel(){

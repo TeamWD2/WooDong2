@@ -75,40 +75,15 @@
         android:id="@+id/home_add_txt4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="3dp"
         android:text="태그"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/home_add_tag1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.059"
+        app:layout_constraintHorizontal_bias="0.075"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_add_content" />
-
-    <TextView
-        android:id="@+id/home_add_tag1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/gray"
-        android:text="동네질문"
-        app:layout_constraintBottom_toTopOf="@+id/home_add_picture"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_add_txt4"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/home_add_tag2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="24dp"
-        android:text="조심해요!"
-        android:background="@color/gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.093"
-        app:layout_constraintStart_toEndOf="@+id/home_add_tag1"
-        app:layout_constraintTop_toBottomOf="@+id/home_add_txt4"
-        app:layout_constraintVertical_bias="0.005" />
 
     <TextView
         android:id="@+id/home_add_picture"
@@ -119,28 +94,31 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/home_add_addbtn"
         app:layout_constraintEnd_toStartOf="@+id/imageView2"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/home_add_tag2"
-        app:layout_constraintVertical_bias="0.997" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/home_add_addbtn"
         android:layout_width="345dp"
         android:layout_height="58dp"
-        android:layout_marginBottom="20dp"
         android:text="글 작성"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.348"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.976" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/home_add_addbtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.062"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_thumbnail"
         app:layout_constraintVertical_bias="1.0"
@@ -169,18 +147,61 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/home_add_tag2"
-        app:layout_constraintVertical_bias="0.997" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/home_thumbnail"
         android:layout_width="101dp"
         android:layout_height="99dp"
-        android:layout_marginTop="60dp"
+        app:layout_constraintBottom_toTopOf="@+id/home_add_addbtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.092"
+        app:layout_constraintHorizontal_bias="0.093"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_add_tag1"
+        app:layout_constraintVertical_bias="0.215"
         app:srcCompat="@drawable/group_border_search" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/home_add_tag1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="동네질문"
+        android:textSize="12dp"
+        android:background="@drawable/home_chip_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.068"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.551" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/home_add_tag2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="조심해요!"
+        android:textSize="12dp"
+        android:background="@drawable/home_chip_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.351"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.551" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/home_add_tag3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="정보공유"
+        android:textSize="12dp"
+        android:background="@drawable/home_chip_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.628"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.551" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

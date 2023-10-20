@@ -78,11 +78,8 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        // fabAddTodo 버튼에 대한 코드
-        fabAddTodo.setOnClickListener {
-            val intent = HomeAddActivity.homeAddActivityNewIntent(this@MainActivity)
-            startActivity(intent)
-        }
+
+
 
     }
 }

@@ -85,7 +85,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:src="@drawable/home_map_bottom_sheet_btn_ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" /><!--android:src="@drawable/home_map_bottom_sheet_btn_ic_add"-->
 </androidx.constraintlayout.widget.ConstraintLayout>
