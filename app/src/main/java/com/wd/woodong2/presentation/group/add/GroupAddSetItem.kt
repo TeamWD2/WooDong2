@@ -10,8 +10,8 @@ data class GroupAddSetItem(
     val memberLimit: String? = null,
     val memberList: List<Member>? = null,
     val password: String? = null,
-    val mainImage: Uri? = null,
-    val backgroundImage: Uri? = null
+    val mainImage: String? = null,
+    val backgroundImage: String? = null
 )
 
 data class Member(
