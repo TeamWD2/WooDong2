@@ -18,4 +18,19 @@ data class HomeItem (
     val view: String?,
     val thumbCount: Int = 0,
     val chatCount: Int = 0
-) : Parcelable
+) : Parcelable {
+    constructor() : this(
+        null,
+        null,
+        null,
+        null,
+        0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        0
+    )
+}
