@@ -39,13 +39,13 @@
             android:id="@+id/txt_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/txt_locale"
+            app:layout_constraintBottom_toTopOf="@id/txt_member_num"
             app:layout_constraintStart_toEndOf="@id/img_profile"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="가나다" />
 
         <TextView
-            android:id="@+id/txt_locale"
+            android:id="@+id/txt_member_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars" />
+            android:src="@drawable/wd2" />
     </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,37 +40,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/txt_description"
-            app:layout_constraintEnd_toStartOf="@id/txt_locale"
+            app:layout_constraintBottom_toTopOf="@id/txt_last_massage"
+            app:layout_constraintEnd_toStartOf="@id/txt_member_num"
             app:layout_constraintStart_toStartOf="@id/constraint_chat"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="모임 이름" />
 
         <TextView
-            android:id="@+id/txt_locale"
+            android:id="@+id/txt_member_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5sp"
-            app:layout_constraintBottom_toTopOf="@id/txt_description"
-            app:layout_constraintEnd_toStartOf="@id/txt_date"
+            app:layout_constraintBottom_toTopOf="@id/txt_last_massage"
+            app:layout_constraintEnd_toStartOf="@id/txt_timestamp"
             app:layout_constraintStart_toEndOf="@id/txt_name"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="군자동" />
 
         <TextView
-            android:id="@+id/txt_date"
+            android:id="@+id/txt_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5sp"
-            app:layout_constraintBottom_toTopOf="@id/txt_description"
-            app:layout_constraintStart_toEndOf="@id/txt_locale"
+            app:layout_constraintBottom_toTopOf="@id/txt_last_massage"
+            app:layout_constraintStart_toEndOf="@id/txt_member_num"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="1주 전" />
 
         <TextView
-            android:id="@+id/txt_description"
+            android:id="@+id/txt_last_massage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"

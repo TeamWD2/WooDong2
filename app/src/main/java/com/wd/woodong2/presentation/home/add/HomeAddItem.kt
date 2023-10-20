@@ -1,6 +1,6 @@
 package com.wd.woodong2.presentation.home.add
 
-data class FirebaseHomeItem(
+data class HomeAddItem(
     val title: String,
     val description: String,
     val thumbnail: String? = null,

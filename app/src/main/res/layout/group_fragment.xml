@@ -52,7 +52,7 @@
         android:id="@+id/edt_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/group_border_search"
+        android:background="@drawable/group_border_box"
         android:hint="@string/group_hint_search_group"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/recyclerView_group"
@@ -85,6 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        android:src="@drawable/public_ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

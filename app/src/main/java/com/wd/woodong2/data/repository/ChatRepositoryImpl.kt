@@ -7,7 +7,11 @@ import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
 import com.wd.woodong2.data.model.ChatItemsResponse
 import com.wd.woodong2.data.model.ChatResponse
+import com.wd.woodong2.data.model.MessageItemsResponse
+import com.wd.woodong2.data.model.MessageResponse
 import com.wd.woodong2.domain.model.ChatItemsEntity
+import com.wd.woodong2.domain.model.Message
+import com.wd.woodong2.domain.model.MessageItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.ChatRepository
 import kotlinx.coroutines.channels.awaitClose
@@ -16,22 +20,32 @@ import kotlinx.coroutines.flow.callbackFlow
 
 class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : ChatRepository {
 
+    /*
+    * "chat_list"
+    * */
     override suspend fun getChatItems(chatIds: List<String>): Flow<ChatItemsEntity?> =
         callbackFlow {
             val listener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
-
                         val gson = GsonBuilder().create()
 
-                        val chatResponses = snapshot.children.mapNotNull { childSnapshot ->
-                            val jsonString = gson.toJson(childSnapshot.value)
-                            val response = gson.fromJson(jsonString, ChatResponse::class.java)
-                            response.copy(id = childSnapshot.key)
-                        }
+                        val groupChatResponses =
+                            snapshot.child("group").children.mapNotNull { childSnapshot ->
+                                val jsonString = gson.toJson(childSnapshot.value)
+                                val response = gson.fromJson(jsonString, ChatResponse::class.java)
+                                response.copy(id = childSnapshot.key)
+                            }
 
-                        val filteredChatResponses = chatResponses.filter { chatResponse ->
-                            chatResponse.id in chatIds
+                        val privateChatResponses =
+                            snapshot.child("private").children.mapNotNull { childSnapshot ->
+                                val jsonString = gson.toJson(childSnapshot.value)
+                                val response = gson.fromJson(jsonString, ChatResponse::class.java)
+                                response.copy(id = childSnapshot.key)
+                            }
+
+                        val filteredChatResponses = groupChatResponses.filter {
+                            it.id in chatIds
                         }
 
                         val entity = ChatItemsResponse(filteredChatResponses).toEntity()
@@ -49,5 +63,75 @@ class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : Cha
                 databaseReference.removeEventListener(listener)
             }
         }
+
+    override suspend fun addChatItem(
+        senderId: String,
+        imgProfile: String,
+        location: String,
+    ) {
+//        val currentTimeMillis = System.currentTimeMillis()
+//
+//        val chatRef = databaseReference.push()
+//
+//        val chatEntity = ChatEntity(
+//            id = chatRef.key,
+//            groupId = imgProfile,
+//            last = senderId,
+//            mainImage = location,
+//            memberLimit = currentTimeMillis,
+//            title = "",
+//            message = emptyMap()
+//        )
+//
+//        chatRef.setValue(chatEntity)
+    }
+
+    override suspend fun getMessageItems(): Flow<MessageItemsEntity?> = callbackFlow {
+        val listener =
+            databaseReference.child("message").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val gson = GsonBuilder().create()
+
+                        val messageResponses =
+                            snapshot.children.mapNotNull { childSnapshot ->
+                                val jsonString = gson.toJson(childSnapshot.value)
+                                val response =
+                                    gson.fromJson(jsonString, MessageResponse::class.java)
+                                response.copy(id = childSnapshot.key)
+                            }
+
+                        val entity = MessageItemsResponse(messageResponses).toEntity()
+                        trySend(entity)
+                    } else {
+                        throw RuntimeException("snapshot is not exists")
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    throw error.toException()
+                }
+            })
+        awaitClose {
+            databaseReference.removeEventListener(listener)
+        }
+    }
+
+    override suspend fun addChatMessageItem(userId: String, message: String) {
+
+        val messageRef = databaseReference.child("message").push()
+
+        val messageData = Message(
+            message,
+            System.currentTimeMillis(),
+            userId
+        )
+
+        // message 추가
+        messageRef.setValue(messageData)
+
+        // lastMessage 업데이트
+        databaseReference.child("last").setValue(messageData)
+    }
 }
 
