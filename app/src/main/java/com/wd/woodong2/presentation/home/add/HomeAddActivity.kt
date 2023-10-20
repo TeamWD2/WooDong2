@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.chip.Chip
@@ -30,9 +31,14 @@ class HomeAddActivity : AppCompatActivity() {
     private var selectedImageUri: Uri? = null
     private var selectedTag: String? = null
 
-    private val viewModel: HomeAddViewModel by lazy {
-        ViewModelProvider(this).get(HomeAddViewModel::class.java)
-    }
+    private val viewModel: HomeAddViewModel by viewModels()
+    private val imagePicker =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                selectedImageUri = result.data?.data
+                binding.homeThumbnail.setImageURI(selectedImageUri)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,45 +48,38 @@ class HomeAddActivity : AppCompatActivity() {
         initView()
     }
 
-    private fun initView() {
-        binding.homeAddAddbtn.setOnClickListener {
-            val title = binding.homeAddTitle.text.toString()
-            val description = binding.homeAddContent.text.toString()
+    private fun initView() = with(binding) {
+        homeAddAddbtn.setOnClickListener {
+            val title = homeAddTitle.text.toString()
+            val description = homeAddContent.text.toString()
 
             viewModel.uploadData(title, description, selectedImageUri, selectedTag) {
                 finish()
             }
         }
 
-        val imagePicker =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    selectedImageUri = result.data?.data
-                    binding.homeThumbnail.setImageURI(selectedImageUri)
-                }
-            }
-
-        binding.homeAddPicture.setOnClickListener {
+        homeAddPicture.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             imagePicker.launch(intent)
         }
 
-        binding.homeAddTag1.setOnClickListener {
-            selectTag(binding.homeAddTag1, "동네질문")
+        homeAddTag1.setOnClickListener {
+            selectTag(homeAddTag1, "동네질문")
         }
 
-        binding.homeAddTag2.setOnClickListener {
-            selectTag(binding.homeAddTag2, "조심해요!")
+        homeAddTag2.setOnClickListener {
+            selectTag(homeAddTag2, "조심해요!")
         }
 
-        binding.homeAddTag3.setOnClickListener {
-            selectTag(binding.homeAddTag3, "정보공유")
+        homeAddTag3.setOnClickListener {
+            selectTag(homeAddTag3, "정보공유")
         }
     }
-    private fun selectTag(selectedChip: Chip, tag: String) {
-        binding.homeAddTag1.isSelected = false
-        binding.homeAddTag2.isSelected = false
-        binding.homeAddTag3.isSelected = false
+
+    private fun selectTag(selectedChip: Chip, tag: String) = with(binding) {
+        homeAddTag1.isSelected = false
+        homeAddTag2.isSelected = false
+        homeAddTag3.isSelected = false
 
         selectedChip.isSelected = true
 
