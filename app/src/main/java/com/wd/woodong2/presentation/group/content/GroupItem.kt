@@ -7,7 +7,14 @@ data class GroupItem(
     val groupTag: String?,
     val ageLimit: String?,
     val memberLimit: String?,
+    val memberList: List<Member>?,
     val password: String?,
     val mainImage: String?,
     val backgroundImage: String?
+)
+
+data class Member(
+    val userId: String,
+    val userName: String,
+    val userProfile: String
 )

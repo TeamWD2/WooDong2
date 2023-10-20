@@ -1,7 +1,10 @@
 package com.wd.woodong2.presentation.group.content
 
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -28,16 +31,19 @@ class GroupListAdapter(
                 error(R.drawable.group_ic_no_image)
             }
             txtTitle.text = item.title
-//            imgMemberProfile1.load(item.imgMemberProfile1) {
-//                error(R.drawable.group_ic_no_profile)
-//            }
-//            imgMemberProfile2.load(item.imgMemberProfile2) {
-//                error(R.drawable.group_ic_no_profile)
-//            }
-//            imgMemberProfile3.load(item.imgMemberProfile3) {
-//                error(R.drawable.group_ic_no_profile)
-//            }
-//            txtMemberCount.text = item.txtMemberCount.toString()
+            txtMemberCount.text = "${item.memberList?.size}명"
+            val memberCardViews = listOf(cardViewMember1, cardViewMember2, cardViewMember3)
+            val memberProfiles = listOf(imgMemberProfile1, imgMemberProfile2, imgMemberProfile3)
+            item.memberList?.let { member ->
+                for(i in member.indices) {
+                    if(i < memberProfiles.size) {
+                        memberCardViews[i].visibility = View.VISIBLE
+                        memberProfiles[i].load(member[i].userProfile) {
+                            error(R.drawable.group_ic_no_profile)
+                        }
+                    }
+                }
+            }
             txtTagCategory.text = item.groupTag
             txtTagAge.text = item.ageLimit
             txtTagMemberLimit.text = item.memberLimit.toString()

@@ -78,7 +78,7 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
     ) : ViewHolder(binding.root) {
         override fun onBind(item: MessageItem) = with(binding) {
             txtName.text = item.senderId
-            txtChat.text = item.message
+            txtChat.text = item.content
         }
     }
 
@@ -90,8 +90,7 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
             params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
             params.startToStart = ConstraintLayout.LayoutParams.UNSET
             txtChat.layoutParams = params
-
-            txtChat.text = item.message
+            txtChat.text = item.content
         }
     }
 }

@@ -3,72 +3,68 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageButton
-        android:id="@+id/btn_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/public_ic_back"
-        android:layout_margin="5sp"
-        android:background="@android:color/transparent"
-        app:layout_constraintBottom_toTopOf="@id/constraint_product"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:layout_height="match_parent"
+    android:background="#FFD358">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10sp"
         app:layout_constraintBottom_toTopOf="@id/recyclerView_chat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_back">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/public_ic_back"
+            app:layout_constraintBottom_toBottomOf="@id/constraint_product"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/constraint_product" />
+
 
         <ImageView
             android:id="@+id/img_product"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:src="@drawable/wd2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/txt_chat_type"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            app:layout_constraintStart_toEndOf="@id/btn_back"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/txt_chat_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/txt_price"
+            app:layout_constraintBottom_toTopOf="@id/txt_member_num"
             app:layout_constraintStart_toEndOf="@id/img_product"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="모임명: or 닉네임: " />
+            tools:text="모임명: or 닉네임" />
 
         <TextView
-            android:id="@+id/txt_user_name"
+            android:id="@+id/txt_member_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/txt_price"
-            app:layout_constraintStart_toEndOf="@id/txt_chat_type"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="**모임 or ***님" />
-
-        <TextView
-            android:id="@+id/txt_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/img_product"
             app:layout_constraintTop_toBottomOf="@id/txt_chat_type"
-            tools:text="110,000원" />
+            tools:text="## / ##" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_chat"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/white"
         app:layout_constraintBottom_toTopOf="@id/constraint_add_chat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

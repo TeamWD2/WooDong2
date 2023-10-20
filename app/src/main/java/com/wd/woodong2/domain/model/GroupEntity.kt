@@ -11,7 +11,14 @@ data class GroupEntity(
     val groupTag: String?,
     val ageLimit: String?,
     val memberLimit: String?,
+    val memberList: List<MemberEntity>?,
     val password: String?,
     val mainImage: String?,
     val backgroundImage: String?
+)
+
+data class MemberEntity(
+    val userId: String?,
+    val userName: String?,
+    val userProfile: String?
 )

@@ -1,13 +1,15 @@
 package com.wd.woodong2.presentation.group.add
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupAddActivityBinding
-import java.util.concurrent.atomic.AtomicLong
 
 class GroupAddActivity : AppCompatActivity() {
 
@@ -43,11 +45,24 @@ class GroupAddActivity : AppCompatActivity() {
             GroupAddGetItem.Divider("GroupPwDiv"),
             GroupAddGetItem.Title("GroupPhotoTitle", "모임 사진을 등록해주세요."),
             GroupAddGetItem.Description("GroupPhotoMainDes", "대표 사진"),
-            GroupAddGetItem.Image("GroupPhotoMainImage", R.drawable.group_add_ic_add_image),
+            GroupAddGetItem.Image("GroupPhotoMainImage", null),
             GroupAddGetItem.Description("GroupPhotoBackDes", "배경 사진"),
-            GroupAddGetItem.Image("GroupPhotoBackImage", R.drawable.group_add_ic_add_image)
+            GroupAddGetItem.Image("GroupPhotoBackImage", null)
         )
     }
+
+    private var currentPosition: Int = -1
+    private lateinit var currentItem: GroupAddGetItem.Image
+
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.let { uri ->
+                    viewModel.updateImage(currentPosition, currentItem, uri)
+                    createGroupAdd(currentPosition, uri.toString())
+                }
+            }
+        }
 
     private val groupAddListAdapter by lazy {
         GroupAddListAdapter(
@@ -56,6 +71,16 @@ class GroupAddActivity : AppCompatActivity() {
             },
             onCheckBoxChecked = { position, item ->
                 viewModel.updatePasswordChecked(position, item)
+            },
+            onClickImage = { position, item ->
+                currentPosition = position
+                currentItem = item
+                galleryLauncher.launch(
+                    Intent(Intent.ACTION_PICK).setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        "image/*"
+                    )
+                )
             }
         )
     }
@@ -71,17 +96,29 @@ class GroupAddActivity : AppCompatActivity() {
 
     private fun initView() = with(binding) {
         recyclerViewAddGroup.adapter = groupAddListAdapter
-        viewModel.initGroupAddItem(groupAddGetItems)
+        viewModel.initGroupAddItems(groupAddGetItems)
 
         groupAddSetItem = GroupAddSetItem()
+        //테스트용 임시 사용자 계정 추가 (모임 생성하는 방장 - 최소 멤버로 가입)
+        groupAddSetItem = groupAddSetItem.copy(
+            memberList = listOf(
+                Member(
+                    "-NhImSiData",
+                    "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
+                    "sinw"
+                )
+            )
+        )
 
         btnAddGroup.setOnClickListener {
-            if(isCorrectGroupAddItem(groupAddSetItem)) {
+            Log.d("sinw", "groupAddSetItem / $groupAddSetItem")
+            if (isCorrectGroupAddItem(groupAddSetItem)) {
                 Toast.makeText(this@GroupAddActivity, "모임이 생성되었습니다.", Toast.LENGTH_SHORT).show()
                 viewModel.setGroupAddItem(groupAddSetItem)
                 finish()
             } else {
-                Toast.makeText(this@GroupAddActivity, "입력되지 않은 정보가 있습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@GroupAddActivity, "입력되지 않은 정보가 있습니다.", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -114,6 +151,5 @@ class GroupAddActivity : AppCompatActivity() {
             "GroupPhotoBackImage" -> groupAddSetItem.copy(backgroundImage = text)
             else -> groupAddSetItem.copy()
         }
-        Log.d("sinw", "$groupAddSetItem")
     }
 }
