@@ -1,13 +1,17 @@
 package com.wd.woodong2.presentation.group.add
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupAddActivityBinding
-import java.util.concurrent.atomic.AtomicLong
 
 class GroupAddActivity : AppCompatActivity() {
 
@@ -43,19 +47,42 @@ class GroupAddActivity : AppCompatActivity() {
             GroupAddGetItem.Divider("GroupPwDiv"),
             GroupAddGetItem.Title("GroupPhotoTitle", "모임 사진을 등록해주세요."),
             GroupAddGetItem.Description("GroupPhotoMainDes", "대표 사진"),
-            GroupAddGetItem.Image("GroupPhotoMainImage", R.drawable.group_add_ic_add_image),
+            GroupAddGetItem.Image("GroupPhotoMainImage", null),
             GroupAddGetItem.Description("GroupPhotoBackDes", "배경 사진"),
-            GroupAddGetItem.Image("GroupPhotoBackImage", R.drawable.group_add_ic_add_image)
+            GroupAddGetItem.Image("GroupPhotoBackImage", null)
         )
     }
+
+    private var currentPosition: Int = -1
+    private lateinit var currentItem: GroupAddGetItem.Image
+
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.let { uri ->
+                    viewModel.updateImage(currentPosition, currentItem, uri)
+                    createImageGroupAdd(currentPosition, uri)
+                }
+            }
+        }
 
     private val groupAddListAdapter by lazy {
         GroupAddListAdapter(
             onCreateGroupAdd = { position, text ->
-                createGroupAdd(position, text)
+                createTextGroupAdd(position, text)
             },
             onCheckBoxChecked = { position, item ->
                 viewModel.updatePasswordChecked(position, item)
+            },
+            onClickImage = { position, item ->
+                currentPosition = position
+                currentItem = item
+                galleryLauncher.launch(
+                    Intent(Intent.ACTION_PICK).setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        "image/*"
+                    )
+                )
             }
         )
     }
@@ -71,7 +98,7 @@ class GroupAddActivity : AppCompatActivity() {
 
     private fun initView() = with(binding) {
         recyclerViewAddGroup.adapter = groupAddListAdapter
-        viewModel.initGroupAddItem(groupAddGetItems)
+        viewModel.initGroupAddItems(groupAddGetItems)
 
         groupAddSetItem = GroupAddSetItem()
         //테스트용 임시 사용자 계정 추가 (모임 생성하는 방장 - 최소 멤버로 가입)
@@ -86,12 +113,13 @@ class GroupAddActivity : AppCompatActivity() {
         )
 
         btnAddGroup.setOnClickListener {
-            if(isCorrectGroupAddItem(groupAddSetItem)) {
+            if (isCorrectGroupAddItem(groupAddSetItem)) {
                 Toast.makeText(this@GroupAddActivity, "모임이 생성되었습니다.", Toast.LENGTH_SHORT).show()
                 viewModel.setGroupAddItem(groupAddSetItem)
                 finish()
             } else {
-                Toast.makeText(this@GroupAddActivity, "입력되지 않은 정보가 있습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@GroupAddActivity, "입력되지 않은 정보가 있습니다.", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -109,10 +137,10 @@ class GroupAddActivity : AppCompatActivity() {
                 && groupAddSetItem.ageLimit.isNullOrBlank().not()
                 && groupAddSetItem.memberLimit.isNullOrBlank().not()
                 && groupAddSetItem.password.isNullOrBlank().not()
-                && groupAddSetItem.mainImage.isNullOrBlank().not()
-                && groupAddSetItem.backgroundImage.isNullOrBlank().not()
+                && groupAddSetItem.mainImage != null
+                && groupAddSetItem.backgroundImage != null
 
-    private fun createGroupAdd(position: Int, text: String) {
+    private fun createTextGroupAdd(position: Int, text: String) {
         groupAddSetItem = when (groupAddGetItems[position].id) {
             "GroupTendencyChipG" -> groupAddSetItem.copy(groupTag = text)
             "GroupIntroNameEdt" -> groupAddSetItem.copy(title = text)
@@ -120,10 +148,15 @@ class GroupAddActivity : AppCompatActivity() {
             "GroupWithAgeChipG" -> groupAddSetItem.copy(ageLimit = text)
             "GroupWithMemberChipG" -> groupAddSetItem.copy(memberLimit = text)
             "GroupPwEdtChk" -> groupAddSetItem.copy(password = text)
-            "GroupPhotoMainImage" -> groupAddSetItem.copy(mainImage = text)
-            "GroupPhotoBackImage" -> groupAddSetItem.copy(backgroundImage = text)
             else -> groupAddSetItem.copy()
         }
-        Log.d("sinw", "$groupAddSetItem")
+    }
+
+    private fun createImageGroupAdd(position: Int, uri: Uri) {
+        groupAddSetItem = when(groupAddGetItems[position].id) {
+            "GroupPhotoMainImage" -> groupAddSetItem.copy(mainImage = uri)
+            "GroupPhotoBackImage" -> groupAddSetItem.copy(backgroundImage = uri)
+            else -> groupAddSetItem.copy()
+        }
     }
 }

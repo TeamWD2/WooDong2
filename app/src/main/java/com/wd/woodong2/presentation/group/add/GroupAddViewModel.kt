@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.group.add
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,7 +18,7 @@ class GroupAddViewModel(
     private val _groupAddList: MutableLiveData<List<GroupAddGetItem>> = MutableLiveData()
     val groupAddList: LiveData<List<GroupAddGetItem>> get() = _groupAddList
 
-    fun initGroupAddItem(groupAddGetItems: List<GroupAddGetItem>) {
+    fun initGroupAddItems(groupAddGetItems: List<GroupAddGetItem>) {
         _groupAddList.value = groupAddGetItems
     }
 
@@ -27,6 +28,12 @@ class GroupAddViewModel(
         }
         val currentList = _groupAddList.value.orEmpty().toMutableList()
         currentList[position] = item
+        _groupAddList.value = currentList
+    }
+
+    fun updateImage(position: Int, item: GroupAddGetItem.Image, uri: Uri) {
+        val currentList = _groupAddList.value.orEmpty().toMutableList()
+        currentList[position] = item.copy(image = uri)
         _groupAddList.value = currentList
     }
 

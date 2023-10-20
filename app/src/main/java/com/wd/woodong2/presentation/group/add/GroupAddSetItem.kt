@@ -1,5 +1,7 @@
 package com.wd.woodong2.presentation.group.add
 
+import android.net.Uri
+
 data class GroupAddSetItem(
     val groupTag: String? = null,
     val title: String? = null,
@@ -8,8 +10,8 @@ data class GroupAddSetItem(
     val memberLimit: String? = null,
     val memberList: List<Member>? = null,
     val password: String? = null,
-    val mainImage: String? = null,
-    val backgroundImage: String? = null
+    val mainImage: Uri? = null,
+    val backgroundImage: Uri? = null
 )
 
 data class Member(
