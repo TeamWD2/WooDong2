@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:background="@drawable/group_border_search"
+        android:background="@drawable/group_border_box"
         android:ems="10"
         android:hint="제목"
         android:inputType="text"
@@ -61,7 +61,7 @@
         android:layout_width="307dp"
         android:layout_height="186dp"
         android:layout_marginTop="12dp"
-        android:background="@drawable/group_border_search"
+        android:background="@drawable/group_border_box"
         android:ems="10"
         android:gravity="top"
         android:hint="글 내용"
@@ -160,7 +160,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_add_tag1"
         app:layout_constraintVertical_bias="0.215"
-        app:srcCompat="@drawable/group_border_search" />
+        app:srcCompat="@drawable/group_border_box" />
 
     <com.google.android.material.chip.Chip
         android:id="@+id/home_add_tag1"

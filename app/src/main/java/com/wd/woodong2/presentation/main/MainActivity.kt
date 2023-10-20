@@ -1,8 +1,12 @@
 package com.wd.woodong2.presentation.main
 
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.MainActivityBinding
 import com.wd.woodong2.presentation.chat.content.ChatFragment

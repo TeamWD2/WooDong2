@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:src="@drawable/chat_detail_ic_add"
+        android:src="@drawable/public_ic_add"
         app:layout_constraintBottom_toBottomOf="@+id/home_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.954"
