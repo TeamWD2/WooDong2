@@ -1,5 +1,7 @@
 package com.wd.woodong2.presentation.group.add
 
+import android.net.Uri
+
 sealed class GroupAddGetItem(
     open val id: String
 ) {
@@ -34,7 +36,7 @@ sealed class GroupAddGetItem(
 
     data class Image(
         override val id: String,
-        val image: Int?
+        val image: Uri?
     ): GroupAddGetItem(id)
 
     data class Divider(

@@ -25,7 +25,8 @@ import java.util.regex.Pattern
 
 class GroupAddListAdapter(
     private val onCreateGroupAdd: (Int, String) -> Unit,
-    private val onCheckBoxChecked: (Int, GroupAddGetItem.Password) -> Unit
+    private val onCheckBoxChecked: (Int, GroupAddGetItem.Password) -> Unit,
+    private val onClickImage: (Int, GroupAddGetItem.Image) -> Unit
 ) : ListAdapter<GroupAddGetItem, GroupAddListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<GroupAddGetItem>() {
         override fun areItemsTheSame(
@@ -105,7 +106,8 @@ class GroupAddListAdapter(
                 GroupAddImageItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 ),
-                onCreateGroupAdd
+                onCreateGroupAdd,
+                onClickImage
             )
 
             GroupAddItemViewType.DIVIDER.ordinal -> DividerViewHolder(
@@ -156,7 +158,7 @@ class GroupAddListAdapter(
                         isCheckable = true
                         setOnClickListener {
                             onCreateGroupAdd(
-                                adapterPosition,
+                                bindingAdapterPosition,
                                 text.toString()
                             )
                         }
@@ -180,7 +182,7 @@ class GroupAddListAdapter(
                     setOnFocusChangeListener { _, hasFocus ->
                         if (!hasFocus) { //focus가 다른 뷰로 이동될 때
                             onCreateGroupAdd(
-                                adapterPosition,
+                                bindingAdapterPosition,
                                 edtText.text.toString()
                             )
                         }
@@ -210,7 +212,6 @@ class GroupAddListAdapter(
                             }
 
                             override fun afterTextChanged(p0: Editable?) {
-                                Log.d("sinw", "afterTextChanged")
                                 val pwdPattern = Pattern.matches(
                                     "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{8,16}$",
                                     text.toString().trim()
@@ -220,7 +221,7 @@ class GroupAddListAdapter(
                                         setText(R.string.group_add_password_valid)
                                         setTextColor(Color.GREEN)
                                         onCreateGroupAdd(
-                                            adapterPosition,
+                                            bindingAdapterPosition,
                                             edtPassword.text.toString()
                                         )
                                     }
@@ -239,7 +240,7 @@ class GroupAddListAdapter(
                         isEnabled = false
                         setBackgroundResource(R.drawable.group_border_box_disabled)
                         onCreateGroupAdd(
-                            adapterPosition,
+                            bindingAdapterPosition,
                             "[WD2] No Password"
                         )
                     }
@@ -251,7 +252,7 @@ class GroupAddListAdapter(
                     setOnCheckedChangeListener { _, isChkBox ->
                         if (item.isChecked != isChkBox) {
                             onCheckBoxChecked(
-                                adapterPosition,
+                                bindingAdapterPosition,
                                 item.copy(isChecked = isChkBox)
                             )
                         }
@@ -263,17 +264,18 @@ class GroupAddListAdapter(
 
     class ImageViewHolder(
         private val binding: GroupAddImageItemBinding,
-        private val onCreateGroupAdd: (Int, String) -> Unit
+        private val onCreateGroupAdd: (Int, String) -> Unit,
+        private val onClickImage: (Int, GroupAddGetItem.Image) -> Unit
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupAddGetItem) = with(binding) {
             if (item is GroupAddGetItem.Image) {
                 imgImage.load(item.image) {
-                    error(R.drawable.group_ic_no_image)
+                    error(R.drawable.group_add_ic_add_image)
                 }
                 imgImage.setOnClickListener {
-                    onCreateGroupAdd(
-                        adapterPosition,
-                        "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg" //임시데이터
+                    onClickImage(
+                        bindingAdapterPosition,
+                        item
                     )
                 }
             }

@@ -10,6 +10,7 @@
         android:layout_height="70dp"
         android:background="@drawable/group_border_box"
         android:padding="5dp"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
