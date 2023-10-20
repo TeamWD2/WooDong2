@@ -34,11 +34,16 @@ import java.util.Locale
 class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
+        const val EXTRA_FIRSTLOCATION = "extra_firstlocation"
+        const val EXTRA_SECONDLOCATION = "extra_secondlocation"
 
-        //private lateinit var HomeMapItem: HomeItem
-        fun newIntent(context: Context)=//, homeItem: HomeItem) =
+        private var firstLocation : String? ="Unknown Location"
+        private var secondLocation : String? ="Unknown Location"
+        fun newIntent(context: Context,firstLoc: String, secondLoc:String)=//, homeItem: HomeItem) =
             Intent(context, HomeMapActivity::class.java).apply {
                 //HomeMapItem = homeItem
+                firstLocation = firstLoc
+                secondLocation = secondLoc
             }
 
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
@@ -46,8 +51,8 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var clientId : String? = null
 
-    private var firstLocation : String? ="Unknown Location"
-    private var secondLocation : String? ="Unknown Location"
+//    private var firstLocation : String? ="Unknown Location"
+//    private var secondLocation : String? ="Unknown Location"
 
     private lateinit var binding : HomeMapActivityBinding
     private lateinit var naverMap: NaverMap
@@ -134,15 +139,22 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun initHomeMapView(){
 
+        binding.homeMapFirstBtnTvLocation.text = firstLocation
+        if(secondLocation!!.isNotEmpty()){
+            binding.homeMapSecondBtnTvLocation.text = secondLocation
+            Glide.with(this)
+                .load(R.drawable.home_map_btn_ic_close)
+                .into(binding.homeMapSecondBtnIvLocation)
+        }
 
         binding.homeMapClose.setOnClickListener{
             val intent = Intent().apply{
                 putExtra(
-                    "firstLocation",
+                    EXTRA_FIRSTLOCATION,
                     firstLocation
                 )
                 putExtra(
-                    "secondLocation",
+                    EXTRA_SECONDLOCATION,
                     secondLocation
                 )
             }

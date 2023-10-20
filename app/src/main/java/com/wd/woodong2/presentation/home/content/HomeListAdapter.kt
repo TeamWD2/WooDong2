@@ -35,7 +35,7 @@ class HomeListAdapter(
             homeListItemThumbnailCount.text = item.thumbnailCount.toString()
             homeListItemTvTitle.text = item.title
             homeListItemTvDescription.text = item.description
-            homeListItemTvLocation.text = item.location
+            homeListItemTvLocation.text = item.firstLocation
             homeListItemTvTimeStamp.text = item.timeStamp.toString()
             homeListItemTvViews.text = item.view
             homeListItemTvThumbCount.text = item.thumbCount.toString()

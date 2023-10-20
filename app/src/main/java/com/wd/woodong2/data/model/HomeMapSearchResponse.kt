@@ -6,6 +6,7 @@ data class HomeMapSearchResponse(
     @SerializedName("documents")
     val documents: List<Place>?
 )
+
 data class Place(
     @SerializedName("place_name")
     val placeName: String?,             // 장소명, 업체명

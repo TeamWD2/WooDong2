@@ -11,8 +11,8 @@ class MapSearchRepositoryImpl (
 ) : MapSearchRepository{
 
     override suspend fun getSearchMap(
-        key     : String,
-        query   : String
+        key:String,
+        query:String
     ) :MapSearchEntity = homeMapSearchRemoteDatasource.getAddressSearch(
             key,
             query
