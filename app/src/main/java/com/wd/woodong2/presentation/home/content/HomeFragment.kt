@@ -1,7 +1,11 @@
 package com.wd.woodong2.presentation.home.content
 
+
 import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +15,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.wd.woodong2.databinding.HomeFragmentBinding
+import com.wd.woodong2.presentation.home.add.HomeAddActivity
 import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.home.map.HomeMapActivity.Companion.EXTRA_FIRSTLOCATION
@@ -71,6 +80,7 @@ class HomeFragment : Fragment() {
 
 
         return binding.root
+
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -92,6 +102,16 @@ class HomeFragment : Fragment() {
         }
 
         homeRecyclerView.adapter = listAdapter
+
+        binding.homeRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = listAdapter
+        }
+
+        binding.fabHomeadd.setOnClickListener {
+            val intent = HomeAddActivity.homeAddActivityNewIntent(this@HomeFragment.requireContext())
+            startActivity(intent)
+        }
     }
     private fun initViewModel(){
         with(viewModel){
@@ -105,6 +125,9 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
+
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

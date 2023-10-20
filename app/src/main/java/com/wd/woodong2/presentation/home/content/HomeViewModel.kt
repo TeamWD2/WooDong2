@@ -11,6 +11,9 @@ import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import kotlinx.coroutines.launch
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 class HomeViewModel(
     private val userItem: UserGetItemsUseCase
@@ -19,6 +22,31 @@ class HomeViewModel(
 
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
+    init {
+        loadDataFromFirebase()
+    }
+
+    private fun loadDataFromFirebase() {
+        val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val dataList = ArrayList<HomeItem>()
+
+                for (postSnapshot in dataSnapshot.children) {
+                    val firebaseData = postSnapshot.getValue(HomeItem::class.java)
+                    if (firebaseData != null) {
+                        dataList.add(firebaseData)
+                    }
+                }
+
+                _list.value = dataList
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
+    }
 
     val userId = "user1"
     val userInfo: MutableLiveData<UserItem> = MutableLiveData()

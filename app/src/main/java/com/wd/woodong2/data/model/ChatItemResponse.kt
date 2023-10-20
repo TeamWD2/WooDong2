@@ -1,20 +1,28 @@
 package com.wd.woodong2.data.model
 
 import com.google.gson.annotations.SerializedName
-import com.wd.woodong2.domain.model.Message
 
 data class ChatItemsResponse(
-    val chatItems: List<ChatResponse>?
+    val chatItems: List<ChatResponse>?,
 )
 
-// ChatFragment에서 사용할 데이터 구조
 data class ChatResponse(
     val id: String?,
-    @SerializedName("imgProfile") val imgProfile: String?,
-    // 그룹이거나 사람
+    @SerializedName("groupId") val groupId: String?,
+    @SerializedName("last") val last: MessageResponse?,
+    @SerializedName("mainImage") val mainImage: String?,
+    @SerializedName("memberLimit") val memberLimit: String?,
+    @SerializedName("message") val message: Map<String, MessageResponse>?,
+    @SerializedName("title") val title: String?
+)
+
+data class MessageItemsResponse(
+    val messageItems: List<MessageResponse>?
+)
+
+data class MessageResponse(
+    val id: String?,
+    @SerializedName("content") val content: String?,
     @SerializedName("senderId") val senderId: String?,
-    @SerializedName("location") val location: String?,
-    @SerializedName("timestamp") val timestamp: String?,
-    @SerializedName("lastMassage") val lastMassage: String?,
-    @SerializedName("message") val message: List<MessageResponse>?,
+    @SerializedName("timestamp") val timestamp: Long?
 )

@@ -202,7 +202,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     binding.homeMapFirstBtnTvLocation.text = binding.homeMapSecondBtnTvLocation.text.toString()
                     secondLocation = ""
                     binding.homeMapSecondBtnTvLocation.text = ""
-                    //binding.homeMapSecondBtnIvLocation.load(R.drawable.home_map_btn_ic_add) { size(24, 24) }
                     Glide.with(this)
                         .load(R.drawable.home_map_btn_ic_add)
                         .into(binding.homeMapSecondBtnIvLocation)
@@ -242,7 +241,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             else{
                 secondLocation = ""
                 binding.homeMapSecondBtnTvLocation.text = ""
-                //binding.homeMapSecondBtnIvLocation.load(R.drawable.home_map_btn_ic_add){ size(24, 24) }
                 Glide.with(this)
                     .load(R.drawable.home_map_btn_ic_add)
                     .into(binding.homeMapSecondBtnIvLocation)

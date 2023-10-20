@@ -6,13 +6,19 @@ data class GroupItemsEntity(
 
 data class GroupEntity(
     val id: String?,
-    val groupProfile: String?,
     val title: String?,
-    val memberProfile1: String?,
-    val memberProfile2: String?,
-    val memberProfile3: String?,
-    val memberCount: Int?,
-    val tagLocation: String?,
-    val tagCategory: String?,
-    val tagCapacity: Int?,
+    val introduce: String?,
+    val groupTag: String?,
+    val ageLimit: String?,
+    val memberLimit: String?,
+    val memberList: List<MemberEntity>?,
+    val password: String?,
+    val mainImage: String?,
+    val backgroundImage: String?
+)
+
+data class MemberEntity(
+    val userId: String?,
+    val userName: String?,
+    val userProfile: String?
 )

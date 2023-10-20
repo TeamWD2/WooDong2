@@ -13,12 +13,11 @@ fun MessageResponse.toEntity() = MessageEntity(
     id = id,
     senderId = senderId,
     timestamp = timestamp,
-    message = message,
+    content = content,
 )
 
 fun MessageResponse.toMessage() = Message(
-    id = id,
     senderId = senderId,
     timestamp = timestamp,
-    message = message,
+    content = content,
 )

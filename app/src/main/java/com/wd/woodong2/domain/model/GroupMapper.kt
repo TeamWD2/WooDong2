@@ -2,6 +2,7 @@ package com.wd.woodong2.domain.model
 
 import com.wd.woodong2.data.model.GroupItemsResponse
 import com.wd.woodong2.data.model.GroupResponse
+import com.wd.woodong2.data.model.MemberResponse
 
 fun GroupItemsResponse.toEntity() = GroupItemsEntity(
     groupItems = groupItems?.map {
@@ -11,13 +12,21 @@ fun GroupItemsResponse.toEntity() = GroupItemsEntity(
 
 fun GroupResponse.toEntity() = GroupEntity(
     id = id,
-    groupProfile = groupProfile,
     title = title,
-    memberProfile1 = memberProfile1,
-    memberProfile2 = memberProfile2,
-    memberProfile3 = memberProfile3,
-    memberCount = memberCount,
-    tagLocation = tagLocation,
-    tagCategory = tagCategory,
-    tagCapacity = tagCapacity
+    introduce = introduce,
+    groupTag = groupTag,
+    ageLimit = ageLimit,
+    memberLimit = memberLimit,
+    memberList = memberList?.map {
+        it.toEntity()
+    },
+    password = password,
+    mainImage = mainImage,
+    backgroundImage = backgroundImage
+)
+
+fun MemberResponse.toEntity() = MemberEntity(
+    userId = userId,
+    userName = userName,
+    userProfile = userProfile
 )

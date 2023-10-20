@@ -1,8 +1,12 @@
 package com.wd.woodong2.presentation.main
 
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.MainActivityBinding
 import com.wd.woodong2.presentation.chat.content.ChatFragment
@@ -32,13 +36,60 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * 갤러리 접근 권한 설정
+     * Target SDK 33 부터 READ_EXTERNAL_STORAGE 권한 세분화 (이미지/동영상/오디오)
+     * Android 13(VERSION_CODES.TIRAMISU) 버전 체크하여 권한 요청 필요
+     */
+    private val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(
+            android.Manifest.permission.READ_MEDIA_IMAGES,
+            android.Manifest.permission.READ_MEDIA_VIDEO
+        )
+    } else {
+        arrayOf(
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    }
+
+    private val galleryPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (permissions.values.all { it }) {
+                initView()
+            } else {
+                Toast.makeText(this, getString(R.string.main_toast_permission), Toast.LENGTH_SHORT)
+                    .show()
+                finish()
+            }
+        }
+
+    private val homeMapLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//            if(result.resultCode == Acitivty.RESULT_OK){
+//
+//            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initView()
+        checkPermissions()
+    }
 
+    private fun checkPermissions() {
+        if (permissions.all {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            }
+        ) {
+            initView()
+        } else {
+            galleryPermissionLauncher.launch(permissions)
+        }
     }
 
     private fun initView() = with(binding) {
