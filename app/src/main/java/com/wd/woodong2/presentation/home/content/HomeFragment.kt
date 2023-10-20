@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.wd.woodong2.databinding.HomeFragmentBinding
+import com.wd.woodong2.presentation.home.add.HomeAddActivity
 import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
 
 
@@ -99,6 +100,11 @@ class HomeFragment : Fragment() {
                 // 처리중 에러 발생시 처리
             }
         })
+
+        binding.homeFabadd.setOnClickListener {
+            val intent = HomeAddActivity.homeAddActivityNewIntent(this@HomeFragment.requireContext())
+            startActivity(intent)
+        }
 
     }
 

@@ -28,8 +28,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.home.add.HomeAddActivity" />
-
+            android:name=".presentation.home.add.HomeAddActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".presentation.home.detail.HomeDetailActivity"
+            android:exported="false"/>
         <activity
             android:name=".presentation.chat.detail.ChatDetailActivity"
             android:exported="false" />
