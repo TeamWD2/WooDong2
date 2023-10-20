@@ -83,7 +83,9 @@ class ChatItemListAdapter(
         holder.onBind(getItem(position))
     }
 
-    private fun formatTimestamp(timestamp: Long): String {
+    private fun formatTimestamp(timestamp: Long?): String {
+        if (timestamp == null) return "정보 없음"
+
         val currentTimeMillis = System.currentTimeMillis()
 
         val currentTime = Date(currentTimeMillis)
@@ -126,8 +128,8 @@ class ChatItemListAdapter(
             if (item is ChatItem.GroupChatItem) {
                 txtName.text = item.title
                 txtLastMassage.text = item.lastMessage
-                txtLocale.text = item.location
-                txtDate.text = formatTimestamp(item.timeStamp ?: System.currentTimeMillis())
+                txtMemberNum.text = item.memberLimit
+                txtTimestamp.text = formatTimestamp(item.timeStamp ?: System.currentTimeMillis())
             }
             itemView.setOnClickListener {
                 onClick(item)
@@ -142,10 +144,10 @@ class ChatItemListAdapter(
 
         override fun onBind(item: ChatItem) = with(binding) {
             if (item is ChatItem.PrivateChatItem) {
-                txtName.text = item.userName
+                txtName.text = item.title
                 txtLastMassage.text = item.lastMessage
-                txtLocale.text = item.location
-                txtDate.text = formatTimestamp(item.timeStamp ?: System.currentTimeMillis())
+                txtMemberNum.text = item.memberLimit
+                txtTimestamp.text = formatTimestamp(item.timeStamp ?: System.currentTimeMillis())
             }
             itemView.setOnClickListener {
                 onClick(item)

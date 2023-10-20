@@ -11,10 +11,10 @@ fun ChatItemsResponse.toEntity() = ChatItemsEntity(
 
 fun ChatResponse.toEntity() = ChatEntity(
     id = id,
-    imgProfile = imgProfile,
-    senderId = senderId,
-    location = location,
-    timestamp = timestamp,
-    lastMessage = lastMessage,
-    message = message?.mapValues { it.value.toMessage() }.orEmpty()
+    groupId = groupId,
+    last = last?.toMessage(),
+    mainImage = mainImage,
+    memberLimit = memberLimit,
+    message = message?.map { it.value.toMessage() }.orEmpty(),
+    title = title,
 )
