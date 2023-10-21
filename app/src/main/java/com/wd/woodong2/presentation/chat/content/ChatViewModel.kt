@@ -32,7 +32,9 @@ class ChatViewModel(
         ),
         email = "대니주@example.com",
         name = "주찬영",
-        imgProfile = "URL_TO_USER_1_IMAGE"
+        imgProfile = "URL_TO_USER_1_IMAGE",
+        firstLocation = "",
+        secondLocation = "",
     )
 
     init {
@@ -50,6 +52,8 @@ class ChatViewModel(
                         imgProfile = it.imgProfile,
                         email = it.email,
                         chatIds = it.chatIds,
+                        firstLocation = it.firstLocation,
+                        secondLocation = it.secondLocation
                     )
                 }.orEmpty()
                 user = userItem[0]
@@ -103,6 +107,8 @@ class ChatViewModelFactory : ViewModelProvider.Factory {
     private val chatDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("chat_list")
     }
+
+    // 삭제 예정
     private val userDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("users")
     }
@@ -111,6 +117,8 @@ class ChatViewModelFactory : ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
             return ChatViewModel(
                 ChatGetItemsUseCase(ChatRepositoryImpl(chatDatabaseReference)),
+
+                // 삭제 예정
                 UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference))
             ) as T
         } else {

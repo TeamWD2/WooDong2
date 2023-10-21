@@ -10,4 +10,6 @@ data class UserEntity(
     val imgProfile: String?,
     val email: String?,
     val chatIds: List<String>?,
+    val firstLocation: String?,
+    val secondLocation: String?
 )

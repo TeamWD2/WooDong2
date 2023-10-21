@@ -1,15 +1,14 @@
 package com.wd.woodong2.presentation.home.map
 
-import retrofit2.Call
+import com.wd.woodong2.data.model.HomeMapSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
 
-interface KakaoAPI {
+interface HomeMapSearchRemoteDatasource {
     @GET("v2/local/search/keyword.json")
-    fun getAddressSearch(
+    suspend fun getAddressSearch(
         @Header("Authorization") key: String,
         @Query("query") query: String
-
-    ): Call<AddressSearchResponse>
+    ): HomeMapSearchResponse
 }
