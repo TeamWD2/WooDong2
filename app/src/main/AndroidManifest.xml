@@ -66,7 +66,7 @@
             android:exported="false" />
 
         <service
-            android:name=".fcm.MyFirebaseMessagingService"
+            android:name=".services.fcm.MyFirebaseMessagingService"
             android:directBootAware="true"
             android:exported="false">
             <intent-filter>
