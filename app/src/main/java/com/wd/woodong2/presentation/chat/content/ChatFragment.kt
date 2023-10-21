@@ -78,7 +78,7 @@ class ChatFragment : Fragment() {
         chatViewModel.chatList.observe(viewLifecycleOwner) { itemList ->
             chatItemListAdapter.submitList(itemList.toMutableList())
         }
-        chatViewModel.loadingState.observe(viewLifecycleOwner) { loadingState ->
+        chatViewModel.isLoading.observe(viewLifecycleOwner) { loadingState ->
             binding.progressBar.isVisible = loadingState
         }
     }

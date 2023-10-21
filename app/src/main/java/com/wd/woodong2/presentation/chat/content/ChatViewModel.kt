@@ -23,8 +23,8 @@ class ChatViewModel(
     val chatList: LiveData<MutableList<ChatItem>>
         get() = _chatList
 
-    private val _loadingState: MutableLiveData<Boolean> = MutableLiveData()
-    val loadingState: LiveData<Boolean> get() = _loadingState
+    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     // User test
     val userId = "user1"
@@ -67,15 +67,15 @@ class ChatViewModel(
     }
 
     private fun getChatItems() = viewModelScope.launch {
-        _loadingState.value = true
+        _isLoading.value = true
         runCatching {
             chatItem(user.chatIds.orEmpty()).collect { items ->
                 _chatList.postValue(readChatItems(items).toMutableList())
-                _loadingState.value = false
+                _isLoading.value = false
             }
         }.onFailure {
             Log.e("danny", it.message.toString())
-            _loadingState.value = false
+            _isLoading.value = false
         }
     }
 
