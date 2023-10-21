@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.databinding.ChatDetailActivityBinding
 import com.wd.woodong2.presentation.chat.content.ChatItem
@@ -104,6 +105,9 @@ class ChatDetailActivity : AppCompatActivity() {
     private fun initModel() {
         chatDetailViewModel.messageList.observe(this) { itemList ->
             chatDetailItemListAdapter.submitList(itemList.toMutableList())
+        }
+        chatDetailViewModel.isLoading.observe(this) { loadingState ->
+            binding.progressBar.isVisible = loadingState
         }
     }
 }

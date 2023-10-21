@@ -23,13 +23,16 @@ class ChatDetailViewModel(
     val messageList: LiveData<MutableList<MessageItem>>
         get() = _massageList
 
+    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
     init {
         getMessageItem()
     }
 
     private fun getMessageItem() = viewModelScope.launch {
         runCatching {
-//            리스너 없는 코드
+            _isLoading.value = true
             getMessageItem.invoke().collect { items ->
                 val messageItemList = items?.messageItems?.map { messageResponse ->
                     MessageItem(
@@ -41,9 +44,11 @@ class ChatDetailViewModel(
                     )
                 }?.sortedBy { it.timestamp } ?: emptyList()
                 _massageList.postValue(messageItemList.toMutableList())
+                _isLoading.value = false
             }
         }.onFailure {
             Log.e("danny", it.message.toString())
+            _isLoading.value = false
         }
     }
 
