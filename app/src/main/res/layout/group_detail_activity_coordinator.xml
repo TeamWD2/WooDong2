@@ -18,14 +18,6 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="false">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/materialToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/public_ic_back"
-                app:titleTextColor="@color/black" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -80,6 +72,14 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/img_background" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/materialToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/public_ic_back"
+                app:titleTextColor="@color/black" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

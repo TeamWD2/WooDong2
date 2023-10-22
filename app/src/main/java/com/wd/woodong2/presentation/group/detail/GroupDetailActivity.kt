@@ -6,12 +6,14 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailActivityBinding
 import com.wd.woodong2.databinding.GroupDetailActivityCoordinatorBinding
 import com.wd.woodong2.presentation.group.content.GroupItem
+import kotlin.math.abs
 
 class GroupDetailActivity : AppCompatActivity() {
     companion object {
@@ -26,7 +28,7 @@ class GroupDetailActivity : AppCompatActivity() {
     private lateinit var includeBinding: GroupDetailActivityCoordinatorBinding
 
     private val groupItem by lazy {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(
                 EXTRA_GROUP_ITEM,
                 GroupItem::class.java
@@ -61,16 +63,23 @@ class GroupDetailActivity : AppCompatActivity() {
             imgMain.load(groupItem?.mainImage) {
                 error(R.drawable.group_ic_no_image)
             }
-            txtTitle.text = groupItem?.title
+            val itemTitle = groupItem?.title
+            txtTitle.text = itemTitle
             txtCount.text = "멤버 ${groupItem?.memberList?.size} / 게시판 1"
 
             //Toolbar init
             setSupportActionBar(materialToolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowTitleEnabled(false)
-            materialToolbar.title = "Test Title"
             materialToolbar.setNavigationOnClickListener {
                 finish() //뒤로가기 아이콘 클릭 시
+            }
+            appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+                materialToolbar.title = if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
+                    itemTitle
+                } else {
+                    ""
+                }
             }
 
             //ViewPager2Adapter init
