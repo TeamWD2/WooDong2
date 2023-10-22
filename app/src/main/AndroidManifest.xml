@@ -44,7 +44,9 @@
         <activity
             android:name=".presentation.group.add.GroupAddActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".presentation.group.detail.GroupDetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

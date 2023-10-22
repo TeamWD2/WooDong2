@@ -32,6 +32,12 @@
     <string name="group_add_password_valid">사용 가능한 비밀번호입니다.</string>
     <string name="group_add_password_invalid">영문+숫자+특수문자 조합으로 입력해주세요.(8~16자리)</string>
 
+    <string name="group_detail_tab_home_title">홈</string>
+    <string name="group_detail_tab_member_title">멤버</string>
+    <string name="group_detail_tab_board_title">게시판</string>
+    <string name="group_detail_tab_album_title">앨범</string>
+    <string name="group_detail_btn_join_group">채팅방 입장하기</string>
+
     <string name="chat_txt_title">채팅</string>
 
     <string name="my_page_txt_title">마이페이지</string>

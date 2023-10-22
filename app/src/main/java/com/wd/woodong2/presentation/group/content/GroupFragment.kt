@@ -1,6 +1,5 @@
 package com.wd.woodong2.presentation.group.content
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.wd.woodong2.databinding.GroupFragmentBinding
 import com.wd.woodong2.presentation.group.add.GroupAddActivity
+import com.wd.woodong2.presentation.group.detail.GroupDetailActivity
 
 class GroupFragment : Fragment() {
     companion object {
@@ -26,7 +26,7 @@ class GroupFragment : Fragment() {
     private val groupListAdapter by lazy {
         GroupListAdapter(
             itemClickListener = { item ->
-                // GroupDetailActivity 이동
+                startActivity(GroupDetailActivity.newIntent(requireContext()))
             }
         )
     }
@@ -49,7 +49,7 @@ class GroupFragment : Fragment() {
         // TODO("toolbar 설정")
 
         fabAddGroup.setOnClickListener {
-            startActivity(Intent(requireContext(), GroupAddActivity::class.java))
+            startActivity(GroupAddActivity.newIntent(requireContext()))
         }
 
         recyclerViewGroup.adapter = groupListAdapter

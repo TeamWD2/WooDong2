@@ -1,6 +1,7 @@
 package com.wd.woodong2.presentation.group.add
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
@@ -12,6 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.wd.woodong2.databinding.GroupAddActivityBinding
 
 class GroupAddActivity : AppCompatActivity() {
+
+    companion object {
+        fun newIntent(context: Context): Intent =
+            Intent(context, GroupAddActivity::class.java)
+    }
 
     private lateinit var binding: GroupAddActivityBinding
 

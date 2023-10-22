@@ -1,25 +1,25 @@
-package com.wd.woodong2.presentation.group.detail.board
+package com.wd.woodong2.presentation.group.detail.member
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.wd.woodong2.databinding.GroupDetailBoardFragmentBinding
+import com.wd.woodong2.databinding.GroupDetailMemberFragmentBinding
 
-class GroupDetailBoardFragment: Fragment() {
+class GroupDetailMemberFragment: Fragment() {
     companion object {
-        fun newInstance() = GroupDetailBoardFragment()
+        fun newInstance() = GroupDetailMemberFragment()
     }
 
-    private var _binding: GroupDetailBoardFragmentBinding? = null
+    private var _binding: GroupDetailMemberFragmentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = GroupDetailBoardFragmentBinding.inflate(inflater, container, false)
+        _binding = GroupDetailMemberFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
