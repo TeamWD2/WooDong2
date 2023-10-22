@@ -32,7 +32,9 @@ class ChatViewModel(
         ),
         email = "대니주@example.com",
         name = "주찬영",
-        imgProfile = "URL_TO_USER_1_IMAGE"
+        imgProfile = "URL_TO_USER_1_IMAGE",
+        firstLocation = "서초동",
+        secondLocation = "염창동"
     )
 
     init {
@@ -85,6 +87,7 @@ class ChatViewModel(
     /**
      * Firebase 에서 chat 목록 read
      */
+
     private fun readChatItems(
         items: ChatItemsEntity?
     ) = items?.chatItems?.map {

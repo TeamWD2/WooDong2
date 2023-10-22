@@ -50,7 +50,8 @@ class HomeFragment : Fragment() {
                 secondLocation = receivedDataSecondLocation
                 // firebase에 있는 값을 변경
                 binding.toolbarTvLocation.text = firstLocation
-                updateLocationData(firstLocation,secondLocation)
+
+                viewModel.updateUserItem(firstLocation.toString(), secondLocation.toString())
             } else {
 
             }
@@ -127,13 +128,14 @@ class HomeFragment : Fragment() {
     }
 
 
-
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
     }
-    private fun updateLocationData(firstLocation:String?, secondLocation:String?){
-        //firebase에 값을 갱신하는     -> 뷰모델로 가야한다
 
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        viewModel.updateUserItem(firstLocation.toString(), secondLocation.toString())
+//    }
+
 }

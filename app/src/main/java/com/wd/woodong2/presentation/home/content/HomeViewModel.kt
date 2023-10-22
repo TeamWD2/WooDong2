@@ -13,17 +13,25 @@ import com.wd.woodong2.presentation.chat.content.UserItem
 import kotlinx.coroutines.launch
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 
 class HomeViewModel(
-    private val userItem: UserGetItemsUseCase
+    private val userItem: UserGetItemsUseCase,
+    private val udbReference: DatabaseReference
     ) : ViewModel(
     ) {
-
+    //HomeItem list
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
+
+    //userItem
+    val userId = "user1"
+    val userInfo: MutableLiveData<UserItem> = MutableLiveData()
+
     init {
         loadDataFromFirebase()
+        getUserItem()
     }
 
     private fun loadDataFromFirebase() {
@@ -46,13 +54,6 @@ class HomeViewModel(
             override fun onCancelled(databaseError: DatabaseError) {
             }
         })
-    }
-
-    val userId = "user1"
-    val userInfo: MutableLiveData<UserItem> = MutableLiveData()
-
-    init {
-        getUserItem()
     }
 
     private fun getUserItem(
@@ -79,17 +80,31 @@ class HomeViewModel(
 
     }
 
+    fun updateUserItem(
+        firstLocation : String,
+        secondLocation : String
+    ) = viewModelScope.launch {
+        runCatching {
+            val updateUserData = mapOf(
+                "firstLocation" to firstLocation,
+                "secondLocation" to secondLocation
+            )
+            udbReference.updateChildren(updateUserData)
+        }
+    }
+
 }
 class HomeViewModelFactory() : ViewModelProvider.Factory {
 
     private val userDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("users")
     }
-
+    private val udbReference = userDatabaseReference.child("user1")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(
-                UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference))
+                UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference)),
+                udbReference
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
