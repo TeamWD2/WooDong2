@@ -4,9 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wd.woodong2.databinding.GroupDetailActivityBinding
+import com.wd.woodong2.databinding.GroupDetailActivityCoordinatorBinding
+import kotlin.math.abs
 
 class GroupDetailActivity : AppCompatActivity() {
     companion object {
@@ -15,6 +18,7 @@ class GroupDetailActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: GroupDetailActivityBinding
+    private lateinit var includeBinding: GroupDetailActivityCoordinatorBinding
 
     private val viewPager2Adapter by lazy {
         GroupDetailViewPagerAdapter(this@GroupDetailActivity)
@@ -25,33 +29,46 @@ class GroupDetailActivity : AppCompatActivity() {
         binding = GroupDetailActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        includeBinding = binding.includeLayoutCoordinator
+
         initView()
     }
 
-    private fun initView() = with(binding) {
-        //Toolbar init
-        setSupportActionBar(materialToolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        materialToolbar.title = "Test Title"
-
-        //ViewPager2Adapter init
-        viewPager2.isUserInputEnabled = false //swipe
-        viewPager2.adapter = viewPager2Adapter
-        viewPager2.offscreenPageLimit = viewPager2Adapter.itemCount
-
-        //TabLayout X ViewPager2
-        TabLayoutMediator(tabLayout, viewPager2) { tab, pos ->
-            tab.setText(viewPager2Adapter.getTitle(pos))
-        }.attach()
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPager2.setCurrentItem(tab.position, true)
+    private fun initView() {
+        with(includeBinding) {
+            //Toolbar init
+            setSupportActionBar(materialToolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+            materialToolbar.title = "Test Title"
+            materialToolbar.setNavigationOnClickListener {
+                finish() //뒤로가기 아이콘 클릭 시
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            //ViewPager2Adapter init
+            viewPager2.isUserInputEnabled = false //swipe
+            viewPager2.adapter = viewPager2Adapter
+            viewPager2.offscreenPageLimit = viewPager2Adapter.itemCount
 
-            override fun onTabReselected(tab: TabLayout.Tab) {}
-        })
+            //TabLayout X ViewPager2
+            TabLayoutMediator(tabLayout, viewPager2) { tab, pos ->
+                tab.setText(viewPager2Adapter.getTitle(pos))
+            }.attach()
+
+            tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    viewPager2.setCurrentItem(tab.position, true)
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab) {}
+
+                override fun onTabReselected(tab: TabLayout.Tab) {}
+            })
+        }
+        with(binding) {
+            btnJoinGroup.setOnClickListener {
+                //Todo("모임 가입하기")
+            }
+        }
     }
 }
