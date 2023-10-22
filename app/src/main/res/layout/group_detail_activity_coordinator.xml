@@ -36,10 +36,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:scaleType="centerCrop"
-                    app:layout_constraintBottom_toTopOf="@id/txt_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/img_main"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/txt_title"
+                    app:layout_constraintStart_toStartOf="parent"
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
@@ -49,7 +57,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/txt_count"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/img_main"
                     app:layout_constraintTop_toBottomOf="@id/img_background"
                     tools:text="자전거 동호회. 젊은 사람만~" />
 
@@ -59,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/img_main"
                     app:layout_constraintTop_toBottomOf="@id/txt_title"
                     tools:text="멤버 41 / 게시물 1" />
 

@@ -58,6 +58,9 @@ class GroupDetailActivity : AppCompatActivity() {
             imgBackground.load(groupItem?.backgroundImage) {
                 error(R.drawable.group_ic_no_image)
             }
+            imgMain.load(groupItem?.mainImage) {
+                error(R.drawable.group_ic_no_image)
+            }
             txtTitle.text = groupItem?.title
             txtCount.text = "멤버 ${groupItem?.memberList?.size} / 게시판 1"
 
