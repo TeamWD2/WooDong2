@@ -26,7 +26,12 @@ class GroupFragment : Fragment() {
     private val groupListAdapter by lazy {
         GroupListAdapter(
             itemClickListener = { item ->
-                startActivity(GroupDetailActivity.newIntent(requireContext()))
+                startActivity(
+                    GroupDetailActivity.newIntent(
+                        requireContext(),
+                        item
+                    )
+                )
             }
         )
     }

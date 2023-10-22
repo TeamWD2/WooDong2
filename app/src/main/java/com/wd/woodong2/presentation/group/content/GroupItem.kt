@@ -1,5 +1,9 @@
 package com.wd.woodong2.presentation.group.content
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class GroupItem(
     val id: String?,
     val title: String?,
@@ -11,10 +15,11 @@ data class GroupItem(
     val password: String?,
     val mainImage: String?,
     val backgroundImage: String?
-)
+): Parcelable
 
+@Parcelize
 data class Member(
     val userId: String,
     val userName: String,
     val userProfile: String
-)
+): Parcelable

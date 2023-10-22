@@ -2,23 +2,41 @@ package com.wd.woodong2.presentation.group.detail
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.appbar.AppBarLayout
+import coil.load
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailActivityBinding
 import com.wd.woodong2.databinding.GroupDetailActivityCoordinatorBinding
-import kotlin.math.abs
+import com.wd.woodong2.presentation.group.content.GroupItem
 
 class GroupDetailActivity : AppCompatActivity() {
     companion object {
-        fun newIntent(context: Context): Intent =
-            Intent(context, GroupDetailActivity::class.java)
+        private const val EXTRA_GROUP_ITEM = "extra_group_item"
+        fun newIntent(context: Context, item: GroupItem): Intent =
+            Intent(context, GroupDetailActivity::class.java).apply {
+                putExtra(EXTRA_GROUP_ITEM, item)
+            }
     }
 
     private lateinit var binding: GroupDetailActivityBinding
     private lateinit var includeBinding: GroupDetailActivityCoordinatorBinding
+
+    private val groupItem by lazy {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(
+                EXTRA_GROUP_ITEM,
+                GroupItem::class.java
+            )
+        } else {
+            intent.getParcelableExtra(
+                EXTRA_GROUP_ITEM
+            )
+        }
+    }
 
     private val viewPager2Adapter by lazy {
         GroupDetailViewPagerAdapter(this@GroupDetailActivity)
@@ -36,6 +54,13 @@ class GroupDetailActivity : AppCompatActivity() {
 
     private fun initView() {
         with(includeBinding) {
+            //넘겨받은 데이터 출력
+            imgBackground.load(groupItem?.backgroundImage) {
+                error(R.drawable.group_ic_no_image)
+            }
+            txtTitle.text = groupItem?.title
+            txtCount.text = "멤버 ${groupItem?.memberList?.size} / 게시판 1"
+
             //Toolbar init
             setSupportActionBar(materialToolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
