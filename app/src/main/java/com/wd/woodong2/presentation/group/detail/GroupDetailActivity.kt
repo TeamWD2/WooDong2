@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wd.woodong2.R
@@ -57,15 +56,18 @@ class GroupDetailActivity : AppCompatActivity() {
     private fun initView() {
         with(includeBinding) {
             //넘겨받은 데이터 출력
-            imgBackground.load(groupItem?.backgroundImage) {
+            val introduceGroupItem = groupItem?.introduce
+            val memberGroupItem = groupItem?.member
+            val boardGroupItem = groupItem?.board
+            imgBackground.load(introduceGroupItem?.backgroundImage) {
                 error(R.drawable.group_ic_no_image)
             }
-            imgMain.load(groupItem?.mainImage) {
+            imgMain.load(introduceGroupItem?.mainImage) {
                 error(R.drawable.group_ic_no_image)
             }
-            val itemTitle = groupItem?.title
+            val itemTitle = introduceGroupItem?.title
             txtTitle.text = itemTitle
-            txtCount.text = "멤버 ${groupItem?.memberList?.size} / 게시판 1"
+            txtCount.text = "멤버 ${memberGroupItem?.memberList?.size ?: "1"} / 게시판 ${boardGroupItem?.boardList?.size ?: "0"}"
 
             //Toolbar init
             setSupportActionBar(materialToolbar)

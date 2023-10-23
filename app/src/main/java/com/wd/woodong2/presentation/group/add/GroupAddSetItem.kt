@@ -2,7 +2,7 @@ package com.wd.woodong2.presentation.group.add
 
 data class GroupAddSetItem(
     val introduce: GroupAddIntroduce? = null,
-    val member: List<GroupAddMember>? = null,
+    val member: GroupAddMember? = null,
 )
 
 data class GroupAddIntroduce(
@@ -13,11 +13,16 @@ data class GroupAddIntroduce(
     val memberLimit: String? = null,
     val password: String? = null,
     val mainImage: String? = null,
-    val backgroundImage: String? = null
+    val backgroundImage: String? = null,
+    val timestamp: Long = System.currentTimeMillis()
 )
 
 data class GroupAddMember(
-    val userId: String?,
-    val userProfile: String?,
-    val userName: String?
+    val memberList: List<Member>? = null
+)
+
+data class Member(
+    val userId: String? = null,
+    val userProfile: String? = null,
+    val userName: String? = null
 )

@@ -31,7 +31,7 @@ class GroupAddActivity : AppCompatActivity() {
     private val groupAddGetItems by lazy {
         listOf(
             GroupAddGetItem.Title("GroupTendencyTitle", "어떤 모임을 만들까요?"),
-            GroupAddGetItem.ChipGroup("GroupTendencyChipG", listOf("운동", "동네친구", "스터디", "가족/육아", "반려동물", "봉사활동", "음식", "투자/금융", "문화/예술", "게임", "음악", "공예/만들기", "기타")),
+            GroupAddGetItem.ChipGroup("GroupTendencyChipG", listOf("운동", "동네친구", "스터디", "가족/육아", "반려동물", "봉사활동", "음식", "투자/금융", "문화/예술", "게임",                 "음악", "공예/만들기", "기타")),
             GroupAddGetItem.Divider("GroupTendencyDiv"),
             GroupAddGetItem.Title("GroupIntroTitle", "모임을 소개해주세요."),
             GroupAddGetItem.Description("GroupIntroNameDes", "모임명"),
@@ -107,11 +107,13 @@ class GroupAddActivity : AppCompatActivity() {
         groupAddSetItem = GroupAddSetItem()
         //테스트용 임시 사용자 계정 추가 (모임 생성하는 방장 - 최소 멤버로 가입)
         groupAddSetItem = groupAddSetItem.copy(
-            member = listOf(
-                GroupAddMember(
-                    "-NhImSiData",
-                    "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
-                    "sinw"
+            member = (groupAddSetItem.member ?: GroupAddMember()).copy(
+                memberList = listOf(
+                    Member(
+                        "-NhImSiData",
+                        "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
+                        "sinw"
+                    )
                 )
             )
         )
@@ -157,6 +159,5 @@ class GroupAddActivity : AppCompatActivity() {
             "GroupPhotoBackImage" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(backgroundImage = text))
             else -> groupAddSetItem.copy()
         }
-        Log.d("sinw", "createGroupAdd / $groupAddSetItem")
     }
 }

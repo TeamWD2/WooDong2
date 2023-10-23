@@ -28,8 +28,9 @@ class GroupViewModel(
         _loadingState.value = true
         runCatching {
             groupGetItems().collect { items ->
-                _isEmptyList.value = readGroupItems(items).isEmpty()
-                _groupList.postValue(readGroupItems(items))
+                val groupItems = readGroupItems(items)
+                _isEmptyList.value = groupItems.isEmpty()
+                _groupList.postValue(groupItems)
                 _loadingState.value = false
             }
         }.onFailure {
@@ -43,26 +44,50 @@ class GroupViewModel(
      */
     private fun readGroupItems(
         items: GroupItemsEntity
-    ) = items.groupItems?.map {
-        GroupItem(
-            id = it.id,
-            title = it.title,
-            introduce = it.introduce,
-            groupTag = it.groupTag,
-            ageLimit = it.ageLimit,
-            memberLimit = it.memberLimit,
-            memberList = it.memberList?.map { member ->
-                Member(
-                    userId = member.userId ?: "",
-                    userName = member.userName ?: "",
-                    userProfile = member.userProfile ?: ""
+    ): List<GroupItem> {
+        val groupList = items.groupItems.map {
+            GroupItem(
+                id = it.id,
+                introduce = GroupIntroduce(
+                    title = it.introduce?.title,
+                    introduce = it.introduce?.introduce,
+                    groupTag = it.introduce?.groupTag,
+                    ageLimit = it.introduce?.ageLimit,
+                    memberLimit = it.introduce?.memberLimit,
+                    password = it.introduce?.password,
+                    mainImage = it.introduce?.mainImage,
+                    backgroundImage = it.introduce?.backgroundImage,
+                    timestamp = it.introduce?.timestamp,
+                ),
+                member = GroupMember(
+                    memberList = it.member?.memberList?.map { member ->
+                        Member(
+                            userId = member.userId,
+                            userName = member.userName,
+                            userProfile = member.userProfile
+                        )
+                    }
+                ),
+                board = GroupBoard(
+                    boardList = it.board?.boardList?.map { board ->
+                        Board(
+                            userId = board.userId,
+                            userName = board.userName,
+                            userProfile = board.userProfile,
+                            timestamp = board.timestamp,
+                            content = board.content,
+                            photoList = board.photoList?.map { photo ->
+                                Photo(
+                                    photo = photo.photo
+                                )
+                            }
+                        )
+                    }
                 )
-            },
-            password = it.password,
-            mainImage = it.mainImage,
-            backgroundImage = it.backgroundImage,
-        )
-    }.orEmpty()
+            )
+        }
+        return groupList
+    }
 }
 
 class GroupViewModelFactory : ViewModelProvider.Factory {

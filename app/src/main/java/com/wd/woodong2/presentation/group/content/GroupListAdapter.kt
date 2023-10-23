@@ -1,10 +1,8 @@
 package com.wd.woodong2.presentation.group.content
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -27,14 +25,16 @@ class GroupListAdapter(
 ) {
     inner class ViewHolder(private val binding: GroupListItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: GroupItem) = with(binding) {
-            imgGroupProfile.load(item.mainImage) {
+            val introduceItem = item.introduce
+            val memberItem = item.member
+            imgGroupProfile.load(introduceItem?.mainImage) {
                 error(R.drawable.group_ic_no_image)
             }
-            txtTitle.text = item.title
-            txtMemberCount.text = "${item.memberList?.size}명"
+            txtTitle.text = introduceItem?.title
+            txtMemberCount.text = "${memberItem?.memberList?.size}명"
             val memberCardViews = listOf(cardViewMember1, cardViewMember2, cardViewMember3)
             val memberProfiles = listOf(imgMemberProfile1, imgMemberProfile2, imgMemberProfile3)
-            item.memberList?.let { member ->
+            memberItem?.memberList?.let { member ->
                 for(i in member.indices) {
                     if(i < memberProfiles.size) {
                         memberCardViews[i].visibility = View.VISIBLE
@@ -44,9 +44,9 @@ class GroupListAdapter(
                     }
                 }
             }
-            txtTagCategory.text = item.groupTag
-            txtTagAge.text = item.ageLimit
-            txtTagMemberLimit.text = item.memberLimit.toString()
+            txtTagCategory.text = introduceItem?.groupTag
+            txtTagAge.text = introduceItem?.ageLimit
+            txtTagMemberLimit.text = introduceItem?.memberLimit.toString()
 
             root.setOnClickListener {
                 itemClickListener(item)

@@ -27,7 +27,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
                     val groupResponses = snapshot.children.mapNotNull { childSnapshot ->
                         val jsonString = gson.toJson(childSnapshot.value)
                         val response = gson.fromJson(jsonString, GroupResponse::class.java)
-                        response.copy(id = childSnapshot.key)
+                        response?.copy(id = childSnapshot.key)
                     }
                     val entity = GroupItemsResponse(groupResponses).toEntity()
                     trySend(entity)
