@@ -32,7 +32,8 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
                     val entity = GroupItemsResponse(groupResponses).toEntity()
                     trySend(entity)
                 } else {
-                    throw RuntimeException("snapshot is not exists")
+                    //snapshot 이 존재하지 않는 경우
+                    trySend(GroupItemsEntity(emptyList()))
                 }
             }
 

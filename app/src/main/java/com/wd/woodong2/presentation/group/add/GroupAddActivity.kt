@@ -107,8 +107,8 @@ class GroupAddActivity : AppCompatActivity() {
         groupAddSetItem = GroupAddSetItem()
         //테스트용 임시 사용자 계정 추가 (모임 생성하는 방장 - 최소 멤버로 가입)
         groupAddSetItem = groupAddSetItem.copy(
-            memberList = listOf(
-                Member(
+            member = listOf(
+                GroupAddMember(
                     "-NhImSiData",
                     "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
                     "sinw"
@@ -136,26 +136,27 @@ class GroupAddActivity : AppCompatActivity() {
     }
 
     private fun isCorrectGroupAddItem(groupAddSetItem: GroupAddSetItem) =
-        groupAddSetItem.groupTag.isNullOrBlank().not()
-                && groupAddSetItem.title.isNullOrBlank().not()
-                && groupAddSetItem.introduce.isNullOrBlank().not()
-                && groupAddSetItem.ageLimit.isNullOrBlank().not()
-                && groupAddSetItem.memberLimit.isNullOrBlank().not()
-                && groupAddSetItem.password.isNullOrBlank().not()
-                && groupAddSetItem.mainImage.isNullOrBlank().not()
-                && groupAddSetItem.backgroundImage.isNullOrBlank().not()
+        groupAddSetItem.introduce?.groupTag.isNullOrBlank().not()
+                && groupAddSetItem.introduce?.title.isNullOrBlank().not()
+                && groupAddSetItem.introduce?.introduce.isNullOrBlank().not()
+                && groupAddSetItem.introduce?.ageLimit.isNullOrBlank().not()
+                && groupAddSetItem.introduce?.memberLimit.isNullOrBlank().not()
+                && groupAddSetItem.introduce?.password.isNullOrBlank().not()
+                && groupAddSetItem.introduce?.mainImage.isNullOrBlank().not()
+                && groupAddSetItem.introduce?.backgroundImage.isNullOrBlank().not()
 
     private fun createGroupAdd(position: Int, text: String) {
         groupAddSetItem = when (groupAddGetItems[position].id) {
-            "GroupTendencyChipG" -> groupAddSetItem.copy(groupTag = text)
-            "GroupIntroNameEdt" -> groupAddSetItem.copy(title = text)
-            "GroupIntroDesEdt" -> groupAddSetItem.copy(introduce = text)
-            "GroupWithAgeChipG" -> groupAddSetItem.copy(ageLimit = text)
-            "GroupWithMemberChipG" -> groupAddSetItem.copy(memberLimit = text)
-            "GroupPwEdtChk" -> groupAddSetItem.copy(password = text)
-            "GroupPhotoMainImage" -> groupAddSetItem.copy(mainImage = text)
-            "GroupPhotoBackImage" -> groupAddSetItem.copy(backgroundImage = text)
+            "GroupTendencyChipG" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(groupTag = text))
+            "GroupIntroNameEdt" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(title = text))
+            "GroupIntroDesEdt" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(introduce = text))
+            "GroupWithAgeChipG" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(ageLimit = text))
+            "GroupWithMemberChipG" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(memberLimit = text))
+            "GroupPwEdtChk" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(password = text))
+            "GroupPhotoMainImage" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(mainImage = text))
+            "GroupPhotoBackImage" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(backgroundImage = text))
             else -> groupAddSetItem.copy()
         }
+        Log.d("sinw", "createGroupAdd / $groupAddSetItem")
     }
 }

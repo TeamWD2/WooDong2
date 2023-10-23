@@ -27,6 +27,7 @@
     <string name="home_map_search_btn">동명(읍, 면)으로 검색(ex. 서초동)</string>
 
     <string name="group_hint_search_group">우리 동네 모임을 검색해보세요.</string>
+    <string name="group_text_empty_group_list">모임 정보가 존재하지 않습니다.</string>
 
     <string name="group_add_btn_add_group">모임 만들기</string>
     <string name="group_add_password_valid">사용 가능한 비밀번호입니다.</string>
