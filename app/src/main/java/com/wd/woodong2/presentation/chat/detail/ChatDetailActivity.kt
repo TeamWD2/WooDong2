@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -77,7 +78,7 @@ class ChatDetailActivity : AppCompatActivity() {
 
             is ChatItem.PrivateChatItem -> {
                 txtChatType.text = (receiveItem as ChatItem.PrivateChatItem).title
-                txtMemberNum.text = "## / ##명"
+                txtMemberNum.visibility = View.GONE
             }
 
             null -> {
