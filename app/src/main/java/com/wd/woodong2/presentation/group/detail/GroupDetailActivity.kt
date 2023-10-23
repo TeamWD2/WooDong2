@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.google.android.material.tabs.TabLayout
@@ -25,6 +26,8 @@ class GroupDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: GroupDetailActivityBinding
     private lateinit var includeBinding: GroupDetailActivityCoordinatorBinding
+
+    private val viewModel: GroupDetailSharedViewModel by viewModels()
 
     private val groupItem by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -55,6 +58,7 @@ class GroupDetailActivity : AppCompatActivity() {
 
     private fun initView() {
         with(includeBinding) {
+            viewModel.setDetailItem(groupItem)
             //넘겨받은 데이터 출력
             val introduceGroupItem = groupItem?.introduce
             val memberGroupItem = groupItem?.member
@@ -106,7 +110,7 @@ class GroupDetailActivity : AppCompatActivity() {
         }
         with(binding) {
             btnJoinGroup.setOnClickListener {
-                //Todo("모임 가입하기")
+                //Todo("모임 가입하기 or 게시물 작성하기")
             }
         }
     }

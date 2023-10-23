@@ -40,6 +40,7 @@
     <string name="group_detail_tab_board_title">게시판</string>
     <string name="group_detail_tab_album_title">앨범</string>
     <string name="group_detail_btn_join_group">채팅방 입장하기</string>
+    <string name="group_detail_btn_more">전체보기 ></string>
 
     <string name="chat_txt_title">채팅</string>
 
