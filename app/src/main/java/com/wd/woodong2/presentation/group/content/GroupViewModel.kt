@@ -21,10 +21,14 @@ class GroupViewModel(
     private val _loadingState: MutableLiveData<Boolean> = MutableLiveData()
     val loadingState: LiveData<Boolean> get() = _loadingState
 
+    private val _isEmptyList: MutableLiveData<Boolean> = MutableLiveData()
+    val isEmptyList: LiveData<Boolean> get() = _isEmptyList
+
     fun getGroupItem() = viewModelScope.launch {
         _loadingState.value = true
         runCatching {
             groupGetItems().collect { items ->
+                _isEmptyList.value = readGroupItems(items).isEmpty()
                 _groupList.postValue(readGroupItems(items))
                 _loadingState.value = false
             }

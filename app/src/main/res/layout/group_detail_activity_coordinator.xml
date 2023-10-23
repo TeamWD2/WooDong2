@@ -37,6 +37,7 @@
                     android:id="@+id/img_main"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
+                    android:scaleType="centerCrop"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/txt_title"
                     app:layout_constraintStart_toStartOf="parent"

@@ -68,6 +68,9 @@ class GroupFragment : Fragment() {
         loadingState.observe(viewLifecycleOwner) { loadingState ->
             binding.progressBar.isVisible = loadingState
         }
+        isEmptyList.observe(viewLifecycleOwner) { isEmptyList ->
+            binding.txtEmptyGroupList.isVisible = isEmptyList
+        }
     }
 
     override fun onDestroyView() {
