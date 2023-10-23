@@ -12,6 +12,7 @@ import com.wd.woodong2.databinding.MainActivityBinding
 import com.wd.woodong2.presentation.chat.content.ChatFragment
 import com.wd.woodong2.presentation.group.content.GroupFragment
 import com.wd.woodong2.presentation.home.content.HomeFragment
+import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.mypage.content.MyPageFragment
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private val myPageFragment by lazy {
         MyPageFragment.newInstance()
     }
+
 
     /**
      * 갤러리 접근 권한 설정
@@ -91,16 +93,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
-//        // Toolbar 설정
-//        setSupportActionBar(mainToolbar)
-//        supportActionBar?.setDisplayShowTitleEnabled(false)
-//        mainToolbarLocation.setOnClickListener{
-//            homeMapLauncher.launch(
-//                HomeMapActivity.homeMapActivityNewIntent(
-//                    this@MainActivity
-//                )
-//            )
-//        }
+
 
         //BottomNavigation 설정
         supportFragmentManager.beginTransaction().add(frameLayout.id, homeFragment).commit()

@@ -25,6 +25,8 @@
     <string name="home_map_bottom_sheet_near_location_count"> 12 </string>
     <string name="home_map_bottom_sheet_near_location_set_2"> 개 </string>
     <string name="home_map_search_btn">동명(읍, 면)으로 검색(ex. 서초동)</string>
+    <string name="home_map_search_kakao_api">2944f118955b6cf31d773eea99bcc7d2</string>
+    <string name="home_map_naver_api">kdzwicc7da</string>
 
     <string name="group_hint_search_group">우리 동네 모임을 검색해보세요.</string>
     <string name="group_text_empty_group_list">모임 정보가 존재하지 않습니다.</string>
