@@ -97,7 +97,7 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/txt_board_count"
+        android:id="@+id/txt_member_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/frameLayout"

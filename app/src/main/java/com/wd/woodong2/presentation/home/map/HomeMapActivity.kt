@@ -203,7 +203,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     secondLocation = ""
                     binding.homeMapSecondBtnTvLocation.text = ""
                     Glide.with(this)
-                        .load(R.drawable.home_map_btn_ic_add)
+                        .load(R.drawable.public_ic_add)
                         .into(binding.homeMapSecondBtnIvLocation)
                     (binding.homeMapSecondBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0f
 
@@ -242,7 +242,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 secondLocation = ""
                 binding.homeMapSecondBtnTvLocation.text = ""
                 Glide.with(this)
-                    .load(R.drawable.home_map_btn_ic_add)
+                    .load(R.drawable.public_ic_add)
                     .into(binding.homeMapSecondBtnIvLocation)
                 (binding.homeMapSecondBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0f
             }
