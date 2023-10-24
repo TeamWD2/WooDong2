@@ -1,5 +1,6 @@
 package com.wd.woodong2.data.repository
 
+import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -14,11 +15,18 @@ import com.wd.woodong2.domain.model.Message
 import com.wd.woodong2.domain.model.MessageItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.ChatRepository
+import com.wd.woodong2.services.fcm.FCMNotification
+import com.wd.woodong2.retrofit.GCMRetrofitClient
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : ChatRepository {
+class ChatRepositoryImpl(
+    private val databaseReference: DatabaseReference) : ChatRepository {
+
+    companion object {
+        const val TAG: String = "ChatRepositoryImpl"
+    }
 
     /*
     * "chat_list"
@@ -132,6 +140,32 @@ class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : Cha
 
         // lastMessage 업데이트
         databaseReference.child("last").setValue(messageData)
+
+        // FCM Notification 객체 생성
+        // to -> 받는 사람 Token
+        val notification = FCMNotification(
+            to = "fO_rDAHQR3CBrr4q0gqg3h:APA91bGyFjStWQF76yCG0a406LM3gF7NVolK76Ht1qLMq_Ht-FAgd4SQetZDfuNlPlFTS9lFpE3geef-mXvjELodyk2Pqxld_j1V6Ip1s1YSgZfNy6YTei7uX9ivEQylHpRMF3rJSjVN",
+            data = mapOf("action" to "ChatDetail"),
+            notification = mapOf(
+                "title" to "GCM Test : title",
+                "body" to "GCM Test : body"
+            ),
+        )
+
+        try {
+            val response = GCMRetrofitClient.gcmService.sendNotification(notification)
+
+            if (response.isSuccessful) {
+                Log.d(TAG, "Notification sent successfully. ${response.body()?.string()}")
+            } else {
+                Log.e(
+                    TAG,
+                    "Failed to send notification: ${response.code()} ${response.message()}"
+                )
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Exception during network request.", e)
+        }
     }
 }
 
