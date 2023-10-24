@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupAddActivityBinding
 
 class GroupAddActivity : AppCompatActivity() {
@@ -25,7 +26,8 @@ class GroupAddActivity : AppCompatActivity() {
         GroupAddViewModelFactory()
     }
 
-    private lateinit var groupAddSetItem: GroupAddSetItem
+    private var groupAddIntroduce: GroupAddSetItem.GroupAddIntroduce? = null
+    private var groupAddMember: GroupAddSetItem.GroupAddMember? = null
 
     //초기 데이터 세팅
     private val groupAddGetItems by lazy {
@@ -104,29 +106,35 @@ class GroupAddActivity : AppCompatActivity() {
         recyclerViewAddGroup.adapter = groupAddListAdapter
         viewModel.initGroupAddItems(groupAddGetItems)
 
-        groupAddSetItem = GroupAddSetItem()
         //테스트용 임시 사용자 계정 추가 (모임 생성하는 방장 - 최소 멤버로 가입)
-        groupAddSetItem = groupAddSetItem.copy(
-            member = (groupAddSetItem.member ?: GroupAddMember()).copy(
-                memberList = listOf(
-                    Member(
-                        "-NhImSiData",
-                        "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
-                        "sinw"
-                    )
+        groupAddMember = GroupAddSetItem.GroupAddMember(
+            title = "멤버",
+            memberList = listOf(
+                GroupAddSetItem.AddMember(
+                    "-NhImSiData",
+                    "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
+                    "sinw",
+                    "권선동"
                 )
             )
         )
 
         btnAddGroup.setOnClickListener {
-            Log.d("sinw", "groupAddSetItem / $groupAddSetItem")
-            if (isCorrectGroupAddItem(groupAddSetItem)) {
-                Toast.makeText(this@GroupAddActivity, "모임이 생성되었습니다.", Toast.LENGTH_SHORT).show()
+            Log.d("sinw", "$groupAddIntroduce / $groupAddMember")
+            if (isCorrectGroupAddItem()) {
+                Toast.makeText(this@GroupAddActivity, getString(R.string.group_add_toast_create_group), Toast.LENGTH_SHORT).show()
+                val groupAddSetItem = mutableListOf<GroupAddSetItem>().apply {
+                    groupAddIntroduce?.let {
+                        add(it)
+                    }
+                    groupAddMember?.let {
+                        add(it)
+                    }
+                }
                 viewModel.setGroupAddItem(groupAddSetItem)
                 finish()
             } else {
-                Toast.makeText(this@GroupAddActivity, "입력되지 않은 정보가 있습니다.", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this@GroupAddActivity, getString(R.string.group_add_toast_no_info), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -137,27 +145,40 @@ class GroupAddActivity : AppCompatActivity() {
         }
     }
 
-    private fun isCorrectGroupAddItem(groupAddSetItem: GroupAddSetItem) =
-        groupAddSetItem.introduce?.groupTag.isNullOrBlank().not()
-                && groupAddSetItem.introduce?.title.isNullOrBlank().not()
-                && groupAddSetItem.introduce?.introduce.isNullOrBlank().not()
-                && groupAddSetItem.introduce?.ageLimit.isNullOrBlank().not()
-                && groupAddSetItem.introduce?.memberLimit.isNullOrBlank().not()
-                && groupAddSetItem.introduce?.password.isNullOrBlank().not()
-                && groupAddSetItem.introduce?.mainImage.isNullOrBlank().not()
-                && groupAddSetItem.introduce?.backgroundImage.isNullOrBlank().not()
+    private fun isCorrectGroupAddItem(): Boolean =
+        isCorrectIntroduce(groupAddIntroduce) && isCorrectMember(groupAddMember)
 
+    private fun isCorrectIntroduce(groupAddIntroduce: GroupAddSetItem.GroupAddIntroduce?): Boolean =
+        groupAddIntroduce?.let {
+            it.title.isNullOrBlank().not()
+                    && it.groupTag.isNullOrBlank().not()
+                    && it.groupName.isNullOrBlank().not()
+                    && it.introduce.isNullOrBlank().not()
+                    && it.ageLimit.isNullOrBlank().not()
+                    && it.memberLimit.isNullOrBlank().not()
+                    && it.password.isNullOrBlank().not()
+                    && it.mainImage.isNullOrBlank().not()
+                    && it.backgroundImage.isNullOrBlank().not()
+        } ?: false
+
+    private fun isCorrectMember(groupAddMember: GroupAddSetItem.GroupAddMember?): Boolean =
+        groupAddMember?.let {
+            it.title.isNullOrBlank().not()
+                    && it.memberList.isNullOrEmpty().not()
+        } ?: false
+
+    //Refactoring 예정
     private fun createGroupAdd(position: Int, text: String) {
-        groupAddSetItem = when (groupAddGetItems[position].id) {
-            "GroupTendencyChipG" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(groupTag = text))
-            "GroupIntroNameEdt" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(title = text))
-            "GroupIntroDesEdt" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(introduce = text))
-            "GroupWithAgeChipG" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(ageLimit = text))
-            "GroupWithMemberChipG" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(memberLimit = text))
-            "GroupPwEdtChk" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(password = text))
-            "GroupPhotoMainImage" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(mainImage = text))
-            "GroupPhotoBackImage" -> groupAddSetItem.copy(introduce = (groupAddSetItem.introduce ?: GroupAddIntroduce()).copy(backgroundImage = text))
-            else -> groupAddSetItem.copy()
+        groupAddIntroduce = when (groupAddGetItems[position].id) {
+            "GroupTendencyChipG" -> (groupAddIntroduce ?: GroupAddSetItem.GroupAddIntroduce(title = "소개")).copy(groupTag = text)
+            "GroupIntroNameEdt" -> (groupAddIntroduce ?: GroupAddSetItem.GroupAddIntroduce(title = "소개")).copy(groupName = text)
+            "GroupIntroDesEdt" -> (groupAddIntroduce ?: GroupAddSetItem.GroupAddIntroduce(title = "소개")).copy(introduce = text)
+            "GroupWithAgeChipG" -> (groupAddIntroduce ?: GroupAddSetItem.GroupAddIntroduce(title = "소개")).copy(ageLimit = text)
+            "GroupWithMemberChipG" -> (groupAddIntroduce ?: GroupAddSetItem.GroupAddIntroduce(title = "소개")).copy(memberLimit = text)
+            "GroupPwEdtChk" -> (groupAddIntroduce ?: GroupAddSetItem.GroupAddIntroduce(title = "소개")).copy(password = text)
+            "GroupPhotoMainImage" -> (groupAddIntroduce ?: GroupAddSetItem.GroupAddIntroduce(title = "소개")).copy(mainImage = text)
+            "GroupPhotoBackImage" -> (groupAddIntroduce ?: GroupAddSetItem.GroupAddIntroduce(title = "소개")).copy(backgroundImage = text)
+            else -> groupAddIntroduce
         }
     }
 }

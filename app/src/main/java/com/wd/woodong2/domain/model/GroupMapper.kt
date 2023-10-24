@@ -1,29 +1,27 @@
 package com.wd.woodong2.domain.model
 
-import com.wd.woodong2.data.model.BoardItemResponse
+import com.wd.woodong2.data.model.GroupAlbumResponse
+import com.wd.woodong2.data.model.GroupBoardItemResponse
 import com.wd.woodong2.data.model.GroupBoardResponse
 import com.wd.woodong2.data.model.GroupIntroduceResponse
 import com.wd.woodong2.data.model.GroupItemsResponse
+import com.wd.woodong2.data.model.GroupMemberItemResponse
 import com.wd.woodong2.data.model.GroupMemberResponse
-import com.wd.woodong2.data.model.GroupResponse
-import com.wd.woodong2.data.model.MemberItemResponse
-import com.wd.woodong2.data.model.PhotoItemResponse
 
 fun GroupItemsResponse.toEntity() = GroupItemsEntity(
-    groupItems = groupItems.map {
-        it.toEntity()
+    groupList = groupList.map {
+        when(it) {
+            is GroupIntroduceResponse -> it.toEntity()
+            is GroupMemberResponse -> it.toEntity()
+            is GroupBoardResponse -> it.toEntity()
+            is GroupAlbumResponse -> it.toEntity()
+        }
     }
-)
-
-fun GroupResponse.toEntity() = GroupEntity(
-    id = id,
-    introduce = introduce?.toEntity(),
-    member = member?.toEntity(),
-    board = board?.toEntity()
 )
 
 fun GroupIntroduceResponse.toEntity() = GroupIntroduceEntity(
     title = title,
+    groupName = groupName,
     introduce = introduce,
     groupTag = groupTag,
     ageLimit = ageLimit,
@@ -35,34 +33,37 @@ fun GroupIntroduceResponse.toEntity() = GroupIntroduceEntity(
 )
 
 fun GroupMemberResponse.toEntity() = GroupMemberEntity(
+    title = title,
     memberList = memberList?.map {
         it.toEntity()
     }
 )
 
-fun MemberItemResponse.toEntity() = MemberItemEntity(
+fun GroupMemberItemResponse.toEntity() = GroupMemberItemEntity(
     userId = userId,
-    userName = userName,
-    userProfile = userProfile
+    profile = profile,
+    name = name,
+    location = location
 )
 
 fun GroupBoardResponse.toEntity() = GroupBoardEntity(
+    title = title,
     boardList = boardList?.map {
         it.toEntity()
     }
 )
 
-fun BoardItemResponse.toEntity() = BoardItemEntity(
+fun GroupBoardItemResponse.toEntity() = GroupBoardItemEntity(
     userId = userId,
-    userName = userName,
-    userProfile = userProfile,
+    profile = profile,
+    name = name,
+    location = location,
     timestamp = timestamp,
     content = content,
-    photoList = photoList?.map {
-        it.toEntity()
-    }
+    images = images
 )
 
-fun PhotoItemResponse.toEntity() = PhotoItemEntity(
-    photo = photo
+fun GroupAlbumResponse.toEntity() = GroupAlbumEntity(
+    title = title,
+    images = images
 )

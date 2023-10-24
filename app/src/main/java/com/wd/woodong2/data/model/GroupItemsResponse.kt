@@ -1,16 +1,13 @@
 package com.wd.woodong2.data.model
 
+import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 
-data class GroupItemsResponse(
-    val groupItems: List<GroupResponse>
-)
+sealed interface GroupResponse
 
-data class GroupResponse(
-    val id: String?, //Firebase Realtime Database에서 자동 생성되는 고유 키
-    @SerializedName("introduce") val introduce: GroupIntroduceResponse?,
-    @SerializedName("member") val member: GroupMemberResponse?,
-    @SerializedName("board") val board: GroupBoardResponse?,
+@JsonAdapter(GroupItemsResponseJsonDeserializer::class)
+data class GroupItemsResponse(
+    @SerializedName("group_list") val groupList: List<GroupResponse>
 )
 
 /**
@@ -18,6 +15,7 @@ data class GroupResponse(
  */
 data class GroupIntroduceResponse(
     @SerializedName("title") val title: String?,
+    @SerializedName("groupName") val groupName: String?,
     @SerializedName("introduce") val introduce: String?,
     @SerializedName("groupTag") val groupTag: String?,
     @SerializedName("ageLimit") val ageLimit: String?,
@@ -26,46 +24,51 @@ data class GroupIntroduceResponse(
     @SerializedName("mainImage") val mainImage: String?,
     @SerializedName("backgroundImage") val backgroundImage: String?,
     @SerializedName("timestamp") val timestamp: Long
-)
+) : GroupResponse
 
 /**
  * 멤버
  */
 data class GroupMemberResponse(
-    @SerializedName("memberList") val memberList: List<MemberItemResponse>?
-)
+    @SerializedName("title") val title: String?,
+    @SerializedName("memberList") val memberList: List<GroupMemberItemResponse>?
+) : GroupResponse
 
 /**
  * 멤버 아이템
  */
-data class MemberItemResponse(
+data class GroupMemberItemResponse(
     @SerializedName("userId") val userId: String?,
-    @SerializedName("userName") val userName: String?,
-    @SerializedName("userProfile") val userProfile: String?
+    @SerializedName("profile") val profile: String?,
+    @SerializedName("name") val name: String?,
+    @SerializedName("location") val location: String?
 )
 
 /**
  * 게시판
  */
 data class GroupBoardResponse(
-    @SerializedName("boardList") val boardList: List<BoardItemResponse>?
-)
+    @SerializedName("title") val title: String?,
+    @SerializedName("boardList") val boardList: List<GroupBoardItemResponse>?
+) : GroupResponse
 
 /**
  * 게시판 아이템
  */
-data class BoardItemResponse(
+data class GroupBoardItemResponse(
     @SerializedName("userId") val userId: String?,
-    @SerializedName("userName") val userName: String?,
-    @SerializedName("userProfile") val userProfile: String?,
+    @SerializedName("profile") val profile: String?,
+    @SerializedName("name") val name: String?,
+    @SerializedName("location") val location: String?,
     @SerializedName("timestamp") val timestamp: Long,
     @SerializedName("content") val content: String?,
-    @SerializedName("photoList") val photoList: List<PhotoItemResponse>?,
+    @SerializedName("images") val images: List<String>?,
 )
 
 /**
- * 게시물 사진 아이템
+ * 앨범
  */
-data class PhotoItemResponse(
-    @SerializedName("photo") val photo: String?
-)
+data class GroupAlbumResponse(
+    @SerializedName("title") val title: String?,
+    @SerializedName("images") val images: List<String>?
+) : GroupResponse

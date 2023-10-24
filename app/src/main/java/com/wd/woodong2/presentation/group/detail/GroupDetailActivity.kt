@@ -59,19 +59,9 @@ class GroupDetailActivity : AppCompatActivity() {
     private fun initView() {
         with(includeBinding) {
             viewModel.setDetailItem(groupItem)
-            //넘겨받은 데이터 출력
-            val introduceGroupItem = groupItem?.introduce
-            val memberGroupItem = groupItem?.member
-            val boardGroupItem = groupItem?.board
-            imgBackground.load(introduceGroupItem?.backgroundImage) {
-                error(R.drawable.group_ic_no_image)
-            }
-            imgMain.load(introduceGroupItem?.mainImage) {
-                error(R.drawable.group_ic_no_image)
-            }
-            val itemTitle = introduceGroupItem?.title
-            txtTitle.text = itemTitle
-            txtCount.text = "멤버 ${memberGroupItem?.memberList?.size ?: "1"} / 게시판 ${boardGroupItem?.boardList?.size ?: "0"}"
+
+            //넘겨 받은 데이터 출력
+            initClickItem()
 
             //Toolbar init
             setSupportActionBar(materialToolbar)
@@ -82,7 +72,7 @@ class GroupDetailActivity : AppCompatActivity() {
             }
             appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
                 materialToolbar.title = if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
-                    itemTitle
+                    (groupItem as? GroupItem.GroupIntroduce)?.title
                 } else {
                     ""
                 }
@@ -113,5 +103,17 @@ class GroupDetailActivity : AppCompatActivity() {
                 //Todo("모임 가입하기 or 게시물 작성하기")
             }
         }
+    }
+
+    private fun initClickItem() = with(includeBinding) {
+        imgBackground.load((groupItem as? GroupItem.GroupIntroduce)?.backgroundImage) {
+            error(R.drawable.group_ic_no_image)
+        }
+        imgMain.load((groupItem as? GroupItem.GroupIntroduce)?.mainImage) {
+            error(R.drawable.group_ic_no_image)
+        }
+        txtTitle.text = (groupItem as? GroupItem.GroupIntroduce)?.title
+        txtCount.text = "멤버 ${(groupItem as? GroupItem.GroupMember)?.memberList?.size ?: "1"} " +
+                "/ 게시판 ${(groupItem as? GroupItem.GroupBoard)?.boardList?.size ?: "0"}"
     }
 }

@@ -1,14 +1,8 @@
 package com.wd.woodong2.domain.model
 
+sealed interface GroupEntity
 data class GroupItemsEntity(
-    val groupItems: List<GroupEntity>
-)
-
-data class GroupEntity(
-    val id: String?, //Firebase Realtime Database에서 자동 생성되는 고유 키
-    val introduce: GroupIntroduceEntity?,
-    val member: GroupMemberEntity?,
-    val board: GroupBoardEntity?
+    val groupList: List<GroupEntity>
 )
 
 /**
@@ -16,6 +10,7 @@ data class GroupEntity(
  */
 data class GroupIntroduceEntity(
     val title: String?,
+    val groupName: String?,
     val introduce: String?,
     val groupTag: String?,
     val ageLimit: String?,
@@ -24,46 +19,51 @@ data class GroupIntroduceEntity(
     val mainImage: String?,
     val backgroundImage: String?,
     val timestamp: Long
-)
+) : GroupEntity
 
 /**
  * 멤버
  */
 data class GroupMemberEntity(
-    val memberList: List<MemberItemEntity>?
-)
+    val title: String?,
+    val memberList: List<GroupMemberItemEntity>?
+) : GroupEntity
 
 /**
  * 멤버 아이템
  */
-data class MemberItemEntity(
+data class GroupMemberItemEntity(
     val userId: String?,
-    val userName: String?,
-    val userProfile: String?
+    val profile: String?,
+    val name: String?,
+    val location: String?
 )
 
 /**
  * 게시판
  */
 data class GroupBoardEntity(
-    val boardList: List<BoardItemEntity>?
-)
+    val title: String?,
+    val boardList: List<GroupBoardItemEntity>?
+) : GroupEntity
 
 /**
  * 게시판 아이템
  */
-data class BoardItemEntity(
+data class GroupBoardItemEntity(
     val userId: String?,
-    val userName: String?,
-    val userProfile: String?,
+    val profile: String?,
+    val name: String?,
+    val location: String?,
     val timestamp: Long,
     val content: String?,
-    val photoList: List<PhotoItemEntity>?,
+    val images: List<String>?,
 )
 
 /**
- * 게시물 사진 아이템
+ * 앨범
  */
-data class PhotoItemEntity(
-    val photo: String?
-)
+data class GroupAlbumEntity(
+    val title: String?,
+    val images: List<String>?
+) : GroupEntity

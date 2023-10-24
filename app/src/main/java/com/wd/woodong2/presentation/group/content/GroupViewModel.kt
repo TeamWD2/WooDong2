@@ -8,7 +8,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
+import com.wd.woodong2.domain.model.GroupAlbumEntity
+import com.wd.woodong2.domain.model.GroupBoardEntity
+import com.wd.woodong2.domain.model.GroupIntroduceEntity
 import com.wd.woodong2.domain.model.GroupItemsEntity
+import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
 import kotlinx.coroutines.launch
 
@@ -28,6 +32,7 @@ class GroupViewModel(
         _loadingState.value = true
         runCatching {
             groupGetItems().collect { items ->
+                Log.d("sinw", "items / $items")
                 val groupItems = readGroupItems(items)
                 _isEmptyList.value = groupItems.isEmpty()
                 _groupList.postValue(groupItems)
@@ -45,48 +50,51 @@ class GroupViewModel(
     private fun readGroupItems(
         items: GroupItemsEntity
     ): List<GroupItem> {
-        val groupList = items.groupItems.map {
-            GroupItem(
-                id = it.id,
-                introduce = GroupIntroduce(
-                    title = it.introduce?.title,
-                    introduce = it.introduce?.introduce,
-                    groupTag = it.introduce?.groupTag,
-                    ageLimit = it.introduce?.ageLimit,
-                    memberLimit = it.introduce?.memberLimit,
-                    password = it.introduce?.password,
-                    mainImage = it.introduce?.mainImage,
-                    backgroundImage = it.introduce?.backgroundImage,
-                    timestamp = it.introduce?.timestamp,
-                ),
-                member = GroupMember(
-                    memberList = it.member?.memberList?.map { member ->
-                        Member(
+        return items.groupList.map { entity ->
+            when(entity) {
+                is GroupIntroduceEntity -> GroupItem.GroupIntroduce(
+                    title = entity.title,
+                    groupTag = entity.groupTag,
+                    groupName = entity.groupName,
+                    introduce = entity.introduce,
+                    ageLimit = entity.ageLimit,
+                    memberLimit = entity.memberLimit,
+                    password = entity.password,
+                    mainImage = entity.mainImage,
+                    backgroundImage = entity.backgroundImage,
+                    timestamp = entity.timestamp
+                )
+                is GroupMemberEntity -> GroupItem.GroupMember(
+                    title = entity.title,
+                    memberList = entity.memberList?.map { member ->
+                        GroupItem.Member(
                             userId = member.userId,
-                            userName = member.userName,
-                            userProfile = member.userProfile
-                        )
-                    }
-                ),
-                board = GroupBoard(
-                    boardList = it.board?.boardList?.map { board ->
-                        Board(
-                            userId = board.userId,
-                            userName = board.userName,
-                            userProfile = board.userProfile,
-                            timestamp = board.timestamp,
-                            content = board.content,
-                            photoList = board.photoList?.map { photo ->
-                                Photo(
-                                    photo = photo.photo
-                                )
-                            }
+                            profile = member.profile,
+                            name = member.name,
+                            location = member.location
                         )
                     }
                 )
-            )
+                is GroupBoardEntity -> GroupItem.GroupBoard(
+                    title = entity.title,
+                    boardList = entity.boardList?.map { board ->
+                        GroupItem.Board(
+                            userId = board.userId,
+                            profile = board.profile,
+                            name = board.name,
+                            location = board.location,
+                            timestamp = board.timestamp,
+                            content = board.content,
+                            images = board.images
+                        )
+                    }
+                )
+                is GroupAlbumEntity -> GroupItem.GroupAlbum(
+                    title = entity.title,
+                    images = entity.images
+                )
+            }
         }
-        return groupList
     }
 }
 

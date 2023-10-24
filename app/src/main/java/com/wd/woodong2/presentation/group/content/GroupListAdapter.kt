@@ -15,7 +15,7 @@ class GroupListAdapter(
 ): ListAdapter<GroupItem, GroupListAdapter.ViewHolder>(
     object: DiffUtil.ItemCallback<GroupItem>() {
         override fun areItemsTheSame(oldItem: GroupItem, newItem: GroupItem): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.title == newItem.title
         }
 
         override fun areContentsTheSame(oldItem: GroupItem, newItem: GroupItem): Boolean {
@@ -25,8 +25,9 @@ class GroupListAdapter(
 ) {
     inner class ViewHolder(private val binding: GroupListItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: GroupItem) = with(binding) {
-            val introduceItem = item.introduce
-            val memberItem = item.member
+            val introduceItem = item as? GroupItem.GroupIntroduce
+            val memberItem = item as? GroupItem.GroupMember
+
             imgGroupProfile.load(introduceItem?.mainImage) {
                 error(R.drawable.group_ic_no_image)
             }
@@ -38,7 +39,7 @@ class GroupListAdapter(
                 for(i in member.indices) {
                     if(i < memberProfiles.size) {
                         memberCardViews[i].visibility = View.VISIBLE
-                        memberProfiles[i].load(member[i].userProfile) {
+                        memberProfiles[i].load(member[i].profile) {
                             error(R.drawable.group_ic_no_profile)
                         }
                     }
