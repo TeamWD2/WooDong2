@@ -24,29 +24,29 @@ class HomeViewModel(
     val list: LiveData<List<HomeItem>> get() = _list
 
     init {
-        loadDataFromFirebase()
+//        loadDataFromFirebase()
     }
 
     private fun loadDataFromFirebase() {
-//        val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
-//        databaseReference.addValueEventListener(object : ValueEventListener {
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                val dataList = ArrayList<HomeItem>()
-//
-//                for (postSnapshot in dataSnapshot.children) {
-//                    val firebaseData = postSnapshot.getValue(HomeItem::class.java)
-//                    if (firebaseData != null) {
-//                        dataList.add(firebaseData)
-//                    }
-//                }
-//
-//                _list.value = dataList
-//
-//            }
-//
-//            override fun onCancelled(databaseError: DatabaseError) {
-//            }
-//        })
+        val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val dataList = ArrayList<HomeItem>()
+
+                for (postSnapshot in dataSnapshot.children) {
+                    val firebaseData = postSnapshot.getValue(HomeItem::class.java)
+                    if (firebaseData != null) {
+                        dataList.add(firebaseData)
+                    }
+                }
+
+                _list.value = dataList
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
     }
 
     val userId = "user1"
