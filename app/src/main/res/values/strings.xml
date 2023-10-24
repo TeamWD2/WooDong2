@@ -44,4 +44,5 @@
     <string name="my_page_txt_views_count">0</string>
     <string name="my_page_txt_comment_count">0</string>
     <string name="my_page_txt_heart_count">0</string>
+    <string name="gcm_api">AAAAkLePWrQ:APA91bEkLe8vhgdQ-ibx2g1jb-crx6v1ky_0MDFMF-fPc7haPJvj_BAila-AUmGlQl2hFUXZQm7_hp5sw-_-9ki4LtXav4LO50_EskbyYHolNNpV_0Q3I_WDgLaV4WmRJNK4JXznhB9E</string>
 </resources>
