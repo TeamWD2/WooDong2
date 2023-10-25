@@ -24,7 +24,7 @@ class HomeViewModel(
     val list: LiveData<List<HomeItem>> get() = _list
 
     init {
-//        loadDataFromFirebase()
+        loadDataFromFirebase()
     }
 
     private fun loadDataFromFirebase() {

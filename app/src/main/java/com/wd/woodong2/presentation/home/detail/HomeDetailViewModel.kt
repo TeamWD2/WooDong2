@@ -42,7 +42,7 @@ class HomeDetailViewModel : ViewModel() {
         }
         homeItem.isLiked = !homeItem.isLiked
         itemRef.setValue(homeItem)
-        
+
     }
     fun deleteComment(homeItem: HomeItem, commentToDelete: CommentItem) {
         itemRef.child("comments").child(commentToDelete.timestamp.toString()).removeValue()

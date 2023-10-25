@@ -41,9 +41,13 @@ class HomeDetailActivity : AppCompatActivity() {
         initView()
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+
     private fun initView() {
-        homeItem = intent.getParcelableExtra(EXTRA_HOME_ITEM, HomeItem::class.java)
+        homeItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(EXTRA_HOME_ITEM, HomeItem::class.java)
+        } else {
+            intent.getParcelableExtra(EXTRA_HOME_ITEM)
+        }
             ?: throw IllegalArgumentException("데이터를 가져오지 못했습니다")
         displayData(homeItem)
 
@@ -91,11 +95,8 @@ class HomeDetailActivity : AppCompatActivity() {
     }
 
     private fun updateLikeButton(homeItem: HomeItem) {
-        val likeButtonResource = if (homeItem.isLiked) {
-            R.drawable.home_detail_like
-        } else {
-            R.drawable.home_detail_unlike
-        }
+        val likeButtonResource = if (homeItem.isLiked) R.drawable.home_detail_like
+        else R.drawable.home_detail_unlike
         binding.imgHomeUnlike.setImageResource(likeButtonResource)
     }
 
