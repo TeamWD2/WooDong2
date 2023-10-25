@@ -7,12 +7,9 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.UUID
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+
 
 class HomeAddViewModel : ViewModel() {
 
@@ -25,15 +22,17 @@ class HomeAddViewModel : ViewModel() {
                     val storageRef = storageReference.child("images/${UUID.randomUUID()}")
                     storageRef.putFile(selectedImageUri).addOnSuccessListener {
                         storageRef.downloadUrl.addOnSuccessListener { imageUrl ->
-                            val data = HomeAddItem(title, description, thumbnail = imageUrl.toString(), tag = selectedTag)
                             val newRef = databaseReference.push()
+                            val newItemId = newRef.key ?:""
+                            val data = HomeAddItem(newItemId, title, description, thumbnail = imageUrl.toString(), tag = selectedTag)
                             newRef.setValue(data)
                             onComplete()
                         }
                     }
                 } else {
-                    val data = HomeAddItem(title, description, tag = selectedTag)
                     val newRef = databaseReference.push()
+                    val newItemId = newRef.key ?: ""
+                    val data = HomeAddItem(id = newItemId, title, description, tag = selectedTag)
                     newRef.setValue(data)
                     onComplete()
                 }
