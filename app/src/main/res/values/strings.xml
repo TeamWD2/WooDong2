@@ -59,4 +59,8 @@
     <string name="my_page_update_user_chat_id">챗 아이디</string>
     <string name="my_page_update_et_user_chat_id_edit">CHATCHAT</string>
     <string name="my_page_update_btn">적용하기</string>
+
+    <string name="gcm_api">AAAAkLePWrQ:APA91bEkLe8vhgdQ-ibx2g1jb-crx6v1ky_0MDFMF-fPc7haPJvj_BAila-AUmGlQl2hFUXZQm7_hp5sw-_-9ki4LtXav4LO50_EskbyYHolNNpV_0Q3I_WDgLaV4WmRJNK4JXznhB9E</string>
+
+    <string name="test_client_token">eeWxak2xSXWJSottR1ePec:APA91bHLvExw1Sc1ueUKvLc-qnFsgWC85stYsdppK05UuYQG3JuCd6kxYA05eGWSc9S9Xi6RsZTx-JlXzHQA-bzZ70g8SygvIc10NBNVYE-tgb1YzAx62keHfAenL2USwSNCFbS0JkSp</string>
 </resources>

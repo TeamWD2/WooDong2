@@ -13,7 +13,6 @@ import com.wd.woodong2.presentation.chat.content.UserItem
 import kotlinx.coroutines.launch
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 
 class HomeViewModel(
@@ -102,8 +101,8 @@ class HomeViewModel(
         }
     }
 }
-class HomeViewModelFactory : ViewModelProvider.Factory {
 
+class HomeViewModelFactory : ViewModelProvider.Factory {
     private val userDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("users")
     }

@@ -22,6 +22,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WooDong2"
         tools:targetApi="31">
+
+        <!-- Firebase 메시징의 기본 알림 아이콘 설정 -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/wd2" />
+
+        <!-- Firebase 메시징의 기본 알림 색상 설정 -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/wd2_main_color" />
+
         <activity
             android:name=".presentation.main.MainActivity"
             android:exported="true">
@@ -31,12 +42,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".presentation.home.add.HomeAddActivity" />
+        <activity android:name=".presentation.home.add.HomeAddActivity" />
 
         <activity
             android:name=".presentation.chat.detail.ChatDetailActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:label="ChatDetailActivity">
+            <intent-filter>
+                <action android:name="com.wd.woodong2.OPEN_CHAT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
         <activity
             android:name=".presentation.home.map.HomeMapActivity"
             android:exported="false" />
@@ -49,6 +67,13 @@
         <activity
             android:name=".presentation.mypage.update.MyPageUpdateActivity"
             android:exported="false" />
+        <service
+            android:name=".services.fcm.MyFirebaseMessagingService"
+            android:directBootAware="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
-
 </manifest>
