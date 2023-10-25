@@ -56,7 +56,8 @@
         android:id="@+id/home_map_view"
         android:name="com.naver.maps.map.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="-10dp"
         app:layout_constraintBottom_toTopOf="@+id/home_map_bottom_sheet_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -87,7 +88,8 @@
                 android:gravity="center"
                 android:text="@string/home_map_bottom_sheet_title"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
 
             <LinearLayout
                 android:id="@+id/home_map_btn_set"

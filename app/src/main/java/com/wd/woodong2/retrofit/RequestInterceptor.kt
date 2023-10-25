@@ -9,7 +9,7 @@ class RequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val newRequest = chain.request().newBuilder()
             .addHeader(
-                "Request",
+                "Authorization",
                 "KakaoAK %s".format(
                     WooDongApp.getApp().getString(R.string.home_map_search_kakao_api)
                 )

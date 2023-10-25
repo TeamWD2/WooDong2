@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 data class UserItem(
     val id: String?,
     val name: String?,
-    val imgProfile: String?,
+    var imgProfile: String?,
     val email: String?,
     val chatIds: List<String>?,
     val firstLocation: String?,

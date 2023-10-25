@@ -11,4 +11,8 @@ class UserGetItemsUseCase(
             entityResult(result)
         }
     }
+    operator fun invoke(userId: String, firstLocation: String, secondLocation: String) {
+        return repository.updateUserLocations(userId, firstLocation, secondLocation)
+    }
+
 }

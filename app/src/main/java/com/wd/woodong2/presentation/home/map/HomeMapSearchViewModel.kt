@@ -23,15 +23,13 @@ class HomeMapSearchViewModel (
     ) = viewModelScope.launch {
         runCatching {
             val items = createItems(
-                Map = MapSearch("KakaoAK %s".format(
-                    WooDongApp.getApp().getString(R.string.home_map_search_kakao_api)
-                ),
-                    query)
+                Map = MapSearch(query)
             )
+
             Log.d("location", items.toString())
             _list.postValue(items)
-        }.onFailure {
-            Log.d("location", _list.toString())
+        }.onFailure { e ->
+            Log.e("Retrofit Error", "Request failed: ${e.message}")
         }
     }
 
@@ -40,13 +38,13 @@ class HomeMapSearchViewModel (
     ): List<HomeMapSearchItem> {
         fun createMapSearchItems(
             Map: MapSearchEntity
-        ): List<HomeMapSearchItem.MapSearchItem> = Map.documents?.map { document ->
+        ): List<HomeMapSearchItem.MapSearchItem> = Map.documents.map { document ->
             HomeMapSearchItem.MapSearchItem(
                 address = document.addressName,
                 x = document.x,
                 y = document.y
             )
-        }.orEmpty()
+        }
 
         return createMapSearchItems(Map)
     }

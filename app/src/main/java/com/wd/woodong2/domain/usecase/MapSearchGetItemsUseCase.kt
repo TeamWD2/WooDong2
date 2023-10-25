@@ -8,10 +8,8 @@ class MapSearchGetItemsUseCase (
     private val repository: MapSearchRepository
 ){
     suspend operator fun invoke(
-        key     : String,
-        query   : String
-    ):MapSearchEntity =repository.getSearchMap(
-        key,
+        query: String
+    ):MapSearchEntity = repository.getSearchMap(
         query
     )
 

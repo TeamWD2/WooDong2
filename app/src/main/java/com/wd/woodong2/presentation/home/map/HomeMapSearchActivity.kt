@@ -22,33 +22,38 @@ import retrofit2.converter.gson.GsonConverterFactory
 class HomeMapSearchActivity : AppCompatActivity() {
 
     companion object {
-
-        //private lateinit var HomeMapItem: HomeItem
-        fun newIntent(context: Context)=//, homeItem: HomeItem) =
+        private var firstLocation : String? ="Unknown Location"
+        private var secondLocation : String? ="Unknown Location"
+        fun newIntent(context: Context, firstLoc: String, secondLoc:String)=
         Intent(context, HomeMapSearchActivity::class.java).apply {
-                //HomeMapItem = homeItem
+            firstLocation = firstLoc
+            secondLocation = secondLoc
             }
 
     }
 
     private lateinit var binding : HomeMapSearchActivityBinding
-    //private val listItems = arrayListOf<HomeMapSearchItem.MapSearchItem>()
     private val viewModel : HomeMapSearchViewModel by viewModels{
         HomeMapSearchViewModelFactory()
     }
     private val listAdapter : HomeMapSearchListAdapter by lazy{
         HomeMapSearchListAdapter(
             onClickItem = { _, item ->
+                if(item.address != firstLocation && item.address != secondLocation){
+                    val intent = Intent().apply{
+                        putExtra(
+                            "Address",
+                            item.address
+                        )
+                    }
 
-            val intent = Intent().apply{
-                putExtra(
-                    "Address",
-                    item.address
-                )
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                }
+                else{
+                    Toast.makeText(this, "주소가 중복설정 되었습니다.", Toast.LENGTH_SHORT).show()
+                }
             }
-            setResult(Activity.RESULT_OK, intent)
-            finish()
-        }
         )
     }
     private var address = ""

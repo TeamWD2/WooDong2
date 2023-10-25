@@ -1,9 +1,6 @@
 package com.wd.woodong2.domain.model
 
-import com.google.gson.annotations.SerializedName
-
 data class MapSearchEntity(
-    @SerializedName("documents")
     val documents: List<PlaceEntity>
 )
 

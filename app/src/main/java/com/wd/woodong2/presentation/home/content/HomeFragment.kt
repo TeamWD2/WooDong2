@@ -49,9 +49,9 @@ class HomeFragment : Fragment() {
                 firstLocation = receivedDataFirstLocation
                 secondLocation = receivedDataSecondLocation
                 // firebase에 있는 값을 변경
-                binding.toolbarTvLocation.text = firstLocation
+                binding.toolbarTvLocation.text = HomeMapActivity.extractLocationInfo(firstLocation.toString())
 
-                viewModel.updateUserItem(firstLocation.toString(), secondLocation.toString())
+                viewModel.updateUserLocation(firstLocation.toString(), secondLocation.toString())
             } else {
 
             }
@@ -91,7 +91,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
-        // Toolbar 설정
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbarHome)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbarLayout.setOnClickListener{
@@ -104,12 +103,12 @@ class HomeFragment : Fragment() {
 
         homeRecyclerView.adapter = listAdapter
 
-        binding.homeRecyclerView.apply {
+        homeRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = listAdapter
         }
 
-        binding.fabHomeadd.setOnClickListener {
+        fabHomeadd.setOnClickListener {
             val intent = HomeAddActivity.homeAddActivityNewIntent(this@HomeFragment.requireContext())
             startActivity(intent)
         }
@@ -119,10 +118,11 @@ class HomeFragment : Fragment() {
             list.observe(viewLifecycleOwner){
                 listAdapter.submitList(it)
             }
+
             userInfo.observe(viewLifecycleOwner){userInfo->
                 firstLocation = userInfo.firstLocation
                 secondLocation = userInfo.secondLocation
-                binding.toolbarTvLocation.text = firstLocation
+                binding.toolbarTvLocation.text = HomeMapActivity.extractLocationInfo(firstLocation.toString())
             }
         }
     }
