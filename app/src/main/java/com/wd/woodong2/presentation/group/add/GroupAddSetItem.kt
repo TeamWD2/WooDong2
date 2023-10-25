@@ -3,18 +3,26 @@ package com.wd.woodong2.presentation.group.add
 sealed class GroupAddSetItem(
     open val viewType: String,
 ) {
-    data class GroupAddIntroduce(
-        override val viewType: String = "introduce",
-        val title: String?,
-        val groupTag: String? = null,
+    data class GroupAddMain(
+        override val viewType: String = "main",
         val groupName: String? = null,
-        val introduce: String? = null,
+        val groupTag: String? = null,
         val ageLimit: String? = null,
         val memberLimit: String? = null,
         val password: String? = null,
         val mainImage: String? = null,
         val backgroundImage: String? = null,
-        val timestamp: Long = System.currentTimeMillis()
+        val memberCount: Int? = 0,
+        val boardCount: Int? = 0
+    ) : GroupAddSetItem(viewType)
+
+    data class GroupAddIntroduce(
+        override val viewType: String = "introduce",
+        val title: String?,
+        val introduce: String? = null,
+        val groupTag: String? = null,
+        val ageLimit: String? = null,
+        val memberLimit: String? = null,
     ) : GroupAddSetItem(viewType)
 
     data class GroupAddMember(

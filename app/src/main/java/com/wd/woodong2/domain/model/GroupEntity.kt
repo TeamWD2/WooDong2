@@ -6,19 +6,29 @@ data class GroupItemsEntity(
 )
 
 /**
- * 소개
+ * 메인
  */
-data class GroupIntroduceEntity(
-    val title: String?,
+data class GroupMainEntity(
     val groupName: String?,
-    val introduce: String?,
     val groupTag: String?,
     val ageLimit: String?,
     val memberLimit: String?,
     val password: String?,
     val mainImage: String?,
     val backgroundImage: String?,
-    val timestamp: Long
+    val memberCount: Int?,
+    val boardCount: Int?
+) : GroupEntity
+
+/**
+ * 소개
+ */
+data class GroupIntroduceEntity(
+    val title: String?,
+    val introduce: String?,
+    val groupTag: String?,
+    val ageLimit: String?,
+    val memberLimit: String?,
 ) : GroupEntity
 
 /**

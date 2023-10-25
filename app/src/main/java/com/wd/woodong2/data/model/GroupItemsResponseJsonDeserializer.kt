@@ -19,6 +19,11 @@ class GroupItemsResponseJsonDeserializer : JsonDeserializer<GroupItemsResponse> 
                     val itemObject = item.asJsonObject
                     val viewType = itemObject.get("viewType").asString
                     when (viewType.uppercase()) {
+                        GroupViewType.MAIN.name -> context?.deserialize<GroupMainResponse>(
+                            itemObject,
+                            GroupMainResponse::class.java
+                        )
+
                         GroupViewType.INTRODUCE.name -> context?.deserialize<GroupIntroduceResponse>(
                             itemObject,
                             GroupIntroduceResponse::class.java

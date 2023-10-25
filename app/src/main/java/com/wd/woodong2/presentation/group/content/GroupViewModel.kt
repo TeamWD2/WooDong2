@@ -12,6 +12,7 @@ import com.wd.woodong2.domain.model.GroupAlbumEntity
 import com.wd.woodong2.domain.model.GroupBoardEntity
 import com.wd.woodong2.domain.model.GroupIntroduceEntity
 import com.wd.woodong2.domain.model.GroupItemsEntity
+import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
 import kotlinx.coroutines.launch
@@ -32,7 +33,6 @@ class GroupViewModel(
         _loadingState.value = true
         runCatching {
             groupGetItems().collect { items ->
-                Log.d("sinw", "items / $items")
                 val groupItems = readGroupItems(items)
                 _isEmptyList.value = groupItems.isEmpty()
                 _groupList.postValue(groupItems)
@@ -52,18 +52,27 @@ class GroupViewModel(
     ): List<GroupItem> {
         return items.groupList.map { entity ->
             when(entity) {
-                is GroupIntroduceEntity -> GroupItem.GroupIntroduce(
-                    title = entity.title,
-                    groupTag = entity.groupTag,
+                is GroupMainEntity -> GroupItem.GroupMain(
+                    title = "Main",
                     groupName = entity.groupName,
-                    introduce = entity.introduce,
+                    groupTag = entity.groupTag,
                     ageLimit = entity.ageLimit,
                     memberLimit = entity.memberLimit,
                     password = entity.password,
                     mainImage = entity.mainImage,
                     backgroundImage = entity.backgroundImage,
-                    timestamp = entity.timestamp
+                    memberCount = entity.memberCount,
+                    boardCount = entity.boardCount
                 )
+
+                is GroupIntroduceEntity -> GroupItem.GroupIntroduce(
+                    title = entity.title,
+                    introduce = entity.introduce,
+                    groupTag = entity.groupTag,
+                    ageLimit = entity.ageLimit,
+                    memberLimit = entity.memberLimit,
+                )
+
                 is GroupMemberEntity -> GroupItem.GroupMember(
                     title = entity.title,
                     memberList = entity.memberList?.map { member ->
@@ -75,6 +84,7 @@ class GroupViewModel(
                         )
                     }
                 )
+
                 is GroupBoardEntity -> GroupItem.GroupBoard(
                     title = entity.title,
                     boardList = entity.boardList?.map { board ->
@@ -89,6 +99,7 @@ class GroupViewModel(
                         )
                     }
                 )
+
                 is GroupAlbumEntity -> GroupItem.GroupAlbum(
                     title = entity.title,
                     images = entity.images

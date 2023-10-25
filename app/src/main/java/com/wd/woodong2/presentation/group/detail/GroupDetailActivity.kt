@@ -72,7 +72,7 @@ class GroupDetailActivity : AppCompatActivity() {
             }
             appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
                 materialToolbar.title = if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
-                    (groupItem as? GroupItem.GroupIntroduce)?.title
+                    (groupItem as? GroupItem.GroupMain)?.groupName
                 } else {
                     ""
                 }
@@ -106,14 +106,15 @@ class GroupDetailActivity : AppCompatActivity() {
     }
 
     private fun initClickItem() = with(includeBinding) {
-        imgBackground.load((groupItem as? GroupItem.GroupIntroduce)?.backgroundImage) {
+        val groupMainItem = groupItem as? GroupItem.GroupMain
+        imgBackground.load(groupMainItem?.backgroundImage) {
             error(R.drawable.group_ic_no_image)
         }
-        imgMain.load((groupItem as? GroupItem.GroupIntroduce)?.mainImage) {
+        imgMain.load(groupMainItem?.mainImage) {
             error(R.drawable.group_ic_no_image)
         }
-        txtTitle.text = (groupItem as? GroupItem.GroupIntroduce)?.title
-        txtCount.text = "멤버 ${(groupItem as? GroupItem.GroupMember)?.memberList?.size ?: "1"} " +
-                "/ 게시판 ${(groupItem as? GroupItem.GroupBoard)?.boardList?.size ?: "0"}"
+        txtTitle.text = groupMainItem?.groupName
+        txtCount.text = "멤버 ${groupMainItem?.memberCount ?: "1"} " +
+                "/ 게시판 ${groupMainItem?.boardCount ?: "0"}"
     }
 }

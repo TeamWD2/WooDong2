@@ -1,7 +1,6 @@
 package com.wd.woodong2.presentation.group.content
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -25,32 +24,18 @@ class GroupListAdapter(
 ) {
     inner class ViewHolder(private val binding: GroupListItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: GroupItem) = with(binding) {
-            val introduceItem = item as? GroupItem.GroupIntroduce
-            val memberItem = item as? GroupItem.GroupMember
-
-            imgGroupProfile.load(introduceItem?.mainImage) {
-                error(R.drawable.group_ic_no_image)
-            }
-            txtTitle.text = introduceItem?.title
-            txtMemberCount.text = "${memberItem?.memberList?.size}명"
-            val memberCardViews = listOf(cardViewMember1, cardViewMember2, cardViewMember3)
-            val memberProfiles = listOf(imgMemberProfile1, imgMemberProfile2, imgMemberProfile3)
-            memberItem?.memberList?.let { member ->
-                for(i in member.indices) {
-                    if(i < memberProfiles.size) {
-                        memberCardViews[i].visibility = View.VISIBLE
-                        memberProfiles[i].load(member[i].profile) {
-                            error(R.drawable.group_ic_no_profile)
-                        }
-                    }
+            if(item is GroupItem.GroupMain) {
+                imgGroupProfile.load(item.mainImage) {
+                    error(R.drawable.group_ic_no_image)
                 }
-            }
-            txtTagCategory.text = introduceItem?.groupTag
-            txtTagAge.text = introduceItem?.ageLimit
-            txtTagMemberLimit.text = introduceItem?.memberLimit.toString()
+                txtName.text = item.groupName
+                txtTagCategory.text = item.groupTag
+                txtTagAge.text = item.ageLimit
+                txtTagMemberLimit.text = "${item.memberCount} / ${item.memberLimit.toString()}"
 
-            root.setOnClickListener {
-                itemClickListener(item)
+                root.setOnClickListener {
+                    itemClickListener(item)
+                }
             }
         }
     }

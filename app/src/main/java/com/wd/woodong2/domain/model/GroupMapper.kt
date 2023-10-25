@@ -5,12 +5,14 @@ import com.wd.woodong2.data.model.GroupBoardItemResponse
 import com.wd.woodong2.data.model.GroupBoardResponse
 import com.wd.woodong2.data.model.GroupIntroduceResponse
 import com.wd.woodong2.data.model.GroupItemsResponse
+import com.wd.woodong2.data.model.GroupMainResponse
 import com.wd.woodong2.data.model.GroupMemberItemResponse
 import com.wd.woodong2.data.model.GroupMemberResponse
 
 fun GroupItemsResponse.toEntity() = GroupItemsEntity(
     groupList = groupList.map {
         when(it) {
+            is GroupMainResponse -> it.toEntity()
             is GroupIntroduceResponse -> it.toEntity()
             is GroupMemberResponse -> it.toEntity()
             is GroupBoardResponse -> it.toEntity()
@@ -19,17 +21,24 @@ fun GroupItemsResponse.toEntity() = GroupItemsEntity(
     }
 )
 
-fun GroupIntroduceResponse.toEntity() = GroupIntroduceEntity(
-    title = title,
+fun GroupMainResponse.toEntity() = GroupMainEntity(
     groupName = groupName,
-    introduce = introduce,
     groupTag = groupTag,
     ageLimit = ageLimit,
     memberLimit = memberLimit,
     password = password,
     mainImage = mainImage,
     backgroundImage = backgroundImage,
-    timestamp = timestamp
+    memberCount = memberCount,
+    boardCount = boardCount
+
+)
+fun GroupIntroduceResponse.toEntity() = GroupIntroduceEntity(
+    title = title,
+    introduce = introduce,
+    groupTag = groupTag,
+    ageLimit = ageLimit,
+    memberLimit = memberLimit,
 )
 
 fun GroupMemberResponse.toEntity() = GroupMemberEntity(

@@ -11,19 +11,28 @@ data class GroupItemsResponse(
 )
 
 /**
- * 소개
+ * 메인
  */
-data class GroupIntroduceResponse(
-    @SerializedName("title") val title: String?,
+data class GroupMainResponse(
     @SerializedName("groupName") val groupName: String?,
-    @SerializedName("introduce") val introduce: String?,
     @SerializedName("groupTag") val groupTag: String?,
     @SerializedName("ageLimit") val ageLimit: String?,
     @SerializedName("memberLimit") val memberLimit: String?,
     @SerializedName("password") val password: String?,
     @SerializedName("mainImage") val mainImage: String?,
     @SerializedName("backgroundImage") val backgroundImage: String?,
-    @SerializedName("timestamp") val timestamp: Long
+    @SerializedName("memberCount") val memberCount: Int?,
+    @SerializedName("boardCount") val boardCount: Int?
+) : GroupResponse
+/**
+ * 소개
+ */
+data class GroupIntroduceResponse(
+    @SerializedName("title") val title: String?,
+    @SerializedName("introduce") val introduce: String?,
+    @SerializedName("groupTag") val groupTag: String?,
+    @SerializedName("ageLimit") val ageLimit: String?,
+    @SerializedName("memberLimit") val memberLimit: String?
 ) : GroupResponse
 
 /**
