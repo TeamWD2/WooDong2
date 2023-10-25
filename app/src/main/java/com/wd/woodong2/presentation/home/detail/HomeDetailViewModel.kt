@@ -42,13 +42,13 @@ class HomeDetailViewModel : ViewModel() {
         }
         homeItem.isLiked = !homeItem.isLiked
         itemRef.setValue(homeItem)
+        
     }
-
-        fun deleteComment(homeItem: HomeItem, commentToDelete: CommentItem) {
-            itemRef.child("comments").child(commentToDelete.timestamp.toString()).removeValue()
-            homeItem.comments.remove(commentToDelete)
-            updateChatCount(homeItem) // 댓글 수 갱신
-        }
+    fun deleteComment(homeItem: HomeItem, commentToDelete: CommentItem) {
+        itemRef.child("comments").child(commentToDelete.timestamp.toString()).removeValue()
+        homeItem.comments.remove(commentToDelete)
+        updateChatCount(homeItem)
+    }
 
 
 }
