@@ -17,11 +17,12 @@ import com.google.firebase.database.ValueEventListener
 
 class HomeViewModel(
     private val userItem: UserGetItemsUseCase
-    ) : ViewModel(
-    ) {
+) : ViewModel(
+) {
 
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
+
     init {
 //        loadDataFromFirebase()
     }
@@ -80,6 +81,7 @@ class HomeViewModel(
     }
 
 }
+
 class HomeViewModelFactory() : ViewModelProvider.Factory {
 
     private val userDatabaseReference by lazy {

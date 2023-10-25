@@ -12,7 +12,8 @@
     <color name="tea_green">#C3D9B5</color>
     <color name="flax">#DEDE94</color>
     <color name="orange">#FF8F5C</color>
-<!--  사용되는 색  -->
+
+    <!--  사용되는 색  -->
     <color name="jasmine">#FDE093</color>
     <color name="sunglow">#FDCC52</color>
     <color name="selective_yellow">#FDBC15</color>
@@ -20,7 +21,8 @@
     <color name="yellow">#F9E272</color>
     <color name="light_sky_blue">#8CCFF8</color>
 
-<!--  피그마에 디자인되어 있는 색  -->
+    <!--  피그마에 디자인되어 있는 색  -->
     <color name="mustard">#FFD358</color>
 
+    <color name="wd2_main_color">#FFD358</color>
 </resources>
