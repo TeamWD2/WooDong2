@@ -3,22 +3,20 @@ package com.wd.woodong2.presentation.home.map
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.Activity
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
 import android.location.Geocoder
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
-import android.widget.Toast.makeText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import coil.load
+import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
@@ -36,18 +34,25 @@ import java.util.Locale
 class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
+        const val EXTRA_FIRSTLOCATION = "extra_firstlocation"
+        const val EXTRA_SECONDLOCATION = "extra_secondlocation"
 
-        //private lateinit var HomeMapItem: HomeItem
-        fun newIntent(context: Context?)=//, homeItem: HomeItem) =
+        private var firstLocation : String? ="Unknown Location"
+        private var secondLocation : String? ="Unknown Location"
+        fun newIntent(context: Context,firstLoc: String, secondLoc:String)=//, homeItem: HomeItem) =
             Intent(context, HomeMapActivity::class.java).apply {
                 //HomeMapItem = homeItem
+                firstLocation = firstLoc
+                secondLocation = secondLoc
             }
 
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
-    private var firstLocation : String? ="Unknown Location"
-    private var secondLocation : String? ="Unknown Location"
+    private var clientId : String? = null
+
+//    private var firstLocation : String? ="Unknown Location"
+//    private var secondLocation : String? ="Unknown Location"
 
     private lateinit var binding : HomeMapActivityBinding
     private lateinit var naverMap: NaverMap
@@ -58,10 +63,8 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         ACCESS_COARSE_LOCATION
     )
 
-    private val clientId = "kdzwicc7da"
 
-    private var check : String? = null
-    private var reverseCheck : LatLng? = null
+    private var reverse : String? = null
 
     // 임의로 위치 설정 초기화
     private var latitude: Double = 0.0
@@ -84,17 +87,27 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 receivedData = extractLocationInfo(receivedData)
                 Log.d("itemSet", receivedData.toString())
+
                 // 버튼 설정
                 if(binding.homeMapFirstBtnTvLocation.text.toString().isEmpty()){
                     firstLocation = receivedData
                     binding.homeMapFirstBtnTvLocation.text = receivedData
-                    binding.homeMapFirstBtnIvLocation.load(R.drawable.home_map_btn_ic_close){ size(24, 24) }
+                    secondLocation = binding.homeMapSecondBtnTvLocation.text.toString()
+
+                    //binding.homeMapFirstBtnIvLocation.load(R.drawable.home_map_btn_ic_close){ size(24, 24) }
+                    Glide.with(this)
+                        .load(R.drawable.home_map_btn_ic_close)
+                        .into(binding.homeMapFirstBtnIvLocation)
                     (binding.homeMapFirstBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0.99f
                 }
                 else{
                     secondLocation = receivedData
                     binding.homeMapSecondBtnTvLocation.text = receivedData
-                    binding.homeMapSecondBtnIvLocation.load(R.drawable.home_map_btn_ic_close){ size(24, 24) }
+                    firstLocation = binding.homeMapFirstBtnTvLocation.text.toString()
+                    //binding.homeMapSecondBtnIvLocation.load(R.drawable.home_map_btn_ic_close){ size(24, 24) }
+                    Glide.with(this)
+                        .load(R.drawable.home_map_btn_ic_close)
+                        .into(binding.homeMapSecondBtnIvLocation)
                     (binding.homeMapSecondBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0.99f
                 }
             }
@@ -126,12 +139,40 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun initHomeMapView(){
 
+        binding.homeMapFirstBtnTvLocation.text = firstLocation
+        if(secondLocation!!.isNotEmpty()){
+            binding.homeMapSecondBtnTvLocation.text = secondLocation
+            Glide.with(this)
+                .load(R.drawable.home_map_btn_ic_close)
+                .into(binding.homeMapSecondBtnIvLocation)
+        }
+
         binding.homeMapClose.setOnClickListener{
+            val intent = Intent().apply{
+                putExtra(
+                    EXTRA_FIRSTLOCATION,
+                    firstLocation
+                )
+                putExtra(
+                    EXTRA_SECONDLOCATION,
+                    secondLocation
+                )
+            }
+            setResult(Activity.RESULT_OK, intent)
             finish()
+
             overridePendingTransition(
                 R.anim.home_map_none_fragment,
                 R.anim.home_map_slide_down_fragment
             )
+        }
+
+        binding.homeMapTvSearch.setOnClickListener{
+            if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
+                homeMapSearchLauncher.launch(
+                    HomeMapSearchActivity.newIntent(this@HomeMapActivity)
+                )
+            }
         }
 
         binding.homeMapFirstBtn.setOnClickListener{
@@ -143,6 +184,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             else{
                 firstLocation = binding.homeMapFirstBtnTvLocation.text.toString()
+                Log.d("locationFirst", firstLocation!!)
                 getLocationFromAddress(this, firstLocation!!)
                 naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
                 marker(latitude, longitude)
@@ -160,7 +202,9 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     binding.homeMapFirstBtnTvLocation.text = binding.homeMapSecondBtnTvLocation.text.toString()
                     secondLocation = ""
                     binding.homeMapSecondBtnTvLocation.text = ""
-                    binding.homeMapSecondBtnIvLocation.load(R.drawable.public_ic_add) { size(24, 24) }
+                    Glide.with(this)
+                        .load(R.drawable.public_ic_add)
+                        .into(binding.homeMapSecondBtnIvLocation)
                     (binding.homeMapSecondBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0f
 
                 }
@@ -179,6 +223,12 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 getLocationFromAddress(this, secondLocation!!)
                 naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
                 marker(latitude, longitude)
+
+                reverse = firstLocation
+                firstLocation = secondLocation
+                secondLocation = reverse
+                binding.homeMapFirstBtnTvLocation.text = firstLocation
+                binding.homeMapSecondBtnTvLocation.text = secondLocation
             }
         }
 
@@ -191,13 +241,16 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             else{
                 secondLocation = ""
                 binding.homeMapSecondBtnTvLocation.text = ""
-                binding.homeMapSecondBtnIvLocation.load(R.drawable.public_ic_add){ size(24, 24) }
+                Glide.with(this)
+                    .load(R.drawable.public_ic_add)
+                    .into(binding.homeMapSecondBtnIvLocation)
                 (binding.homeMapSecondBtnIvLocation.layoutParams as ConstraintLayout.LayoutParams).horizontalBias = 0f
             }
         }
+        clientId = getString(R.string.home_map_naver_api)
         //NAVER 지도 API 호출 및 ID 지정
         NaverMapSdk.getInstance(this).client =
-            NaverMapSdk.NaverCloudPlatformClient(clientId)
+            NaverMapSdk.NaverCloudPlatformClient(clientId!!)
 
         //NAVER 객체 얻기 ( 동적 )
         val fm = supportFragmentManager
@@ -241,44 +294,49 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         marker.position = LatLng(latitude, longitude)
         marker.map = naverMap
 
-        getAddressFromLocation(latitude, longitude)
+        getAddressFromLocation(this, latitude, longitude)
     }
-
     // 좌표 -> 주소 변환
-    private fun getAddressFromLocation(lat: Double, lng: Double): String {
-        return runCatching {
-            val geoCoder = Geocoder(this, Locale.KOREA)
-            val address: MutableList<Address>? = geoCoder.getFromLocation(lat, lng, 1)
-            if (address!!.isNotEmpty()) {
-                return address[0].getAddressLine(0).toString()
-            } else {
-                return "주소를 가져 올 수 없습니다."
+    private fun getAddressFromLocation(context: Context,lat: Double, lng: Double){
+        val geocoder = Geocoder(context, Locale.KOREAN)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            geocoder.getFromLocation(
+                lat, lng, 1
+            ) { addresses ->
+                if (addresses.size != 0) {
+                    Log.d("Address",(addresses[0].getAddressLine(0)))
+                }
             }
-        }.getOrElse {
-            it.printStackTrace()
-            "주소를 가져 오는 도중 오류가 발생했습니다."
+        } else {
+            val addresses = geocoder.getFromLocation(lat, lng, 1)
+            if (addresses != null) {
+                Log.d("Address",(addresses[0].getAddressLine(0)))
+            }
         }
+        return
     }
 
-    //주소-> 좌표
-    private fun getLocationFromAddress(context: Context, addressStr: String): LatLng? {
-        return runCatching {
-            val geocoder = Geocoder(context, Locale.getDefault())
-            val addresses: MutableList<Address>? = geocoder.getFromLocationName(addressStr, 1)
-
+    //주소 -> 좌표 변환
+    private fun getLocationFromAddress(context: Context, address: String){
+        val geocoder = Geocoder(context, Locale.KOREAN)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            geocoder.getFromLocationName(
+                address, 1
+            ) { addresses ->
+                if(addresses.isNotEmpty()){
+                latitude = addresses[0].latitude
+                longitude = addresses[0].longitude
+                }
+            }
+        } else {
+            val addresses = geocoder.getFromLocationName(address, 1)
             if (addresses!!.isNotEmpty()) {
                 latitude = addresses[0].latitude
                 longitude = addresses[0].longitude
-                return LatLng(latitude, longitude)
-            } else {
-                return null
             }
-        }.getOrElse {
-            it.printStackTrace()
-            null
         }
+        return
     }
-
     // 동, 읍, 면 추출하기
     private fun extractLocationInfo(address: String): String {
         val parts = address.split(" ")

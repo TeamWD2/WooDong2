@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         MyPageFragment.newInstance()
     }
 
+
     /**
      * 갤러리 접근 권한 설정
      * Target SDK 33 부터 READ_EXTERNAL_STORAGE 권한 세분화 (이미지/동영상/오디오)
@@ -92,16 +93,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
-//        // Toolbar 설정
-//        setSupportActionBar(mainToolbar)
-//        supportActionBar?.setDisplayShowTitleEnabled(false)
-//        mainToolbarLocation.setOnClickListener{
-//            homeMapLauncher.launch(
-//                HomeMapActivity.homeMapActivityNewIntent(
-//                    this@MainActivity
-//                )
-//            )
-//        }
+
 
         //BottomNavigation 설정
         supportFragmentManager.beginTransaction().add(frameLayout.id, homeFragment).commit()
