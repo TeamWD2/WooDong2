@@ -1,6 +1,6 @@
 package com.wd.woodong2.retrofit
 
-import com.wd.woodong2.services.fcm.GCMService
+import com.wd.woodong2.data.remotesource.GCMRemoteSource
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,7 +23,7 @@ object GCMRetrofitClient {
             .build()
     }
 
-    val gcmService: GCMService by lazy {
-        retrofit.create(GCMService::class.java)
+    val gcmRemoteSource: GCMRemoteSource by lazy {
+        retrofit.create(GCMRemoteSource::class.java)
     }
 }

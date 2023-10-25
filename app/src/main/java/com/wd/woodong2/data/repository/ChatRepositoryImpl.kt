@@ -17,7 +17,7 @@ import com.wd.woodong2.domain.model.Message
 import com.wd.woodong2.domain.model.MessageItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.ChatRepository
-import com.wd.woodong2.services.fcm.FCMNotification
+import com.wd.woodong2.data.model.GCMRequest
 import com.wd.woodong2.retrofit.GCMRetrofitClient
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -146,7 +146,7 @@ class ChatRepositoryImpl(
 
         // FCM Notification 객체 생성
         // to -> 받는 사람 Token
-        val notification = FCMNotification(
+        val notification = GCMRequest(
             to = WooDongApp.getApp().getString(R.string.test_client_token),
             data = mapOf("action" to "ChatDetail"),
             notification = mapOf(
@@ -156,7 +156,7 @@ class ChatRepositoryImpl(
         )
 
         try {
-            val response = GCMRetrofitClient.gcmService.sendNotification(notification)
+            val response = GCMRetrofitClient.gcmRemoteSource.sendNotification(notification)
 
             if (response.isSuccessful) {
                 Log.d(TAG, "Notification sent successfully. ${response.body()?.string()}")
