@@ -32,25 +32,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     }
 
-    override fun onMessageReceived(remoteMessage: RemoteMessage) {
-
-        Log.d(TAG, "remoteMessage Title: " + remoteMessage.notification?.title)
-        Log.d(TAG, "remoteMessage Body: " + remoteMessage.notification?.body)
-
-        val noti = remoteMessage.notification
-
-        // Test
-        val chatItem = ChatItem.GroupChatItem(
-            id = "-chat_list-group-TestData1",
-            groupId = "groupId",
-            lastMessage = "lastMessage",
-            timeStamp = 12510436307,
-            mainImage = "mainImage",
-            memberLimit = "memberLimit",
-            title = "Test title",
-        )
-        val userId = "user1"
-
+    private fun createNotification(chatItem: ChatItem.GroupChatItem, userId: String, noti: RemoteMessage.Notification?) {
         val intent = Intent("com.wd.woodong2.OPEN_CHAT").apply {
             addCategory("android.intent.category.DEFAULT")
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -65,7 +47,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
         )
 
-        // 액션을 넘길 수 있다(클래스 이름) manifest에 정의해서 Action을 통해 특정 액티비티를 실행시킬 수 있는 방법
         val notificationBuilder = NotificationCompat.Builder(this, "chat_message_id")
             .setSmallIcon(R.drawable.wd2)
             .setContentTitle(noti?.title)
@@ -77,7 +58,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // Notification Channel 생성 (Android 8.0 이상에서 필요)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 "chat_message_id",
@@ -87,5 +67,28 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
         notificationManager.notify(0, notificationBuilder.build())
+    }
+
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+
+        Log.d(TAG, "remoteMessage Title: " + remoteMessage.notification?.title)
+        Log.d(TAG, "remoteMessage Body: " + remoteMessage.notification?.body)
+
+        // TODO sTest
+
+        val noti = remoteMessage.notification
+
+        val chatItem = ChatItem.GroupChatItem(
+            id = "-chat_list-group-TestData1",
+            groupId = "groupId",
+            lastMessage = "lastMessage",
+            timeStamp = 12510436307,
+            mainImage = "mainImage",
+            memberLimit = "memberLimit",
+            title = "Test title",
+        )
+        val userId = "user1"
+
+        createNotification(chatItem, userId, noti)
     }
 }
