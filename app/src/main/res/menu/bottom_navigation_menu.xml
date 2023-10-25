@@ -4,7 +4,6 @@
     <item
         android:id="@+id/bottom_menu_home"
         android:enabled="true"
-<<<<<<< HEAD
         android:icon="@drawable/main_bottom_menu_ic_home"
         android:title="@string/bottom_menu_home"/>
     <item
@@ -22,19 +21,4 @@
         android:enabled="true"
         android:icon="@drawable/main_bottom_menu_ic_my_page"
         android:title="@string/bottom_menu_my_page"/>
-=======
-        android:title="@string/bottom_menu_home"/>
-    <item
-        android:id="@+id/bottom_menu_life"
-        android:enabled="true"
-        android:title="@string/bottom_menu_1"/>
-    <item
-        android:id="@+id/bottom_menu_chat"
-        android:enabled="true"
-        android:title="@string/bottom_menu_2"/>
-    <item
-        android:id="@+id/bottom_menu_my_page"
-        android:enabled="true"
-        android:title="@string/bottom_menu_3"/>
->>>>>>> release/1.0.0
 </menu>
