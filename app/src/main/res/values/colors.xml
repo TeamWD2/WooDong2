@@ -3,6 +3,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
     <color name="gray">#F5F6F7</color>
     <color name="gray_trans">#E6F5F6F7</color>
     <color name="gray_light">#464646</color>
@@ -37,5 +38,6 @@
     <color name="color9">#76C5BB</color>
 
     <color name="wd2_main_color">#FFD358</color>
+
 
 </resources>
