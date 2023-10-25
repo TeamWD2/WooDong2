@@ -6,6 +6,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
+import com.wd.woodong2.R
+import com.wd.woodong2.WooDongApp
 import com.wd.woodong2.data.model.ChatItemsResponse
 import com.wd.woodong2.data.model.ChatResponse
 import com.wd.woodong2.data.model.MessageItemsResponse
@@ -22,7 +24,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 class ChatRepositoryImpl(
-    private val databaseReference: DatabaseReference) : ChatRepository {
+    private val databaseReference: DatabaseReference
+) : ChatRepository {
 
     companion object {
         const val TAG: String = "ChatRepositoryImpl"
@@ -144,7 +147,7 @@ class ChatRepositoryImpl(
         // FCM Notification 객체 생성
         // to -> 받는 사람 Token
         val notification = FCMNotification(
-            to = "fO_rDAHQR3CBrr4q0gqg3h:APA91bGyFjStWQF76yCG0a406LM3gF7NVolK76Ht1qLMq_Ht-FAgd4SQetZDfuNlPlFTS9lFpE3geef-mXvjELodyk2Pqxld_j1V6Ip1s1YSgZfNy6YTei7uX9ivEQylHpRMF3rJSjVN",
+            to = WooDongApp.getApp().getString(R.string.test_client_token),
             data = mapOf("action" to "ChatDetail"),
             notification = mapOf(
                 "title" to "GCM Test : title",
