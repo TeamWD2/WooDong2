@@ -23,6 +23,9 @@ class ChatViewModel(
     val chatList: LiveData<MutableList<ChatItem>>
         get() = _chatList
 
+    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
     // User test
     val userId = "user1"
     var user = UserItem(
@@ -32,7 +35,9 @@ class ChatViewModel(
         ),
         email = "대니주@example.com",
         name = "주찬영",
-        imgProfile = "URL_TO_USER_1_IMAGE"
+        imgProfile = "URL_TO_USER_1_IMAGE",
+        firstLocation = "",
+        secondLocation = "",
     )
 
     init {
@@ -50,6 +55,8 @@ class ChatViewModel(
                         imgProfile = it.imgProfile,
                         email = it.email,
                         chatIds = it.chatIds,
+                        firstLocation = it.firstLocation,
+                        secondLocation = it.secondLocation
                     )
                 }.orEmpty()
                 user = userItem[0]
@@ -60,12 +67,15 @@ class ChatViewModel(
     }
 
     private fun getChatItems() = viewModelScope.launch {
+        _isLoading.value = true
         runCatching {
             chatItem(user.chatIds.orEmpty()).collect { items ->
                 _chatList.postValue(readChatItems(items).toMutableList())
+                _isLoading.value = false
             }
         }.onFailure {
             Log.e("danny", it.message.toString())
+            _isLoading.value = false
         }
     }
 
@@ -103,6 +113,8 @@ class ChatViewModelFactory : ViewModelProvider.Factory {
     private val chatDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("chat_list")
     }
+
+    // 삭제 예정
     private val userDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("users")
     }
@@ -111,6 +123,8 @@ class ChatViewModelFactory : ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
             return ChatViewModel(
                 ChatGetItemsUseCase(ChatRepositoryImpl(chatDatabaseReference)),
+
+                // 삭제 예정
                 UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference))
             ) as T
         } else {

@@ -1,10 +1,13 @@
 package com.wd.woodong2.data.repository
 
+import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
+import com.wd.woodong2.R
+import com.wd.woodong2.WooDongApp
 import com.wd.woodong2.data.model.ChatItemsResponse
 import com.wd.woodong2.data.model.ChatResponse
 import com.wd.woodong2.data.model.MessageItemsResponse
@@ -14,11 +17,19 @@ import com.wd.woodong2.domain.model.Message
 import com.wd.woodong2.domain.model.MessageItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.ChatRepository
+import com.wd.woodong2.data.model.GCMRequest
+import com.wd.woodong2.retrofit.GCMRetrofitClient
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : ChatRepository {
+class ChatRepositoryImpl(
+    private val databaseReference: DatabaseReference
+) : ChatRepository {
+
+    companion object {
+        const val TAG: String = "ChatRepositoryImpl"
+    }
 
     /*
     * "chat_list"
@@ -132,6 +143,32 @@ class ChatRepositoryImpl(private val databaseReference: DatabaseReference) : Cha
 
         // lastMessage 업데이트
         databaseReference.child("last").setValue(messageData)
+
+        // FCM Notification 객체 생성
+        // to -> 받는 사람 Token
+        val notification = GCMRequest(
+            to = WooDongApp.getApp().getString(R.string.test_client_token),
+            data = mapOf("action" to "ChatDetail"),
+            notification = mapOf(
+                "title" to "GCM Test : title",
+                "body" to "GCM Test : body"
+            ),
+        )
+
+        try {
+            val response = GCMRetrofitClient.gcmRemoteSource.sendNotification(notification)
+
+            if (response.isSuccessful) {
+                Log.d(TAG, "Notification sent successfully. ${response.body()?.string()}")
+            } else {
+                Log.e(
+                    TAG,
+                    "Failed to send notification: ${response.code()} ${response.message()}"
+                )
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Exception during network request.", e)
+        }
     }
 }
 

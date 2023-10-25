@@ -2,18 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="5dp"
+    android:elevation="10dp"
+    android:layout_margin="3dp"
     android:id="@+id/container"
-    android:background="@color/white"
+    android:background="@drawable/home_map_search_list_item_shape"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <TextView
         android:id="@+id/home_map_search_address_item"
         android:layout_width="match_parent"
         android:layout_height="25dp"
-        android:layout_margin="5dp"
+        android:layout_margin="4dp"
         android:text="지번"
-        android:textSize="15sp"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

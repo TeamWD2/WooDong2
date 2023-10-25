@@ -3,14 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_map_search_toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/jet"
-        android:minHeight="?attr/actionBarSize"
+        android:layout_margin="10dp"
+        android:background="@drawable/home_map_toolbar_shape"
+        android:minHeight="48dp"
+        android:elevation="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -29,32 +32,30 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/home_map_search"
-                android:layout_width="0dp"
+
+            <EditText
+                android:id="@+id/home_map_et_search"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:background="@null"
+                android:backgroundTint="@color/gray"
+                android:hint="@string/home_map_search_btn"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textSize="16sp"
+                android:layout_margin="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/home_map_search_btn"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/home_map_search_close"
-                app:layout_constraintTop_toTopOf="parent">
-                <EditText
-                    android:id="@+id/et_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:textSize="15dp"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    android:background="@drawable/no_underline"
-                    android:hint="@string/home_map_search_btn" />
-            </androidx.cardview.widget.CardView>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/home_map_search_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/main_toolbar_ic_search"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -65,7 +66,8 @@
         android:id="@+id/home_map_search_rc"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/jet"
+        android:background="@drawable/home_map_search_recycler_view_shape"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
