@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.wd.woodong2.data.repository.MapSearchRepositoryImpl
 import com.wd.woodong2.domain.repository.MapSearchRepository
 import com.wd.woodong2.domain.usecase.MapSearchGetItemsUseCase
-import com.wd.woodong2.retrofit.RetrofitClient
+import com.wd.woodong2.retrofit.KAKAORetrofitClient
 
 class HomeMapSearchViewModelFactory : ViewModelProvider.Factory {
     private val repository : MapSearchRepository = MapSearchRepositoryImpl(
-        RetrofitClient.search
+        KAKAORetrofitClient.search
     )
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeMapSearchViewModel::class.java)) {
