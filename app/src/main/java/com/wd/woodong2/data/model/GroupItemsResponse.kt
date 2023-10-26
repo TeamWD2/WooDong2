@@ -14,6 +14,7 @@ data class GroupItemsResponse(
  * 메인
  */
 data class GroupMainResponse(
+    val id: String?,
     @SerializedName("groupName") val groupName: String?,
     @SerializedName("groupTag") val groupTag: String?,
     @SerializedName("ageLimit") val ageLimit: String?,
@@ -28,6 +29,7 @@ data class GroupMainResponse(
  * 소개
  */
 data class GroupIntroduceResponse(
+    val id: String?,
     @SerializedName("title") val title: String?,
     @SerializedName("introduce") val introduce: String?,
     @SerializedName("groupTag") val groupTag: String?,
@@ -39,6 +41,7 @@ data class GroupIntroduceResponse(
  * 멤버
  */
 data class GroupMemberResponse(
+    val id: String?,
     @SerializedName("title") val title: String?,
     @SerializedName("memberList") val memberList: List<GroupMemberItemResponse>?
 ) : GroupResponse
@@ -57,6 +60,7 @@ data class GroupMemberItemResponse(
  * 게시판
  */
 data class GroupBoardResponse(
+    val id: String?,
     @SerializedName("title") val title: String?,
     @SerializedName("boardList") val boardList: List<GroupBoardItemResponse>?
 ) : GroupResponse
@@ -78,6 +82,7 @@ data class GroupBoardItemResponse(
  * 앨범
  */
 data class GroupAlbumResponse(
+    val id: String?,
     @SerializedName("title") val title: String?,
     @SerializedName("images") val images: List<String>?
 ) : GroupResponse

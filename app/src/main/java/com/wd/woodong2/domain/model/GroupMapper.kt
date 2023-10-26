@@ -22,6 +22,7 @@ fun GroupItemsResponse.toEntity() = GroupItemsEntity(
 )
 
 fun GroupMainResponse.toEntity() = GroupMainEntity(
+    id = id,
     groupName = groupName,
     groupTag = groupTag,
     ageLimit = ageLimit,
@@ -34,6 +35,7 @@ fun GroupMainResponse.toEntity() = GroupMainEntity(
 
 )
 fun GroupIntroduceResponse.toEntity() = GroupIntroduceEntity(
+    id = id,
     title = title,
     introduce = introduce,
     groupTag = groupTag,
@@ -42,6 +44,7 @@ fun GroupIntroduceResponse.toEntity() = GroupIntroduceEntity(
 )
 
 fun GroupMemberResponse.toEntity() = GroupMemberEntity(
+    id = id,
     title = title,
     memberList = memberList?.map {
         it.toEntity()
@@ -56,6 +59,7 @@ fun GroupMemberItemResponse.toEntity() = GroupMemberItemEntity(
 )
 
 fun GroupBoardResponse.toEntity() = GroupBoardEntity(
+    id = id,
     title = title,
     boardList = boardList?.map {
         it.toEntity()
@@ -73,6 +77,7 @@ fun GroupBoardItemResponse.toEntity() = GroupBoardItemEntity(
 )
 
 fun GroupAlbumResponse.toEntity() = GroupAlbumEntity(
+    id = id,
     title = title,
     images = images
 )

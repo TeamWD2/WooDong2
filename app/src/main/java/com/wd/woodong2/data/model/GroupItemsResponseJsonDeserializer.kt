@@ -1,5 +1,6 @@
 package com.wd.woodong2.data.model
 
+import android.util.Log
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -15,8 +16,10 @@ class GroupItemsResponseJsonDeserializer : JsonDeserializer<GroupItemsResponse> 
         val items = arrayListOf<GroupResponse>()
         runCatching {
             json?.asJsonObject?.entrySet()?.forEach { entry ->
+                val id = entry.key
                 entry.value.asJsonArray.forEach { item ->
                     val itemObject = item.asJsonObject
+                    itemObject.addProperty("id", id)
                     val viewType = itemObject.get("viewType").asString
                     when (viewType.uppercase()) {
                         GroupViewType.MAIN.name -> context?.deserialize<GroupMainResponse>(
@@ -47,7 +50,9 @@ class GroupItemsResponseJsonDeserializer : JsonDeserializer<GroupItemsResponse> 
                         else -> null
 
                     }?.also {
+                        Log.d("sinw", "it / $it")
                         items.add(it)
+                        Log.d("sinw", "items / $items")
                     }
                 }
             }

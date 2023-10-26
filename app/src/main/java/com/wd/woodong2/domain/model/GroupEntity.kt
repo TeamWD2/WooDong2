@@ -9,6 +9,7 @@ data class GroupItemsEntity(
  * 메인
  */
 data class GroupMainEntity(
+    val id: String?,
     val groupName: String?,
     val groupTag: String?,
     val ageLimit: String?,
@@ -24,6 +25,7 @@ data class GroupMainEntity(
  * 소개
  */
 data class GroupIntroduceEntity(
+    val id: String?,
     val title: String?,
     val introduce: String?,
     val groupTag: String?,
@@ -35,6 +37,7 @@ data class GroupIntroduceEntity(
  * 멤버
  */
 data class GroupMemberEntity(
+    val id: String?,
     val title: String?,
     val memberList: List<GroupMemberItemEntity>?
 ) : GroupEntity
@@ -53,6 +56,7 @@ data class GroupMemberItemEntity(
  * 게시판
  */
 data class GroupBoardEntity(
+    val id: String?,
     val title: String?,
     val boardList: List<GroupBoardItemEntity>?
 ) : GroupEntity
@@ -74,6 +78,7 @@ data class GroupBoardItemEntity(
  * 앨범
  */
 data class GroupAlbumEntity(
+    val id: String?,
     val title: String?,
     val images: List<String>?
 ) : GroupEntity
