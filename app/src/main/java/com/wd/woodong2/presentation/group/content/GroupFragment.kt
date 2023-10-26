@@ -63,7 +63,7 @@ class GroupFragment : Fragment() {
 
     private fun initViewModel() = with(viewModel) {
         groupList.observe(viewLifecycleOwner) {
-            groupListAdapter.submitList(it)
+            groupListAdapter.submitList(it?.filterIsInstance<GroupItem.GroupMain>())
         }
         loadingState.observe(viewLifecycleOwner) { loadingState ->
             binding.progressBar.isVisible = loadingState

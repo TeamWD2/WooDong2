@@ -10,32 +10,35 @@ import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupListItemBinding
 
 class GroupListAdapter(
-    val itemClickListener: (GroupItem) -> Unit
-): ListAdapter<GroupItem, GroupListAdapter.ViewHolder>(
-    object: DiffUtil.ItemCallback<GroupItem>() {
-        override fun areItemsTheSame(oldItem: GroupItem, newItem: GroupItem): Boolean {
-            return oldItem.title == newItem.title
-        }
+    val itemClickListener: (GroupItem.GroupMain) -> Unit
+) : ListAdapter<GroupItem.GroupMain, GroupListAdapter.ViewHolder>(
+    object : DiffUtil.ItemCallback<GroupItem.GroupMain>() {
+        override fun areItemsTheSame(
+            oldItem: GroupItem.GroupMain,
+            newItem: GroupItem.GroupMain
+        ): Boolean =
+            oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: GroupItem, newItem: GroupItem): Boolean {
-            return oldItem == newItem
-        }
+        override fun areContentsTheSame(
+            oldItem: GroupItem.GroupMain,
+            newItem: GroupItem.GroupMain
+        ): Boolean =
+            oldItem == newItem
     }
 ) {
-    inner class ViewHolder(private val binding: GroupListItemBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: GroupItem) = with(binding) {
-            if(item is GroupItem.GroupMain) {
-                imgGroupProfile.load(item.mainImage) {
-                    error(R.drawable.group_ic_no_image)
-                }
-                txtName.text = item.groupName
-                txtTagCategory.text = item.groupTag
-                txtTagAge.text = item.ageLimit
-                txtTagMemberLimit.text = "${item.memberCount} / ${item.memberLimit.toString()}"
+    inner class ViewHolder(private val binding: GroupListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: GroupItem.GroupMain) = with(binding) {
+            imgGroupProfile.load(item.mainImage) {
+                error(R.drawable.group_ic_no_image)
+            }
+            txtName.text = item.groupName
+            txtTagCategory.text = item.groupTag
+            txtTagAge.text = item.ageLimit
+            txtTagMemberLimit.text = "${item.memberCount} / ${item.memberLimit.toString()}"
 
-                root.setOnClickListener {
-                    itemClickListener(item)
-                }
+            root.setOnClickListener {
+                itemClickListener(item)
             }
         }
     }
