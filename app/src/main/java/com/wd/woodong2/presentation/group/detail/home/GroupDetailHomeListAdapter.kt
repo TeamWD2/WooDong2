@@ -17,7 +17,9 @@ import com.wd.woodong2.presentation.group.content.GroupItem
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAdapter.ViewHolder>(
+class GroupDetailHomeListAdapter(
+    private val onClickMoreBtn: (Int) -> Unit
+) : ListAdapter<GroupItem, GroupDetailHomeListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<GroupItem>() {
         override fun areItemsTheSame(
             oldItem: GroupItem,
@@ -68,7 +70,8 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ),
+                    onClickMoreBtn
                 )
 
             GroupItemViewType.BOARD.ordinal ->
@@ -77,7 +80,8 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ),
+                    onClickMoreBtn
                 )
 
             GroupItemViewType.ALBUM.ordinal ->
@@ -86,7 +90,8 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ),
+                    onClickMoreBtn
                 )
 
             else ->
@@ -118,7 +123,8 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
     }
 
     class HomeMemberViewHolder(
-        private val binding: GroupDetailHomeMemberItemBinding
+        private val binding: GroupDetailHomeMemberItemBinding,
+        private val onClickMoreBtn: (Int) -> Unit
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupItem) = with(binding) {
             if (item is GroupItem.GroupMember) {
@@ -141,14 +147,15 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
                     }
                 }
                 btnMore.setOnClickListener {
-
+                    onClickMoreBtn(R.string.group_detail_tab_member_title)
                 }
             }
         }
     }
 
     class HomeBoardViewHolder(
-        private val binding: GroupDetailHomeBoardItemBinding
+        private val binding: GroupDetailHomeBoardItemBinding,
+        private val onClickMoreBtn: (Int) -> Unit
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupItem) = with(binding) {
             if (item is GroupItem.GroupBoard) {
@@ -179,14 +186,15 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
                     }
                 }
                 btnMore.setOnClickListener {
-
+                    onClickMoreBtn(R.string.group_detail_tab_board_title)
                 }
             }
         }
     }
 
     class HomeAlbumViewHolder(
-        private val binding: GroupDetailHomeAlbumItemBinding
+        private val binding: GroupDetailHomeAlbumItemBinding,
+        private val onClickMoreBtn: (Int) -> Unit
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupItem) = with(binding) {
             if (item is GroupItem.GroupAlbum) {
@@ -204,7 +212,7 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
                     }
                 }
                 btnMore.setOnClickListener {
-
+                    onClickMoreBtn(R.string.group_detail_tab_album_title)
                 }
             }
         }

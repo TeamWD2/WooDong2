@@ -19,9 +19,12 @@ class GroupDetailViewPagerAdapter(fragmentActivity: FragmentActivity) :
         GroupDetailTabs(GroupDetailAlbumFragment.newInstance(), R.string.group_detail_tab_album_title)
     )
 
-    fun getTitle(position: Int): Int {
-        return fragments[position].title
-    }
+    fun getTitle(position: Int): Int = fragments[position].title
+
+    fun findTabPositionByName(name: Int): Int =
+        fragments.indexOfFirst {
+            it.title == name
+        }
 
     override fun getItemCount(): Int = fragments.size
 

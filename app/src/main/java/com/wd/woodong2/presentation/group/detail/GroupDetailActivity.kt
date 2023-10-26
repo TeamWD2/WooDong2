@@ -54,6 +54,7 @@ class GroupDetailActivity : AppCompatActivity() {
         includeBinding = binding.includeLayoutCoordinator
 
         initView()
+        initViewModel()
     }
 
     private fun initView() {
@@ -91,7 +92,7 @@ class GroupDetailActivity : AppCompatActivity() {
 
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    viewPager2.setCurrentItem(tab.position, true)
+                    viewPager2.setCurrentItem(tab.position, false)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -103,6 +104,15 @@ class GroupDetailActivity : AppCompatActivity() {
             btnJoinGroup.setOnClickListener {
                 //Todo("모임 가입하기 or 게시물 작성하기")
             }
+        }
+    }
+
+    private fun initViewModel() = with(viewModel) {
+        viewModel.tabName.observe(this@GroupDetailActivity) { tabName ->
+            includeBinding.viewPager2.setCurrentItem(
+                viewPager2Adapter.findTabPositionByName(tabName),
+                false
+            )
         }
     }
 

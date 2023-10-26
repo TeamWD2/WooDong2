@@ -20,7 +20,11 @@ class GroupDetailHomeFragment: Fragment() {
     private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels()
 
     private val groupDetailHomeListAdapter by lazy {
-        GroupDetailHomeListAdapter()
+        GroupDetailHomeListAdapter(
+            onClickMoreBtn = { tabName ->
+                sharedViewModel.modifyTab(tabName)
+            }
+        )
     }
 
     override fun onCreateView(
