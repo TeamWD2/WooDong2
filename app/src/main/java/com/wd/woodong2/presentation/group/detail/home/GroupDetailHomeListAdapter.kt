@@ -173,7 +173,7 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
                             boardDates[i].text = SimpleDateFormat("yyyy년 MM월 dd일").format(Date(board[i].timestamp))
                             boardDescriptions[i].text = board[i].content
                             boardPhotos[i].load(board[i].images?.get(0)) {
-                                error(R.drawable.group_ic_no_profile)
+                                error(R.drawable.group_ic_no_image)
                             }
                         }
                     }

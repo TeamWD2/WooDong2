@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.wd.woodong2.databinding.GroupDetailMemberFragmentBinding
+import com.wd.woodong2.presentation.group.content.GroupItem
+import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
 
 class GroupDetailMemberFragment: Fragment() {
     companion object {
@@ -14,6 +17,12 @@ class GroupDetailMemberFragment: Fragment() {
 
     private var _binding: GroupDetailMemberFragmentBinding? = null
     private val binding get() = _binding!!
+
+    private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels()
+
+    private val groupDetailMemberListAdapter by lazy {
+        GroupDetailMemberListAdapter()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,7 +38,9 @@ class GroupDetailMemberFragment: Fragment() {
     }
 
     private fun initView() = with(binding) {
-
+        recyclerViewAddDetailMember.adapter = groupDetailMemberListAdapter
+        val groupMemberList = sharedViewModel.groupDetailItem?.filterIsInstance<GroupItem.GroupMember>()
+        groupDetailMemberListAdapter.submitList(groupMemberList?.flatMap { it.memberList ?: listOf() })
     }
 
     override fun onDestroyView() {
