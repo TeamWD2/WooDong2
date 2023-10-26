@@ -34,7 +34,7 @@
             android:resource="@color/wd2_main_color" />
 
         <activity
-            android:name=".retrofit.main.MainActivity"
+            android:name=".presentation.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.wd.woodong2.retrofit.main
+package com.wd.woodong2.presentation.main
 
 import android.content.pm.PackageManager
 import android.os.Build
