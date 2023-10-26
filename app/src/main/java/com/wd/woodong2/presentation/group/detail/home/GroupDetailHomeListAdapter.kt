@@ -1,6 +1,5 @@
 package com.wd.woodong2.presentation.group.detail.home
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,8 +36,7 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
         INTRODUCE,
         MEMBER,
         BOARD,
-        ALBUM,
-        UNKNOWN
+        ALBUM
     }
 
     abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
@@ -110,7 +108,6 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupItem) = with(binding) {
             if (item is GroupItem.GroupIntroduce) {
-                Log.d("sinw", "GroupIntroduce / $item")
                 txtIntroduceTitle.text = item.title
                 txtIntroduceDes.text = item.introduce
                 txtTagCategory.text = item.groupTag
@@ -125,7 +122,6 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupItem) = with(binding) {
             if (item is GroupItem.GroupMember) {
-                Log.d("sinw", "GroupMember / $item")
                 txtMemberTitle.text = item.title
                 txtMemberCount.text = item.memberList?.size.toString()
                 val memberLayouts = listOf(constraintMember1, constraintMember2)
@@ -156,7 +152,6 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupItem) = with(binding) {
             if (item is GroupItem.GroupBoard) {
-                Log.d("sinw", "GroupBoard / $item")
                 txtBoardTitle.text = item.title
                 txtBoardCount.text = item.boardList?.size.toString()
                 val boardLayouts = listOf(constraintBoard1, constraintBoard2)
@@ -195,7 +190,6 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupItem) = with(binding) {
             if (item is GroupItem.GroupAlbum) {
-                Log.d("sinw", "GroupAlbum / $item")
                 txtAlbumTitle.text = item.title
                 txtAlbumCount.text = item.images?.size.toString()
                 val albumPhotos = listOf(imgPhoto1, imgPhoto2, imgPhoto3)
@@ -220,7 +214,6 @@ class GroupDetailHomeListAdapter : ListAdapter<GroupItem, GroupDetailHomeListAda
         private val binding: GroupDetailHomeUnknownItemBinding
     ): ViewHolder(binding.root) {
         override fun bind(item: GroupItem) {
-            Log.d("sinw", "Unknwown / $item")
             Unit
         }
     }

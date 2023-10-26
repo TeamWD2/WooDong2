@@ -39,7 +39,6 @@ class GroupDetailHomeFragment: Fragment() {
 
     private fun initView() = with(binding) {
         recyclerViewAddDetailHome.adapter = groupDetailHomeListAdapter
-        Log.d("sinw", "groupDetailItem / ${sharedViewModel.groupDetailItem}")
         groupDetailHomeListAdapter.submitList(sharedViewModel.groupDetailItem)
     }
 
