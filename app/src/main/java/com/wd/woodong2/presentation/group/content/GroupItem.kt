@@ -4,10 +4,12 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 sealed class GroupItem(
+    open val id: String?,
     open val title: String?
 ): Parcelable {
     @Parcelize
     data class GroupMain(
+        override val id: String?,
         override val title: String?,
         val groupName: String?,
         val groupTag: String?,
@@ -18,22 +20,24 @@ sealed class GroupItem(
         val backgroundImage: String?,
         val memberCount: Int?,
         val boardCount: Int?
-    ) : GroupItem(title), Parcelable
+    ) : GroupItem(id, title), Parcelable
 
     @Parcelize
     data class GroupIntroduce(
+        override val id: String?,
         override val title: String?,
         val introduce: String?,
         val groupTag: String?,
         val ageLimit: String?,
         val memberLimit: String?
-    ) : GroupItem(title), Parcelable
+    ) : GroupItem(id, title), Parcelable
 
     @Parcelize
     data class GroupMember(
+        override val id: String?,
         override val title: String?,
         val memberList: List<Member>?
-    ) : GroupItem(title), Parcelable
+    ) : GroupItem(id, title), Parcelable
 
     @Parcelize
     data class Member(
@@ -45,9 +49,10 @@ sealed class GroupItem(
 
     @Parcelize
     data class GroupBoard(
+        override val id: String?,
         override val title: String?,
         val boardList: List<Board>?
-    ) : GroupItem(title), Parcelable
+    ) : GroupItem(id, title), Parcelable
 
     @Parcelize
     data class Board(
@@ -62,7 +67,8 @@ sealed class GroupItem(
 
     @Parcelize
     data class GroupAlbum(
+        override val id: String?,
         override val title: String?,
         val images: List<String>?
-    ) : GroupItem(title), Parcelable
+    ) : GroupItem(id, title), Parcelable
 }

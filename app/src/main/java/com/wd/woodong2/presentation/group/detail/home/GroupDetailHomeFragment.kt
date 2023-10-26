@@ -1,11 +1,14 @@
 package com.wd.woodong2.presentation.group.detail.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.wd.woodong2.databinding.GroupDetailHomeFragmentBinding
+import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
 
 class GroupDetailHomeFragment: Fragment() {
     companion object {
@@ -14,6 +17,12 @@ class GroupDetailHomeFragment: Fragment() {
 
     private var _binding: GroupDetailHomeFragmentBinding? = null
     private val binding get() = _binding!!
+
+    private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels()
+
+    private val groupDetailHomeListAdapter by lazy {
+        GroupDetailHomeListAdapter()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,7 +38,9 @@ class GroupDetailHomeFragment: Fragment() {
     }
 
     private fun initView() = with(binding) {
-
+        recyclerViewAddDetailHome.adapter = groupDetailHomeListAdapter
+        Log.d("sinw", "groupDetailItem / ${sharedViewModel.groupDetailItem}")
+        groupDetailHomeListAdapter.submitList(sharedViewModel.groupDetailItem)
     }
 
     override fun onDestroyView() {

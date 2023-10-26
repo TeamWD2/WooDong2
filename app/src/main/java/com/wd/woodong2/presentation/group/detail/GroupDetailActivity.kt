@@ -18,9 +18,9 @@ import kotlin.math.abs
 class GroupDetailActivity : AppCompatActivity() {
     companion object {
         private const val EXTRA_GROUP_ITEM = "extra_group_item"
-        fun newIntent(context: Context, item: GroupItem): Intent =
+        fun newIntent(context: Context, groupItems: List<GroupItem>): Intent =
             Intent(context, GroupDetailActivity::class.java).apply {
-                putExtra(EXTRA_GROUP_ITEM, item)
+                putParcelableArrayListExtra(EXTRA_GROUP_ITEM, ArrayList(groupItems))
             }
     }
 
@@ -29,14 +29,14 @@ class GroupDetailActivity : AppCompatActivity() {
 
     private val viewModel: GroupDetailSharedViewModel by viewModels()
 
-    private val groupItem by lazy {
+    private val groupItems by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(
+            intent.getParcelableArrayListExtra(
                 EXTRA_GROUP_ITEM,
                 GroupItem::class.java
             )
         } else {
-            intent.getParcelableExtra(
+            intent.getParcelableArrayListExtra(
                 EXTRA_GROUP_ITEM
             )
         }
@@ -58,10 +58,11 @@ class GroupDetailActivity : AppCompatActivity() {
 
     private fun initView() {
         with(includeBinding) {
-            viewModel.setDetailItem(groupItem)
+            viewModel.setDetailItem(groupItems)
 
             //넘겨 받은 데이터 출력
-            initClickItem()
+            val groupMainItem = groupItems?.find { it is GroupItem.GroupMain } as? GroupItem.GroupMain
+            initClickItem(groupMainItem)
 
             //Toolbar init
             setSupportActionBar(materialToolbar)
@@ -72,7 +73,7 @@ class GroupDetailActivity : AppCompatActivity() {
             }
             appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
                 materialToolbar.title = if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
-                    (groupItem as? GroupItem.GroupMain)?.groupName
+                    groupMainItem?.groupName
                 } else {
                     ""
                 }
@@ -105,8 +106,7 @@ class GroupDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun initClickItem() = with(includeBinding) {
-        val groupMainItem = groupItem as? GroupItem.GroupMain
+    private fun initClickItem(groupMainItem: GroupItem.GroupMain?) = with(includeBinding) {
         imgBackground.load(groupMainItem?.backgroundImage) {
             error(R.drawable.group_ic_no_image)
         }

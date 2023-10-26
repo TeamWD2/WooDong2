@@ -29,7 +29,7 @@ class GroupFragment : Fragment() {
                 startActivity(
                     GroupDetailActivity.newIntent(
                         requireContext(),
-                        item
+                        viewModel.getRelatedItems(item.id)
                     )
                 )
             }

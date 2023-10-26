@@ -44,6 +44,15 @@ class GroupViewModel(
         }
     }
 
+    fun getRelatedItems(id: String?): List<GroupItem> {
+        if (id == null) {
+            return emptyList()
+        }
+        return groupList.value?.filter {
+            it.id == id
+        } ?: emptyList()
+    }
+
     /**
      * Firebase 에서 모임 목록 read
      */
@@ -53,6 +62,7 @@ class GroupViewModel(
         return items.groupList.map { entity ->
             when(entity) {
                 is GroupMainEntity -> GroupItem.GroupMain(
+                    id = entity.id,
                     title = "Main",
                     groupName = entity.groupName,
                     groupTag = entity.groupTag,
@@ -66,6 +76,7 @@ class GroupViewModel(
                 )
 
                 is GroupIntroduceEntity -> GroupItem.GroupIntroduce(
+                    id = entity.id,
                     title = entity.title,
                     introduce = entity.introduce,
                     groupTag = entity.groupTag,
@@ -74,6 +85,7 @@ class GroupViewModel(
                 )
 
                 is GroupMemberEntity -> GroupItem.GroupMember(
+                    id = entity.id,
                     title = entity.title,
                     memberList = entity.memberList?.map { member ->
                         GroupItem.Member(
@@ -86,6 +98,7 @@ class GroupViewModel(
                 )
 
                 is GroupBoardEntity -> GroupItem.GroupBoard(
+                    id = entity.id,
                     title = entity.title,
                     boardList = entity.boardList?.map { board ->
                         GroupItem.Board(
@@ -101,6 +114,7 @@ class GroupViewModel(
                 )
 
                 is GroupAlbumEntity -> GroupItem.GroupAlbum(
+                    id = entity.id,
                     title = entity.title,
                     images = entity.images
                 )

@@ -10,32 +10,33 @@
     android:padding="10dp">
 
     <TextView
-        android:id="@+id/txt_board_title"
+        android:id="@+id/txt_member_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/constraint_board_1"
-        app:layout_constraintEnd_toStartOf="@id/txt_board_count"
+        app:layout_constraintBottom_toTopOf="@id/constraint_member_1"
+        app:layout_constraintEnd_toStartOf="@id/txt_member_count"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="멤버" />
 
     <TextView
-        android:id="@+id/txt_board_count"
+        android:id="@+id/txt_member_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/txt_board_title"
-        app:layout_constraintStart_toEndOf="@id/txt_board_title"
-        app:layout_constraintTop_toTopOf="@id/txt_board_title"
+        app:layout_constraintBottom_toBottomOf="@id/txt_member_title"
+        app:layout_constraintStart_toEndOf="@id/txt_member_title"
+        app:layout_constraintTop_toTopOf="@id/txt_member_title"
         tools:text="41" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_board_1"
+        android:id="@+id/constraint_member_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_board_title">
+        app:layout_constraintTop_toBottomOf="@id/txt_member_title">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView_board_1_profile"
@@ -85,12 +86,13 @@
         app:layout_constraintBottom_toTopOf="@id/constraint_member_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/constraint_board_1" />
+        app:layout_constraintTop_toBottomOf="@id/constraint_member_1" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_member_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/btn_more"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

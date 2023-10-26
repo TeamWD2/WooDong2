@@ -50,9 +50,7 @@ class GroupItemsResponseJsonDeserializer : JsonDeserializer<GroupItemsResponse> 
                         else -> null
 
                     }?.also {
-                        Log.d("sinw", "it / $it")
                         items.add(it)
-                        Log.d("sinw", "items / $items")
                     }
                 }
             }
