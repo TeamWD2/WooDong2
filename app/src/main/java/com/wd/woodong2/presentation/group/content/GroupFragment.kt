@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import com.wd.woodong2.databinding.GroupFragmentBinding
 import com.wd.woodong2.presentation.group.add.GroupAddActivity
 import com.wd.woodong2.presentation.group.detail.GroupDetailActivity
+import com.wd.woodong2.presentation.group.detail.GroupDetailContentType
 
 class GroupFragment : Fragment() {
     companion object {
@@ -26,19 +27,13 @@ class GroupFragment : Fragment() {
     private val groupListAdapter by lazy {
         GroupListAdapter(
             itemClickListener = { item ->
-                startActivity(
-                    GroupDetailActivity.newIntent(
-                        requireContext(),
-                        viewModel.getRelatedItems(item.id)
-                    )
-                )
+                clickGroupItem(item)
             }
         )
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = GroupFragmentBinding.inflate(inflater, container, false)
         return binding.root
@@ -71,6 +66,20 @@ class GroupFragment : Fragment() {
         isEmptyList.observe(viewLifecycleOwner) { isEmptyList ->
             binding.txtEmptyGroupList.isVisible = isEmptyList
         }
+    }
+
+    private fun clickGroupItem(item: GroupItem.GroupMain) {
+        startActivity(
+            GroupDetailActivity.newIntent(
+                requireContext(),
+                if (viewModel.isUserInGroup(
+                        item.id,
+                        "-NhImSiDataNew" //테스트용 userId (임시데이터)
+                    )
+                ) GroupDetailContentType.WRITE_BOARD.name else GroupDetailContentType.JOIN_GROUP.name,
+                viewModel.getRelatedItems(item.id)
+            )
+        )
     }
 
     override fun onDestroyView() {

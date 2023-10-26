@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
@@ -17,9 +18,15 @@ import kotlin.math.abs
 
 class GroupDetailActivity : AppCompatActivity() {
     companion object {
+        private const val EXTRA_GROUP_DETAIL_CONTENT_TYPE = "extra_group_detail_content_type"
         private const val EXTRA_GROUP_ITEM = "extra_group_item"
-        fun newIntent(context: Context, groupItems: List<GroupItem>): Intent =
+        fun newIntent(
+            context: Context,
+            groupDetailContentType: String,
+            groupItems: List<GroupItem>
+        ): Intent =
             Intent(context, GroupDetailActivity::class.java).apply {
+                putExtra(EXTRA_GROUP_DETAIL_CONTENT_TYPE, groupDetailContentType)
                 putParcelableArrayListExtra(EXTRA_GROUP_ITEM, ArrayList(groupItems))
             }
     }
@@ -28,6 +35,14 @@ class GroupDetailActivity : AppCompatActivity() {
     private lateinit var includeBinding: GroupDetailActivityCoordinatorBinding
 
     private val viewModel: GroupDetailSharedViewModel by viewModels()
+
+    private val groupDetailContentType by lazy {
+        GroupDetailContentType.from(
+            intent.getStringExtra(
+                EXTRA_GROUP_DETAIL_CONTENT_TYPE
+            )
+        )
+    }
 
     private val groupItems by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -62,7 +77,8 @@ class GroupDetailActivity : AppCompatActivity() {
             viewModel.setDetailItem(groupItems)
 
             //넘겨 받은 데이터 출력
-            val groupMainItem = groupItems?.find { it is GroupItem.GroupMain } as? GroupItem.GroupMain
+            val groupMainItem =
+                groupItems?.find { it is GroupItem.GroupMain } as? GroupItem.GroupMain
             initClickItem(groupMainItem)
 
             //Toolbar init
@@ -101,8 +117,28 @@ class GroupDetailActivity : AppCompatActivity() {
             })
         }
         with(binding) {
-            btnJoinGroup.setOnClickListener {
-                //Todo("모임 가입하기 or 게시물 작성하기")
+            btnAddInfo.text = when (groupDetailContentType) {
+                GroupDetailContentType.WRITE_BOARD -> getString(R.string.group_detail_btn_write_board)
+                GroupDetailContentType.JOIN_GROUP -> getString(R.string.group_detail_btn_join_group)
+                else -> ""
+            }
+            btnAddInfo.setOnClickListener {
+                //Todo("화면 이동 구현")
+                when (groupDetailContentType) {
+                    GroupDetailContentType.WRITE_BOARD -> Toast.makeText(
+                        this@GroupDetailActivity,
+                        "게시물 작성하기 클릭",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    GroupDetailContentType.JOIN_GROUP -> Toast.makeText(
+                        this@GroupDetailActivity,
+                        "모임 가입하기 클릭",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    else -> Unit
+                }
             }
         }
     }
