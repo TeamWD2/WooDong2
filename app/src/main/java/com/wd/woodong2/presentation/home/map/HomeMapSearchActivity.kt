@@ -76,13 +76,20 @@ class HomeMapSearchActivity : AppCompatActivity() {
         binding.homeMapSearchRc.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.homeMapSearchRc.adapter = listAdapter
 
+
         binding.homeMapSearchClose.setOnClickListener{
-            finish()
-            overridePendingTransition(
-                R.anim.home_map_none_fragment,
-                R.anim.home_map_search_left
-            )
+            if(firstLocation!!.isNotEmpty()) {
+                finish()
+                overridePendingTransition(
+                    R.anim.home_map_none_fragment,
+                    R.anim.home_map_search_left
+                )
+            }
+            else{
+                Toast.makeText(this, "처음 위치 설정이 완료 되지 않았습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
+
         binding.homeMapEtSearch.setOnClickListener {
             hideKeyboard()
         }

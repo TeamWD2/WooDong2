@@ -158,6 +158,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
 
 
+
         binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
         if(secondLocation!!.isNotEmpty()){
             binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
@@ -166,6 +167,20 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 .into(binding.homeMapSecondBtnIvLocation)
         }
 
+        if(firstLocation!!.isEmpty()){
+            homeMapSearchLauncher.launch(
+                HomeMapSearchActivity.newIntent(this@HomeMapActivity,
+                    firstLocation.toString(), secondLocation.toString()
+                )
+            )
+            Glide.with(this)
+                .load(R.drawable.public_ic_add)
+                .into(binding.homeMapFirstBtnIvLocation)
+        } else{
+            Glide.with(this)
+                .load(R.drawable.home_map_btn_ic_close)
+                .into(binding.homeMapFirstBtnIvLocation)
+        }
         binding.homeMapClose.setOnClickListener{
             val intent = Intent().apply{
                 putExtra(
@@ -194,7 +209,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     HomeMapSearchActivity.newIntent(this@HomeMapActivity,
                         firstLocation.toString(), secondLocation.toString()
                     )
-
                 )
             }
         }
