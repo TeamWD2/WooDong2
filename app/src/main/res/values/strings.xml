@@ -27,7 +27,8 @@
     <string name="home_map_search_btn">동명(읍, 면)으로 검색(ex. 서초동)</string>
     <string name="home_map_search_kakao_api">2944f118955b6cf31d773eea99bcc7d2</string>
     <string name="home_map_naver_api">kdzwicc7da</string>
-
+    <string name="home_map_search_location_error">처음 위치 설정이 완료 되지 않았습니다.</string>
+    <string name="home_map_search_location_also_error">주소가 중복설정 되었습니다.</string>
     <string name="group_hint_search_group">우리 동네 모임을 검색해보세요.</string>
     <string name="group_text_empty_group_list">모임 정보가 존재하지 않습니다.</string>
 
@@ -47,17 +48,34 @@
 
     <string name="chat_txt_title">채팅</string>
 
+    <string name="my_page_tv_location">군자동</string>
+    <string name="my_page_tv_name">가나다</string>
+    <string name="my_page_tv_member_number">#123456789</string>
     <string name="my_page_txt_title">마이페이지</string>
     <string name="my_page_txt_views">누적 조회수</string>
     <string name="my_page_txt_comment">작성글/댓글</string>
     <string name="my_page_txt_heart">받은 공감</string>
+
+    <string name="my_page_tab_tv_group">가입한 모임</string>
+    <string name="my_page_tab_tv_written">작성한 글</string>
+    <string name="my_page_tab_tv_thumb">좋아요 게시물</string>
+
     <string name="my_page_btn_update_profile">프로필 수정</string>
     <string name="my_page_txt_views_count">0</string>
     <string name="my_page_txt_comment_count">0</string>
     <string name="my_page_txt_heart_count">0</string>
+
+    <string name="my_page_update_user_name">닉네임</string>
+    <string name="my_page_update_user_email">이메일</string>
+    <string name="my_page_update_et_user_email_edit">asdf@asdfasd.com</string>
+    <string name="my_page_update_user_chat_id">챗 아이디</string>
+    <string name="my_page_update_et_user_chat_id_edit">CHATCHAT</string>
+    <string name="my_page_update_btn">적용하기</string>
+
     <string name="gcm_api">AAAAkLePWrQ:APA91bEkLe8vhgdQ-ibx2g1jb-crx6v1ky_0MDFMF-fPc7haPJvj_BAila-AUmGlQl2hFUXZQm7_hp5sw-_-9ki4LtXav4LO50_EskbyYHolNNpV_0Q3I_WDgLaV4WmRJNK4JXznhB9E</string>
 
     <string name="test_client_token">eeWxak2xSXWJSottR1ePec:APA91bHLvExw1Sc1ueUKvLc-qnFsgWC85stYsdppK05UuYQG3JuCd6kxYA05eGWSc9S9Xi6RsZTx-JlXzHQA-bzZ70g8SygvIc10NBNVYE-tgb1YzAx62keHfAenL2USwSNCFbS0JkSp</string>
+
     <string name="wd2">우동이</string>
 
     <!-- start_activity.xml -->
@@ -88,4 +106,5 @@
     <string name="signup_id_hint">example@example.com</string>
     <string name="nickname_valid">사용 가능</string>
     <string name="nickname_invalid">사용 불가능</string>
+
 </resources>

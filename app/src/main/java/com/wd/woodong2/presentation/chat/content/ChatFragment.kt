@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.databinding.ChatFragmentBinding
@@ -24,7 +25,7 @@ class ChatFragment : Fragment() {
     private var _binding: ChatFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val chatViewModel: ChatViewModel by viewModels {
+    private val chatViewModel: ChatViewModel by activityViewModels {
         ChatViewModelFactory()
     }
 

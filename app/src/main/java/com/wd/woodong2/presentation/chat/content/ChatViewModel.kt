@@ -93,6 +93,7 @@ class ChatViewModel(
     /**
      * Firebase 에서 chat 목록 read
      */
+
     private fun readChatItems(
         items: ChatItemsEntity?
     ) = items?.chatItems?.map {

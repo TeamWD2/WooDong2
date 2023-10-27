@@ -8,7 +8,6 @@ import retrofit2.http.Query
 interface HomeMapSearchRemoteDatasource {
     @GET("v2/local/search/keyword.json")
     suspend fun getAddressSearch(
-        @Header("Authorization") key: String,
         @Query("query") query: String
     ): HomeMapSearchResponse
 }

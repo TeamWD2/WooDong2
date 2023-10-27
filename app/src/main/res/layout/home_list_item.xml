@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/home_map_search_list_item_shape"
-    android:elevation="12dp">
+    android:elevation="12dp"
+    android:layout_margin="10dp">
 
 
     <androidx.appcompat.widget.AppCompatButton

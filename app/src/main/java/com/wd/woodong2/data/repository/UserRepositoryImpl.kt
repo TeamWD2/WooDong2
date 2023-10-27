@@ -152,5 +152,24 @@ class UserRepositoryImpl(
             }
         awaitClose { }
     }
+
+    override fun updateUserLocations(userId: String, firstLocation: String, secondLocation: String) {
+        val userLocations = databaseReference.child(userId)
+        val locations = mapOf(
+            "firstLocation" to firstLocation,
+            "secondLocation" to secondLocation
+        )
+        Log.d("location", firstLocation)
+        userLocations.updateChildren(locations)
+    }
+    override fun updateUserInfo(userId: String, name: String, imgProfile: String, email: String){
+        val userInfo = databaseReference.child(userId)
+        val updateUserData = mapOf(
+            "name" to name,
+            "imgProfile" to imgProfile,
+            "email" to email,
+        )
+        userInfo.updateChildren(updateUserData)
+    }
 }
 

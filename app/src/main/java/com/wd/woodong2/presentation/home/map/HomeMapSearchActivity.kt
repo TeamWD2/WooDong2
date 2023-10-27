@@ -22,33 +22,39 @@ import retrofit2.converter.gson.GsonConverterFactory
 class HomeMapSearchActivity : AppCompatActivity() {
 
     companion object {
-
-        //private lateinit var HomeMapItem: HomeItem
-        fun newIntent(context: Context)=//, homeItem: HomeItem) =
+        private var firstLocation : String? ="Unknown Location"
+        private var secondLocation : String? ="Unknown Location"
+        const val EXTRA_ADDRESS = "extra_address"
+        fun newIntent(context: Context, firstLoc: String, secondLoc:String)=
         Intent(context, HomeMapSearchActivity::class.java).apply {
-                //HomeMapItem = homeItem
+            firstLocation = firstLoc
+            secondLocation = secondLoc
             }
 
     }
 
     private lateinit var binding : HomeMapSearchActivityBinding
-    //private val listItems = arrayListOf<HomeMapSearchItem.MapSearchItem>()
     private val viewModel : HomeMapSearchViewModel by viewModels{
         HomeMapSearchViewModelFactory()
     }
     private val listAdapter : HomeMapSearchListAdapter by lazy{
         HomeMapSearchListAdapter(
             onClickItem = { _, item ->
+                if(item.address != firstLocation && item.address != secondLocation){
+                    val intent = Intent().apply{
+                        putExtra(
+                            EXTRA_ADDRESS,
+                            item.address
+                        )
+                    }
 
-            val intent = Intent().apply{
-                putExtra(
-                    "Address",
-                    item.address
-                )
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                }
+                else{
+                    Toast.makeText(this, R.string.home_map_search_location_also_error, Toast.LENGTH_SHORT).show()
+                }
             }
-            setResult(Activity.RESULT_OK, intent)
-            finish()
-        }
         )
     }
     private var address = ""
@@ -71,13 +77,20 @@ class HomeMapSearchActivity : AppCompatActivity() {
         binding.homeMapSearchRc.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.homeMapSearchRc.adapter = listAdapter
 
+
         binding.homeMapSearchClose.setOnClickListener{
-            finish()
-            overridePendingTransition(
-                R.anim.home_map_none_fragment,
-                R.anim.home_map_search_left
-            )
+            if(firstLocation!!.isNotEmpty()) {
+                finish()
+                overridePendingTransition(
+                    R.anim.home_map_none_fragment,
+                    R.anim.home_map_search_left
+                )
+            }
+            else{
+                Toast.makeText(this, R.string.home_map_search_location_error, Toast.LENGTH_SHORT).show()
+            }
         }
+
         binding.homeMapEtSearch.setOnClickListener {
             hideKeyboard()
         }

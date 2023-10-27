@@ -69,12 +69,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    private val homeMapLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-//            if(result.resultCode == Acitivty.RESULT_OK){
-//
-//            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +97,7 @@ class MainActivity : AppCompatActivity() {
 
         //BottomNavigation 설정
         supportFragmentManager.beginTransaction().add(frameLayout.id, homeFragment).commit()
+
         bottomNavigation.setOnItemSelectedListener { item ->
             val selectedFragment = when (item.itemId) {
                 R.id.bottom_menu_home -> homeFragment

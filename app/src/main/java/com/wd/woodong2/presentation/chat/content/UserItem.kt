@@ -15,3 +15,4 @@ data class UserItem(
     val firstLocation: String?,
     val secondLocation: String?
 ) : Parcelable
+

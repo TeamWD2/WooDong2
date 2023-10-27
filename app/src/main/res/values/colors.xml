@@ -3,6 +3,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
     <color name="gray">#F5F6F7</color>
     <color name="gray_trans">#E6F5F6F7</color>
     <color name="gray_light">#464646</color>
@@ -25,5 +26,19 @@
     <!--  피그마에 디자인되어 있는 색  -->
     <color name="mustard">#FFD358</color>
 
+<!--    -->
+    <color name="color1">#FFD62C</color>
+    <color name="color2">#E9871A</color>
+    <color name="color3">#DAE1E7</color>
+    <color name="color4">#EBF2F8</color>
+    <color name="color5">#59686F</color>
+    <color name="color6">#505A63</color>
+    <color name="color7">#1D1E20</color>
+
+    <color name="color8">#F2BC57</color>
+    <color name="color9">#76C5BB</color>
+
     <color name="wd2_main_color">#FFD358</color>
+
+
 </resources>
