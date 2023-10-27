@@ -49,7 +49,17 @@ class UserRepositoryImpl(private val databaseReference: DatabaseReference) : Use
             "firstLocation" to firstLocation,
             "secondLocation" to secondLocation
         )
+        Log.d("location", firstLocation)
         userLocations.updateChildren(locations)
+    }
+    override fun updateUserInfo(userId: String, name: String, imgProfile: String, email: String){
+        val userInfo = databaseReference.child(userId)
+        val updateUserData = mapOf(
+            "name" to name,
+            "imgProfile" to imgProfile,
+            "email" to email,
+        )
+        userInfo.updateChildren(updateUserData)
     }
 }
 

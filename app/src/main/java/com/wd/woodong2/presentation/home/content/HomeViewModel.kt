@@ -56,7 +56,6 @@ class HomeViewModel(
     }
 
     private fun getUserItem(
-
     ) = viewModelScope.launch {
         runCatching {
             userItem(userId) { items ->
@@ -79,24 +78,13 @@ class HomeViewModel(
 
     }
 
-//    fun updateUserItem(
-//        firstLocation : String,
-//        secondLocation : String
-//    ) = viewModelScope.launch {
-//        runCatching {
-//            val updateUserData = mapOf(
-//                "firstLocation" to firstLocation,
-//                "secondLocation" to secondLocation
-//            )
-//            udbReference.updateChildren(updateUserData)
-//        }
-//    }
-
     fun updateUserLocation(
         firstLocation : String,
         secondLocation : String
     ) = viewModelScope.launch{
+        Log.d("location", "firstLocationscope")
         runCatching {
+            Log.d("location", "firstLocationview")
             userItem(userId,firstLocation,secondLocation)
         }
     }
@@ -106,13 +94,10 @@ class HomeViewModelFactory : ViewModelProvider.Factory {
     private val userDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("users")
     }
-
-    //private val udbReference = userDatabaseReference.child("user1")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(
                 UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference)),
-                //udbReference
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

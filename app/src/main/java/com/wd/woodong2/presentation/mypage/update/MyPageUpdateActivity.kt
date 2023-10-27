@@ -32,8 +32,10 @@ class MyPageUpdateActivity : AppCompatActivity(){
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 userInfo.imgProfile = result.data?.data.toString()
+
                 Glide.with(this)
                     .load(Uri.parse(userInfo.imgProfile))
+                    .error(R.drawable.group_ic_no_image)
                     .fitCenter()
                     .into(binding.myPageUpdateUserImgProfile)
             }
@@ -57,6 +59,9 @@ class MyPageUpdateActivity : AppCompatActivity(){
             finish()
         }
         myPageUpdateBtn.setOnClickListener{
+            userInfo.name = myPageUpdateEtUserNameEdit.text.toString()
+            userInfo.email = myPageUpdateEtUserEmailEdit.text.toString()
+
             val intent = Intent().apply{
                 putExtra(
                     MyPageFragment.EXTRA_USER_NAME,
@@ -76,21 +81,27 @@ class MyPageUpdateActivity : AppCompatActivity(){
         }
         myPageUpdateEtUserEmailEdit.setText(userInfo.email)
         myPageUpdateEtUserNameEdit.setText(userInfo.name)
+
+
+        val imgProfileUri = if (userInfo.imgProfile != null) Uri.parse(userInfo.imgProfile) else null
+
         Glide.with(this@MyPageUpdateActivity)
-            .load(R.drawable.public_ic_add)
+            .load(imgProfileUri)
+            .error(R.drawable.group_ic_no_image)
+            .fitCenter()
             .into(myPageUpdateUserImgProfile)
+
         myPageUpdateIvUserImgProfileEdit.setOnClickListener{
             //갤러리로 가기
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             editUserLauncher.launch(intent)
         }
-        myPageUpdateIvUserChatIdEdit.setOnClickListener{
-            myPageUpdateEtUserChatIdEdit.isEnabled = !myPageUpdateEtUserChatIdEdit.isEnabled
-        }
+
         myPageUpdateIvUserNameEdit.setOnClickListener{
             myPageUpdateEtUserNameEdit.isEnabled = !myPageUpdateEtUserNameEdit.isEnabled
         }
+
         myPageUpdateIvUserEmailEdit.setOnClickListener{
             myPageUpdateEtUserEmailEdit.isEnabled = !myPageUpdateEtUserEmailEdit.isEnabled
         }

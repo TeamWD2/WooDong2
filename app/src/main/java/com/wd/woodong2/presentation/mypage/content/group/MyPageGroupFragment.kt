@@ -21,8 +21,6 @@ class MyPageGroupFragment : Fragment() {
     private var _binding : MyPageGroupFragmentBinding? = null
     private val binding get() = _binding!!
 
-
-
     private val listAdapter by lazy {
         MyPageGroupListAdapter(
             //클릭시 GroupDetailHomeActivity로 넘어가기

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class MyPageViewModel(
     private val userItem: UserGetItemsUseCase,
-    private val udbReference: DatabaseReference
+    //private val udbReference: DatabaseReference
 ) : ViewModel(
 
 ){
@@ -60,7 +60,6 @@ class MyPageViewModel(
 //    댓글 횟수를 나타내는 변수 필요
 //    작성한 글의 횟수를 나타내는 변수 필요
     private fun getUserItem(
-
     ) = viewModelScope.launch {
         runCatching {
             userItem(userId) { items ->
@@ -83,40 +82,33 @@ class MyPageViewModel(
 
     }
 
-    //비밀번호, 이름, 이메일 ->
+    //비밀번호, 이름, 사진 ->
     // 나중에 정보 입력 받을때 어떤 정보를 받을지 몰라서
     // 아직은 useCase에 안 옴기겠습니다.
+
     fun updateUserItem(
-        name : String?,
-        imgProfile : String?,
-        email : String?,
-    ) = viewModelScope.launch {
+        name : String,
+        imgProfile : String,
+        email : String
+    )= viewModelScope.launch {
         runCatching {
-            val updateUserData = mapOf(
-                "name" to name,
-                "imgProfile" to imgProfile,
-                "email" to email,
-            )
-            udbReference.updateChildren(updateUserData)
+            userItem(userId,name,imgProfile,email)
         }
     }
 }
-class MyPageViewModelFactory() : ViewModelProvider.Factory {
+
+class MyPageViewModelFactory : ViewModelProvider.Factory {
 
     val databaseReference by lazy {
         FirebaseDatabase.getInstance().reference.child("home_list")
     }
-
     private val userDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("users")
     }
-
-    private val udbReference = userDatabaseReference.child("user1")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MyPageViewModel::class.java)) {
             return MyPageViewModel(
                 UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference)),
-                udbReference
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

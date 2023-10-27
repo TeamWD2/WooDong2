@@ -17,6 +17,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import coil.load
 import com.bumptech.glide.Glide
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
@@ -56,19 +58,21 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             return ""
         }
 
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 5000
     }
 
     private var clientId : String? = null
     private lateinit var binding : HomeMapActivityBinding
     private lateinit var naverMap: NaverMap
     private val marker = Marker()
+    //기기 위치 추적
     private lateinit var locationSource: FusedLocationSource
+    //권한 확인
     private val PERMISSIONS = arrayOf(
         ACCESS_FINE_LOCATION,
         ACCESS_COARSE_LOCATION
     )
-
+    private var locationTrackingEnabled = false
 
     private var reverse : String? = null
 
@@ -127,14 +131,32 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         if (isPermitted()) {
             initHomeMapView()
         } else {
-            ActivityCompat.requestPermissions(this, PERMISSIONS,
-                LOCATION_PERMISSION_REQUEST_CODE
+            ActivityCompat.requestPermissions(
+                this, PERMISSIONS, LOCATION_PERMISSION_REQUEST_CODE
             )
         }
 
     }
 
     private fun initHomeMapView(){
+
+        clientId = getString(R.string.home_map_naver_api)
+
+        //NAVER 지도 API 호출 및 ID 지정
+        NaverMapSdk.getInstance(this).client =
+            NaverMapSdk.NaverCloudPlatformClient(clientId!!)
+
+        //NAVER 객체 얻기 ( 동적 )
+        val fm = supportFragmentManager
+        val mapFragment = fm.findFragmentById(R.id.home_map_view) as MapFragment?
+            ?: MapFragment.newInstance().also {
+                fm.beginTransaction().add(R.id.home_map_view, it).commit()
+            }
+
+        //인터페이스 객체
+        mapFragment.getMapAsync(this)
+        locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
+
 
         binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
         if(secondLocation!!.isNotEmpty()){
@@ -163,6 +185,8 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 R.anim.home_map_slide_down_fragment
             )
         }
+
+
 
         binding.homeMapTvSearch.setOnClickListener{
             if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
@@ -221,7 +245,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         binding.homeMapSecondBtn.setOnClickListener{
-            Log.d("locationSecond", secondLocation!!)
+//            Log.d("locationSecond", secondLocation!!)
             if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
                 homeMapSearchLauncher.launch(
                     HomeMapSearchActivity.newIntent(this@HomeMapActivity,
@@ -258,23 +282,17 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     .into(binding.homeMapSecondBtnIvLocation)
             }
         }
-        clientId = getString(R.string.home_map_naver_api)
-        //NAVER 지도 API 호출 및 ID 지정
-        NaverMapSdk.getInstance(this).client =
-            NaverMapSdk.NaverCloudPlatformClient(clientId!!)
+        if(locationTrackingEnabled){
+            binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.mustard))
+        }
+        else{
+            binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.white))
+        }
 
-        //NAVER 객체 얻기 ( 동적 )
-        val fm = supportFragmentManager
-        val mapFragment = fm.findFragmentById(R.id.home_map_view) as MapFragment?
-            ?: MapFragment.newInstance().also {
-                fm.beginTransaction().add(R.id.home_map_view, it).commit()
-            }
 
-        //인터페이스 객체
-        mapFragment.getMapAsync(this)
-        locationSource = FusedLocationSource(this, Companion.LOCATION_PERMISSION_REQUEST_CODE)
     }
 
+    //권한 확인하기
     private fun isPermitted(): Boolean {
         for (perm in PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED) {
@@ -289,9 +307,16 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                                             grantResults: IntArray) {
         if (locationSource.onRequestPermissionsResult(requestCode, permissions,
                 grantResults)) {
-            if (!locationSource.isActivated) { // 권한 거부됨
+            if (!locationSource.isActivated) {
+                // 권한 거부됨
+                // 위치 추적 거부
                 naverMap.locationTrackingMode = LocationTrackingMode.None
-                finish()
+                locationTrackingEnabled = false
+            //finish()
+            }
+            else{
+                naverMap.locationTrackingMode = LocationTrackingMode.Follow
+                locationTrackingEnabled = true
             }
             return
         }
@@ -300,17 +325,65 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
+        naverMap.locationSource = locationSource
+
         naverMap.uiSettings.isScrollGesturesEnabled = false     // 스크롤 제스처 비활성화
         naverMap.uiSettings.isZoomGesturesEnabled = false       // 확대/축소 제스처 비활성화
         naverMap.uiSettings.isTiltGesturesEnabled = false       // 기울이기 제스처 비활성화
         naverMap.uiSettings.isRotateGesturesEnabled = false     // 회전 제스처 비활성화
+
+        if(binding.homeMapFirstBtnTvLocation.text.toString().isNotEmpty()){
+            getLocationFromAddress(this, firstLocation!!)
+            naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
+            marker(latitude, longitude)
+        }
+
+        binding.trackingLocation.setOnClickListener{
+            if(locationTrackingEnabled){
+                binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.white))
+                naverMap.locationTrackingMode = LocationTrackingMode.None
+                locationTrackingEnabled = false
+            }
+            else{
+                if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
+
+                    binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.mustard))
+                    naverMap.locationTrackingMode = LocationTrackingMode.Follow
+                    locationTrackingEnabled = true
+
+
+                    naverMap.addOnLocationChangeListener { location ->
+                        latitude = location.latitude
+                        longitude = location.longitude
+                        Log.d("locationSet", latitude.toString())
+                        Log.d("locationSet", longitude.toString())
+                        secondLocation = firstLocation
+                        binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
+                        Log.d("locationSet", firstLocation.toString())
+                        Log.d("locationSet", secondLocation.toString())
+                        getAddressFromLocation(this,latitude,longitude)
+                        binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
+                        Glide.with(this)
+                            .load(R.drawable.home_map_btn_ic_close)
+                            .into(binding.homeMapSecondBtnIvLocation)
+                        if(binding.homeMapSecondBtnTvLocation.text.toString().isNotEmpty()){
+                            naverMap.locationTrackingMode = LocationTrackingMode.None
+                        }
+                    }
+
+                }
+            }
+        }
+
     }
     private fun marker(latitude: Double, longitude: Double) {
         marker.position = LatLng(latitude, longitude)
         marker.map = naverMap
 
-        getAddressFromLocation(this, latitude, longitude)
+        //getAddressFromLocation(this, latitude, longitude)
     }
+
+
     // 좌표 -> 주소 변환
     private fun getAddressFromLocation(context: Context,lat: Double, lng: Double){
         val geocoder = Geocoder(context, Locale.KOREAN)
@@ -320,12 +393,14 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             ) { addresses ->
                 if (addresses.size != 0) {
                     Log.d("Address",(addresses[0].getAddressLine(0)))
+                    firstLocation = addresses[0].getAddressLine(0)
                 }
             }
         } else {
             val addresses = geocoder.getFromLocation(lat, lng, 1)
             if (addresses != null) {
                 Log.d("Address",(addresses[0].getAddressLine(0)))
+                firstLocation = addresses[0].getAddressLine(0)
             }
         }
         return

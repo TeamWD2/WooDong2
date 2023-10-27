@@ -221,6 +221,7 @@
         app:layout_constraintTop_toBottomOf="@+id/my_page_tab_layout">
 
         <androidx.viewpager2.widget.ViewPager2
+            android:saveEnabled="false"
             android:id="@+id/my_page_view_pager2"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

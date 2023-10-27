@@ -111,9 +111,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
+                    android:layout_marginTop="20dp"
                     app:cardBackgroundColor="@color/mustard"
                     app:cardCornerRadius="25dp"
-                    app:layout_constraintBottom_toTopOf="@+id/my_page_update_et_user_name_edit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
                 <ImageView
@@ -136,7 +136,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_name" />
+                    app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_name"
+                    app:layout_constraintVertical_bias="0.9"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -160,9 +161,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
+                    android:layout_marginTop="20dp"
                     app:cardBackgroundColor="@color/mustard"
                     app:cardCornerRadius="25dp"
-                    app:layout_constraintBottom_toTopOf="@+id/my_page_update_et_user_email_edit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
                 <ImageView
@@ -172,6 +173,7 @@
                     android:src="@drawable/public_ic_edit"
                     android:layout_margin="3dp"/>
                 </androidx.cardview.widget.CardView>
+
                 <EditText
                     android:id="@+id/my_page_update_et_user_email_edit"
                     android:layout_width="match_parent"
@@ -184,55 +186,10 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_email" />
+                    app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_email"
+                    app:layout_constraintVertical_bias="0.9" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:background="@color/white">
-
-                <TextView
-                    android:id="@+id/my_page_update_user_chat_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:text="@string/my_page_update_user_chat_id"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    app:cardBackgroundColor="@color/mustard"
-                    app:cardCornerRadius="25dp"
-                    app:layout_constraintBottom_toTopOf="@+id/my_page_update_et_user_chat_id_edit"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-                <ImageView
-                    android:id="@+id/my_page_update_iv_user_chat_id_edit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/public_ic_edit"
-                    android:layout_margin="3dp"/>
-                </androidx.cardview.widget.CardView>
-                <EditText
-                    android:id="@+id/my_page_update_et_user_chat_id_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:background="@drawable/home_map_search_list_item_shape"
-                    android:enabled="false"
-                    android:text="@string/my_page_update_et_user_chat_id_edit"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_chat_id" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

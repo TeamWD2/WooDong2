@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
 
         //BottomNavigation 설정
         supportFragmentManager.beginTransaction().add(frameLayout.id, homeFragment).commit()
+
         bottomNavigation.setOnItemSelectedListener { item ->
             val selectedFragment = when (item.itemId) {
                 R.id.bottom_menu_home -> homeFragment
