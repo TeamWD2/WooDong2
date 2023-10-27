@@ -7,16 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
-import com.wd.woodong2.data.repository.UserRepositoryImpl
-import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import kotlinx.coroutines.launch
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 
 class HomeViewModel(
-    private val userItem: UserGetItemsUseCase
+//    private val userItem: UserGetItemsUseCase
 ) : ViewModel(
 ) {
 
@@ -25,6 +24,7 @@ class HomeViewModel(
 
     init {
 //        loadDataFromFirebase()
+        getUserItem()
     }
 
     private fun loadDataFromFirebase() {
@@ -52,34 +52,28 @@ class HomeViewModel(
     val userId = "user1"
     val userInfo: MutableLiveData<UserItem> = MutableLiveData()
 
-    init {
-        getUserItem()
-    }
-
     private fun getUserItem(
 
     ) = viewModelScope.launch {
-        runCatching {
-            userItem(userId) { items ->
-                val userItem = items?.userItems?.map {
-                    UserItem(
-                        id = it.id,
-                        name = it.name,
-                        imgProfile = it.imgProfile,
-                        email = it.email,
-                        chatIds = it.chatIds,
-                        firstLocation = it.firstLocation,
-                        secondLocation = it.secondLocation
-                    )
-                }.orEmpty()
-                userInfo.postValue(userItem.firstOrNull())
-            }
-        }.onFailure {
-            Log.e("homeItem", it.message.toString())
-        }
-
+//        runCatching {
+//            userItem(userId).collect { items ->
+//                val userItem = items?.map {
+//                    UserItem(
+//                        id = it.id,
+//                        name = it.name,
+//                        imgProfile = it.imgProfile,
+//                        email = it.email,
+//                        chatIds = it.chatIds,
+//                        firstLocation = it.firstLocation,
+//                        secondLocation = it.secondLocation
+//                    )
+//                }.orEmpty()
+//                userInfo.postValue(userItem.firstOrNull())
+//            }
+//        }.onFailure {
+//            Log.e("homeItem", it.message.toString())
+//        }
     }
-
 }
 
 class HomeViewModelFactory() : ViewModelProvider.Factory {
@@ -91,7 +85,7 @@ class HomeViewModelFactory() : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(
-                UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference))
+//                UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference))
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
