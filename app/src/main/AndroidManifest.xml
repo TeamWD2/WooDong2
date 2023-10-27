@@ -55,7 +55,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.home.add.HomeAddActivity" />
+        <activity
+            android:name=".presentation.home.add.HomeAddActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".presentation.home.detail.HomeDetailActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:exported="false"/>
 
         <activity
             android:name=".presentation.chat.detail.ChatDetailActivity"
