@@ -24,8 +24,3 @@ data class HomeItem(
 
 ) : Parcelable
 
-//fun HomeItem.toUserItem(): UserItem{
-//    return UserItem(
-//
-//    )
-//}
