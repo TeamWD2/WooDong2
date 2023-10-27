@@ -79,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/public_ic_back"
+                app:navigationIcon="@drawable/public_ic_left_arrow"
                 app:titleTextColor="@color/black" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

@@ -5,6 +5,6 @@ import com.wd.woodong2.domain.model.PlaceEntity
 
 interface MapSearchRepository {
     suspend fun getSearchMap(
-        query: String
+        query: String,
     ): MapSearchEntity
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.databinding.MyPageGroupFragmentBinding
+import com.wd.woodong2.presentation.group.content.GroupItem
 import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
 import com.wd.woodong2.presentation.mypage.content.thumb.MyPageThumbViewModel
 import com.wd.woodong2.presentation.mypage.content.thumb.MyPageThumbViewModelFactory
@@ -58,7 +59,7 @@ class MyPageGroupFragment : Fragment() {
     private fun initViewModel(){
         with(viewModel){
             list.observe(viewLifecycleOwner){
-                listAdapter.submitList(it)
+                listAdapter.submitList(it?.filterIsInstance<GroupItem.GroupMain>())
             }
         }
     }

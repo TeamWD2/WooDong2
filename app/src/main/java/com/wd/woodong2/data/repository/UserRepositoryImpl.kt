@@ -31,35 +31,6 @@ class UserRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-//    override fun getUserItems(
-//        userId: String,
-//        entityResult: (UserItemsEntity?) -> Unit
-//    ) {
-//        databaseReference.addValueEventListener(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                if (snapshot.exists()) {
-//                    val gson = GsonBuilder().create()
-//                    val userResponses = snapshot.children.mapNotNull { childSnapshot ->
-//                        val jsonString = gson.toJson(childSnapshot.value)
-//                        val response = gson.fromJson(jsonString, UserResponse::class.java)
-//                        response.copy(id = childSnapshot.key)
-//                    }.filter {
-//                        it.id == userId
-//                    }
-//                    val entity = UserItemsResponse(userResponses).toEntity()
-//                    entityResult(entity)
-//                } else {
-//                    entityResult(null)
-//                }
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                Log.e("sinw", "$error")
-//                entityResult(null)
-//            }
-//        })
-//    }
-
     override suspend fun getUser(userId: String): Flow<UserEntity?> =
         callbackFlow {
             val listener = databaseReference.addValueEventListener(object : ValueEventListener {
@@ -153,7 +124,11 @@ class UserRepositoryImpl(
         awaitClose { }
     }
 
-    override fun updateUserLocations(userId: String, firstLocation: String, secondLocation: String) {
+    override fun updateUserLocations(
+        userId: String,
+        firstLocation: String,
+        secondLocation: String,
+    ) {
         val userLocations = databaseReference.child(userId)
         val locations = mapOf(
             "firstLocation" to firstLocation,
@@ -162,7 +137,8 @@ class UserRepositoryImpl(
         Log.d("location", firstLocation)
         userLocations.updateChildren(locations)
     }
-    override fun updateUserInfo(userId: String, name: String, imgProfile: String, email: String){
+
+    override fun updateUserInfo(userId: String, name: String, imgProfile: String, email: String) {
         val userInfo = databaseReference.child(userId)
         val updateUserData = mapOf(
             "name" to name,
