@@ -61,7 +61,6 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name=".presentation.home.map.HomeMapActivity"
             android:exported="false" />
@@ -74,6 +73,9 @@
         <activity
             android:name=".presentation.mypage.update.MyPageUpdateActivity"
             android:exported="false" />
+            android:name=".presentation.group.detail.GroupDetailActivity"
+            android:exported="false" />
+
         <service
             android:name=".services.fcm.MyFirebaseMessagingService"
             android:directBootAware="true"

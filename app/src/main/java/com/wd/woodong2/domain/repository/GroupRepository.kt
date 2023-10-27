@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface GroupRepository {
     suspend fun getGroupItems(): Flow<GroupItemsEntity>
-    suspend fun setGroupItem(groupAddSetItem: GroupAddSetItem)
+    suspend fun setGroupItem(groupAddSetItem: MutableList<GroupAddSetItem>)
 }

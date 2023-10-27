@@ -1,4 +1,4 @@
-package com.wd.woodong2.presentation.group.detail.home
+package com.wd.woodong2.presentation.group.detail.member
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,32 +6,29 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.wd.woodong2.databinding.GroupDetailHomeFragmentBinding
+import com.wd.woodong2.databinding.GroupDetailMemberFragmentBinding
+import com.wd.woodong2.presentation.group.content.GroupItem
 import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
 
-class GroupDetailHomeFragment: Fragment() {
+class GroupDetailMemberFragment: Fragment() {
     companion object {
-        fun newInstance() = GroupDetailHomeFragment()
+        fun newInstance() = GroupDetailMemberFragment()
     }
 
-    private var _binding: GroupDetailHomeFragmentBinding? = null
+    private var _binding: GroupDetailMemberFragmentBinding? = null
     private val binding get() = _binding!!
 
     private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels()
 
-    private val groupDetailHomeListAdapter by lazy {
-        GroupDetailHomeListAdapter(
-            onClickMoreBtn = { tabName ->
-                sharedViewModel.modifyTab(tabName)
-            }
-        )
+    private val groupDetailMemberListAdapter by lazy {
+        GroupDetailMemberListAdapter()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = GroupDetailHomeFragmentBinding.inflate(inflater, container, false)
+        _binding = GroupDetailMemberFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -41,8 +38,9 @@ class GroupDetailHomeFragment: Fragment() {
     }
 
     private fun initView() = with(binding) {
-        recyclerViewAddDetailHome.adapter = groupDetailHomeListAdapter
-        groupDetailHomeListAdapter.submitList(sharedViewModel.groupDetailItem)
+        recyclerViewAddDetailMember.adapter = groupDetailMemberListAdapter
+        val groupMemberList = sharedViewModel.groupDetailItem?.filterIsInstance<GroupItem.GroupMember>()
+        groupDetailMemberListAdapter.submitList(groupMemberList?.flatMap { it.memberList ?: listOf() })
     }
 
     override fun onDestroyView() {

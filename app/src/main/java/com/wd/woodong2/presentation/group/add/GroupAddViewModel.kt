@@ -37,7 +37,7 @@ class GroupAddViewModel(
         _groupAddList.value = currentList
     }
 
-    fun setGroupAddItem(groupAddSetItem: GroupAddSetItem) = viewModelScope.launch {
+    fun setGroupAddItem(groupAddSetItem: MutableList<GroupAddSetItem>) = viewModelScope.launch {
         runCatching {
             groupSetItem(groupAddSetItem)
         }.onFailure {
