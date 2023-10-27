@@ -8,7 +8,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
+import com.wd.woodong2.domain.model.GroupAlbumEntity
+import com.wd.woodong2.domain.model.GroupBoardEntity
+import com.wd.woodong2.domain.model.GroupIntroduceEntity
 import com.wd.woodong2.domain.model.GroupItemsEntity
+import com.wd.woodong2.domain.model.GroupMainEntity
+import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
 import kotlinx.coroutines.launch
 
@@ -21,11 +26,16 @@ class GroupViewModel(
     private val _loadingState: MutableLiveData<Boolean> = MutableLiveData()
     val loadingState: LiveData<Boolean> get() = _loadingState
 
+    private val _isEmptyList: MutableLiveData<Boolean> = MutableLiveData()
+    val isEmptyList: LiveData<Boolean> get() = _isEmptyList
+
     fun getGroupItem() = viewModelScope.launch {
         _loadingState.value = true
         runCatching {
             groupGetItems().collect { items ->
-                _groupList.postValue(readGroupItems(items))
+                val groupItems = readGroupItems(items)
+                _isEmptyList.value = groupItems.isEmpty()
+                _groupList.postValue(groupItems)
                 _loadingState.value = false
             }
         }.onFailure {
@@ -35,30 +45,103 @@ class GroupViewModel(
     }
 
     /**
+     * ViewType(Main)의 id와 동일한 id를 가진 항목 찾기
+     */
+    fun getRelatedItems(id: String?): List<GroupItem> {
+        if (id == null) {
+            return emptyList()
+        }
+        return groupList.value?.filter {
+            it.id == id
+        } ?: emptyList()
+    }
+
+    /**
+     * 로그인 된 계정의 선택한 모임 가입 여부 확인
+     */
+    fun isUserInGroup(groupId: String?, userId: String?): Boolean {
+        if(userId == null) {
+            return false
+        }
+        return getRelatedItems(groupId).any { groupItem ->
+            when(groupItem) {
+                is GroupItem.GroupMember ->
+                    groupItem.memberList?.any {
+                        it.userId == userId
+                    } == true
+                else -> false
+            }
+        }
+    }
+
+    /**
      * Firebase 에서 모임 목록 read
      */
     private fun readGroupItems(
         items: GroupItemsEntity
-    ) = items.groupItems?.map {
-        GroupItem(
-            id = it.id,
-            title = it.title,
-            introduce = it.introduce,
-            groupTag = it.groupTag,
-            ageLimit = it.ageLimit,
-            memberLimit = it.memberLimit,
-            memberList = it.memberList?.map { member ->
-                Member(
-                    userId = member.userId ?: "",
-                    userName = member.userName ?: "",
-                    userProfile = member.userProfile ?: ""
+    ): List<GroupItem> {
+        return items.groupList.map { entity ->
+            when(entity) {
+                is GroupMainEntity -> GroupItem.GroupMain(
+                    id = entity.id,
+                    title = "Main",
+                    groupName = entity.groupName,
+                    groupTag = entity.groupTag,
+                    ageLimit = entity.ageLimit,
+                    memberLimit = entity.memberLimit,
+                    password = entity.password,
+                    mainImage = entity.mainImage,
+                    backgroundImage = entity.backgroundImage,
+                    memberCount = entity.memberCount,
+                    boardCount = entity.boardCount
                 )
-            },
-            password = it.password,
-            mainImage = it.mainImage,
-            backgroundImage = it.backgroundImage,
-        )
-    }.orEmpty()
+
+                is GroupIntroduceEntity -> GroupItem.GroupIntroduce(
+                    id = entity.id,
+                    title = entity.title,
+                    introduce = entity.introduce,
+                    groupTag = entity.groupTag,
+                    ageLimit = entity.ageLimit,
+                    memberLimit = entity.memberLimit,
+                )
+
+                is GroupMemberEntity -> GroupItem.GroupMember(
+                    id = entity.id,
+                    title = entity.title,
+                    memberList = entity.memberList?.map { member ->
+                        GroupItem.Member(
+                            userId = member.userId,
+                            profile = member.profile,
+                            name = member.name,
+                            location = member.location
+                        )
+                    }
+                )
+
+                is GroupBoardEntity -> GroupItem.GroupBoard(
+                    id = entity.id,
+                    title = entity.title,
+                    boardList = entity.boardList?.map { board ->
+                        GroupItem.Board(
+                            userId = board.userId,
+                            profile = board.profile,
+                            name = board.name,
+                            location = board.location,
+                            timestamp = board.timestamp,
+                            content = board.content,
+                            images = board.images
+                        )
+                    }
+                )
+
+                is GroupAlbumEntity -> GroupItem.GroupAlbum(
+                    id = entity.id,
+                    title = entity.title,
+                    images = entity.images
+                )
+            }
+        }
+    }
 }
 
 class GroupViewModelFactory : ViewModelProvider.Factory {
