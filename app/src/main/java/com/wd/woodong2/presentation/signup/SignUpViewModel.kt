@@ -97,8 +97,10 @@ class SignUpViewModel(
                 && isValidNickname.value == true)
     }
 
-    suspend fun signUp(id: String, pw: String, name: String) {
-        signUpUser(id, pw, name)
+    fun signUp(id: String, pw: String, name: String) {
+        viewModelScope.launch {
+            signUpUser(id, pw, name)
+        }
     }
 }
 

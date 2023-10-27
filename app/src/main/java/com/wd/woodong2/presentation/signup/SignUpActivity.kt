@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 
 class SignUpActivity : AppCompatActivity() {
 
-
     private var _binding: SignupActivityBinding? = null
     private val binding get() = _binding!!
 
