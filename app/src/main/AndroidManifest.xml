@@ -48,20 +48,16 @@
 
         <activity
             android:name=".presentation.main.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-            </intent-filter>
-        </activity>
+            android:exported="false" />
 
         <activity
             android:name=".presentation.home.add.HomeAddActivity"
-            android:exported="false"/>
+            android:exported="false" />
+
         <activity
             android:name=".presentation.home.detail.HomeDetailActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false"/>
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".presentation.chat.detail.ChatDetailActivity"
