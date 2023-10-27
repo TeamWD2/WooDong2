@@ -1,6 +1,7 @@
 package com.wd.woodong2.presentation.mypage.content
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
@@ -46,6 +49,7 @@ class MyPageFragment : Fragment() {
 
     private var myPageViewPagerAdapter :MyPageViewPagerAdapter? = null
 
+    private var imgCheck : Boolean = false
     private val viewModel : MyPageViewModel //= MyPageViewModelFactory().create(MyPageViewModel::class.java)
         by activityViewModels {
             MyPageViewModelFactory()
@@ -64,6 +68,8 @@ class MyPageFragment : Fragment() {
                     val receivedProfileData = result.data?.getStringExtra(EXTRA_USER_PROFILE)
                     val receivedEmailData = result.data?.getStringExtra(EXTRA_USER_EMAIL)
                     viewModel.updateUserItem(receivedNameData.toString(),receivedProfileData.toString(),receivedEmailData.toString())
+
+                    imgCheck = true
                 }else{
 
                 }
@@ -104,6 +110,34 @@ class MyPageFragment : Fragment() {
                 editUserLauncher.launch(
                     MyPageUpdateActivity.newIntent(requireContext(), notNullUser)
                 )
+            }
+        }
+        if (imgCheck) {
+            ivProfile.setOnClickListener {
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setTitle("기본 이미지 변경 여부")
+                    .setMessage("기본 이미지로 변경 하시겠습니까?.")
+                    .setPositiveButton(
+                        "확인"
+                    ) { dialog, id ->
+                        viewModel.updateUserItem(
+                            UserInfo.name.toString(),
+                            R.drawable.group_ic_no_profile.toString(),
+                            UserInfo.email.toString()
+                        )
+                        Glide.with(requireContext())
+                            .load(R.drawable.group_ic_no_profile)
+                            .error(R.drawable.group_ic_no_profile)
+                            .fitCenter()
+                            .into(binding.ivProfile)
+                        imgCheck = false
+                    }
+                    .setNegativeButton(
+                        "취소"
+                    ) { dialog, id ->
+                    }
+                // 다이얼로그를 띄워주기
+                builder.show()
             }
         }
     }
