@@ -34,22 +34,30 @@
             android:resource="@color/wd2_main_color" />
 
         <activity
-            android:name=".presentation.main.MainActivity"
+            android:name=".presentation.start.StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <activity android:name=".presentation.signin.SignInActivity" />
+
+        <activity android:name=".presentation.signup.SignUpActivity" />
+
+        <activity
+            android:name=".presentation.main.MainActivity"
+            android:exported="false" />
+
         <activity
             android:name=".presentation.home.add.HomeAddActivity"
-            android:exported="false"/>
+            android:exported="false" />
+
         <activity
             android:name=".presentation.home.detail.HomeDetailActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false"/>
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".presentation.chat.detail.ChatDetailActivity"
@@ -60,7 +68,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
 
         <activity
             android:name=".presentation.home.map.HomeMapActivity"
@@ -74,6 +81,9 @@
         <activity
             android:name=".presentation.mypage.update.MyPageUpdateActivity"
             android:exported="false" />
+            android:name=".presentation.group.detail.GroupDetailActivity"
+            android:exported="false" />
+
         <service
             android:name=".services.fcm.MyFirebaseMessagingService"
             android:directBootAware="true"

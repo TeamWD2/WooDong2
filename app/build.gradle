@@ -60,6 +60,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
 
 
+    //viewPager2
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
     // viewModel
     implementation 'androidx.activity:activity-ktx:1.7.2'
     implementation 'androidx.fragment:fragment-ktx:1.6.1'
@@ -70,6 +73,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx:20.2.2'
     implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
     implementation 'com.google.firebase:firebase-messaging-ktx:23.3.0'
+    implementation("com.google.firebase:firebase-auth-ktx")
 
 
     // google gson

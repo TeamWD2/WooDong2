@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class ChatViewModel(
     private val chatItem: ChatGetItemsUseCase,
-    private val userItem: UserGetItemsUseCase,
+//    private val userItem: UserGetItemsUseCase,
 ) : ViewModel(
 ) {
     private val _chatList = MutableLiveData<MutableList<ChatItem>>()
@@ -44,27 +44,27 @@ class ChatViewModel(
         getChatItems()
     }
 
-    private fun getUserItem() = viewModelScope.launch {
-        // userId로 채팅방 찾기
-        runCatching {
-            userItem(userId) { items ->
-                val userItem = items?.userItems?.map {
-                    UserItem(
-                        id = it.id,
-                        name = it.name,
-                        imgProfile = it.imgProfile,
-                        email = it.email,
-                        chatIds = it.chatIds,
-                        firstLocation = it.firstLocation,
-                        secondLocation = it.secondLocation
-                    )
-                }.orEmpty()
-                user = userItem[0]
-            }
-        }.onFailure {
-            Log.e("sinw", it.message.toString())
-        }
-    }
+//    private fun getUserItem() = viewModelScope.launch {
+//        // userId로 채팅방 찾기
+//        runCatching {
+//            userItem(userId) { items ->
+//                val userItem = items?.userItems?.map {
+//                    UserItem(
+//                        id = it.id,
+//                        name = it.name,
+//                        imgProfile = it.imgProfile,
+//                        email = it.email,
+//                        chatIds = it.chatIds,
+//                        firstLocation = it.firstLocation,
+//                        secondLocation = it.secondLocation
+//                    )
+//                }.orEmpty()
+//                user = userItem[0]
+//            }
+//        }.onFailure {
+//            Log.e("sinw", it.message.toString())
+//        }
+//    }
 
     private fun getChatItems() = viewModelScope.launch {
         _isLoading.value = true
@@ -116,9 +116,9 @@ class ChatViewModelFactory : ViewModelProvider.Factory {
     }
 
     // 삭제 예정
-    private val userDatabaseReference by lazy {
-        FirebaseDatabase.getInstance().getReference("users")
-    }
+//    private val userDatabaseReference by lazy {
+//        FirebaseDatabase.getInstance().getReference("users")
+//    }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
@@ -126,7 +126,7 @@ class ChatViewModelFactory : ViewModelProvider.Factory {
                 ChatGetItemsUseCase(ChatRepositoryImpl(chatDatabaseReference)),
 
                 // 삭제 예정
-                UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference))
+//                UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference))
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

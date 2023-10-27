@@ -1,15 +1,17 @@
 package com.wd.woodong2.presentation.group.content
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.wd.woodong2.databinding.GroupFragmentBinding
 import com.wd.woodong2.presentation.group.add.GroupAddActivity
+import com.wd.woodong2.presentation.group.detail.GroupDetailActivity
+import com.wd.woodong2.presentation.group.detail.GroupDetailContentType
 
 class GroupFragment : Fragment() {
     companion object {
@@ -19,21 +21,20 @@ class GroupFragment : Fragment() {
     private var _binding: GroupFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: GroupViewModel by viewModels {
+    private val viewModel: GroupViewModel by activityViewModels() {
         GroupViewModelFactory()
     }
 
     private val groupListAdapter by lazy {
         GroupListAdapter(
             itemClickListener = { item ->
-                // GroupDetailActivity 이동
+                clickGroupItem(item)
             }
         )
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = GroupFragmentBinding.inflate(inflater, container, false)
         return binding.root
@@ -49,7 +50,7 @@ class GroupFragment : Fragment() {
         // TODO("toolbar 설정")
 
         fabAddGroup.setOnClickListener {
-            startActivity(Intent(requireContext(), GroupAddActivity::class.java))
+            startActivity(GroupAddActivity.newIntent(requireContext()))
         }
 
         recyclerViewGroup.adapter = groupListAdapter
@@ -58,11 +59,28 @@ class GroupFragment : Fragment() {
 
     private fun initViewModel() = with(viewModel) {
         groupList.observe(viewLifecycleOwner) {
-            groupListAdapter.submitList(it)
+            groupListAdapter.submitList(it?.filterIsInstance<GroupItem.GroupMain>())
         }
         loadingState.observe(viewLifecycleOwner) { loadingState ->
             binding.progressBar.isVisible = loadingState
         }
+        isEmptyList.observe(viewLifecycleOwner) { isEmptyList ->
+            binding.txtEmptyGroupList.isVisible = isEmptyList
+        }
+    }
+
+    private fun clickGroupItem(item: GroupItem.GroupMain) {
+        startActivity(
+            GroupDetailActivity.newIntent(
+                requireContext(),
+                if (viewModel.isUserInGroup(
+                        item.id,
+                        "-NhImSiDataNew" //테스트용 userId (임시데이터)
+                    )
+                ) GroupDetailContentType.WRITE_BOARD.name else GroupDetailContentType.JOIN_GROUP.name,
+                viewModel.getRelatedItems(item.id)
+            )
+        )
     }
 
     override fun onDestroyView() {

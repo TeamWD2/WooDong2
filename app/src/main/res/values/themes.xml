@@ -5,5 +5,16 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.WooDong2" parent="Base.Theme.WooDong2" />
+    <style name="Theme.WooDong2" parent="Base.Theme.WooDong2"></style>
+
+    <style name="EditTextWD2Style" parent="Widget.Design.TextInputLayout">
+        <item name="colorPrimary">@color/wd2_main_color</item>
+        <item name="colorControlActivated">@color/wd2_main_color</item>
+    </style>
+
+    <style name="roundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>
