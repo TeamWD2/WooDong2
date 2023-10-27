@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.signin
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,18 +17,26 @@ class SignInViewModel(
     private val signInUser: UserSignInUseCase,
 ) : ViewModel(
 ) {
+    companion object {
+        const val TAG = "SignInViewModel"
+    }
+
     private val _loginResult: MutableLiveData<Boolean> = MutableLiveData()
     val loginResult: LiveData<Boolean> get() = _loginResult
 
 
     fun signIn(id: String, pw: String) {
         viewModelScope.launch {
-            signInUser(id, pw).collect { isSuccess ->
-                _loginResult.value = isSuccess
+            runCatching {
+                signInUser(id, pw).collect { isSuccess ->
+                    _loginResult.value = isSuccess
+                }
+            }.onFailure {
+                Log.e(TAG, it.message.toString())
+                _loginResult.value = false
             }
         }
     }
-
 }
 
 class SignInViewModelFactory : ViewModelProvider.Factory {
