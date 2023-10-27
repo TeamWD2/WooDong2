@@ -20,9 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         fun newIntentForMain(context: Context): Intent =
-            Intent(context, MainActivity::class.java).apply {
-
-            }
+            Intent(context, MainActivity::class.java)
     }
 
     private lateinit var binding: MainActivityBinding
