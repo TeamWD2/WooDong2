@@ -34,14 +34,27 @@
             android:resource="@color/wd2_main_color" />
 
         <activity
+            android:name=".presentation.start.StartActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".presentation.signin.SignInActivity" />
+
+        <activity android:name=".presentation.signup.SignUpActivity" />
+
+        <activity
             android:name=".presentation.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".presentation.home.add.HomeAddActivity" />
 
         <activity
