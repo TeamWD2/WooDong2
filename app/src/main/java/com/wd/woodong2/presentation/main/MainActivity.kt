@@ -1,5 +1,7 @@
 package com.wd.woodong2.presentation.main
 
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -12,10 +14,16 @@ import com.wd.woodong2.databinding.MainActivityBinding
 import com.wd.woodong2.presentation.chat.content.ChatFragment
 import com.wd.woodong2.presentation.group.content.GroupFragment
 import com.wd.woodong2.presentation.home.content.HomeFragment
-import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.mypage.content.MyPageFragment
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        fun newIntentForMain(context: Context): Intent =
+            Intent(context, MainActivity::class.java).apply {
+
+            }
+    }
 
     private lateinit var binding: MainActivityBinding
 
