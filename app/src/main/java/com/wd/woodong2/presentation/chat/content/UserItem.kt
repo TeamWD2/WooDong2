@@ -15,11 +15,3 @@ data class UserItem(
     val firstLocation: String?,
     val secondLocation: String?
 ) : Parcelable
-//fun UserItem.toHomeItem() : HomeItem{
-//    return HomeItem(
-//        id = id,
-//        name = name,
-//        firstLocation = firstLocation,
-//        secondLocation = secondLocation,
-//    )
-//}
