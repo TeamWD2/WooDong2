@@ -73,6 +73,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx:20.2.2'
     implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
     implementation 'com.google.firebase:firebase-messaging-ktx:23.3.0'
+    implementation("com.google.firebase:firebase-auth-ktx")
 
 
     // google gson

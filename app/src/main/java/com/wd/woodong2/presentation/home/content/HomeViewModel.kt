@@ -7,20 +7,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
-import com.wd.woodong2.data.repository.UserRepositoryImpl
-import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import kotlinx.coroutines.launch
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 
 class HomeViewModel(
     private val userItem: UserGetItemsUseCase,
-    //private val udbReference: DatabaseReference
     ) : ViewModel(
     ) {
-    //HomeItem list
+   
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
 
@@ -58,8 +56,8 @@ class HomeViewModel(
     private fun getUserItem(
     ) = viewModelScope.launch {
         runCatching {
-            userItem(userId) { items ->
-                val userItem = items?.userItems?.map {
+            userItem(userId).collect { items ->
+                val userItem = items?.map {
                     UserItem(
                         id = it.id,
                         name = it.name,
@@ -75,7 +73,6 @@ class HomeViewModel(
         }.onFailure {
             Log.e("homeItem", it.message.toString())
         }
-
     }
 
     fun updateUserLocation(
@@ -88,6 +85,7 @@ class HomeViewModel(
             userItem(userId,firstLocation,secondLocation)
         }
     }
+
 }
 
 class HomeViewModelFactory : ViewModelProvider.Factory {
@@ -97,6 +95,7 @@ class HomeViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(
+
                 UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference)),
             ) as T
         } else {

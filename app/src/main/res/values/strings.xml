@@ -75,5 +75,35 @@
 
     <string name="test_client_token">eeWxak2xSXWJSottR1ePec:APA91bHLvExw1Sc1ueUKvLc-qnFsgWC85stYsdppK05UuYQG3JuCd6kxYA05eGWSc9S9Xi6RsZTx-JlXzHQA-bzZ70g8SygvIc10NBNVYE-tgb1YzAx62keHfAenL2USwSNCFbS0JkSp</string>
 
+    <string name="wd2">우동이</string>
+
+    <!-- start_activity.xml -->
+    <string name="wd2_full">우리 동네 이야기</string>
+    <string name="start">시작하기</string>
+
+    <!-- signin_activity.xml -->
+    <string name="signin_id">아이디</string>
+    <string name="signin_enter_id">아이디를 입력하세요</string>
+    <string name="signin_pw">비밀번호</string>
+    <string name="signin_input_pw">비밀번호를 입력하세요</string>
+    <string name="login">로그인</string>
+    <string name="signin">회원가입</string>
+    <string name="login_success">로그인 성공</string>
+    <string name="login_fail">로그인 실패</string>
+
+    <!-- signup_activity.xml -->
+    <string name="check_id_duplication">중복확인</string>
+    <string name="signup_pw_check">비밀번호 확인</string>
+    <string name="signup_name">닉네임</string>
+    <string name="signup_email">이메일</string>
+    <string name="signup">가입하기</string>
+    <string name="txt_check_pw_notification">비밀번호 맞음</string>
+    <string name="signup_correct_pw">비밀번호 같음</string>
+    <string name="signup_incorrect_pw">비밀번호 다름</string>
+    <string name="signup_pw_match">비밀번호 맞음</string>
+    <string name="signup_pw_not_match">비밀번호 틀림</string>
+    <string name="signup_id_hint">example@example.com</string>
+    <string name="nickname_valid">사용 가능</string>
+    <string name="nickname_invalid">사용 불가능</string>
 
 </resources>
