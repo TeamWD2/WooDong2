@@ -5,8 +5,7 @@ import com.wd.woodong2.domain.model.UserItemsEntity
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    fun getUserItems(userId: String, entityResult: (UserItemsEntity?) -> Unit)
-    fun updateUserLocations(userId: String, firstLocation : String, secondLocation : String)
+    fun updateUserLocations(userId: String, firstLocation: String, secondLocation: String)
     fun updateUserInfo(userId: String, name: String, imgProfile: String, email: String)
     suspend fun getUserItems(): Flow<UserItemsEntity?>
     suspend fun getUser(userId: String): Flow<UserEntity?>

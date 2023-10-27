@@ -81,6 +81,7 @@
         <activity
             android:name=".presentation.mypage.update.MyPageUpdateActivity"
             android:exported="false" />
+        <activity
             android:name=".presentation.group.detail.GroupDetailActivity"
             android:exported="false" />
 

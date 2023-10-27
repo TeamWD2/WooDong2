@@ -6,19 +6,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import kotlinx.coroutines.launch
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
+import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 
 class HomeViewModel(
     private val userItem: UserGetItemsUseCase,
-    ) : ViewModel(
-    ) {
-   
+) : ViewModel(
+) {
+
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
 
@@ -53,22 +56,21 @@ class HomeViewModel(
         })
     }
 
-    private fun getUserItem(
-    ) = viewModelScope.launch {
+    private fun getUserItem() = viewModelScope.launch {
         runCatching {
-            userItem(userId).collect { items ->
-                val userItem = items?.map {
+            userItem(userId).collect { user ->
+                val userItem =
                     UserItem(
-                        id = it.id,
-                        name = it.name,
-                        imgProfile = it.imgProfile,
-                        email = it.email,
-                        chatIds = it.chatIds,
-                        firstLocation = it.firstLocation,
-                        secondLocation = it.secondLocation
+                        id = user?.id ?: "",
+                        name = user?.name ?: "",
+                        imgProfile = user?.imgProfile ?: "",
+                        email = user?.email ?: "",
+                        chatIds = user?.chatIds.orEmpty(),
+                        firstLocation = user?.firstLocation ?: "",
+                        secondLocation = user?.secondLocation ?: ""
                     )
-                }.orEmpty()
-                userInfo.postValue(userItem.firstOrNull())
+
+                userInfo.postValue(userItem)
             }
         }.onFailure {
             Log.e("homeItem", it.message.toString())
@@ -76,27 +78,31 @@ class HomeViewModel(
     }
 
     fun updateUserLocation(
-        firstLocation : String,
-        secondLocation : String
-    ) = viewModelScope.launch{
+        firstLocation: String,
+        secondLocation: String,
+    ) = viewModelScope.launch {
         Log.d("location", "firstLocationscope")
         runCatching {
             Log.d("location", "firstLocationview")
-            userItem(userId,firstLocation,secondLocation)
+            userItem(userId, firstLocation, secondLocation)
         }
     }
 
 }
 
 class HomeViewModelFactory : ViewModelProvider.Factory {
-    private val userDatabaseReference by lazy {
-        FirebaseDatabase.getInstance().getReference("users")
+
+    private val userRepositoryImpl by lazy {
+        UserRepositoryImpl(
+            FirebaseDatabase.getInstance().getReference("users"),
+            Firebase.auth
+        )
     }
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(
-
-                UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference)),
+                UserGetItemsUseCase(userRepositoryImpl),
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
