@@ -143,8 +143,10 @@ class UserRepositoryImpl(
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    Log.d(TAG, "로그인 성공")
                     trySend(true)
                 } else {
+                    Log.d(TAG, "로그인 실패")
                     trySend(false)
                 }
             }
