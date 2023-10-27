@@ -24,6 +24,7 @@ class HomeMapSearchActivity : AppCompatActivity() {
     companion object {
         private var firstLocation : String? ="Unknown Location"
         private var secondLocation : String? ="Unknown Location"
+        const val EXTRA_ADDRESS = "extra_address"
         fun newIntent(context: Context, firstLoc: String, secondLoc:String)=
         Intent(context, HomeMapSearchActivity::class.java).apply {
             firstLocation = firstLoc
@@ -42,7 +43,7 @@ class HomeMapSearchActivity : AppCompatActivity() {
                 if(item.address != firstLocation && item.address != secondLocation){
                     val intent = Intent().apply{
                         putExtra(
-                            "Address",
+                            EXTRA_ADDRESS,
                             item.address
                         )
                     }
@@ -51,7 +52,7 @@ class HomeMapSearchActivity : AppCompatActivity() {
                     finish()
                 }
                 else{
-                    Toast.makeText(this, "주소가 중복설정 되었습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.home_map_search_location_also_error, Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -86,7 +87,7 @@ class HomeMapSearchActivity : AppCompatActivity() {
                 )
             }
             else{
-                Toast.makeText(this, "처음 위치 설정이 완료 되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.home_map_search_location_error, Toast.LENGTH_SHORT).show()
             }
         }
 

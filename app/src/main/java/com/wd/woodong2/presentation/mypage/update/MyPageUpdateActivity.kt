@@ -26,15 +26,19 @@ class MyPageUpdateActivity : AppCompatActivity(){
 
     }
 
+    private var profile = userInfo.imgProfile
+    private var name = userInfo.name
+    private var email = userInfo.email
+
     private lateinit var binding : MyPageUpdateActivityBinding
 
     private val editUserLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                userInfo.imgProfile = result.data?.data.toString()
+                profile = result.data?.data.toString()
 
                 Glide.with(this)
-                    .load(Uri.parse(userInfo.imgProfile))
+                    .load(Uri.parse(profile))
                     .error(R.drawable.group_ic_no_image)
                     .fitCenter()
                     .into(binding.myPageUpdateUserImgProfile)
@@ -59,31 +63,31 @@ class MyPageUpdateActivity : AppCompatActivity(){
             finish()
         }
         myPageUpdateBtn.setOnClickListener{
-            userInfo.name = myPageUpdateEtUserNameEdit.text.toString()
-            userInfo.email = myPageUpdateEtUserEmailEdit.text.toString()
+            name = myPageUpdateEtUserNameEdit.text.toString()
+            email = myPageUpdateEtUserEmailEdit.text.toString()
 
             val intent = Intent().apply{
                 putExtra(
                     MyPageFragment.EXTRA_USER_NAME,
-                    userInfo.name
+                    name
                 )
                 putExtra(
                     MyPageFragment.EXTRA_USER_PROFILE,
-                    userInfo.imgProfile
+                    profile
                 )
                 putExtra(
                     MyPageFragment.EXTRA_USER_EMAIL,
-                    userInfo.email
+                    email
                 )
             }
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
-        myPageUpdateEtUserEmailEdit.setText(userInfo.email)
-        myPageUpdateEtUserNameEdit.setText(userInfo.name)
+        myPageUpdateEtUserEmailEdit.setText(email)
+        myPageUpdateEtUserNameEdit.setText(name)
 
 
-        val imgProfileUri = if (userInfo.imgProfile != null) Uri.parse(userInfo.imgProfile) else null
+        val imgProfileUri = if (profile != null) Uri.parse(profile) else null
 
         Glide.with(this@MyPageUpdateActivity)
             .load(imgProfileUri)

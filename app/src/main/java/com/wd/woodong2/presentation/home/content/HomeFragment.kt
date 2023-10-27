@@ -95,8 +95,6 @@ class HomeFragment : Fragment() {
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbarHome)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        homeRecyclerView.adapter = listAdapter
-
         homeRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = listAdapter

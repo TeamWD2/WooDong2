@@ -31,6 +31,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeMapActivityBinding
+import com.wd.woodong2.presentation.home.map.HomeMapSearchActivity.Companion.EXTRA_ADDRESS
 import java.util.Locale
 
 
@@ -87,7 +88,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val homeMapSearchLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if(result.resultCode == Activity.RESULT_OK){
-                var receivedData = result.data!!.getStringExtra("Address")
+                var receivedData = result.data!!.getStringExtra(EXTRA_ADDRESS)
                 getLocationFromAddress(this, receivedData!!)
                 Log.d("itemSet", receivedData.toString())
 

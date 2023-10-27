@@ -50,7 +50,7 @@ class MyPageFragment : Fragment() {
     private var myPageViewPagerAdapter :MyPageViewPagerAdapter? = null
 
     private var imgCheck : Boolean = false
-    private val viewModel : MyPageViewModel //= MyPageViewModelFactory().create(MyPageViewModel::class.java)
+    private val viewModel : MyPageViewModel
         by activityViewModels {
             MyPageViewModelFactory()
         }
@@ -73,14 +73,13 @@ class MyPageFragment : Fragment() {
                 }else{
 
                 }
-            }//무조건 있는건 아니다..
+            }
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //myPageViewPagerAdapter = MyPageViewPagerAdapter(this)
 
         initView()
         initViewModel()
@@ -90,11 +89,11 @@ class MyPageFragment : Fragment() {
 
         myPageViewPagerAdapter = MyPageViewPagerAdapter(this@MyPageFragment, lifecycle)
         myPageViewPager2.adapter = myPageViewPagerAdapter
-        myPageViewPager2.offscreenPageLimit = myPageViewPagerAdapter!!.itemCount
+        myPageViewPager2.offscreenPageLimit = myPageViewPagerAdapter?.itemCount?:0
 
 
         TabLayoutMediator(myPageTabLayout, myPageViewPager2) { tab, position ->
-            tab.setText(myPageViewPagerAdapter!!.getTitle(position))
+            myPageViewPagerAdapter?.getTitle(position)?.let { tab.setText(it) }
         }.attach()
 
         //프로필 변경
@@ -158,21 +157,7 @@ class MyPageFragment : Fragment() {
     }
 
 
-//    override fun onPause() {
-//        super.onPause()
-//       binding.run {
-//           myPageViewPager2.adapter = null
-//       }
-//    }
-//
-//    override fun onResume() {
-//        super.onResume()
-//        binding.run {
-//            myPageViewPager2.adapter = myPageViewPagerAdapter
-//            initView()
-//            initViewModel()
-//        }
-//    } or LIFECYCLE을 강제로 ACTIVITYLIFECYCLE을 넣어서 사용 하는 방법..
+
 
     override fun onDestroyView() {
         _binding = null
