@@ -8,6 +8,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.SigninActivityBinding
 import com.wd.woodong2.presentation.main.MainActivity
 import com.wd.woodong2.presentation.signup.SignUpActivity
@@ -63,10 +64,10 @@ class SignInActivity : AppCompatActivity() {
     private fun initModel() = with(signInViewModel) {
         loginResult.observe(this@SignInActivity) { result ->
             if (result) {
-                Toast.makeText(this@SignInActivity, "로그인 성공", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SignInActivity, R.string.login_success , Toast.LENGTH_SHORT).show()
                 startActivity(MainActivity.newIntentForMain(this@SignInActivity))
             } else {
-                Toast.makeText(this@SignInActivity, "로그인 실패", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SignInActivity, R.string.login_fail, Toast.LENGTH_SHORT).show()
             }
         }
     }
