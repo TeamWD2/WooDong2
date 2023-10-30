@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.MainActivityBinding
@@ -24,23 +24,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: MainActivityBinding
+    /*
 
-    private val homeFragment by lazy {
-        HomeFragment.newInstance()
-    }
+        private val homeFragment by lazy {
+            HomeFragment.newInstance()
+        }
 
-    private val groupFragment by lazy {
-        GroupFragment.newInstance()
-    }
+        private val groupFragment by lazy {
+            GroupFragment.newInstance()
+        }
 
-    private val chatFragment by lazy {
-        ChatFragment.newInstance()
-    }
+        private val chatFragment by lazy {
+            ChatFragment.newInstance()
+        }
 
-    private val myPageFragment by lazy {
-        MyPageFragment.newInstance()
-    }
+        private val myPageFragment by lazy {
+            MyPageFragment.newInstance()
+        }
 
+    */
 
     /**
      * 갤러리 접근 권한 설정
@@ -93,23 +95,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
-
-
         //BottomNavigation 설정
-        supportFragmentManager.beginTransaction().add(frameLayout.id, homeFragment).commit()
-
         bottomNavigation.setOnItemSelectedListener { item ->
             val selectedFragment = when (item.itemId) {
-                R.id.bottom_menu_home -> homeFragment
-                R.id.bottom_menu_group -> groupFragment
-                R.id.bottom_menu_chat -> chatFragment
-                else -> myPageFragment
+                R.id.bottom_menu_home -> HomeFragment()
+                R.id.bottom_menu_group -> GroupFragment()
+                R.id.bottom_menu_chat -> ChatFragment()
+                else -> MyPageFragment()
             }
-            if (!selectedFragment.isAdded) {
-                supportFragmentManager.beginTransaction()
-                    .replace(frameLayout.id, selectedFragment).commit()
-            }
+            supportFragmentManager.beginTransaction()
+                .replace(frameLayout.id, selectedFragment).commit()
             true
         }
+        supportFragmentManager.beginTransaction()
+            .replace(frameLayout.id, HomeFragment()).commit()
     }
 }
