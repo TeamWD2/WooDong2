@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.wd.woodong2.databinding.GroupFragmentBinding
-import com.wd.woodong2.presentation.group.add.GroupAddActivity
+import com.wd.woodong2.presentation.group.add.GroupAdd1Activity
 import com.wd.woodong2.presentation.group.detail.GroupDetailActivity
 import com.wd.woodong2.presentation.group.detail.GroupDetailContentType
 
@@ -50,7 +49,7 @@ class GroupFragment : Fragment() {
         // TODO("toolbar 설정")
 
         fabAddGroup.setOnClickListener {
-            startActivity(GroupAddActivity.newIntent(requireContext()))
+            startActivity(GroupAdd1Activity.newAdd1Intent(requireContext()))
         }
 
         recyclerViewGroup.adapter = groupListAdapter
