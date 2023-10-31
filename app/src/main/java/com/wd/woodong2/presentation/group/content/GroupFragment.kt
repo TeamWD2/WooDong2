@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.wd.woodong2.databinding.GroupFragmentBinding
 import com.wd.woodong2.presentation.group.add.GroupAdd1Activity
 import com.wd.woodong2.presentation.group.detail.GroupDetailActivity
@@ -20,7 +21,7 @@ class GroupFragment : Fragment() {
     private var _binding: GroupFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: GroupViewModel by activityViewModels() {
+    private val viewModel: GroupViewModel by viewModels {
         GroupViewModelFactory()
     }
 
