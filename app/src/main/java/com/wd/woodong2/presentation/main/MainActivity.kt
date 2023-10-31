@@ -21,6 +21,11 @@ class MainActivity : AppCompatActivity() {
     companion object {
         fun newIntentForMain(context: Context): Intent =
             Intent(context, MainActivity::class.java)
+
+        fun newIntentForAutoLogin(context: Context, id: String): Intent =
+            Intent(context, MainActivity::class.java).apply {
+                putExtra("ID", id)
+            }
     }
 
     private lateinit var binding: MainActivityBinding
@@ -76,6 +81,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         checkPermissions()
+
+        // TODO 삭제
+        val id = intent.getStringExtra("ID")
     }
 
     private fun checkPermissions() {
