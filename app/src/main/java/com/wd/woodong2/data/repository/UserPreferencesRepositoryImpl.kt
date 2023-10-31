@@ -12,10 +12,10 @@ class UserPreferencesRepositoryImpl(
     }
 
     override fun saveUser(userId: String, isLoggedIn: Boolean) {
-        val editor = sharedPreferences.edit()
-        editor.putString("userId", userId)
-        editor.putBoolean("isLoggedIn", isLoggedIn)
-        editor.apply()
+        sharedPreferences.edit().apply {
+            putString("userId", userId)
+            putBoolean("isLoggedIn", isLoggedIn)
+        }.apply()
     }
 
     override fun getUser(): String? {
@@ -25,9 +25,10 @@ class UserPreferencesRepositoryImpl(
     }
 
     override fun deleteUser() {
-        val editor = sharedPreferences.edit()
-        editor.remove("userId")
-        editor.remove("isLoggedIn")
-        editor.apply()
+        sharedPreferences.edit().apply {
+            remove("userId")
+            remove("isLoggedIn")
+            apply()
+        }
     }
 }
