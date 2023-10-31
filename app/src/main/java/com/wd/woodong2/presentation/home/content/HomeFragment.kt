@@ -4,7 +4,6 @@ package com.wd.woodong2.presentation.home.content
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,14 +24,10 @@ import com.wd.woodong2.presentation.home.map.HomeMapActivity.Companion.EXTRA_SEC
 
 
 class HomeFragment : Fragment() {
-    companion object {
-        fun newInstance() = HomeFragment()
-    }
-
     private var _binding : HomeFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel : HomeViewModel //= HomeViewModelFactory().create(HomeViewModel::class.java)
-        by activityViewModels {
+        by viewModels {
             HomeViewModelFactory()
         }
 
