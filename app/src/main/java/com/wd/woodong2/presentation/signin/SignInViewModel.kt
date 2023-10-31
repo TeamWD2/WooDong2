@@ -9,12 +9,18 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.domain.usecase.SignInGetUserUseCase
+import com.wd.woodong2.domain.usecase.SignInSaveUserUseCase
 import com.wd.woodong2.domain.usecase.UserSignInUseCase
+import com.wd.woodong2.presentation.provider.ContextProvider
 import kotlinx.coroutines.launch
 
 class SignInViewModel(
     private val signInUser: UserSignInUseCase,
+    private val saveUser: SignInSaveUserUseCase,
+    private val getUser: SignInGetUserUseCase,
 ) : ViewModel(
 ) {
     companion object {
@@ -39,7 +45,9 @@ class SignInViewModel(
     }
 }
 
-class SignInViewModelFactory : ViewModelProvider.Factory {
+class SignInViewModelFactory(
+    private val contextProvider: ContextProvider,
+) : ViewModelProvider.Factory {
 
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
@@ -48,10 +56,16 @@ class SignInViewModelFactory : ViewModelProvider.Factory {
         )
     }
 
+    private val userPreferencesRepository by lazy {
+        UserPreferencesRepositoryImpl(contextProvider.getSharedPreferences("USER_PREFERENCES"))
+    }
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SignInViewModel::class.java)) {
             return SignInViewModel(
-                UserSignInUseCase(userRepositoryImpl)
+                UserSignInUseCase(userRepositoryImpl),
+                SignInSaveUserUseCase(userPreferencesRepository),
+                SignInGetUserUseCase(userPreferencesRepository),
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

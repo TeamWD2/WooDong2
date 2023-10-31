@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.SigninActivityBinding
 import com.wd.woodong2.presentation.main.MainActivity
+import com.wd.woodong2.presentation.provider.ContextProviderImpl
 import com.wd.woodong2.presentation.signup.SignUpActivity
 
 class SignInActivity : AppCompatActivity() {
@@ -19,7 +20,9 @@ class SignInActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private val signInViewModel: SignInViewModel by viewModels {
-        SignInViewModelFactory()
+        SignInViewModelFactory(
+            ContextProviderImpl(this)
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +67,8 @@ class SignInActivity : AppCompatActivity() {
     private fun initModel() = with(signInViewModel) {
         loginResult.observe(this@SignInActivity) { result ->
             if (result) {
-                Toast.makeText(this@SignInActivity, R.string.login_success , Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SignInActivity, R.string.login_success, Toast.LENGTH_SHORT)
+                    .show()
                 startActivity(MainActivity.newIntentForMain(this@SignInActivity))
             } else {
                 Toast.makeText(this@SignInActivity, R.string.login_fail, Toast.LENGTH_SHORT).show()
