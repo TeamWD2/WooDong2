@@ -12,4 +12,3 @@ interface GCMRemoteSource {
         @Body notification: GCMRequest
     ): Response<ResponseBody>
 }
-
