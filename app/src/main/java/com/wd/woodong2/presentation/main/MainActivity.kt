@@ -19,12 +19,13 @@ import com.wd.woodong2.presentation.mypage.content.MyPageFragment
 class MainActivity : AppCompatActivity() {
 
     companion object {
+        private const val ID = "ID"
         fun newIntentForMain(context: Context): Intent =
             Intent(context, MainActivity::class.java)
 
         fun newIntentForAutoLogin(context: Context, id: String): Intent =
             Intent(context, MainActivity::class.java).apply {
-                putExtra("ID", id)
+                putExtra(ID, id)
             }
     }
 
