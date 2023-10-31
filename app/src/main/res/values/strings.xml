@@ -107,5 +107,6 @@
     <string name="nickname_valid">사용 가능</string>
     <string name="nickname_invalid">사용 불가능</string>
     <string name="signin_auto_login">자동 로그인</string>
+    <string name="pref_key_user_preferences_key">USER_PREFERENCES</string>
 
 </resources>
