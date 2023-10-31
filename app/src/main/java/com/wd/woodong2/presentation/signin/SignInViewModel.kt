@@ -31,17 +31,29 @@ class SignInViewModel(
     val loginResult: LiveData<Boolean> get() = _loginResult
 
 
-    fun signIn(id: String, pw: String) {
+    fun signIn(id: String, pw: String, isAutoLogIn: Boolean) {
         viewModelScope.launch {
             runCatching {
                 signInUser(id, pw).collect { isSuccess ->
                     _loginResult.value = isSuccess
+
+                    // 기기에 정보 저장
+                    if (_loginResult.value == true) {
+                        saveUser(id, isAutoLogIn)
+                    }
                 }
             }.onFailure {
                 Log.e(TAG, it.message.toString())
                 _loginResult.value = false
             }
         }
+    }
+
+    fun isAutoLogin(): String? {
+        if (getUser() != null) {
+            return getUser()
+        }
+        return null
     }
 }
 
