@@ -10,4 +10,8 @@ class ContextProviderImpl(
     override fun getSharedPreferences(name: String): SharedPreferences {
         return context.getSharedPreferences(name, Context.MODE_PRIVATE)
     }
+
+    override fun getString(stringRes: Int): String {
+        return context.getString(stringRes)
+    }
 }
