@@ -52,7 +52,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
         }
     }
 
-    override suspend fun setGroupItem(groupAddSetItem: MutableList<GroupAddSetItem>) {
+    override suspend fun setGroupItem(groupAddSetItem: List<GroupAddSetItem>) {
         val groupRef = databaseReference.push()
         groupRef.setValue(groupAddSetItem) { databaseError, _ ->
             if (databaseError != null) {

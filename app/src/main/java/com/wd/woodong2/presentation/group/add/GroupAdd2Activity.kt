@@ -7,35 +7,84 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupAdd2ActivityBinding
 import java.util.regex.Pattern
 
-class GroupAdd2Activity: AppCompatActivity() {
+class GroupAdd2Activity : AppCompatActivity() {
 
     companion object {
-        fun newAdd2Intent(context: Context): Intent =
-            Intent(context, GroupAdd2Activity::class.java)
+        private const val ADD_ITEM_GROUP_TAG = "add_item_group_tag"
+        private const val ADD_ITEM_GROUP_NAME = "add_item_group_name"
+        private const val ADD_ITEM_GROUP_INTRO = "add_item_group_intro"
+        fun newAdd2Intent(
+            context: Context,
+            groupTag: String?,
+            groupName: String,
+            groupIntro: String
+        ): Intent =
+            Intent(context, GroupAdd2Activity::class.java).apply {
+                putExtra(ADD_ITEM_GROUP_TAG, groupTag)
+                putExtra(ADD_ITEM_GROUP_NAME, groupName)
+                putExtra(ADD_ITEM_GROUP_INTRO, groupIntro)
+            }
     }
 
     private lateinit var binding: GroupAdd2ActivityBinding
 
-    private val viewModel: GroupAddSharedViewModel by viewModels {
-        GroupAddSharedViewModelFactory()
+    private val add3Launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                setResult(RESULT_OK, Intent())
+                finish()
+            }
+        }
+
+    private val groupTag by lazy {
+        intent.getStringExtra(ADD_ITEM_GROUP_TAG)
+    }
+    private val groupName by lazy {
+        intent.getStringExtra(ADD_ITEM_GROUP_NAME)
+    }
+    private val groupIntro by lazy {
+        intent.getStringExtra(ADD_ITEM_GROUP_INTRO)
     }
 
-    private val add3Launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if(result.resultCode == Activity.RESULT_OK) {
-            setResult(RESULT_OK, Intent())
-            finish()
+    private var ageLimit: String? = null
+    private var memberLimit: String? = null
+    private var password: String? = null
+
+    private val textWatcher by lazy {
+        object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                val pwdPattern = Pattern.matches(
+                    "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{8,16}$",
+                    binding.edtPassword.text.toString().trim()
+                )
+                if (pwdPattern) {
+                    binding.txtPasswordValid.apply {
+                        setText(R.string.group_add_txt_password_valid)
+                        setTextColor(Color.GREEN)
+                        password = binding.edtPassword.text.toString()
+                    }
+                } else {
+                    binding.txtPasswordValid.apply {
+                        setText(R.string.group_add_txt_password_invalid)
+                        setTextColor(Color.RED)
+                    }
+                }
+            }
         }
     }
-
-    private var isChkBoxChecked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,85 +99,68 @@ class GroupAdd2Activity: AppCompatActivity() {
             finish()
         }
 
-        val ageLimitChips = listOf(
-            R.id.chip_anyone to R.string.group_add_chip_anyone,
-            R.id.chip_nineteen_under to R.string.group_add_chip_nineteen_under,
-            R.id.chip_nineteen_over to R.string.group_add_chip_nineteen_over
-        )
-
-        val memberLimitChips = listOf(
-            R.id.chip_no_limit to R.string.group_add_chip_no_limit,
-            R.id.chip_5_people to R.string.group_add_chip_5_people,
-            R.id.chip_10_people to R.string.group_add_chip_10_people,
-            R.id.chip_20_people to R.string.group_add_chip_20_people,
-            R.id.chip_30_people to R.string.group_add_chip_30_people,
-            R.id.chip_50_people to R.string.group_add_chip_50_people
-        )
-
         chipGroupAgeLimit.setOnCheckedChangeListener { _, checkedId ->
-            if(checkedId != -1) {
-                Log.d("sinw", "ageLimitChips / ${ageLimitChips.find { it.first == checkedId }?.second}")
+            ageLimit = when (checkedId) {
+                R.id.chip_anyone -> getString(R.string.group_add_chip_anyone)
+                R.id.chip_nineteen_under -> getString(R.string.group_add_chip_nineteen_under)
+                R.id.chip_nineteen_over -> getString(R.string.group_add_chip_nineteen_over)
+                else -> null
             }
         }
 
         chipGroupMemberLimit.setOnCheckedChangeListener { _, checkedId ->
-            if(checkedId != -1) {
-                Log.d("sinw", "memberLimitChips / ${memberLimitChips.find { it.first == checkedId }?.second}")
+            memberLimit = when (checkedId) {
+                R.id.chip_no_limit -> getString(R.string.group_add_chip_no_limit)
+                R.id.chip_5_people -> getString(R.string.group_add_chip_5_people)
+                R.id.chip_10_people -> getString(R.string.group_add_chip_10_people)
+                R.id.chip_20_people -> getString(R.string.group_add_chip_20_people)
+                R.id.chip_30_people -> getString(R.string.group_add_chip_30_people)
+                R.id.chip_50_people -> getString(R.string.group_add_chip_50_people)
+                else -> null
             }
         }
 
-        if(!isChkBoxChecked) {
-            edtPassword.apply {
-                isEnabled = true
-                setBackgroundResource(R.drawable.group_border_box)
-                addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    }
-
-                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    }
-
-                    override fun afterTextChanged(p0: Editable?) {
-                        val pwdPattern = Pattern.matches(
-                            "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{8,16}$",
-                            text.toString().trim()
-                        )
-                        if (pwdPattern) {
-                            txtPasswordValid.apply {
-                                setText(R.string.group_add_txt_password_valid)
-                                setTextColor(Color.GREEN)
-                                Log.d("sinw", "txtPasswordValid / Valid")
-                            }
-                        } else {
-                            txtPasswordValid.apply {
-                                setText(R.string.group_add_txt_password_invalid)
-                                setTextColor(Color.RED)
-                            }
-                        }
-                    }
-                })
-            }
-        } else {
-            edtPassword.apply {
-                isEnabled = false
-                setBackgroundResource(R.drawable.group_border_box_disabled)
-                Log.d("sinw", "txtPassword / [WD2] No Password")
-            }
-            txtPasswordValid.text = ""
-        }
+        edtPassword.addTextChangedListener(textWatcher)
 
         checkBox.setOnCheckedChangeListener { _, isChkBox ->
-            Log.d("sinw", "checkBox / $isChkBox")
+            edtPassword.apply {
+                isEnabled = !isChkBox
+                if (isChkBox) {
+                    setBackgroundResource(R.drawable.group_border_box_disabled)
+                    removeTextChangedListener(textWatcher)
+                    password = "[WD2] No Password"
+                    txtPasswordValid.text = ""
+                } else {
+                    setBackgroundResource(R.drawable.group_border_box)
+                    addTextChangedListener(textWatcher)
+                    password = ""
+                }
+            }
         }
 
         btnNext.setOnClickListener {
-            //Todo("입력 예외처리")
-            Log.d("sinw", "GroupAdd2 다음 버튼 클릭")
-            add3Launcher.launch(
-                GroupAdd3Activity.newAdd3Intent(
-                    this@GroupAdd2Activity
+            if (
+                groupTag.isNullOrEmpty()
+                || groupName.isNullOrEmpty()
+                || groupIntro.isNullOrEmpty()
+                || ageLimit.isNullOrEmpty()
+                || memberLimit.isNullOrEmpty()
+                || password.isNullOrEmpty()
+            ) {
+                Toast.makeText(this@GroupAdd2Activity, R.string.group_add_toast_no_info, Toast.LENGTH_SHORT).show()
+            } else {
+                add3Launcher.launch(
+                    GroupAdd3Activity.newAdd3Intent(
+                        this@GroupAdd2Activity,
+                        groupTag,
+                        groupName,
+                        groupIntro,
+                        ageLimit,
+                        memberLimit,
+                        password
+                    )
                 )
-            )
+            }
         }
     }
 }
