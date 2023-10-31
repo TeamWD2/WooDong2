@@ -16,6 +16,10 @@ import com.wd.woodong2.presentation.signup.SignUpActivity
 
 class SignInActivity : AppCompatActivity() {
 
+    companion object {
+        const val TAG = "SignInActivity"
+    }
+
     private var _binding: SigninActivityBinding? = null
     private val binding get() = _binding!!
 
@@ -36,7 +40,11 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun initInfo() {
+        val id = signInViewModel.isAutoLogin()
 
+        if (id != null) {
+            startActivity(MainActivity.newIntentForAutoLogin(this@SignInActivity, id))
+        }
     }
 
     private fun initView() = with(binding) {
@@ -52,7 +60,7 @@ class SignInActivity : AppCompatActivity() {
         }
 
         //signup btn click
-        btnSignup.setOnClickListener {
+        txtSignup.setOnClickListener {
             startActivity(
                 Intent(this@SignInActivity, SignUpActivity::class.java)
             )
@@ -60,7 +68,11 @@ class SignInActivity : AppCompatActivity() {
 
         // 로그인 버튼 클릭 시
         btnLogin.setOnClickListener {
-            signInViewModel.signIn(editId.text.toString(), editPassword.text.toString())
+            signInViewModel.signIn(
+                editId.text.toString(),
+                editPassword.text.toString(),
+                checkboxAutoLogin.isChecked
+            )
         }
     }
 
