@@ -34,7 +34,7 @@
             android:resource="@color/wd2_main_color" />
 
         <activity
-            android:name=".presentation.start.StartActivity"
+            android:name=".presentation.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
