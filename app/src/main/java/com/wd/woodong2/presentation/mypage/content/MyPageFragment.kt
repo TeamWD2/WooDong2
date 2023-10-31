@@ -30,7 +30,6 @@ class MyPageFragment : Fragment() {
         const val EXTRA_USER_NAME = "extra_user_name"
         const val EXTRA_USER_PROFILE = "extra_user_profile"
         const val EXTRA_USER_EMAIL = "extra_user_email"
-        fun newInstance() = MyPageFragment()
         fun extractLocationInfo(address: String): String {
             val parts = address.split(" ")
             for (part in parts) {
@@ -50,8 +49,7 @@ class MyPageFragment : Fragment() {
     private var myPageViewPagerAdapter :MyPageViewPagerAdapter? = null
 
     private var imgCheck : Boolean = false
-    private val viewModel : MyPageViewModel
-        by activityViewModels {
+    private val viewModel : MyPageViewModel by viewModels {
             MyPageViewModelFactory()
         }
 
@@ -87,7 +85,7 @@ class MyPageFragment : Fragment() {
 
     private fun initView() = with(binding) {
 
-        myPageViewPagerAdapter = MyPageViewPagerAdapter(this@MyPageFragment, lifecycle)
+        myPageViewPagerAdapter = MyPageViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
         myPageViewPager2.adapter = myPageViewPagerAdapter
         myPageViewPager2.offscreenPageLimit = myPageViewPagerAdapter?.itemCount?:0
 

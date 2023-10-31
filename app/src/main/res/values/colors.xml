@@ -15,6 +15,7 @@
     <color name="mustard">#FFD358</color>
     <color name="red">#FF0000</color>
     <color name="wd2_main_color">#FFD358</color>
+    <color name="full_background">#FFF5C5</color>
 
     <!-- Figma 3차 협의 색상 -->
     <color name="curry_yellow_txt">#CA9611</color>
