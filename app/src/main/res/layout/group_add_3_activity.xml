@@ -44,7 +44,7 @@
         android:layout_height="200dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="15dp"
-        android:background="@drawable/group_border_box"
+        android:background="@drawable/public_border_box"
         app:layout_constraintBottom_toTopOf="@id/txt_background_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/group_border_box"
+        android:background="@drawable/public_border_box"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_background_image" />

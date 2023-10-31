@@ -52,7 +52,7 @@
         android:id="@+id/edt_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/group_border_box"
+        android:background="@drawable/public_border_box"
         android:hint="@string/group_hint_search_group"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/recyclerView_group"

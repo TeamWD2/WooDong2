@@ -8,7 +8,7 @@
         android:id="@+id/img_image"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background="@drawable/group_border_box"
+        android:background="@drawable/public_border_box"
         android:padding="5dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"

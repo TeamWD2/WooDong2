@@ -131,7 +131,7 @@ class GroupAdd2Activity : AppCompatActivity() {
                     password = "[WD2] No Password"
                     txtPasswordValid.text = ""
                 } else {
-                    setBackgroundResource(R.drawable.group_border_box)
+                    setBackgroundResource(R.drawable.public_border_box)
                     addTextChangedListener(textWatcher)
                     password = ""
                 }
