@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         checkPermissions()
 
         // TODO 삭제
-        val id = intent.getStringExtra("ID")
+        val id = intent.getStringExtra(ID)
     }
 
     private fun checkPermissions() {
