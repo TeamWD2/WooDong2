@@ -25,6 +25,6 @@ class SplashActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val SPLASH_DISPLAY_LENGTH = 3000L
+        const val SPLASH_DISPLAY_LENGTH = 2000L
     }
 }
