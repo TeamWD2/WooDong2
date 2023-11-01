@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.group.add
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,13 +8,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
+import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
 import com.wd.woodong2.domain.usecase.GroupSetItemUseCase
+import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class GroupAddSharedViewModel(
+    private val imageStorageSetItem: ImageStorageSetItemUseCase,
     private val groupSetItem: GroupSetItemUseCase
 ) : ViewModel() {
+    companion object {
+        private const val TAG = "GroupAddSharedViewModel"
+    }
+
     private val groupAddMain: MutableLiveData<GroupAddSetItem.GroupAddMain> =
         MutableLiveData(GroupAddSetItem.GroupAddMain())
     private val groupAddIntroduce: MutableLiveData<GroupAddSetItem.GroupAddIntroduce> =
@@ -49,12 +59,25 @@ class GroupAddSharedViewModel(
         groupAddMain.value = groupAddMain.value?.copy(password = password)
     }
 
-    fun setMainImage(mainImage: String) {
-        groupAddMain.value = groupAddMain.value?.copy(mainImage = mainImage)
+    fun setMainImage(mainImage: Uri) = viewModelScope.launch {
+        runCatching {
+            imageStorageSetItem(mainImage).collect { imageUri ->
+                groupAddMain.value = groupAddMain.value?.copy(mainImage = imageUri.toString())
+            }
+        }.onFailure {
+            Log.e(TAG, it.message.toString())
+        }
     }
 
-    fun setBackgroundImage(backgroundImage: String) {
-        groupAddMain.value = groupAddMain.value?.copy(backgroundImage = backgroundImage)
+    fun setBackgroundImage(backgroundImage: Uri) = viewModelScope.launch {
+        runCatching {
+            imageStorageSetItem(backgroundImage).collect { imageUri ->
+                groupAddMain.value =
+                    groupAddMain.value?.copy(backgroundImage = imageUri.toString())
+            }
+        }.onFailure {
+            Log.e(TAG, it.message.toString())
+        }
     }
 
     fun setGroupAddItem() {
@@ -64,7 +87,7 @@ class GroupAddSharedViewModel(
                     groupSetItem(combineGroupItem())
                     _isCreateSuccess.value = true
                 }.onFailure {
-                    Log.e("sinw", it.message.toString())
+                    Log.e(TAG, it.message.toString())
                 }
             }
         } else {
@@ -94,35 +117,39 @@ class GroupAddSharedViewModel(
                     && it.memberLimit.isNullOrBlank().not()
         } ?: false
 
-    private fun combineGroupItem(): List<GroupAddSetItem> = mutableListOf<GroupAddSetItem>().apply {
-        groupAddMain.value?.let {
-            add(it)
-        }
-        groupAddIntroduce.value?.let {
-            add(it)
-        }
-        add(
-            GroupAddSetItem.GroupAddMember(
-                memberList = listOf(
-                    GroupAddSetItem.AddMember(
-                        "-NhImSiData",
-                        "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
-                        "sinw",
-                        "권선동"
+    private fun combineGroupItem(): List<GroupAddSetItem> =
+        mutableListOf<GroupAddSetItem>().apply {
+            groupAddMain.value?.let {
+                add(it)
+            }
+            groupAddIntroduce.value?.let {
+                add(it)
+            }
+            add(
+                GroupAddSetItem.GroupAddMember(
+                    memberList = listOf(
+                        GroupAddSetItem.AddMember(
+                            "-NhImSiData",
+                            "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
+                            "sinw",
+                            "권선동"
+                        )
                     )
                 )
             )
-        )
-    }
+        }
 }
 
 class GroupAddSharedViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val repository =
+        val imageStorageRepository =
+            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/${UUID.randomUUID()}"))
+        val groupRepository =
             GroupRepositoryImpl(FirebaseDatabase.getInstance().getReference("group_list"))
         if (modelClass.isAssignableFrom(GroupAddSharedViewModel::class.java)) {
             return GroupAddSharedViewModel(
-                GroupSetItemUseCase(repository)
+                ImageStorageSetItemUseCase(imageStorageRepository),
+                GroupSetItemUseCase(groupRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")

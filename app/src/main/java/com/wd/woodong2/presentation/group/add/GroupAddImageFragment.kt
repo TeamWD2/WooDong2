@@ -37,14 +37,16 @@ class GroupAddImageFragment: Fragment() {
                         "imgMainImage" -> {
                             binding.imgMainImage.setImageURI(uri)
                             binding.imgMainImageInit.isVisible = false
-                            sharedViewModel.setMainImage(uri.toString())
+                            sharedViewModel.setMainImage(uri)
                         }
 
                         "imgBackgroundImage" -> {
                             binding.imgBackgroundImage.setImageURI(uri)
                             binding.imgBackgroundImageInit.isVisible = false
-                            sharedViewModel.setBackgroundImage(uri.toString())
+                            sharedViewModel.setBackgroundImage(uri)
                         }
+
+                        else -> Unit
                     }
                 }
             }
