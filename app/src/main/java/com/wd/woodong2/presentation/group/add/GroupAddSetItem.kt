@@ -12,29 +12,29 @@ sealed class GroupAddSetItem(
         val password: String? = null,
         val mainImage: String? = null,
         val backgroundImage: String? = null,
-        val memberCount: Int? = 0,
-        val boardCount: Int? = 0
+        val memberCount: Int = 1,
+        val boardCount: Int = 0
     ) : GroupAddSetItem(viewType)
 
     data class GroupAddIntroduce(
         override val viewType: String = "introduce",
-        val title: String?,
+        val title: String = "소개",
         val introduce: String? = null,
         val groupTag: String? = null,
         val ageLimit: String? = null,
-        val memberLimit: String? = null,
+        val memberLimit: String? = null
     ) : GroupAddSetItem(viewType)
 
     data class GroupAddMember(
         override val viewType: String = "member",
-        val title: String?,
-        val memberList: List<AddMember>? = null
+        val title: String = "멤버",
+        val memberList: List<AddMember>?
     ) : GroupAddSetItem(viewType)
 
     data class AddMember(
-        val userId: String? = null,
-        val profile: String? = null,
-        val name: String? = null,
-        val location: String? = null
+        val userId: String?,
+        val profile: String?,
+        val name: String?,
+        val location: String?
     )
 }

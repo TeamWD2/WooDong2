@@ -25,7 +25,7 @@ class ChatFragment : Fragment() {
     private var _binding: ChatFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val chatViewModel: ChatViewModel by activityViewModels {
+    private val chatViewModel: ChatViewModel by viewModels {
         ChatViewModelFactory()
     }
 
