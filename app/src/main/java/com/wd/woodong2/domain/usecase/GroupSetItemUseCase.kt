@@ -6,7 +6,7 @@ import com.wd.woodong2.presentation.group.add.GroupAddSetItem
 class GroupSetItemUseCase(
     private val repository: GroupRepository
 ) {
-    suspend operator fun invoke(groupAddSetItem: MutableList<GroupAddSetItem>) {
+    suspend operator fun invoke(groupAddSetItem: List<GroupAddSetItem>) {
         return repository.setGroupItem(groupAddSetItem)
     }
 }
