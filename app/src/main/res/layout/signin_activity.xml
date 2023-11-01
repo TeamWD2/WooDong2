@@ -25,13 +25,11 @@
         android:id="@+id/inner_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10sp"
         android:layout_margin="15sp"
-        android:background="@drawable/signin_round_border"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="10sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline"
         app:layout_constraintVertical_bias="0.5">
 
         <TextView
@@ -48,17 +46,23 @@
             android:id="@+id/til_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15sp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/signin_round_border"
+            android:padding="12dp"
             android:theme="@style/EditTextWD2Style"
+            app:hintEnabled="false"
             app:layout_constraintTop_toBottomOf="@+id/txt_email">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_id"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@null"
                 android:hint="@string/signin_enter_id"
                 android:textColor="#CC999999" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <TextView
             android:id="@+id/txt_password"
@@ -75,9 +79,12 @@
             android:id="@+id/til_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/signin_round_border"
+            android:padding="12dp"
             android:theme="@style/EditTextWD2Style"
+            app:hintEnabled="false"
             app:layout_constraintTop_toBottomOf="@+id/txt_password"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/wd2_main_color">
@@ -86,38 +93,41 @@
                 android:id="@+id/edit_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="16sp"
+                android:background="@null"
                 android:hint="@string/signin_input_pw"
                 android:inputType="textPassword"
                 android:textColor="#CC999999" />
         </com.google.android.material.textfield.TextInputLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <CheckBox
+            android:id="@+id/checkbox_auto_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/signin_auto_login"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_password" />
 
+        <TextView
+            android:id="@+id/txt_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/signin"
+            app:layout_constraintBottom_toBottomOf="@+id/checkbox_auto_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/checkbox_auto_login" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16sp"
-        android:layout_marginBottom="6sp"
-        android:backgroundTint="@color/wd2_main_color"
-        android:padding="8sp"
-        android:text="@string/login"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@id/btn_signup"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/btn_signup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16sp"
         android:layout_marginBottom="16sp"
         android:backgroundTint="@color/wd2_main_color"
         android:padding="8sp"
-        android:text="@string/signin"
+        android:text="@string/login"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

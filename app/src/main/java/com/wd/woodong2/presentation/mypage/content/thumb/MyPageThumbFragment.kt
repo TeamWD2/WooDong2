@@ -13,9 +13,6 @@ import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
 
 class MyPageThumbFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = MyPageThumbFragment()
-    }
     private var _binding : MyPageThumbFragmentBinding? = null
     private val binding get() = _binding!!
     private val listAdapter by lazy {

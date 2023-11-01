@@ -124,6 +124,12 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = HomeMapActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        clientId = getString(R.string.home_map_naver_api)
+
+        //NAVER 지도 API 호출 및 ID 지정
+        NaverMapSdk.getInstance(this).client =
+            NaverMapSdk.NaverCloudPlatformClient(clientId!!)
+        locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         overridePendingTransition(
             R.anim.home_map_slide_up_fragment,
             R.anim.home_map_none_fragment
@@ -141,11 +147,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun initHomeMapView(){
 
-        clientId = getString(R.string.home_map_naver_api)
 
-        //NAVER 지도 API 호출 및 ID 지정
-        NaverMapSdk.getInstance(this).client =
-            NaverMapSdk.NaverCloudPlatformClient(clientId!!)
 
         //NAVER 객체 얻기 ( 동적 )
         val fm = supportFragmentManager
@@ -156,7 +158,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //인터페이스 객체
         mapFragment.getMapAsync(this)
-        locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
+
 
 
 
@@ -330,7 +332,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             //finish()
             }
             else{
-                naverMap.locationTrackingMode = LocationTrackingMode.Follow
+                //naverMap.locationTrackingMode = LocationTrackingMode.Follow
                 locationTrackingEnabled = true
             }
             return
