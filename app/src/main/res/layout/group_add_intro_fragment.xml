@@ -3,29 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="25dp">
-
-    <ImageView
-        android:id="@+id/img_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/public_ic_left_arrow"
-        app:layout_constraintBottom_toTopOf="@id/txt_group_tag_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:paddingHorizontal="25dp">
 
     <TextView
         android:id="@+id/txt_group_tag_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/group_add_txt_group_tag_title"
         android:textSize="@dimen/wd2_main_title"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/chip_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_back" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chip_group"
@@ -44,7 +35,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_exercise"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_neighbor_friend"
@@ -52,7 +45,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_neighbor_friend"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_study"
@@ -60,7 +55,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_study"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_family"
@@ -68,7 +65,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_family"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_pet"
@@ -76,7 +75,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_pet"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_volunteer"
@@ -84,7 +85,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_volunteer"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_food"
@@ -92,7 +95,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_food"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_finance"
@@ -100,7 +105,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_finance"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_arts"
@@ -108,7 +115,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_arts"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_game"
@@ -116,7 +125,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_game"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_music"
@@ -124,7 +135,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_music"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_making"
@@ -132,7 +145,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_making"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_etc"
@@ -140,7 +155,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/group_add_chip_etc"
-            app:chipBackgroundColor="@color/pressed_chip" />
+            android:textColor="@color/black"
+            app:chipBackgroundColor="@color/pressed_chip"
+            app:ensureMinTouchTargetSize="false" />
     </com.google.android.material.chip.ChipGroup>
 
     <View
@@ -182,7 +199,7 @@
         android:id="@+id/edt_introduce_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="15dp"
         android:background="@drawable/public_border_box"
         android:hint="@string/group_add_hint_introduce_name"
@@ -209,7 +226,7 @@
         android:id="@+id/edt_introduce_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/public_border_box"
         android:gravity="start"
         android:hint="@string/group_add_hint_introduce_description"
@@ -221,17 +238,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_introduce_description" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_next"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/public_border_btn"
-        android:padding="5dp"
-        android:text="@string/group_add_btn_next"
-        android:textColor="@color/white"
-        android:textSize="@dimen/wd2_main_title"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

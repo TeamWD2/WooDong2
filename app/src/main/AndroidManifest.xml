@@ -76,13 +76,7 @@
             android:name=".presentation.home.map.HomeMapSearchActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.group.add.GroupAdd1Activity"
-            android:exported="false" />
-        <activity
-            android:name=".presentation.group.add.GroupAdd2Activity"
-            android:exported="false" />
-        <activity
-            android:name=".presentation.group.add.GroupAdd3Activity"
+            android:name=".presentation.group.add.GroupAddActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.mypage.update.MyPageUpdateActivity"

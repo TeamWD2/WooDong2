@@ -3,29 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="25dp">
-
-    <ImageView
-        android:id="@+id/img_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/public_ic_left_arrow"
-        app:layout_constraintBottom_toTopOf="@id/txt_image_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:paddingHorizontal="25dp">
 
     <TextView
         android:id="@+id/txt_image_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/group_add_txt_image_title"
         android:textSize="@dimen/wd2_main_title"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/txt_main_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_back" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txt_main_image"
@@ -42,7 +33,7 @@
         android:id="@+id/img_main_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="15dp"
         android:background="@drawable/public_border_box"
         app:layout_constraintBottom_toTopOf="@id/txt_background_image"
@@ -75,8 +66,9 @@
         android:id="@+id/img_background_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/public_border_box"
+        app:layout_constraintBottom_toTopOf="@id/btn_add_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_background_image" />
@@ -95,13 +87,14 @@
         android:id="@+id/btn_add_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:background="@drawable/public_border_btn"
-        android:padding="5dp"
+        android:padding="16dp"
         android:text="@string/group_add_btn_add_group"
         android:textColor="@color/white"
         android:textSize="@dimen/wd2_main_title"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_background_image" />
 </androidx.constraintlayout.widget.ConstraintLayout>
