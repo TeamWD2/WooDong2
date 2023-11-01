@@ -7,10 +7,12 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupAddImageFragmentBinding
 
 class GroupAddImageFragment: Fragment() {
@@ -35,13 +37,13 @@ class GroupAddImageFragment: Fragment() {
                         "imgMainImage" -> {
                             binding.imgMainImage.setImageURI(uri)
                             binding.imgMainImageInit.isVisible = false
-                            val mainImage = uri.toString()
+                            sharedViewModel.setMainImage(uri.toString())
                         }
 
                         "imgBackgroundImage" -> {
                             binding.imgBackgroundImage.setImageURI(uri)
                             binding.imgBackgroundImageInit.isVisible = false
-                            val backgroundImage = uri.toString()
+                            sharedViewModel.setBackgroundImage(uri.toString())
                         }
                     }
                 }
@@ -82,10 +84,21 @@ class GroupAddImageFragment: Fragment() {
                 )
             )
         }
+
+        btnAddGroup.setOnClickListener {
+            sharedViewModel.setGroupAddItem()
+        }
     }
 
     private fun initViewModel() = with(sharedViewModel) {
-
+        isCreateSuccess.observe(viewLifecycleOwner) { isCreateSuccess ->
+            if(isCreateSuccess) {
+                Toast.makeText(requireContext(), R.string.group_add_toast_create_group, Toast.LENGTH_SHORT).show()
+                requireActivity().finish()
+            } else {
+                Toast.makeText(requireContext(), R.string.group_add_toast_no_info, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onDestroyView() {

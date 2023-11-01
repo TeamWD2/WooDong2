@@ -1,15 +1,18 @@
 package com.wd.woodong2.presentation.group.add
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupAddIntroFragmentBinding
 
-class GroupAddIntroFragment: Fragment() {
+class GroupAddIntroFragment : Fragment() {
     companion object {
         fun newInstance() = GroupAddIntroFragment()
     }
@@ -32,7 +35,6 @@ class GroupAddIntroFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        initViewModel()
     }
 
     private fun initView() = with(binding) {
@@ -53,11 +55,26 @@ class GroupAddIntroFragment: Fragment() {
                 R.id.chip_etc -> getString(R.string.group_add_chip_etc)
                 else -> null
             }
+            sharedViewModel.setGroupTag(groupTag)
         }
+
+        edtIntroduceName.addTextChangedListener(createTextWatcher(edtIntroduceName))
+        edtIntroduceDescription.addTextChangedListener(createTextWatcher(edtIntroduceDescription))
     }
 
-    private fun initViewModel() = with(sharedViewModel) {
+    private fun createTextWatcher(edtText: EditText) = object : TextWatcher {
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
 
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
+
+        override fun afterTextChanged(p0: Editable?) {
+            when(edtText.id) {
+                R.id.edt_introduce_name -> sharedViewModel.setGroupName(edtText.text.toString())
+                R.id.edt_introduce_description -> sharedViewModel.setGroupIntroduce(edtText.text.toString())
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -211,6 +211,7 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/public_border_box"
         android:hint="@string/group_add_hint_password"
+        android:inputType="textPassword"
         android:maxLines="1"
         android:padding="16dp"
         android:textSize="@dimen/wd2_normal_text"

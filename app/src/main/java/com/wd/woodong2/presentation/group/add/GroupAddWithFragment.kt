@@ -42,7 +42,7 @@ class GroupAddWithFragment: Fragment() {
                     binding.txtPasswordValid.apply {
                         setText(R.string.group_add_txt_password_valid)
                         setTextColor(Color.GREEN)
-                        val password = binding.edtPassword.text.toString()
+                        sharedViewModel.setPassword(binding.edtPassword.text.toString())
                     }
                 } else {
                     binding.txtPasswordValid.apply {
@@ -65,7 +65,6 @@ class GroupAddWithFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        initViewModel()
     }
 
     private fun initView() = with(binding) {
@@ -76,6 +75,7 @@ class GroupAddWithFragment: Fragment() {
                 R.id.chip_nineteen_over -> getString(R.string.group_add_chip_nineteen_over)
                 else -> null
             }
+            sharedViewModel.setAgeLimit(ageLimit)
         }
 
         chipGroupMemberLimit.setOnCheckedChangeListener { _, checkedId ->
@@ -88,6 +88,7 @@ class GroupAddWithFragment: Fragment() {
                 R.id.chip_50_people -> getString(R.string.group_add_chip_50_people)
                 else -> null
             }
+            sharedViewModel.setMemberLimit(memberLimit)
         }
 
         edtPassword.addTextChangedListener(textWatcher)
@@ -98,19 +99,15 @@ class GroupAddWithFragment: Fragment() {
                 if (isChkBox) {
                     setBackgroundResource(R.drawable.group_border_box_disabled)
                     removeTextChangedListener(textWatcher)
-                    val password = "[WD2] No Password"
+                    sharedViewModel.setPassword("[WD2] No Password")
                     txtPasswordValid.text = ""
                 } else {
                     setBackgroundResource(R.drawable.public_border_box)
                     addTextChangedListener(textWatcher)
-                    val password = ""
+                    sharedViewModel.setPassword("")
                 }
             }
         }
-    }
-
-    private fun initViewModel() = with(sharedViewModel) {
-
     }
 
     override fun onDestroyView() {
