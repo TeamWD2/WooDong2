@@ -33,9 +33,10 @@ class GroupListAdapter(
                 error(R.drawable.group_ic_no_image)
             }
             txtName.text = item.groupName
-            txtTagCategory.text = item.groupTag
-            txtTagAge.text = item.ageLimit
-            txtTagMemberLimit.text = "${item.memberCount} / ${item.memberLimit.toString()}"
+            txtIntroduce.text = item.groupName //introduce 로 수정
+            txtGroupTag.text = item.groupTag
+            txtAgeLimit.text = item.ageLimit
+            txtMemberLimit.text = "${item.memberCount} / ${item.memberLimit.toString()} 명 참여"
 
             root.setOnClickListener {
                 itemClickListener(item)

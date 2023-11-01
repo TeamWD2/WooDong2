@@ -33,7 +33,7 @@
                 android:id="@+id/toolbar_img_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/main_toolbar_ic_down"/>
+                android:src="@drawable/public_ic_down"/>
         </LinearLayout>
 
         <ImageView
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/main_toolbar_ic_notice"/>
+            android:src="@drawable/public_ic_notice"/>
 
         <ImageView
             android:id="@+id/toolbar_img_search"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/main_toolbar_ic_search"/>
+            android:src="@drawable/public_ic_search"/>
     </androidx.appcompat.widget.Toolbar>
 
 

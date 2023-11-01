@@ -115,9 +115,9 @@ class GroupDetailHomeListAdapter(
             if (item is GroupItem.GroupIntroduce) {
                 txtIntroduceTitle.text = item.title
                 txtIntroduceDes.text = item.introduce
-                txtTagCategory.text = item.groupTag
-                txtTagAge.text = item.ageLimit
-                txtTagMemberLimit.text = item.memberLimit
+                txtGroupTag.text = item.groupTag
+                txtAgeLimit.text = item.ageLimit
+                txtMemberLimit.text = item.memberLimit
             }
         }
     }
