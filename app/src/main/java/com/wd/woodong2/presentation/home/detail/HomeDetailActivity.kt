@@ -65,19 +65,18 @@ class HomeDetailActivity : AppCompatActivity() {
     }
 
     private fun setupCommentsRecyclerView() {
-        commentsAdapter = CommentListAdapter(homeItem, homeItem.comments, viewModel)
+        commentsAdapter = CommentListAdapter(homeItem, viewModel)
         binding.recyclerviewComment.layoutManager = LinearLayoutManager(this)
         binding.recyclerviewComment.adapter = commentsAdapter
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+
     private fun initCommentButton(homeItem: HomeItem) {
         binding.btnSave.setOnClickListener {
             val commentContent = binding.editComment.text.toString()
             if (commentContent.isNotBlank()) {
                 viewModel.postComment(homeItem, commentContent)
                 binding.editComment.text.clear()
-                commentsAdapter.notifyDataSetChanged()
                 viewModel.updateChatCount(homeItem)
             } else {
                 Toast.makeText(this, "댓글을 입력하세요", Toast.LENGTH_SHORT).show()
