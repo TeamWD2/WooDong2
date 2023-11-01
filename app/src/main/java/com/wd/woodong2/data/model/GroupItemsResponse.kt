@@ -16,6 +16,7 @@ data class GroupItemsResponse(
 data class GroupMainResponse(
     val id: String?,
     @SerializedName("groupName") val groupName: String?,
+    @SerializedName("introduce") val introduce: String?,
     @SerializedName("groupTag") val groupTag: String?,
     @SerializedName("ageLimit") val ageLimit: String?,
     @SerializedName("memberLimit") val memberLimit: String?,

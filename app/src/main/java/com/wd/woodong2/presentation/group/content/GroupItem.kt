@@ -12,6 +12,7 @@ sealed class GroupItem(
         override val id: String?,
         override val title: String?,
         val groupName: String?,
+        val introduce: String?,
         val groupTag: String?,
         val ageLimit: String?,
         val memberLimit: String?,

@@ -24,6 +24,7 @@ fun GroupItemsResponse.toEntity() = GroupItemsEntity(
 fun GroupMainResponse.toEntity() = GroupMainEntity(
     id = id,
     groupName = groupName,
+    introduce = introduce,
     groupTag = groupTag,
     ageLimit = ageLimit,
     memberLimit = memberLimit,
