@@ -218,8 +218,6 @@
             android:id="@+id/btn_summit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10sp"
-            android:layout_marginVertical="10sp"
             android:background="@drawable/public_border_btn"
             android:padding="16dp"
             android:text="@string/signup"
