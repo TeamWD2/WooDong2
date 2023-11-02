@@ -13,7 +13,9 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.content.HomeItem
@@ -104,7 +106,8 @@ class MyPageViewModelFactory : ViewModelProvider.Factory {
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
             FirebaseDatabase.getInstance().getReference("users"),
-            Firebase.auth
+            Firebase.auth,
+            FirebaseTokenProvider(FirebaseMessaging.getInstance())
         )
     }
 
