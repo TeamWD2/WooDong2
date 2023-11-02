@@ -54,7 +54,7 @@ class SignUpActivity : AppCompatActivity() {
         // 중복체크 텍스트 클릭 시
         txtCheckIdDuplication.setOnClickListener {
             val id = editId.text.toString()
-            signViewModel.isValidId(id)
+            signViewModel.idCheckComplete(id)
         }
 
         // 비밀번호 형식 확인
@@ -63,7 +63,17 @@ class SignUpActivity : AppCompatActivity() {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
-                    signViewModel.isValidPassword(text.toString().trim())
+                    signViewModel.checkValidPassword(text.toString().trim())
+                }
+            })
+        }
+
+        editId.apply {
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun afterTextChanged(p0: Editable?) {
+                    signViewModel.checkValidId(text.toString().trim())
                 }
             })
         }
@@ -74,7 +84,7 @@ class SignUpActivity : AppCompatActivity() {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
-                    signViewModel.isValidSamePassword(
+                    signViewModel.checkValidSamePassword(
                         editPw.text.toString(),
                         text.toString().trim()
                     )
@@ -87,7 +97,7 @@ class SignUpActivity : AppCompatActivity() {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
-                    signViewModel.isValidNickname(text.toString().trim())
+                    signViewModel.checkValidNickname(text.toString().trim())
                 }
             })
         }
@@ -116,32 +126,38 @@ class SignUpActivity : AppCompatActivity() {
 
 
     private fun initModel() = with(binding) {
-        signViewModel.isDuplication.observe(this@SignUpActivity) { isDuplicated ->
-            signViewModel.isValidId.observe(this@SignUpActivity) { isValidId ->
-                if (!isDuplicated && isValidId) {
-                    Toast.makeText(this@SignUpActivity, "사용 가능한 ID", Toast.LENGTH_SHORT).show()
-                    binding.tilId.boxStrokeColor =
-                        ContextCompat.getColor(this@SignUpActivity, R.color.dodger_blue)
-                    binding.editId.isEnabled = false
-                    binding.tilId.defaultHintTextColor =
-                        ContextCompat.getColorStateList(this@SignUpActivity, R.color.gray_light)
-                } else if (isDuplicated && !isValidId) {
-                    Toast.makeText(
+        signViewModel.isDuplication.observe(this@SignUpActivity) { isDuplication ->
+            if (!isDuplication) {
+                Toast.makeText(this@SignUpActivity, "사용 가능한 ID", Toast.LENGTH_SHORT)
+                    .show()
+                binding.tilId.boxStrokeColor =
+                    ContextCompat.getColor(this@SignUpActivity, R.color.dodger_blue)
+                binding.editId.isEnabled = false
+                binding.tilId.defaultHintTextColor =
+                    ContextCompat.getColorStateList(
                         this@SignUpActivity,
-                        "중복된 ID가 존재합니다",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    binding.tilId.boxStrokeColor =
-                        ContextCompat.getColor(this@SignUpActivity, R.color.red)
-                } else {
-                    Toast.makeText(
-                        this@SignUpActivity,
-                        "지원하지 않는 ID 형식입니다",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    binding.tilId.boxStrokeColor =
-                        ContextCompat.getColor(this@SignUpActivity, R.color.red)
-                }
+                        R.color.gray_light
+                    )
+            } else {
+                Toast.makeText(
+                    this@SignUpActivity,
+                    "중복된 ID가 존재합니다",
+                    Toast.LENGTH_SHORT
+                ).show()
+                binding.tilId.boxStrokeColor =
+                    ContextCompat.getColor(this@SignUpActivity, R.color.red)
+            }
+        }
+
+        signViewModel.isValidId.observe(this@SignUpActivity) { isValid ->
+            if (isValid) {
+                tilId.boxStrokeColor =
+                    ContextCompat.getColor(this@SignUpActivity, R.color.dodger_blue)
+                txtCheckIdDuplication.isClickable = true
+            } else {
+                tilId.boxStrokeColor =
+                    ContextCompat.getColor(this@SignUpActivity, R.color.red)
+                txtCheckIdDuplication.isClickable = false
             }
         }
 
