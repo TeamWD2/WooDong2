@@ -12,14 +12,12 @@ class UserPreferencesRepositoryImpl(
 
         const val USER_ID = "userId"
         const val IS_LOGGED_IN = "isLoggedIn"
-        const val TOKEN = "token"
     }
 
-    override fun saveUser(userId: String, isLoggedIn: Boolean, token: String) {
+    override fun saveUser(userId: String, isLoggedIn: Boolean) {
         sharedPreferences.edit().apply {
             putString(USER_ID, userId)
             putBoolean(IS_LOGGED_IN, isLoggedIn)
-            putString(TOKEN, token)
         }.apply()
     }
 

@@ -11,6 +11,7 @@ import com.wd.woodong2.data.model.UserResponse
 import com.wd.woodong2.domain.model.UserEntity
 import com.wd.woodong2.domain.model.UserItemsEntity
 import com.wd.woodong2.domain.model.toEntity
+import com.wd.woodong2.domain.provider.TokenProvider
 import com.wd.woodong2.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 class UserRepositoryImpl(
     private val databaseReference: DatabaseReference,
     private val auth: FirebaseAuth,
+    private val tokenProvider: TokenProvider,
 ) : UserRepository {
     companion object {
         const val TAG = "UserRepositoryImpl"
@@ -65,6 +67,9 @@ class UserRepositoryImpl(
             }
         }
 
+    /*
+    * Realtime database에 user 추가
+    * */
     override suspend fun addUser(user: UserEntity) {
         if (user.id == null) {
             Log.e(TAG, "user.id == null")
@@ -80,23 +85,25 @@ class UserRepositoryImpl(
         Log.d(TAG, "addUser 성공")
     }
 
+    /*
+    * Auth 회원가입
+    * */
     override suspend fun signUp(email: String, password: String, name: String): Flow<Boolean> =
         callbackFlow {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-
-                        val user = UserEntity(
-                            id = task.result?.user?.uid,
-                            email = email,
-                            name = name,
-                            chatIds = listOf(),
-                            imgProfile = "",
-                            firstLocation = "",
-                            secondLocation = ""
-                        )
-
                         CoroutineScope(Dispatchers.IO).launch {
+                            val user = UserEntity(
+                                id = task.result?.user?.uid,
+                                email = email,
+                                name = name,
+                                chatIds = emptyList(),
+                                imgProfile = "",
+                                firstLocation = "",
+                                secondLocation = "",
+                                token = tokenProvider.getToken()
+                            )
                             addUser(user)
                         }
 
@@ -114,6 +121,10 @@ class UserRepositoryImpl(
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        updateUserToken(email)
+                    }
+
                     Log.d(TAG, "로그인 성공")
                     trySend(true)
                 } else {
@@ -122,6 +133,28 @@ class UserRepositoryImpl(
                 }
             }
         awaitClose { }
+    }
+
+    /*
+    * ID 중복확인 메소드
+    * */
+    override suspend fun isIdDuplicated(email: String): Flow<Boolean> = callbackFlow {
+        auth.fetchSignInMethodsForEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    trySend(task.result?.signInMethods?.isEmpty() ?: true)
+                } else {
+                    trySend(false)
+                }
+            }
+        awaitClose { }
+    }
+
+
+    override suspend fun updateUserToken(userId: String): Flow<Boolean> = callbackFlow {
+        val userDataReference = databaseReference.child(userId)
+        val token = mapOf("token" to tokenProvider.getToken())
+        userDataReference.updateChildren(token)
     }
 
     override fun updateUserLocations(
