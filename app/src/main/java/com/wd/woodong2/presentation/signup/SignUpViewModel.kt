@@ -10,7 +10,10 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.domain.provider.FirebaseTokenProvider
+import com.wd.woodong2.domain.usecase.SignInIsIdDuplicatedUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserSignUpUseCase
 import kotlinx.coroutines.launch
@@ -19,6 +22,7 @@ import java.util.regex.Pattern
 class SignUpViewModel(
     private val getUser: UserGetItemUseCase,
     private val signUpUser: UserSignUpUseCase,
+    private val isIdDuplicated: SignInIsIdDuplicatedUseCase,
 ) : ViewModel(
 ) {
     companion object {
@@ -54,30 +58,34 @@ class SignUpViewModel(
     }
 
     // ID 유효성 판단 메소드
-    fun isValidId(id: String) {
+    fun idCheckComplete(id: String) {
         viewModelScope.launch {
-            getUser(id).collect { item ->
-                _isDuplication.value = item != null
-                _isValidId.value =
-                    id.isNotEmpty() && id.length in 5..18 && !id.contains(" ") && id.matches(
-                        emailPattern.toRegex()
-                    )
+            isIdDuplicated(id).collect { isDuplication ->
+                _isDuplication.value = isDuplication
             }
         }
     }
 
+    fun checkValidId(id: String) {
+        _isValidId.value =
+            id.isNotEmpty() && id.length in 5..18 && !id.contains(" ") && Pattern.matches(
+                emailPattern,
+                id
+            )
+    }
+
     // PW 유효성 판단 메소드
-    fun isValidPassword(pw: String) {
+    fun checkValidPassword(pw: String) {
         _isValidPassword.value = Pattern.matches(passwordPattern, pw)
     }
 
     // PW 동일성 판단 메소드
-    fun isValidSamePassword(originalPw: String, copyPw: String) {
+    fun checkValidSamePassword(originalPw: String, copyPw: String) {
         _isValidSamePassword.value = originalPw == copyPw
     }
 
     // Nickname 유효성 판단 메소드
-    fun isValidNickname(nickname: String) {
+    fun checkValidNickname(nickname: String) {
         _isValidNickname.value =
             nickname.isNotEmpty() && nickname.length in 2..10 && nickname.matches(nicknamePattern.toRegex())
     }
@@ -109,7 +117,8 @@ class SignUpViewModelFactory : ViewModelProvider.Factory {
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
             FirebaseDatabase.getInstance().getReference("users"),
-            Firebase.auth
+            Firebase.auth,
+            FirebaseTokenProvider(FirebaseMessaging.getInstance())
         )
     }
 
@@ -117,7 +126,8 @@ class SignUpViewModelFactory : ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(SignUpViewModel::class.java)) {
             return SignUpViewModel(
                 UserGetItemUseCase(userRepositoryImpl),
-                UserSignUpUseCase(userRepositoryImpl)
+                UserSignUpUseCase(userRepositoryImpl),
+                SignInIsIdDuplicatedUseCase(userRepositoryImpl)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
