@@ -12,8 +12,10 @@
         android:id="@+id/toolbar_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/mustard"
-        android:minHeight="48dp"
+        android:background="@color/dark_yellow_btn"
+        android:minHeight="56dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -27,13 +29,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/home_map_bottom_sheet_btn_location"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/toolbar_img_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/main_toolbar_ic_down"/>
+                android:src="@drawable/main_toolbar_ic_down" />
         </LinearLayout>
 
         <ImageView
@@ -42,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/main_toolbar_ic_notice"/>
+            android:src="@drawable/main_toolbar_ic_notice" />
 
         <ImageView
             android:id="@+id/toolbar_img_search"
@@ -50,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/main_toolbar_ic_search"/>
+            android:src="@drawable/main_toolbar_ic_search" />
     </androidx.appcompat.widget.Toolbar>
 
 
@@ -58,7 +60,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/home_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_margin="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

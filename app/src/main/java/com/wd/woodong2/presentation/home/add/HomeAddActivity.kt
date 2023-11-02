@@ -14,20 +14,32 @@ import com.wd.woodong2.databinding.HomeAddActivityBinding
 class HomeAddActivity : AppCompatActivity() {
 
     companion object {
-        fun homeAddActivityNewIntent(context: Context?) =
-            Intent(context, HomeAddActivity::class.java)
+        private var firstLocation : String? ="Unknown Location"
+        private var username : String? = "Who"
+        fun homeAddActivityNewIntent(context: Context?,firstLoc: String, name: String?) =
+            Intent(context, HomeAddActivity::class.java).apply {
+                firstLocation = firstLoc
+                username = name
+            }
     }
 
     private lateinit var binding: HomeAddActivityBinding
-    private var selectedImageUri: Uri? = null
     private var selectedTag: String? = null
+    private var selectedThumbnailCount: Int? = 0
+    private var selectedImageUri: Uri? = null
+
 
     private val viewModel: HomeAddViewModel by viewModels()
+
     private val imagePicker =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 selectedImageUri = result.data?.data
                 binding.homeThumbnail.setImageURI(selectedImageUri)
+                //사진 갯수 추가
+                if(selectedImageUri != null && selectedImageUri.toString().isNotEmpty()){
+                    selectedThumbnailCount = selectedThumbnailCount?.plus(1)
+                }
             }
         }
 
@@ -44,7 +56,16 @@ class HomeAddActivity : AppCompatActivity() {
             val title = homeAddTitle.text.toString()
             val description = homeAddContent.text.toString()
 
-            viewModel.uploadData(title, description, selectedImageUri, selectedTag) {
+            viewModel.uploadData(
+                username,
+                selectedTag,
+                "",
+                selectedImageUri,
+                selectedThumbnailCount,
+                title,
+                description,
+                firstLocation,)
+            {
                 finish()
             }
         }

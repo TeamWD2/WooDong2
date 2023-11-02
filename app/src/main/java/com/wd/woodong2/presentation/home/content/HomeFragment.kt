@@ -4,7 +4,6 @@ package com.wd.woodong2.presentation.home.content
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.databinding.HomeFragmentBinding
@@ -39,9 +37,10 @@ class HomeFragment : Fragment() {
 
     private var firstLocation :String? = null
     private var secondLocation :String? = null
-
+    private var userName :String? = null
+    private var homeItemCount : Int? = 0
     private lateinit var homeMapLauncher : ActivityResultLauncher<Intent>
-
+    private var count : Int? = 1
     private val listAdapter by lazy {
         HomeListAdapter(requireContext(),
             onClickItem = { item ->
@@ -107,7 +106,18 @@ class HomeFragment : Fragment() {
             )
         }
         fabHomeadd.setOnClickListener {
-            val intent = HomeAddActivity.homeAddActivityNewIntent(requireContext())
+            // 과연 주소를 받아 올까 그게 문제야
+            count = count!! + 5
+            HomeMapActivity.getLocationFromAddress(requireContext(), firstLocation.toString())
+            viewModel.circumLocationItemSearch(
+                HomeMapActivity.latitude,
+                HomeMapActivity.longitude,
+                1000* count!!,
+                firstLocation.toString()
+            )
+            val intent = HomeAddActivity.homeAddActivityNewIntent(requireContext(),
+                firstLocation.toString(),userName
+            )
             startActivity(intent)
         }
     }
@@ -115,12 +125,16 @@ class HomeFragment : Fragment() {
         with(viewModel){
             list.observe(viewLifecycleOwner){
                 listAdapter.submitList(it)
+                homeItemCount = list.value?.size
+                if(homeItemCount!! < 10){
+//
+                }
             }
 
             userInfo.observe(viewLifecycleOwner){userInfo->
-
                 firstLocation = userInfo.firstLocation
                 secondLocation = userInfo.secondLocation
+                userName = userInfo.name
                 binding.toolbarTvLocation.text = HomeMapActivity.extractLocationInfo(firstLocation.toString())
                 if(userInfo.firstLocation == ""){
 
@@ -132,7 +146,6 @@ class HomeFragment : Fragment() {
                         )
                     )
                 }
-
             }
         }
     }

@@ -124,7 +124,7 @@ class SignUpActivity : AppCompatActivity() {
                         ContextCompat.getColor(this@SignUpActivity, R.color.dodger_blue)
                     binding.editId.isEnabled = false
                     binding.tilId.defaultHintTextColor =
-                        ContextCompat.getColorStateList(this@SignUpActivity, R.color.gray_light)
+                        ContextCompat.getColorStateList(this@SignUpActivity, R.color.light_gray_txt)
                 } else if (isDuplicated && !isValidId) {
                     Toast.makeText(
                         this@SignUpActivity,

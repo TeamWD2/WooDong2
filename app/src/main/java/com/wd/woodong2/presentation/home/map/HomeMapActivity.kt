@@ -34,7 +34,6 @@ import com.wd.woodong2.databinding.HomeMapActivityBinding
 import com.wd.woodong2.presentation.home.map.HomeMapSearchActivity.Companion.EXTRA_ADDRESS
 import java.util.Locale
 
-
 class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
@@ -43,6 +42,10 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         private var firstLocation : String? ="Unknown Location"
         private var secondLocation : String? ="Unknown Location"
+
+        // 임의로 위치 설정 초기화
+        var latitude: Double = 0.0
+        var longitude: Double = 0.0
         fun newIntent(context: Context,firstLoc: String, secondLoc:String)=
             Intent(context, HomeMapActivity::class.java).apply {
                 firstLocation = firstLoc
@@ -52,13 +55,57 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         fun extractLocationInfo(address: String): String {
             val parts = address.split(" ")
             for (part in parts) {
-                if (part.contains("동") || part.contains("읍") || part.contains("면")) {
+                if (part.endsWith("동") || part.endsWith("읍") || part.endsWith("면")) {
                     return part
                 }
             }
             return ""
         }
+        // 좌표 -> 주소 변환
+        private fun getAddressFromLocation(context: Context,lat: Double, lng: Double){
+            val geocoder = Geocoder(context, Locale.KOREAN)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                geocoder.getFromLocation(
+                    lat, lng, 2
+                ) { addresses ->
+                    if (addresses.size != 0) {
+                        Log.d("Address",(addresses[1].getAddressLine(0)))
+                        firstLocation = addresses[1].getAddressLine(0)
+                    }
+                }
+            } else {
+                val addresses = geocoder.getFromLocation(
+                    lat, lng, 2
+                )
+                if (addresses != null) {
+                    Log.d("Address",(addresses[1].getAddressLine(0)))
+                    firstLocation = addresses[1].getAddressLine(0)
+                }
+            }
+            return
+        }
 
+        //주소 -> 좌표 변환
+        fun getLocationFromAddress(context: Context, address: String){
+            val geocoder = Geocoder(context, Locale.KOREAN)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                geocoder.getFromLocationName(
+                    address, 1
+                ) { addresses ->
+                    if(addresses.isNotEmpty()){
+                        latitude = addresses[0].latitude
+                        longitude = addresses[0].longitude
+                    }
+                }
+            } else {
+                val addresses = geocoder.getFromLocationName(address, 1)
+                if (addresses!!.isNotEmpty()) {
+                    latitude = addresses[0].latitude
+                    longitude = addresses[0].longitude
+                }
+            }
+            return
+        }
         private const val LOCATION_PERMISSION_REQUEST_CODE = 5000
     }
 
@@ -77,9 +124,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var reverse : String? = null
 
-    // 임의로 위치 설정 초기화
-    private var latitude: Double = 0.0
-    private var longitude: Double = 0.0
+
 
 
     // 사용자 실시간 위치 반영때 사용됨
@@ -96,20 +141,42 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
                 marker(latitude, longitude)
 
-                // 버튼 설정
+                // 1위치 없을때
                 if(binding.homeMapFirstBtnTvLocation.text.toString().isEmpty()){
                     firstLocation = receivedData
                     binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(receivedData)
+                    binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
+                    binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                    binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                    binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
+                    binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
                     Glide.with(this)
                         .load(R.drawable.home_map_btn_ic_close)
+                        .override(96, 96)
+                        .centerCrop()
                         .into(binding.homeMapFirstBtnIvLocation)
                 }
-                else{
-                    secondLocation = receivedData
-                    binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(receivedData)
-                    //firstLocation = binding.homeMapFirstBtnTvLocation.text.toString()
+                else{//1위치 있을때
+                    reverse = firstLocation
+                    firstLocation = receivedData
+                    secondLocation = reverse
+                    binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(receivedData)
+                    binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
+                    binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                    binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
                     Glide.with(this)
                         .load(R.drawable.home_map_btn_ic_close)
+                        .override(96, 96)
+                        .centerCrop()
+                        .into(binding.homeMapFirstBtnIvLocation)
+                    binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
+                    binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
+                    binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+                    binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+                    Glide.with(this)
+                        .load(R.drawable.home_map_btn_ic_close)
+                        .override(96, 96)
+                        .centerCrop()
                         .into(binding.homeMapSecondBtnIvLocation)
                 }
             }
@@ -124,6 +191,13 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = HomeMapActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        clientId = getString(R.string.home_map_naver_api)
+
+        //NAVER 지도 API 호출 및 ID 지정
+        NaverMapSdk.getInstance(this).client =
+            NaverMapSdk.NaverCloudPlatformClient(clientId!!)
+
+        locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         overridePendingTransition(
             R.anim.home_map_slide_up_fragment,
             R.anim.home_map_none_fragment
@@ -141,12 +215,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun initHomeMapView(){
 
-        clientId = getString(R.string.home_map_naver_api)
-
-        //NAVER 지도 API 호출 및 ID 지정
-        NaverMapSdk.getInstance(this).client =
-            NaverMapSdk.NaverCloudPlatformClient(clientId!!)
-
         //NAVER 객체 얻기 ( 동적 )
         val fm = supportFragmentManager
         val mapFragment = fm.findFragmentById(R.id.home_map_view) as MapFragment?
@@ -156,19 +224,14 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //인터페이스 객체
         mapFragment.getMapAsync(this)
-        locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
 
+        //처음 map에 들어 갈때 1위치 출력
+        //binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
 
-
-        binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
-        if(secondLocation!!.isNotEmpty()){
-            binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
-            Glide.with(this)
-                .load(R.drawable.home_map_btn_ic_close)
-                .into(binding.homeMapSecondBtnIvLocation)
-        }
-
+        //1위치 없을때
         if(firstLocation!!.isEmpty()){
+            binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
+            binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
             homeMapSearchLauncher.launch(
                 HomeMapSearchActivity.newIntent(this@HomeMapActivity,
                     firstLocation.toString(), secondLocation.toString()
@@ -176,12 +239,40 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             )
             Glide.with(this)
                 .load(R.drawable.public_ic_add)
+                .override(96, 96)
+                .centerCrop()
                 .into(binding.homeMapFirstBtnIvLocation)
-        } else{
+        } else{//1위치 있을때 -> 1위치 출력
+            binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
+            binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
+            binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
+            binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
             Glide.with(this)
                 .load(R.drawable.home_map_btn_ic_close)
+                .override(96, 96)
+                .centerCrop()
                 .into(binding.homeMapFirstBtnIvLocation)
         }
+
+        //2위치 있을때 -> 2위치 출력
+        if(secondLocation!!.isNotEmpty()){
+            binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
+            binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
+            binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+            binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+            Glide.with(this)
+                .load(R.drawable.home_map_btn_ic_close)
+                .override(96, 96)
+                .centerCrop()
+                .into(binding.homeMapSecondBtnIvLocation)
+        }else{//2위치 없을때
+            binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
+            binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+        }
+
+
+
+        //종료
         binding.homeMapClose.setOnClickListener{
             val intent = Intent().apply{
                 putExtra(
@@ -203,7 +294,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 
-
+        //search 클릭시 2위치 없을때
         binding.homeMapTvSearch.setOnClickListener{
             if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
                 homeMapSearchLauncher.launch(
@@ -214,8 +305,8 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
+        //1위치 버튼 클릭시
         binding.homeMapFirstBtn.setOnClickListener{
-            Log.d("locationFirst", firstLocation!!)
             if(binding.homeMapFirstBtnTvLocation.text.toString().isEmpty()){
                 homeMapSearchLauncher.launch(
                     HomeMapSearchActivity.newIntent(this@HomeMapActivity,
@@ -224,30 +315,45 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
             }
             else{
+                binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
+                binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
                 getLocationFromAddress(this, firstLocation!!)
                 naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
                 marker(latitude, longitude)
             }
         }
-
+        //첫번재 이미지 클릭시
         binding.homeMapFirstBtnIvLocation.setOnClickListener{
-            if(binding.homeMapFirstBtnTvLocation.text.toString().isEmpty()){
+            if(binding.homeMapFirstBtnTvLocation.text.toString().isEmpty()){//1위치 없을때
                 homeMapSearchLauncher.launch(
                     HomeMapSearchActivity.newIntent(this@HomeMapActivity,
                         firstLocation.toString(), secondLocation.toString()
                     )
                 )
             }
-            else{
-                if(binding.homeMapSecondBtnTvLocation.text.toString().isNotEmpty()){
+            else{//1위치 있을때
+                if(binding.homeMapSecondBtnTvLocation.text.toString().isNotEmpty()){//2위치 있을때
                     binding.homeMapFirstBtnTvLocation.text = binding.homeMapSecondBtnTvLocation.text.toString()
+                    binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
+                    binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
                     secondLocation = ""
                     binding.homeMapSecondBtnTvLocation.text = ""
+                    binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
+                    binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                    binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                    binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
+                    binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+                    binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
                     Glide.with(this)
                         .load(R.drawable.public_ic_add)
+                        .override(96, 96)
+                        .centerCrop()
                         .into(binding.homeMapSecondBtnIvLocation)
                 }
-                else{
+                else{//2위치 없을때
+                    binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
+                    binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
                     firstLocation = ""
                     binding.homeMapFirstBtnTvLocation.text = ""
                     homeMapSearchLauncher.launch(
@@ -258,53 +364,60 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
-
+        //2위치 버튼 클릭시
         binding.homeMapSecondBtn.setOnClickListener{
-//            Log.d("locationSecond", secondLocation!!)
-            if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
+            if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){//2위치 없을때
                 homeMapSearchLauncher.launch(
                     HomeMapSearchActivity.newIntent(this@HomeMapActivity,
                         firstLocation.toString(), secondLocation.toString()
                     )
                 )
             }
-            else{
+            else{//2위치 있을때
                 getLocationFromAddress(this, secondLocation!!)
                 naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
                 marker(latitude, longitude)
-
                 reverse = firstLocation
                 firstLocation = secondLocation
                 secondLocation = reverse
                 binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
                 binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
+                binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
+                binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
+                binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+                binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+
             }
         }
-
+        //2위치 이미지 클릭시
         binding.homeMapSecondBtnIvLocation.setOnClickListener{
-            if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
+            if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){//2위치 없을때
                 homeMapSearchLauncher.launch(
                     HomeMapSearchActivity.newIntent(this@HomeMapActivity,
                         firstLocation.toString(), secondLocation.toString()
                     )
                 )
             }
-            else{
+            else{//2위치 있을때
+                binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
+                binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
                 secondLocation = ""
                 binding.homeMapSecondBtnTvLocation.text = ""
                 Glide.with(this)
                     .load(R.drawable.public_ic_add)
+                    .override(96, 96)
+                    .centerCrop()
                     .into(binding.homeMapSecondBtnIvLocation)
             }
         }
         if(locationTrackingEnabled){
-            binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.mustard))
+            binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.red))
         }
         else{
             binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.white))
         }
-
-
     }
 
     //권한 확인하기
@@ -327,10 +440,11 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 // 위치 추적 거부
                 naverMap.locationTrackingMode = LocationTrackingMode.None
                 locationTrackingEnabled = false
-            //finish()
+                //finish()
             }
             else{
-                naverMap.locationTrackingMode = LocationTrackingMode.Follow
+                initHomeMapView()
+                //naverMap.locationTrackingMode = LocationTrackingMode.Follow
                 locationTrackingEnabled = true
             }
             return
@@ -346,47 +460,87 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         naverMap.uiSettings.isZoomGesturesEnabled = false       // 확대/축소 제스처 비활성화
         naverMap.uiSettings.isTiltGesturesEnabled = false       // 기울이기 제스처 비활성화
         naverMap.uiSettings.isRotateGesturesEnabled = false     // 회전 제스처 비활성화
-
-        if(binding.homeMapFirstBtnTvLocation.text.toString().isNotEmpty()){
-            getLocationFromAddress(this, firstLocation!!)
-            naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
-            marker(latitude, longitude)
-        }
-
         binding.trackingLocation.setOnClickListener{
-            if(locationTrackingEnabled){
-                binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.white))
-                naverMap.locationTrackingMode = LocationTrackingMode.None
-                locationTrackingEnabled = false
-            }
-            else{
-                if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
-
-                    binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.mustard))
+            locationTrackingEnabled = true
+            if(firstLocation == "" &&   //1위치 2위치 없을때
+                secondLocation == "" &&
+                binding.homeMapFirstBtnTvLocation.text.toString().isEmpty() &&
+                binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
+                if(locationTrackingEnabled){
                     naverMap.locationTrackingMode = LocationTrackingMode.Follow
-                    locationTrackingEnabled = true
-
-
-                    naverMap.addOnLocationChangeListener { location ->
+                    binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.red))
+                    naverMap.addOnLocationChangeListener{location ->
                         latitude = location.latitude
                         longitude = location.longitude
-                        Log.d("locationSet", latitude.toString())
-                        Log.d("locationSet", longitude.toString())
-                        secondLocation = firstLocation
-                        binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
-                        Log.d("locationSet", firstLocation.toString())
-                        Log.d("locationSet", secondLocation.toString())
+                        Log.d("tracking", location.latitude.toString())
+                        Log.d("tracking", location.longitude.toString())
+                        naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
+                        marker(latitude, longitude)
+                        naverMap.locationTrackingMode = LocationTrackingMode.None
+                        binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.white))
+                        locationTrackingEnabled = false
+                        //도로명 주소
+                        //1위치 설정
                         getAddressFromLocation(this,latitude,longitude)
                         binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
+                        binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
+                        binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                        binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
                         Glide.with(this)
                             .load(R.drawable.home_map_btn_ic_close)
-                            .into(binding.homeMapSecondBtnIvLocation)
-                        if(binding.homeMapSecondBtnTvLocation.text.toString().isNotEmpty()){
-                            naverMap.locationTrackingMode = LocationTrackingMode.None
-                        }
+                            .override(96, 96)
+                            .centerCrop()
+                            .into(binding.homeMapFirstBtnIvLocation)
                     }
+                }else{
 
                 }
+            }
+            else if(firstLocation != "" &&  //1위치만 있을때
+                secondLocation == "" &&
+                binding.homeMapFirstBtnTvLocation.text.toString().isNotEmpty() &&
+                binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
+                if(locationTrackingEnabled){
+                    naverMap.locationTrackingMode = LocationTrackingMode.Follow
+                    binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.red))
+                    naverMap.addOnLocationChangeListener{location ->
+                        latitude = location.latitude
+                        longitude = location.longitude
+                        Log.d("tracking", location.latitude.toString())
+                        Log.d("tracking", location.longitude.toString())
+                        naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
+                        marker(latitude, longitude)
+                        naverMap.locationTrackingMode = LocationTrackingMode.None
+                        binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.white))
+                        locationTrackingEnabled = false
+
+                        secondLocation = firstLocation
+                        binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
+                        binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
+                        binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+                        binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+                        Glide.with(this)
+                            .load(R.drawable.home_map_btn_ic_close)
+                            .override(96, 96)
+                            .centerCrop()
+                            .into(binding.homeMapSecondBtnIvLocation)
+                        //도로명 주소
+                        getAddressFromLocation(this,latitude,longitude)
+                        binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
+                        binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
+                        binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                        binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                        Glide.with(this)
+                            .load(R.drawable.home_map_btn_ic_close)
+                            .override(96, 96)
+                            .centerCrop()
+                            .into(binding.homeMapFirstBtnIvLocation)
+                    }
+                } else{
+
+                }
+            }else{
+
             }
         }
 
@@ -399,48 +553,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    // 좌표 -> 주소 변환
-    private fun getAddressFromLocation(context: Context,lat: Double, lng: Double){
-        val geocoder = Geocoder(context, Locale.KOREAN)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            geocoder.getFromLocation(
-                lat, lng, 1
-            ) { addresses ->
-                if (addresses.size != 0) {
-                    Log.d("Address",(addresses[0].getAddressLine(0)))
-                    firstLocation = addresses[0].getAddressLine(0)
-                }
-            }
-        } else {
-            val addresses = geocoder.getFromLocation(lat, lng, 1)
-            if (addresses != null) {
-                Log.d("Address",(addresses[0].getAddressLine(0)))
-                firstLocation = addresses[0].getAddressLine(0)
-            }
-        }
-        return
-    }
 
-    //주소 -> 좌표 변환
-    private fun getLocationFromAddress(context: Context, address: String){
-        val geocoder = Geocoder(context, Locale.KOREAN)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            geocoder.getFromLocationName(
-                address, 1
-            ) { addresses ->
-                if(addresses.isNotEmpty()){
-                latitude = addresses[0].latitude
-                longitude = addresses[0].longitude
-                }
-            }
-        } else {
-            val addresses = geocoder.getFromLocationName(address, 1)
-            if (addresses!!.isNotEmpty()) {
-                latitude = addresses[0].latitude
-                longitude = addresses[0].longitude
-            }
-        }
-        return
-    }
 
 }

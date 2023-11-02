@@ -5,9 +5,9 @@ import com.wd.woodong2.presentation.home.detail.CommentItem
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-
 data class HomeItem(
     val id: String = "",
+    val name: String = "",
     val tag: String = "",
     val groupTag: String = "",
     val thumbnail: String = "",
@@ -21,6 +21,5 @@ data class HomeItem(
     var chatCount: Int = 0,
     var isLiked: Boolean = false,
     var comments: MutableList<CommentItem> = mutableListOf()
-
 ) : Parcelable
 

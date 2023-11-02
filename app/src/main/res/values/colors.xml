@@ -1,44 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!--  사용되는 색  -->
     <color name="transparent">#00FFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="gray">#F5F6F7</color>
-    <color name="gray_trans">#E6F5F6F7</color>
-    <color name="gray_light">#464646</color>
-    <color name="jet">#323232</color>
-    <color name="dodger_blue">#2D8DFF</color>
-    <color name="light_blue">#A8D4D7</color>
-    <color name="tea_green">#C3D9B5</color>
-    <color name="flax">#DEDE94</color>
-    <color name="orange">#FF8F5C</color>
-
-    <!--  사용되는 색  -->
-    <color name="jasmine">#FDE093</color>
-    <color name="sunglow">#FDCC52</color>
-    <color name="selective_yellow">#FDBC15</color>
-    <color name="red">#FF0000</color>
-
-    <color name="yellow">#F9E272</color>
+    <color name="ivory_yellow_background">#FFF5C5</color>
+    <color name="egg_yellow_toolbar">#F9E272</color>
+    <color name="dark_yellow_btn">#FDBC15</color>
+    <color name="normal_gray_txt">#555555</color>
+    <color name="light_gray_txt">#8C8C8C</color>
+    <color name="light_gray_box">#D5D5D5</color>
+    <color name="curry_yellow_txt">#CA9611</color>
     <color name="light_sky_blue">#8CCFF8</color>
-
-    <!--  피그마에 디자인되어 있는 색  -->
-    <color name="mustard">#FFD358</color>
-
-<!--    -->
-    <color name="color1">#FFD62C</color>
-    <color name="color2">#E9871A</color>
-    <color name="color3">#DAE1E7</color>
-    <color name="color4">#EBF2F8</color>
-    <color name="color5">#59686F</color>
-    <color name="color6">#505A63</color>
-    <color name="color7">#1D1E20</color>
-
-    <color name="color8">#F2BC57</color>
-    <color name="color9">#76C5BB</color>
-
     <color name="wd2_main_color">#FFD358</color>
 
-
+<!--    -->
+    <color name="gray">#F5F6F7</color>
+    <color name="jet">#323232</color>
+    <color name="yellow">#F9E272</color>
+    <color name="dodger_blue">#2D8DFF</color>
+    <color name="mustard">#FFD358</color>
+    <color name="red">#FF0000</color>
 </resources>

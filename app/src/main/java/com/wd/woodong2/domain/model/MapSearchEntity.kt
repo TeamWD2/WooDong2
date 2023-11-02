@@ -10,4 +10,5 @@ data class PlaceEntity(
     val roadAddressName: String,      // 전체 도로명 주소
     val x: Double,                      // longitude
     val y: Double,                      // latitude
+    val distance: Int
 )

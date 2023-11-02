@@ -16,7 +16,16 @@ class HomeAddViewModel : ViewModel() {
         private val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
         private val storageReference = FirebaseStorage.getInstance().reference
 
-        fun uploadData(title: String, description: String, selectedImageUri: Uri?, selectedTag: String?, onComplete: () -> Unit) {
+        fun uploadData(
+            name: String?,
+            selectedTag: String?,
+            groupTag: String?,
+            selectedImageUri: Uri?,
+            thumbnailCount: Int?,
+            title: String,
+            description: String,
+            location: String?,
+            onComplete: () -> Unit) {
             viewModelScope.launch {
                 if (selectedImageUri != null) {
                     val storageRef = storageReference.child("images/${UUID.randomUUID()}")
@@ -24,7 +33,17 @@ class HomeAddViewModel : ViewModel() {
                         storageRef.downloadUrl.addOnSuccessListener { imageUrl ->
                             val newRef = databaseReference.push()
                             val newItemId = newRef.key ?:""
-                            val data = HomeAddItem(newItemId, title, description, thumbnail = imageUrl.toString(), tag = selectedTag)
+                            val data = HomeAddItem(
+                                newItemId,
+                                name = name.toString(),
+                                tag = selectedTag,
+                                groupTag = groupTag.toString(),
+                                thumbnail = imageUrl.toString(),
+                                thumbnailCount = thumbnailCount!!,
+                                title = title,
+                                description =description,
+                                location = location.toString(),
+                                )
                             newRef.setValue(data)
                             onComplete()
                         }
@@ -32,7 +51,16 @@ class HomeAddViewModel : ViewModel() {
                 } else {
                     val newRef = databaseReference.push()
                     val newItemId = newRef.key ?: ""
-                    val data = HomeAddItem(id = newItemId, title, description, tag = selectedTag)
+                    val data = HomeAddItem(
+                        id = newItemId,
+                        name = name.toString(),
+                        tag = selectedTag,
+                        groupTag = groupTag.toString(),
+                        thumbnailCount = thumbnailCount!!,
+                        title = title,
+                        description =description,
+                        location = location.toString(),
+                    )
                     newRef.setValue(data)
                     onComplete()
                 }
