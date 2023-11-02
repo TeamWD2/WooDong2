@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="10dp"
-    android:layout_marginVertical="5dp"
-    android:background="@drawable/public_border_box"
-    android:padding="10dp">
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/public_border_box_full"
+    android:elevation="2dp"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/txt_member_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/wd2_normal_text"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/constraint_member_1"
         app:layout_constraintEnd_toStartOf="@id/txt_member_count"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,6 +25,9 @@
         android:id="@+id/txt_member_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:textSize="@dimen/wd2_normal_text"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/txt_member_title"
         app:layout_constraintStart_toEndOf="@id/txt_member_title"
         app:layout_constraintTop_toTopOf="@id/txt_member_title"
@@ -32,6 +37,7 @@
         android:id="@+id/constraint_member_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_line"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,14 +45,15 @@
         app:layout_constraintTop_toBottomOf="@id/txt_member_title">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_board_1_profile"
+            android:id="@+id/cardView_member_1_profile"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
             app:cardCornerRadius="100dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/txt_member_1_intro"
             app:layout_constraintEnd_toStartOf="@id/txt_member_1_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="@id/txt_member_1_name">
 
             <ImageView
                 android:id="@+id/img_member_1_profile"
@@ -60,21 +67,37 @@
             android:id="@+id/txt_member_1_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:textSize="@dimen/wd2_normal_text"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_board_1_profile"
+            app:layout_constraintBottom_toTopOf="@id/txt_member_1_intro"
             app:layout_constraintEnd_toStartOf="@id/txt_member_1_location"
-            app:layout_constraintStart_toEndOf="@id/cardView_board_1_profile"
-            app:layout_constraintTop_toTopOf="@id/cardView_board_1_profile"
+            app:layout_constraintStart_toEndOf="@id/cardView_member_1_profile"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             tools:text="sinw" />
 
         <TextView
             android:id="@+id/txt_member_1_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_board_1_profile"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/light_gray_txt"
+            android:textSize="@dimen/wd2_small_text"
+            app:layout_constraintBottom_toBottomOf="@id/txt_member_1_name"
             app:layout_constraintStart_toEndOf="@id/txt_member_1_name"
-            app:layout_constraintTop_toTopOf="@id/cardView_board_1_profile"
+            app:layout_constraintTop_toTopOf="@id/txt_member_1_name"
             tools:text="권선동" />
+
+        <TextView
+            android:id="@+id/txt_member_1_intro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/wd2_small_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/txt_member_1_name"
+            app:layout_constraintTop_toBottomOf="@id/txt_member_1_name"
+            tools:text="안녕하세요 26살이고 수원 거주중입니다." />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
@@ -92,6 +115,7 @@
         android:id="@+id/constraint_member_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/btn_more"
         app:layout_constraintEnd_toEndOf="parent"
@@ -102,11 +126,12 @@
             android:id="@+id/cardView_member_2_profile"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
             app:cardCornerRadius="100dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/txt_member_2_intro"
             app:layout_constraintEnd_toStartOf="@id/txt_member_2_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="@id/txt_member_2_name">
 
             <ImageView
                 android:id="@+id/img_member_2_profile"
@@ -120,28 +145,47 @@
             android:id="@+id/txt_member_2_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:textSize="@dimen/wd2_normal_text"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_member_2_profile"
+            app:layout_constraintBottom_toTopOf="@id/txt_member_2_intro"
             app:layout_constraintEnd_toStartOf="@id/txt_member_2_location"
             app:layout_constraintStart_toEndOf="@id/cardView_member_2_profile"
-            app:layout_constraintTop_toTopOf="@id/cardView_member_2_profile"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             tools:text="sinw" />
 
         <TextView
             android:id="@+id/txt_member_2_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_member_2_profile"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/light_gray_txt"
+            android:textSize="@dimen/wd2_small_text"
+            app:layout_constraintBottom_toBottomOf="@id/txt_member_2_name"
             app:layout_constraintStart_toEndOf="@id/txt_member_2_name"
-            app:layout_constraintTop_toTopOf="@id/cardView_member_2_profile"
+            app:layout_constraintTop_toTopOf="@id/txt_member_2_name"
             tools:text="권선동" />
+
+        <TextView
+            android:id="@+id/txt_member_2_intro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/wd2_small_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/txt_member_2_name"
+            app:layout_constraintTop_toBottomOf="@id/txt_member_2_name"
+            tools:text="안녕하세요 26살이고 수원 거주중입니다." />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_more"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/group_detail_border_box_more_info"
         android:text="@string/group_detail_btn_more"
+        android:textSize="@dimen/wd2_normal_text"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

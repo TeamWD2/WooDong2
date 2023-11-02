@@ -85,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //상태바 & 아이콘 색상 변경
         window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.egg_yellow_toolbar)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작

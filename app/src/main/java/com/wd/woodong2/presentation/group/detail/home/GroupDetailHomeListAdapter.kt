@@ -164,7 +164,6 @@ class GroupDetailHomeListAdapter(
                 val boardLayouts = listOf(constraintBoard1, constraintBoard2)
                 val boardProfiles = listOf(imgBoard1Profile, imgBoard2Profile)
                 val boardNames = listOf(txtBoard1Name, txtBoard2Name)
-                val boardLocations = listOf(txtBoard1Location, txtBoard2Location)
                 val boardDates = listOf(txtBoard1Date, txtBoard2Date)
                 val boardDescriptions = listOf(txtBoard1Description, txtBoard2Description)
                 val boardPhotos = listOf(imgBoard1Photo, imgBoard2Photo)
@@ -176,7 +175,6 @@ class GroupDetailHomeListAdapter(
                                 error(R.drawable.group_ic_no_profile)
                             }
                             boardNames[i].text = board[i].name
-                            boardLocations[i].text = board[i].location
                             boardDates[i].text = SimpleDateFormat("yyyy년 MM월 dd일").format(Date(board[i].timestamp))
                             boardDescriptions[i].text = board[i].content
                             boardPhotos[i].load(board[i].images?.get(0)) {
