@@ -50,8 +50,7 @@ class MyPageFragment : Fragment() {
     private var myPageViewPagerAdapter :MyPageViewPagerAdapter? = null
 
     private var imgCheck : Boolean = false
-    private val viewModel : MyPageViewModel
-        by activityViewModels {
+    private val viewModel : MyPageViewModel by viewModels {
             MyPageViewModelFactory()
         }
 
@@ -87,7 +86,7 @@ class MyPageFragment : Fragment() {
 
     private fun initView() = with(binding) {
 
-        myPageViewPagerAdapter = MyPageViewPagerAdapter(this@MyPageFragment, lifecycle)
+        myPageViewPagerAdapter = MyPageViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
         myPageViewPager2.adapter = myPageViewPagerAdapter
         myPageViewPager2.offscreenPageLimit = myPageViewPagerAdapter?.itemCount?:0
 

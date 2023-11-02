@@ -33,9 +33,48 @@
     <string name="group_hint_search_group">우리 동네 모임을 검색해보세요.</string>
     <string name="group_text_empty_group_list">모임 정보가 존재하지 않습니다.</string>
 
+    <string name="group_add_txt_group_tag_title">어떤 모임을 만들까요?</string>
+    <string name="group_add_chip_exercise">운동</string>
+    <string name="group_add_chip_neighbor_friend">동네친구</string>
+    <string name="group_add_chip_study">스터디</string>
+    <string name="group_add_chip_family">가족/육아</string>
+    <string name="group_add_chip_pet">반려동물</string>
+    <string name="group_add_chip_volunteer">봉사활동</string>
+    <string name="group_add_chip_food">음식</string>
+    <string name="group_add_chip_finance">투자/금융</string>
+    <string name="group_add_chip_arts">문화/예술</string>
+    <string name="group_add_chip_game">게임</string>
+    <string name="group_add_chip_music">음악</string>
+    <string name="group_add_chip_making">공예/만들기</string>
+    <string name="group_add_chip_etc">기타</string>
+    <string name="group_add_txt_introduce_title">모임을 소개해주세요.</string>
+    <string name="group_add_txt_introduce_name">모임명</string>
+    <string name="group_add_hint_introduce_name">모임명을 입력해주세요.</string>
+    <string name="group_add_txt_introduce_description">모임 소개</string>
+    <string name="group_add_hint_introduce_description">모임을 소개해주세요. 자세할 수록 좋습니다.</string>
+    <string name="group_add_txt_neighbor_title">어떤 이웃과 함께하고 싶나요?</string>
+    <string name="group_add_txt_neighbor_age_limit">연령대</string>
+    <string name="group_add_chip_anyone">누구나</string>
+    <string name="group_add_chip_nineteen_under">만 19세 미만</string>
+    <string name="group_add_chip_nineteen_over">만 19세 이상</string>
+    <string name="group_add_txt_neighbor_member_limit">최대 인원</string>
+    <string name="group_add_chip_no_limit">제한 없음</string>
+    <string name="group_add_chip_5_people">5명</string>
+    <string name="group_add_chip_10_people">10명</string>
+    <string name="group_add_chip_20_people">20명</string>
+    <string name="group_add_chip_30_people">30명</string>
+    <string name="group_add_chip_50_people">50명</string>
+    <string name="group_add_txt_password_title">비밀번호를 설정할까요?</string>
+    <string name="group_add_txt_password">비밀번호</string>
+    <string name="group_add_hint_password">비밀번호를 입력해주세요.</string>
+    <string name="group_add_check_box_no_password">없음</string>
+    <string name="group_add_txt_password_valid">사용 가능한 비밀번호입니다.</string>
+    <string name="group_add_txt_password_invalid">영문+숫자+특수문자 조합으로 입력해주세요.(8~16자리)</string>
+    <string name="group_add_txt_image_title">모임 사진을 등록해주세요.</string>
+    <string name="group_add_txt_main_image">대표 사진</string>
+    <string name="group_add_txt_background_image">배경 사진</string>
+    <string name="group_add_btn_next">다음</string>
     <string name="group_add_btn_add_group">모임 만들기</string>
-    <string name="group_add_password_valid">사용 가능한 비밀번호입니다.</string>
-    <string name="group_add_password_invalid">영문+숫자+특수문자 조합으로 입력해주세요.(8~16자리)</string>
     <string name="group_add_toast_create_group">모임이 생성되었습니다.</string>
     <string name="group_add_toast_no_info">입력되지 않은 정보가 있습니다.</string>
 
@@ -109,5 +148,7 @@
     <string name="signup_id_hint">example@example.com</string>
     <string name="nickname_valid">사용 가능</string>
     <string name="nickname_invalid">사용 불가능</string>
+    <string name="signin_auto_login">자동 로그인</string>
+    <string name="pref_key_user_preferences_key">USER_PREFERENCES</string>
 
 </resources>

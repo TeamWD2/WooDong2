@@ -196,7 +196,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         //NAVER 지도 API 호출 및 ID 지정
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NaverCloudPlatformClient(clientId!!)
-
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         overridePendingTransition(
             R.anim.home_map_slide_up_fragment,
@@ -214,7 +213,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun initHomeMapView(){
-
         //NAVER 객체 얻기 ( 동적 )
         val fm = supportFragmentManager
         val mapFragment = fm.findFragmentById(R.id.home_map_view) as MapFragment?

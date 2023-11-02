@@ -20,6 +20,11 @@ import kotlinx.coroutines.launch
 class GroupViewModel(
     private val groupGetItems: GroupGetItemsUseCase
 ) : ViewModel() {
+
+    companion object {
+        private const val TAG = "GroupViewModel"
+    }
+
     private val _groupList: MutableLiveData<List<GroupItem>> = MutableLiveData()
     val groupList: LiveData<List<GroupItem>> get() = _groupList
 
@@ -39,7 +44,7 @@ class GroupViewModel(
                 _loadingState.value = false
             }
         }.onFailure {
-            Log.e("sinw", it.message.toString())
+            Log.e(TAG, it.message.toString())
             _loadingState.value = false
         }
     }
