@@ -17,6 +17,7 @@ import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailActivityBinding
 import com.wd.woodong2.databinding.GroupDetailActivityCoordinatorBinding
 import com.wd.woodong2.presentation.group.content.GroupItem
+import com.wd.woodong2.presentation.group.detail.board.add.GroupDetailBoardAddActivity
 import kotlin.math.abs
 
 class GroupDetailActivity : AppCompatActivity() {
@@ -140,11 +141,12 @@ class GroupDetailActivity : AppCompatActivity() {
             btnAddInfo.setOnClickListener {
                 //Todo("화면 이동 구현")
                 when (groupDetailContentType) {
-                    GroupDetailContentType.WRITE_BOARD -> Toast.makeText(
-                        this@GroupDetailActivity,
-                        "게시물 작성하기 클릭",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    GroupDetailContentType.WRITE_BOARD -> startActivity(
+                        GroupDetailBoardAddActivity.newIntent(
+                            this@GroupDetailActivity,
+                            "권선동" //임시 데이터 (로그인 된 계정의 주소)
+                        )
+                    )
 
                     GroupDetailContentType.JOIN_GROUP -> Toast.makeText(
                         this@GroupDetailActivity,
