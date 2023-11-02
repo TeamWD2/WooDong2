@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="10dp"
     android:layout_marginVertical="5dp"
-    android:background="@drawable/group_detail_item_box"
+    android:background="@drawable/public_border_box"
     android:padding="10dp">
 
     <TextView

@@ -166,13 +166,13 @@ class SignUpActivity : AppCompatActivity() {
                 tilPw.boxStrokeColor =
                     ContextCompat.getColor(this@SignUpActivity, R.color.dodger_blue)
                 txtCheckCorrectPw.apply {
-                    setText(R.string.group_add_password_valid)
+                    setText(R.string.group_add_txt_password_valid)
                     setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
                 }
             } else {
                 tilPw.boxStrokeColor = ContextCompat.getColor(this@SignUpActivity, R.color.red)
                 txtCheckCorrectPw.apply {
-                    setText(R.string.group_add_password_invalid)
+                    setText(R.string.group_add_txt_password_invalid)
                     setTextColor(ContextCompat.getColor(context, R.color.red))
                 }
             }
