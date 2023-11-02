@@ -36,6 +36,7 @@ sealed class GroupAddSetItem(
         val userId: String?,
         val profile: String?,
         val name: String?,
-        val location: String?
+        val location: String?,
+        val comment: String?
     )
 }

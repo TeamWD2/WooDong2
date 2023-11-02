@@ -54,7 +54,8 @@ data class GroupMemberItemResponse(
     @SerializedName("userId") val userId: String?,
     @SerializedName("profile") val profile: String?,
     @SerializedName("name") val name: String?,
-    @SerializedName("location") val location: String?
+    @SerializedName("location") val location: String?,
+    @SerializedName("comment") val comment: String?
 )
 
 /**

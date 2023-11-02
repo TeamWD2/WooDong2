@@ -50,7 +50,7 @@
             android:layout_height="50dp"
             android:layout_marginEnd="10dp"
             app:cardCornerRadius="100dp"
-            app:layout_constraintBottom_toBottomOf="@id/txt_member_1_intro"
+            app:layout_constraintBottom_toBottomOf="@id/txt_member_1_comment"
             app:layout_constraintEnd_toStartOf="@id/txt_member_1_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/txt_member_1_name">
@@ -70,7 +70,7 @@
             android:layout_marginBottom="5dp"
             android:textSize="@dimen/wd2_normal_text"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/txt_member_1_intro"
+            app:layout_constraintBottom_toTopOf="@id/txt_member_1_comment"
             app:layout_constraintEnd_toStartOf="@id/txt_member_1_location"
             app:layout_constraintStart_toEndOf="@id/cardView_member_1_profile"
             app:layout_constraintTop_toTopOf="parent"
@@ -90,7 +90,7 @@
             tools:text="권선동" />
 
         <TextView
-            android:id="@+id/txt_member_1_intro"
+            android:id="@+id/txt_member_1_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/wd2_small_text"
@@ -128,7 +128,7 @@
             android:layout_height="50dp"
             android:layout_marginEnd="10dp"
             app:cardCornerRadius="100dp"
-            app:layout_constraintBottom_toBottomOf="@id/txt_member_2_intro"
+            app:layout_constraintBottom_toBottomOf="@id/txt_member_2_comment"
             app:layout_constraintEnd_toStartOf="@id/txt_member_2_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/txt_member_2_name">
@@ -148,7 +148,7 @@
             android:layout_marginBottom="5dp"
             android:textSize="@dimen/wd2_normal_text"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/txt_member_2_intro"
+            app:layout_constraintBottom_toTopOf="@id/txt_member_2_comment"
             app:layout_constraintEnd_toStartOf="@id/txt_member_2_location"
             app:layout_constraintStart_toEndOf="@id/cardView_member_2_profile"
             app:layout_constraintTop_toTopOf="parent"
@@ -168,7 +168,7 @@
             tools:text="권선동" />
 
         <TextView
-            android:id="@+id/txt_member_2_intro"
+            android:id="@+id/txt_member_2_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/wd2_small_text"

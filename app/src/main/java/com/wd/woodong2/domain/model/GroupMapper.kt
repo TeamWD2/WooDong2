@@ -56,7 +56,8 @@ fun GroupMemberItemResponse.toEntity() = GroupMemberItemEntity(
     userId = userId,
     profile = profile,
     name = name,
-    location = location
+    location = location,
+    comment = comment
 )
 
 fun GroupBoardResponse.toEntity() = GroupBoardEntity(

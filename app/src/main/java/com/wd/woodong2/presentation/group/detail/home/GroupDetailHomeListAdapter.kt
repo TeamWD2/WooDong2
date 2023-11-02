@@ -134,6 +134,7 @@ class GroupDetailHomeListAdapter(
                 val memberProfiles = listOf(imgMember1Profile, imgMember2Profile)
                 val memberNames = listOf(txtMember1Name, txtMember2Name)
                 val memberLocations = listOf(txtMember1Location, txtMember2Location)
+                val memberComments = listOf(txtMember1Comment, txtMember2Comment)
                 item.memberList?.let { member ->
                     for (i in member.indices) {
                         if (i < memberLayouts.size) {
@@ -143,6 +144,7 @@ class GroupDetailHomeListAdapter(
                             }
                             memberNames[i].text = member[i].name
                             memberLocations[i].text = member[i].location
+                            memberComments[i].text = member[i].comment
                         }
                     }
                 }

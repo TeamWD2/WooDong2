@@ -134,7 +134,8 @@ class GroupAddSharedViewModel(
                             "-NhImSiData",
                             "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
                             "sinw",
-                            "권선동"
+                            "권선동",
+                            "(방장)"
                         )
                     )
                 )

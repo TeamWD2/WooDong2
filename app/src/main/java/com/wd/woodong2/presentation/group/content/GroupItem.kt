@@ -45,7 +45,8 @@ sealed class GroupItem(
         val userId: String?,
         val profile: String?,
         val name: String?,
-        val location: String?
+        val location: String?,
+        val comment: String?
     ) : Parcelable
 
     @Parcelize

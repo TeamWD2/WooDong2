@@ -119,7 +119,8 @@ class GroupViewModel(
                             userId = member.userId,
                             profile = member.profile,
                             name = member.name,
-                            location = member.location
+                            location = member.location,
+                            comment = member.comment
                         )
                     }
                 )

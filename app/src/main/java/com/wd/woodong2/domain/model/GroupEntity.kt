@@ -50,7 +50,8 @@ data class GroupMemberItemEntity(
     val userId: String?,
     val profile: String?,
     val name: String?,
-    val location: String?
+    val location: String?,
+    val comment: String?
 )
 
 /**
