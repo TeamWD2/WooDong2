@@ -29,6 +29,12 @@ class GroupAddSharedViewModel(
     private val groupAddIntroduce: MutableLiveData<GroupAddSetItem.GroupAddIntroduce> =
         MutableLiveData(GroupAddSetItem.GroupAddIntroduce())
 
+    private val _mainImage: MutableLiveData<Uri> = MutableLiveData()
+    val mainImage: LiveData<Uri> get() = _mainImage
+
+    private val _backgroundImage: MutableLiveData<Uri> = MutableLiveData()
+    val backgroundImage: LiveData<Uri> get() = _backgroundImage
+
     private val _isCreateSuccess: MutableLiveData<Boolean> = MutableLiveData()
     val isCreateSuccess: LiveData<Boolean> get() = _isCreateSuccess
 
@@ -60,21 +66,20 @@ class GroupAddSharedViewModel(
         groupAddMain.value = groupAddMain.value?.copy(password = password)
     }
 
-    fun setMainImage(mainImage: Uri) = viewModelScope.launch {
+    fun setImage(currentItem: String?, image: Uri) = viewModelScope.launch {
         runCatching {
-            imageStorageSetItem(mainImage).collect { imageUri ->
-                groupAddMain.value = groupAddMain.value?.copy(mainImage = imageUri.toString())
-            }
-        }.onFailure {
-            Log.e(TAG, it.message.toString())
-        }
-    }
-
-    fun setBackgroundImage(backgroundImage: Uri) = viewModelScope.launch {
-        runCatching {
-            imageStorageSetItem(backgroundImage).collect { imageUri ->
-                groupAddMain.value =
-                    groupAddMain.value?.copy(backgroundImage = imageUri.toString())
+            imageStorageSetItem(image).collect { imageUri ->
+                when(currentItem) {
+                    "imgMainImage" -> {
+                        _mainImage.value = imageUri
+                        groupAddMain.value = groupAddMain.value?.copy(mainImage = imageUri.toString())
+                    }
+                    "imgBackgroundImage" -> {
+                        _backgroundImage.value = imageUri
+                        groupAddMain.value =
+                            groupAddMain.value?.copy(backgroundImage = imageUri.toString())
+                    }
+                }
             }
         }.onFailure {
             Log.e(TAG, it.message.toString())

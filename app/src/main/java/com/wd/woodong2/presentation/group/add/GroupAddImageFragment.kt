@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import coil.load
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupAddImageFragmentBinding
 
@@ -33,21 +34,7 @@ class GroupAddImageFragment: Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.data?.let { uri ->
-                    when (currentItem) {
-                        "imgMainImage" -> {
-                            binding.imgMainImage.setImageURI(uri)
-                            binding.imgMainImageInit.isVisible = false
-                            sharedViewModel.setMainImage(uri)
-                        }
-
-                        "imgBackgroundImage" -> {
-                            binding.imgBackgroundImage.setImageURI(uri)
-                            binding.imgBackgroundImageInit.isVisible = false
-                            sharedViewModel.setBackgroundImage(uri)
-                        }
-
-                        else -> Unit
-                    }
+                    sharedViewModel.setImage(currentItem, uri)
                 }
             }
         }
@@ -93,6 +80,16 @@ class GroupAddImageFragment: Fragment() {
     }
 
     private fun initViewModel() = with(sharedViewModel) {
+        mainImage.observe(viewLifecycleOwner) { imageUri ->
+            binding.imgMainImage.load(imageUri.toString())
+            binding.imgMainImageInit.isVisible = false
+        }
+
+        backgroundImage.observe(viewLifecycleOwner) { imageUri ->
+            binding.imgBackgroundImage.load(imageUri.toString())
+            binding.imgBackgroundImageInit.isVisible = false
+        }
+
         isCreateSuccess.observe(viewLifecycleOwner) { isCreateSuccess ->
             if(isCreateSuccess) {
                 Toast.makeText(requireContext(), R.string.group_add_toast_create_group, Toast.LENGTH_SHORT).show()
