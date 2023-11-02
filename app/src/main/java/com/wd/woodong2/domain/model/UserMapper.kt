@@ -15,7 +15,8 @@ fun UserResponse.toEntity() = UserEntity(
     name = name,
     imgProfile = imgProfile,
     email = email,
-    chatIds = chatIds?.values?.map {it}.orEmpty(),
+    chatIds = chatIds?.values?.map { it }.orEmpty(),
     firstLocation = firstLocation,
-    secondLocation = secondLocation
+    secondLocation = secondLocation,
+    token = token
 )
