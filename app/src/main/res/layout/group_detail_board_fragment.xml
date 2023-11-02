@@ -17,4 +17,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/group_detail_board_item" />
+
+    <TextView
+        android:id="@+id/txt_empty_board"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/group_detail_txt_empty_board_list"
+        android:textSize="@dimen/wd2_normal_text"
+        android:visibility="invisible"
+        android:layout_marginTop="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,4 +20,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:spanCount="3"
         tools:listitem="@layout/group_detail_album_item" />
+
+    <TextView
+        android:id="@+id/txt_empty_album"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/group_detail_txt_empty_album_list"
+        android:textSize="@dimen/wd2_normal_text"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="200dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
