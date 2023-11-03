@@ -2,12 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:elevation="10dp"
-    android:layout_marginStart="15dp"
-    android:layout_marginEnd="15dp"
+    android:elevation="25dp"
+    android:layout_marginStart="18dp"
+    android:layout_marginEnd="18dp"
+    android:layout_marginTop="18dp"
 
-    android:layout_marginTop="6dp"
-    android:layout_marginBottom="6dp"
     android:id="@+id/container"
     android:background="@drawable/home_map_search_list_item_shape"
     android:layout_width="match_parent"
@@ -16,12 +15,12 @@
     <TextView
         android:id="@+id/home_map_search_address_item"
         android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:layout_margin="4dp"
+        android:layout_height="wrap_content"
         android:text="지번"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+<!--    android:layout_marginBottom="4dp"-->

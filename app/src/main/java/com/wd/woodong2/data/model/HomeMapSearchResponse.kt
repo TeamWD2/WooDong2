@@ -13,9 +13,11 @@ data class Place(
     @SerializedName("address_name")
     val addressName: String?,           // 전체 지번 주소
     @SerializedName("road_address_name")
-    val roadAddressName: String?,      // 전체 도로명 주소
+    val roadAddressName: String?,       // 전체 도로명 주소
     @SerializedName("x")
     val x: Double?,                      // longitude
     @SerializedName("y")
     val y: Double?,                      // latitude
+    @SerializedName("distance")
+    val distance: Int?                  //반경
 )
