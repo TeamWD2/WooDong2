@@ -1,7 +1,5 @@
 package com.wd.woodong2.presentation.group.detail.board.add
 
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,30 +18,52 @@ class GroupDetailBoardAddViewModel(
         private const val TAG = "GroupDetailBoardAddViewModel"
     }
 
-    private val _galleryStorage1: MutableLiveData<Uri> = MutableLiveData()
-    val galleryStorage1: LiveData<Uri> get() = _galleryStorage1
 
-    private val _galleryStorage2: MutableLiveData<Uri> = MutableLiveData()
-    val galleryStorage2: LiveData<Uri> get() = _galleryStorage2
+    private val _imageList: MutableLiveData<List<GroupDetailBoardAddImageItem>> = MutableLiveData()
+    val imageList: LiveData<List<GroupDetailBoardAddImageItem>> get() = _imageList
 
-    private val _galleryStorage3: MutableLiveData<Uri> = MutableLiveData()
-    val galleryStorage3: LiveData<Uri> get() = _galleryStorage3
 
-    fun getGalleryImage(
-        clickedImage: String?,
-        image: Uri
-    ) = viewModelScope.launch {
-        runCatching {
-            imageStorageSetItem(image).collect { imageUri ->
-                when (clickedImage) {
-                    "imgPhoto1" -> _galleryStorage1.value = imageUri
-                    "imgPhoto2" -> _galleryStorage2.value = imageUri
-                    "imgPhoto3" -> _galleryStorage3.value = imageUri
-                }
-            }
-        }.onFailure {
-            Log.e(TAG, it.message.toString())
+    fun addBoardImageItem(item: GroupDetailBoardAddImageItem?) {
+        if (item == null) {
+            return
         }
+        val currentList = imageList.value.orEmpty().toMutableList()
+        _imageList.value = currentList.apply {
+            add(item)
+        }
+    }
+
+    fun updateBoardImageItem(item: GroupDetailBoardAddImageItem?) {
+        fun findIndex(item: GroupDetailBoardAddImageItem?): Int {
+            val currentList = imageList.value.orEmpty().toMutableList()
+            val findTodo = currentList.find {
+                it.id == item?.id
+            }
+            return currentList.indexOf(findTodo)
+        }
+
+        if (item == null) {
+            return
+        }
+
+        val findPosition = findIndex(item)
+        if (findPosition < 0) {
+            return
+        }
+
+        val currentList = imageList.value.orEmpty().toMutableList()
+        currentList[findPosition] = item
+        _imageList.value = currentList
+    }
+
+    fun removeBoardImageItem(position: Int?) {
+        if(position == null || position < 0) {
+            return
+        }
+
+        val currentList = imageList.value.orEmpty().toMutableList()
+        currentList.removeAt(position)
+        _imageList.value = currentList
     }
 }
 

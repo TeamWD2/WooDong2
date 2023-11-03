@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/public_ic_image"
-            app:layout_constraintBottom_toTopOf="@id/cardView_photo_1"
+            app:layout_constraintBottom_toTopOf="@id/recyclerview_photo"
             app:layout_constraintEnd_toStartOf="@id/txt_add_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -102,148 +102,20 @@
             android:textSize="@dimen/wd2_normal_text"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/img_gallery"
-            app:layout_constraintEnd_toStartOf="@id/txt_image_limit"
             app:layout_constraintStart_toEndOf="@id/img_gallery"
             app:layout_constraintTop_toTopOf="@id/img_gallery" />
 
-        <TextView
-            android:id="@+id/txt_image_limit"
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_photo"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/group_detail_board_add_txt_image_limit"
-            android:textColor="@color/normal_gray_txt"
-            app:layout_constraintBottom_toBottomOf="@id/txt_add_image"
-            app:layout_constraintStart_toEndOf="@id/txt_add_image"
-            app:layout_constraintTop_toTopOf="@id/txt_add_image" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_photo_1"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
             android:layout_marginTop="10dp"
-            app:cardCornerRadius="4dp"
-            app:layout_constraintEnd_toStartOf="@id/cardView_photo_2"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_gallery">
-
-            <ImageView
-                android:id="@+id/img_photo_1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/group_detail_board_add_border_image"
-                android:scaleType="centerCrop" />
-        </androidx.cardview.widget.CardView>
-
-        <ImageView
-            android:id="@+id/img_cancel_photo_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-7dp"
-            android:layout_marginEnd="-7dp"
-            android:elevation="10dp"
-            android:src="@drawable/public_ic_cancel_image"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@id/cardView_photo_1"
-            app:layout_constraintTop_toTopOf="@id/cardView_photo_1" />
-
-        <ImageView
-            android:id="@+id/img_plus_photo_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="10dp"
-            android:src="@drawable/public_ic_fab_add"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_photo_1"
-            app:layout_constraintEnd_toEndOf="@id/cardView_photo_1"
-            app:layout_constraintStart_toStartOf="@id/cardView_photo_1"
-            app:layout_constraintTop_toTopOf="@id/cardView_photo_1" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_photo_2"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="10dp"
-            android:visibility="gone"
-            app:cardCornerRadius="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_photo_1"
-            app:layout_constraintEnd_toStartOf="@id/cardView_photo_3"
-            app:layout_constraintStart_toEndOf="@id/cardView_photo_1"
-            app:layout_constraintTop_toTopOf="@id/cardView_photo_1">
-
-            <ImageView
-                android:id="@+id/img_photo_2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/group_detail_board_add_border_image"
-                android:scaleType="centerCrop" />
-        </androidx.cardview.widget.CardView>
-
-        <ImageView
-            android:id="@+id/img_cancel_photo_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-7dp"
-            android:layout_marginEnd="-7dp"
-            android:elevation="10dp"
-            android:src="@drawable/public_ic_cancel_image"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@id/cardView_photo_2"
-            app:layout_constraintTop_toTopOf="@id/cardView_photo_2" />
-
-        <ImageView
-            android:id="@+id/img_plus_photo_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="10dp"
-            android:src="@drawable/public_ic_fab_add"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_photo_2"
-            app:layout_constraintEnd_toEndOf="@id/cardView_photo_2"
-            app:layout_constraintStart_toStartOf="@id/cardView_photo_2"
-            app:layout_constraintTop_toTopOf="@id/cardView_photo_2" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_photo_3"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="10dp"
-            android:visibility="gone"
-            app:cardCornerRadius="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_photo_2"
-            app:layout_constraintStart_toEndOf="@id/cardView_photo_2"
-            app:layout_constraintTop_toTopOf="@id/cardView_photo_2">
-
-            <ImageView
-                android:id="@+id/img_photo_3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/group_detail_board_add_border_image"
-                android:scaleType="centerCrop" />
-        </androidx.cardview.widget.CardView>
-
-        <ImageView
-            android:id="@+id/img_cancel_photo_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-7dp"
-            android:layout_marginEnd="-7dp"
-            android:elevation="10dp"
-            android:src="@drawable/public_ic_cancel_image"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@id/cardView_photo_3"
-            app:layout_constraintTop_toTopOf="@id/cardView_photo_3" />
-
-        <ImageView
-            android:id="@+id/img_plus_photo_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="10dp"
-            android:src="@drawable/public_ic_fab_add"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_photo_3"
-            app:layout_constraintEnd_toEndOf="@id/cardView_photo_3"
-            app:layout_constraintStart_toStartOf="@id/cardView_photo_3"
-            app:layout_constraintTop_toTopOf="@id/cardView_photo_3" />
+            app:layout_constraintTop_toBottomOf="@id/img_gallery"
+            tools:listitem="@layout/group_detail_board_add_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.AppCompatButton

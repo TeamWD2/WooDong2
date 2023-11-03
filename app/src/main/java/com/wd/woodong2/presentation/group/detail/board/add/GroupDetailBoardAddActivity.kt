@@ -3,6 +3,7 @@ package com.wd.woodong2.presentation.group.detail.board.add
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -13,10 +14,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import coil.load
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailBoardAddActivityBinding
+import java.util.concurrent.atomic.AtomicLong
 
 class GroupDetailBoardAddActivity : AppCompatActivity() {
     companion object {
@@ -41,16 +41,35 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         intent.getStringExtra(USER_LOCATION)
     }
 
-    private var clickedImage: String? = null
+    private val idGenerate = AtomicLong(1L)
 
+    private var currentItem: GroupDetailBoardAddImageItem? = null
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.data?.let { uri ->
-                    viewModel.getGalleryImage(clickedImage, uri)
+                    updateImageItem(uri)
+                    addImageItem()
                 }
             }
         }
+
+    private val boardAddListAdapter by lazy {
+        GroupDetailBoardAddListAdapter(
+            onClickPlusImage = { item ->
+                currentItem = item
+                galleryLauncher.launch(
+                    Intent(Intent.ACTION_PICK).setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        "image/*"
+                    )
+                )
+            },
+            onClickRemoveImage = { position ->
+                viewModel.removeBoardImageItem(position)
+            }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,35 +96,9 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         //넘겨 받은 사용자 위치 ToolBar 출력
         toolBar.title = userLocation
 
-        imgPhoto1.setOnClickListener {
-            clickedImage = "imgPhoto1"
-            galleryLauncher.launch(
-                Intent(Intent.ACTION_PICK).setDataAndType(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    "image/*"
-                )
-            )
-        }
+        recyclerviewPhoto.adapter = boardAddListAdapter
 
-        imgPhoto2.setOnClickListener {
-            clickedImage = "imgPhoto2"
-            galleryLauncher.launch(
-                Intent(Intent.ACTION_PICK).setDataAndType(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    "image/*"
-                )
-            )
-        }
-
-        imgPhoto3.setOnClickListener {
-            clickedImage = "imgPhoto3"
-            galleryLauncher.launch(
-                Intent(Intent.ACTION_PICK).setDataAndType(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    "image/*"
-                )
-            )
-        }
+        addImageItem() //초기 데이터 세팅
 
         btnAddBoard.setOnClickListener {
             if(edtTitle.text.isNullOrBlank() || edtContent.text.isNullOrBlank()) {
@@ -118,33 +111,23 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() = with(viewModel) {
-        galleryStorage1.observe(this@GroupDetailBoardAddActivity) { imageUri ->
-            with(binding) {
-                imgPhoto1.load(imageUri.toString())
-                imgPlusPhoto1.isVisible = false
-                imgCancelPhoto1.isVisible = true
-                cardViewPhoto2.isVisible = true
-                imgPlusPhoto2.isVisible = true
-                txtImageLimit.text = "(1/3)"
-            }
+        imageList.observe(this@GroupDetailBoardAddActivity) {
+            boardAddListAdapter.submitList(it)
         }
-        galleryStorage2.observe(this@GroupDetailBoardAddActivity) { imageUri ->
-            with(binding) {
-                imgPhoto2.load(imageUri.toString())
-                imgPlusPhoto2.isVisible = false
-                imgCancelPhoto2.isVisible = true
-                cardViewPhoto3.isVisible = true
-                imgPlusPhoto3.isVisible = true
-                txtImageLimit.text = "(2/3)"
-            }
-        }
-        galleryStorage3.observe(this@GroupDetailBoardAddActivity) { imageUri ->
-            with(binding) {
-                imgPhoto3.load(imageUri.toString())
-                imgPlusPhoto3.isVisible = false
-                imgCancelPhoto3.isVisible = true
-                txtImageLimit.text = "(3/3)"
-            }
-        }
+    }
+
+    private fun addImageItem() {
+        viewModel.addBoardImageItem(
+            GroupDetailBoardAddImageItem(idGenerate.getAndIncrement())
+        )
+    }
+
+    private fun updateImageItem(uri: Uri) {
+        val imageItem = currentItem?.copy(
+            uri = uri,
+            isCancelBtn = true,
+            isPlusBtn = false
+        )
+        viewModel.updateBoardImageItem(imageItem)
     }
 }

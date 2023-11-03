@@ -90,7 +90,6 @@
     <string name="group_detail_board_add_hint_board_title">제목을 입력하세요.</string>
     <string name="group_detail_board_add_hint_board_content">내용을 입력하세요.</string>
     <string name="group_detail_board_add_txt_add_image">사진 첨부</string>
-    <string name="group_detail_board_add_txt_image_limit">(0/3)</string>
 
     <string name="chat_txt_title">채팅</string>
 
