@@ -49,10 +49,10 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun initInfo() {
-        val id = signInViewModel.isAutoLogin()
+        val uid = signInViewModel.isAutoLogin()
 
-        if (id != null) {
-            startActivity(MainActivity.newIntentForAutoLogin(this@SignInActivity, id))
+        if (uid != null) {
+            startActivity(MainActivity.newIntentForAutoLogin(this@SignInActivity, uid))
         }
     }
 

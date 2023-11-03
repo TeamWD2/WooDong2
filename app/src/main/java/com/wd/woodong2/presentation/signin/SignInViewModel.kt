@@ -17,7 +17,8 @@ import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.GetFirebaseTokenUseCase
-import com.wd.woodong2.domain.usecase.SignInGetUserUseCase
+import com.wd.woodong2.domain.usecase.SignInGetUserUIDUseCase
+import com.wd.woodong2.domain.usecase.SignInGetUIDUseCase
 import com.wd.woodong2.domain.usecase.SignInSaveUserUseCase
 import com.wd.woodong2.domain.usecase.UserSignInUseCase
 import kotlinx.coroutines.flow.flatMapConcat
@@ -28,8 +29,9 @@ import kotlinx.coroutines.launch
 class SignInViewModel(
     private val signInUser: UserSignInUseCase,
     private val saveUser: SignInSaveUserUseCase,
-    private val getUser: SignInGetUserUseCase,
+    private val getUID: SignInGetUIDUseCase,
     private val getFirebaseToken: GetFirebaseTokenUseCase,
+    private val getUserUID: SignInGetUserUIDUseCase,
 ) : ViewModel(
 ) {
     companion object {
@@ -54,8 +56,10 @@ class SignInViewModel(
                     .collect { (isSuccess, token) ->
                         _loginResult.value = isSuccess
 
-                        if (isSuccess && token != "") {
-                            saveUser(id, isAutoLogIn)
+                        val uid = getUserUID()
+
+                        if (isSuccess && token != "" && uid != null) {
+                            saveUser(id, isAutoLogIn, uid)
                         }
                     }
             }.onFailure {
@@ -65,9 +69,13 @@ class SignInViewModel(
         }
     }
 
+    /*
+    * SharedPreference에서
+    *  저장된 유저
+    * 정보 가져오기*/
     fun isAutoLogin(): String? {
-        if (getUser() != null) {
-            return getUser()
+        if (getUID() != null) {
+            return getUID()
         }
         return null
     }
@@ -100,8 +108,9 @@ class SignInViewModelFactory(
             return SignInViewModel(
                 UserSignInUseCase(userRepositoryImpl),
                 SignInSaveUserUseCase(userPreferencesRepository),
-                SignInGetUserUseCase(userPreferencesRepository),
+                SignInGetUIDUseCase(userPreferencesRepository),
                 GetFirebaseTokenUseCase(),
+                SignInGetUserUIDUseCase(userRepositoryImpl),
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

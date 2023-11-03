@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
@@ -21,13 +22,13 @@ import com.wd.woodong2.presentation.mypage.content.MyPageFragment
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        private const val ID = "ID"
+        private const val UID = "UID"
         fun newIntentForMain(context: Context): Intent =
             Intent(context, MainActivity::class.java)
 
-        fun newIntentForAutoLogin(context: Context, id: String): Intent =
+        fun newIntentForAutoLogin(context: Context, uid: String): Intent =
             Intent(context, MainActivity::class.java).apply {
-                putExtra(ID, id)
+                putExtra(UID, uid)
             }
     }
 
@@ -85,8 +86,11 @@ class MainActivity : AppCompatActivity() {
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Log.d("test", intent.getStringExtra(UID).toString())
+
         //상태바 & 아이콘 색상 변경
-        window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.egg_yellow_toolbar)
+        window.statusBarColor =
+            ContextCompat.getColor(this@MainActivity, R.color.egg_yellow_toolbar)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
             window.insetsController?.setSystemBarsAppearance(
@@ -100,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         checkPermissions()
 
         // TODO 삭제
-        val id = intent.getStringExtra(ID)
+        val id = intent.getStringExtra(UID)
     }
 
     private fun checkPermissions() {
