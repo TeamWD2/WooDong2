@@ -26,31 +26,40 @@
                 <ImageView
                     android:id="@+id/img_background"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="130dp"
                     android:scaleType="centerCrop"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@tools:sample/avatars" />
 
-                <ImageView
-                    android:id="@+id/img_main"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView_main"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="4dp"
+                    android:layout_marginStart="15dp"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_count"
                     app:layout_constraintEnd_toStartOf="@id/txt_title"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:src="@tools:sample/avatars" />
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <ImageView
+                        android:id="@+id/img_main"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        tools:src="@tools:sample/avatars" />
+                </androidx.cardview.widget.CardView>
 
                 <TextView
                     android:id="@+id/txt_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:layout_margin="10dp"
+                    android:textSize="@dimen/wd2_main_title"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/txt_count"
-                    app:layout_constraintStart_toEndOf="@id/img_main"
+                    app:layout_constraintStart_toEndOf="@id/cardView_main"
                     app:layout_constraintTop_toBottomOf="@id/img_background"
                     tools:text="자전거 동호회. 젊은 사람만~" />
 
@@ -58,20 +67,12 @@
                     android:id="@+id/txt_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textColor="@color/normal_gray_txt"
+                    android:textSize="@dimen/wd2_normal_text"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/img_main"
+                    app:layout_constraintStart_toStartOf="@id/txt_title"
                     app:layout_constraintTop_toBottomOf="@id/txt_title"
                     tools:text="멤버 41 / 게시물 1" />
-
-                <ImageView
-                    android:id="@+id/img_share"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/group_detail_ic_share"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/img_background" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -91,20 +92,23 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
+            android:paddingTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/viewPager2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tabIndicatorColor="@color/yellow"
+            app:tabIndicatorColor="@color/dark_yellow_btn"
             app:tabIndicatorFullWidth="true"
+            app:tabSelectedTextColor="@color/curry_yellow_txt"
             app:tabTextColor="@color/black" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@color/ivory_yellow_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

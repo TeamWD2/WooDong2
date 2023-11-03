@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/ivory_yellow_background"
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
@@ -25,12 +26,15 @@
                 android:id="@+id/txt_toolbar_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/home_map_bottom_sheet_btn_location" />
+                android:text="@string/home_map_bottom_sheet_btn_location"
+                android:textSize="@dimen/wd2_sub_title"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/img_toolbar_location"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:src="@drawable/public_ic_down" />
         </LinearLayout>
 
         <ImageView
@@ -38,14 +42,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginEnd="10dp" />
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/public_ic_notice" />
 
         <ImageView
             android:id="@+id/img_toolbar_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginEnd="10dp" />
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/public_ic_search" />
     </androidx.appcompat.widget.Toolbar>
 
     <EditText
@@ -54,6 +60,9 @@
         android:layout_height="wrap_content"
         android:background="@drawable/public_border_box"
         android:hint="@string/group_hint_search_group"
+        android:padding="16dp"
+        android:textColor="@color/light_gray_txt"
+        android:textSize="@dimen/wd2_normal_text"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/recyclerView_group"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,6 +73,7 @@
         android:id="@+id/recyclerView_group"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:padding="25dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,6 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/group_text_empty_group_list"
+        android:textSize="@dimen/wd2_normal_text"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/recyclerView_group"
         app:layout_constraintEnd_toEndOf="@id/recyclerView_group"
@@ -96,8 +107,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:src="@drawable/public_ic_add"
+        android:src="@drawable/public_ic_fab_add"
+        app:backgroundTint="@color/dark_yellow_btn"
+        app:borderWidth="1dp"
+        app:elevation="0dp"
+        app:fabSize="normal"
+        app:layout_behavior="com.google.android.material.appbar.ScrollingViewBehavior"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:shapeAppearanceOverlay="@style/fabBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

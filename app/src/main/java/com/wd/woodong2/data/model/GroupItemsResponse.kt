@@ -16,6 +16,7 @@ data class GroupItemsResponse(
 data class GroupMainResponse(
     val id: String?,
     @SerializedName("groupName") val groupName: String?,
+    @SerializedName("introduce") val introduce: String?,
     @SerializedName("groupTag") val groupTag: String?,
     @SerializedName("ageLimit") val ageLimit: String?,
     @SerializedName("memberLimit") val memberLimit: String?,
@@ -53,7 +54,8 @@ data class GroupMemberItemResponse(
     @SerializedName("userId") val userId: String?,
     @SerializedName("profile") val profile: String?,
     @SerializedName("name") val name: String?,
-    @SerializedName("location") val location: String?
+    @SerializedName("location") val location: String?,
+    @SerializedName("comment") val comment: String?
 )
 
 /**

@@ -24,6 +24,7 @@ fun GroupItemsResponse.toEntity() = GroupItemsEntity(
 fun GroupMainResponse.toEntity() = GroupMainEntity(
     id = id,
     groupName = groupName,
+    introduce = introduce,
     groupTag = groupTag,
     ageLimit = ageLimit,
     memberLimit = memberLimit,
@@ -55,7 +56,8 @@ fun GroupMemberItemResponse.toEntity() = GroupMemberItemEntity(
     userId = userId,
     profile = profile,
     name = name,
-    location = location
+    location = location,
+    comment = comment
 )
 
 fun GroupBoardResponse.toEntity() = GroupBoardEntity(

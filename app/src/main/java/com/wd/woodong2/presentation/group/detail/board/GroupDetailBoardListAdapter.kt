@@ -50,11 +50,10 @@ class GroupDetailBoardListAdapter :
                 error(R.drawable.group_ic_no_profile)
             }
             txtName.text = board.name
-            txtLocation.text = board.location
             txtDate.text =
                 SimpleDateFormat("yyyy년 MM월 dd일").format(Date(board.timestamp))
             txtDescription.text = board.content
-            imgPhotos.load(board.images?.get(0)) {
+            imgPhoto.load(board.images?.get(0)) {
                 error(R.drawable.group_ic_no_image)
             }
         }

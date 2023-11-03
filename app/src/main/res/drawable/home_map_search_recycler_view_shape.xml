@@ -5,11 +5,11 @@
     android:padding="10dp">
 
     <solid
-        android:color="@color/color1"/>
+        android:color="@color/ivory_yellow_background"/>
 
     <corners
-        android:topLeftRadius="25dp"
-        android:topRightRadius="25dp" />
+        android:topLeftRadius="12dp"
+        android:topRightRadius="12dp" />
 
     <padding
         android:left="10dp"

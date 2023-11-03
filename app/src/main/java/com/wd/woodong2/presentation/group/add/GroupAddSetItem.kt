@@ -6,6 +6,7 @@ sealed class GroupAddSetItem(
     data class GroupAddMain(
         override val viewType: String = "main",
         val groupName: String? = null,
+        val introduce: String? = null,
         val groupTag: String? = null,
         val ageLimit: String? = null,
         val memberLimit: String? = null,
@@ -35,6 +36,7 @@ sealed class GroupAddSetItem(
         val userId: String?,
         val profile: String?,
         val name: String?,
-        val location: String?
+        val location: String?,
+        val comment: String?
     )
 }

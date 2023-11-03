@@ -50,6 +50,7 @@ class GroupDetailMemberListAdapter :
             }
             txtName.text = member.name
             txtLocation.text = member.location
+            txtComment.text = member.comment
         }
     }
 }

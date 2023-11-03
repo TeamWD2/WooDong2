@@ -7,4 +7,11 @@ interface MapSearchRepository {
     suspend fun getSearchMap(
         query: String,
     ): MapSearchEntity
+
+    suspend fun getCircumLocationSearchMap(
+        y: Double,
+        x: Double,
+        radius: Int,
+        query: String,
+    ): MapSearchEntity
 }
