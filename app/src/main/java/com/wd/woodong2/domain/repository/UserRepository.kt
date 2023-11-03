@@ -10,8 +10,7 @@ interface UserRepository {
     suspend fun updateUserToken(userId: String): Flow<Boolean>
     suspend fun getUserItems(): Flow<UserItemsEntity?>
     suspend fun getUser(userId: String): Flow<UserEntity?>
-    suspend fun isIdDuplicated(email: String): Flow<Boolean>
     suspend fun addUser(user: UserEntity)
-    suspend fun signUp(email: String, password: String, name: String): Flow<Boolean>
+    suspend fun signUp(email: String, password: String, name: String): Flow<Any>
     suspend fun signIn(email: String, password: String): Flow<Boolean>
 }

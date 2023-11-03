@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 class UserSignUpUseCase(
     private val repository: UserRepository,
 ) {
-    suspend operator fun invoke(id: String, password: String, name: String): Flow<Boolean> {
+    suspend operator fun invoke(id: String, password: String, name: String): Flow<Any> {
         return repository.signUp(id, password, name)
     }
 }

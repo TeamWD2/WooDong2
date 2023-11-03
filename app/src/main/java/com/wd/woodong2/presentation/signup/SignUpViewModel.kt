@@ -1,6 +1,5 @@
 package com.wd.woodong2.presentation.signup
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +12,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.SignInIsIdDuplicatedUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserSignUpUseCase
 import kotlinx.coroutines.launch
@@ -22,7 +20,6 @@ import java.util.regex.Pattern
 class SignUpViewModel(
     private val getUser: UserGetItemUseCase,
     private val signUpUser: UserSignUpUseCase,
-    private val isIdDuplicated: SignInIsIdDuplicatedUseCase,
 ) : ViewModel(
 ) {
     companion object {
@@ -33,6 +30,10 @@ class SignUpViewModel(
         const val passwordPattern =
             "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{8,16}$"
     }
+
+    private val _signUpResult: MutableLiveData<Any> = MutableLiveData()
+    val signUpResult: LiveData<Any> get() = _signUpResult
+
 
     private val _isDuplication: MutableLiveData<Boolean> = MutableLiveData()
     val isDuplication: LiveData<Boolean> get() = _isDuplication
@@ -50,7 +51,8 @@ class SignUpViewModel(
     val isValidNickname: LiveData<Boolean> get() = _isValidNickname
 
     val isAllCorrect: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
-        addSource(isDuplication) { value = checkAllConditions() }
+
+
         addSource(isValidId) { value = checkAllConditions() }
         addSource(isValidPassword) { value = checkAllConditions() }
         addSource(isValidSamePassword) { value = checkAllConditions() }
@@ -58,12 +60,8 @@ class SignUpViewModel(
     }
 
     // ID 유효성 판단 메소드
-    fun idCheckComplete(id: String) {
-        viewModelScope.launch {
-            isIdDuplicated(id).collect { isDuplication ->
-                _isDuplication.value = isDuplication
-            }
-        }
+    fun checkIdDuplication(id: String) {
+//        _isDuplication.value =
     }
 
     fun checkValidId(id: String) {
@@ -91,23 +89,26 @@ class SignUpViewModel(
     }
 
     // 모든 요소 판단 메소드
-    private fun checkAllConditions(): Boolean {
-
-        Log.d(
-            TAG,
-            "${isDuplication.value}, ${isValidId.value}, ${isValidPassword.value}, ${isValidSamePassword.value}, ${isValidNickname.value}"
-        )
-
-        return !(isDuplication.value == true
-                && isValidId.value == true
+    fun checkAllConditions(): Boolean {
+        return isValidId.value == true
                 && isValidPassword.value == true
                 && isValidSamePassword.value == true
-                && isValidNickname.value == true)
+                && isValidNickname.value == true
     }
+
 
     fun signUp(id: String, pw: String, name: String) {
         viewModelScope.launch {
-            signUpUser(id, pw, name)
+            try {
+                signUpUser(id, pw, name)
+                    .collect { result ->
+                        // 성공 처리
+                        _signUpResult.value = result
+                    }
+            } catch (e: Exception) {
+                // 에러 처리
+                _signUpResult.value = "ERROR: ${e.message}"
+            }
         }
     }
 }
@@ -127,7 +128,6 @@ class SignUpViewModelFactory : ViewModelProvider.Factory {
             return SignUpViewModel(
                 UserGetItemUseCase(userRepositoryImpl),
                 UserSignUpUseCase(userRepositoryImpl),
-                SignInIsIdDuplicatedUseCase(userRepositoryImpl)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

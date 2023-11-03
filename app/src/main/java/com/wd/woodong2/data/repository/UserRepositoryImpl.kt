@@ -1,7 +1,11 @@
 package com.wd.woodong2.data.repository
 
 import android.util.Log
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -88,7 +92,7 @@ class UserRepositoryImpl(
     /*
     * Auth 회원가입
     * */
-    override suspend fun signUp(email: String, password: String, name: String): Flow<Boolean> =
+    override suspend fun signUp(email: String, password: String, name: String): Flow<Any> =
         callbackFlow {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
@@ -107,15 +111,22 @@ class UserRepositoryImpl(
                             addUser(user)
                         }
 
-                        Log.d(TAG, "$task 성공")
-
+                        Log.d(TAG, "${task.result} 성공")
                         trySend(true)
-                    } else {
-                        trySend(false)
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    when (exception) {
+                        is FirebaseAuthWeakPasswordException -> trySend("ERROR_WEAK_PASSWORD")
+                        is FirebaseAuthInvalidCredentialsException -> trySend("ERROR_INVALID_EMAIL")
+                        is FirebaseAuthUserCollisionException -> trySend("ERROR_EMAIL_ALREADY_IN_USE")
+                        is FirebaseNetworkException -> trySend("ERROR_NETWORK")
+                        else -> trySend("ERROR_UNKNOWN")
                     }
                 }
             awaitClose { }
         }
+
 
     override suspend fun signIn(email: String, password: String): Flow<Boolean> = callbackFlow {
         auth.signInWithEmailAndPassword(email, password)
@@ -134,22 +145,6 @@ class UserRepositoryImpl(
             }
         awaitClose { }
     }
-
-    /*
-    * ID 중복확인 메소드
-    * */
-    override suspend fun isIdDuplicated(email: String): Flow<Boolean> = callbackFlow {
-        auth.fetchSignInMethodsForEmail(email)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    trySend(task.result?.signInMethods?.isEmpty() ?: true)
-                } else {
-                    trySend(false)
-                }
-            }
-        awaitClose { }
-    }
-
 
     override suspend fun updateUserToken(userId: String): Flow<Boolean> = callbackFlow {
         val userDataReference = databaseReference.child(userId)
