@@ -74,7 +74,7 @@ class UserRepositoryImpl(
     /*
     * Realtime database에 user 추가
     * */
-    override suspend fun addUser(user: UserEntity) {
+    override fun addUser(user: UserEntity) {
         if (user.id == null) {
             Log.e(TAG, "user.id == null")
             return
@@ -96,20 +96,27 @@ class UserRepositoryImpl(
         callbackFlow {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val user = UserEntity(
-                                id = task.result?.user?.uid,
-                                email = email,
-                                name = name,
-                                chatIds = emptyList(),
-                                imgProfile = "",
-                                firstLocation = "",
-                                secondLocation = "",
-                                token = tokenProvider.getToken()
-                            )
-                            addUser(user)
-                        }
+                    if (task.isSuccessful && tokenProvider.getToken() != null) {
+
+                        val user = UserEntity(
+                            id = task.result?.user?.uid,
+                            email = email,
+                            name = name,
+
+                            // TODO Test
+                            chatIds = listOf(
+                                "-chat_list-group-TestData0",
+                                "-chat_list-group-TestData1",
+                            ),
+
+                            imgProfile = "",
+                            firstLocation = "",
+                            secondLocation = "",
+
+                            //withContext, runBlocking
+                            token = tokenProvider.getToken()
+                        )
+                        addUser(user)
 
                         Log.d(TAG, "${task.result} 성공")
                         trySend(true)
@@ -149,6 +156,14 @@ class UserRepositoryImpl(
             }
         awaitClose { }
     }
+
+    /*
+    UID 가져오는 메소드
+    * */
+    override fun getUid(): String? {
+        return auth.currentUser?.uid
+    }
+
 
     /*
     * Realtime database 유저 토큰 업데이트
