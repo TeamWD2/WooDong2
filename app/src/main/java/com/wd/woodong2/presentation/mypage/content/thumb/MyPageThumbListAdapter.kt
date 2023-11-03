@@ -47,14 +47,12 @@ class MyPageThumbListAdapter (
             //if(item.isLiked){
                 homeListItemBtnTag.text = item.tag
                 homeListItemThumbnail.load(item.thumbnail)
-                homeListItemThumbnailCount.text = item.thumbnailCount.toString()
                 homeListItemTvTitle.text = item.title
                 homeListItemTvDescription.text = item.description
 
                 homeListItemTvLocation.text = item.location
                 homeListItemTvTimeStamp.text = formatTimestamp(item.timeStamp)
 
-                homeListItemTvViews.text = item.view
                 homeListItemTvThumbCount.text = item.thumbCount.toString()
                 homeListItemTvChatCount.text = item.chatCount.toString()
 

@@ -70,10 +70,6 @@ class HomeFragment : Fragment() {
                 }
             }
 
-        //divider 설정
-        val dividerItemDecoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-        binding.homeRecyclerView.addItemDecoration(dividerItemDecoration)
-
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
