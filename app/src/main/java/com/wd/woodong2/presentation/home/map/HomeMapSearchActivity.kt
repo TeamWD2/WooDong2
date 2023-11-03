@@ -4,19 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeMapSearchActivityBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+
 
 
 class HomeMapSearchActivity : AppCompatActivity() {
@@ -24,6 +18,7 @@ class HomeMapSearchActivity : AppCompatActivity() {
     companion object {
         private var firstLocation : String? ="Unknown Location"
         private var secondLocation : String? ="Unknown Location"
+
         const val EXTRA_ADDRESS = "extra_address"
         fun newIntent(context: Context, firstLoc: String, secondLoc:String)=
         Intent(context, HomeMapSearchActivity::class.java).apply {
@@ -92,11 +87,17 @@ class HomeMapSearchActivity : AppCompatActivity() {
         }
 
         binding.homeMapEtSearch.setOnClickListener {
-            hideKeyboard()
+//            hideKeyboard()
         }
+
         binding.homeMapSearchBtn.setOnClickListener{
             address = binding.homeMapEtSearch.text.toString()
-            viewModel.search(address)
+            if (address.endsWith("동") || address.endsWith("읍") || address.endsWith("면")) {
+                viewModel.search(address)
+            }
+            else{
+                Toast.makeText(this, R.string.home_map_search_error_btn, Toast.LENGTH_SHORT).show()
+            }
         }
     }
     private fun initViewModel() {
@@ -105,11 +106,11 @@ class HomeMapSearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun hideKeyboard() {
-        val view = this.currentFocus
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
-    }
+//    private fun hideKeyboard() {
+//        val view = this.currentFocus
+//        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//        inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+//    }
 
 
 }

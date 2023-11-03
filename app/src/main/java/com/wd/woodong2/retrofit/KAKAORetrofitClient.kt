@@ -1,6 +1,6 @@
 package com.wd.woodong2.retrofit
 
-import com.wd.woodong2.presentation.home.map.HomeMapSearchRemoteDatasource
+import com.wd.woodong2.data.remotesource.HomeMapSearchRemoteDatasource
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

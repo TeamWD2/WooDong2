@@ -29,7 +29,8 @@ class MyPageFragment : Fragment() {
     companion object {
         const val EXTRA_USER_NAME = "extra_user_name"
         const val EXTRA_USER_PROFILE = "extra_user_profile"
-        const val EXTRA_USER_EMAIL = "extra_user_email"
+        const val EXTRA_USER_PASSWORD = "extra_user_password"
+        fun newInstance() = MyPageFragment()
         fun extractLocationInfo(address: String): String {
             val parts = address.split(" ")
             for (part in parts) {
@@ -64,7 +65,7 @@ class MyPageFragment : Fragment() {
                 if (result.resultCode == Activity.RESULT_OK) {
                     val receivedNameData = result.data?.getStringExtra(EXTRA_USER_NAME)
                     val receivedProfileData = result.data?.getStringExtra(EXTRA_USER_PROFILE)
-                    val receivedEmailData = result.data?.getStringExtra(EXTRA_USER_EMAIL)
+                    val receivedEmailData = result.data?.getStringExtra(EXTRA_USER_PASSWORD)
                     viewModel.updateUserItem(receivedNameData.toString(),receivedProfileData.toString(),receivedEmailData.toString())
 
                     imgCheck = true
@@ -102,7 +103,7 @@ class MyPageFragment : Fragment() {
                 )
             }
         }
-        btnUpdateProfile.setOnClickListener{
+        userEdit.setOnClickListener{
             UserInfo.let { notNullUser ->
                 editUserLauncher.launch(
                     MyPageUpdateActivity.newIntent(requireContext(), notNullUser)

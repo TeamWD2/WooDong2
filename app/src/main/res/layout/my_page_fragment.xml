@@ -5,13 +5,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/ivory_yellow_background">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_my_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
+        android:minHeight="56dp"
+        android:background="@color/egg_yellow_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -21,16 +23,15 @@
             android:layout_height="wrap_content"
             android:text="@string/my_page_txt_title"
             android:layout_margin="10dp"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="18sp"
+            android:textStyle="bold"/>
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_user_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_margin="12dp"
         app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,11 +40,12 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_profile"
                 android:layout_margin="10dp"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 app:cardCornerRadius="50dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tv_name"
@@ -60,8 +62,8 @@
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/my_page_tv_name"
                 app:layout_constraintBottom_toTopOf="@id/tv_location"
                 app:layout_constraintStart_toEndOf="@id/cv_profile"
@@ -71,8 +73,8 @@
                 android:id="@+id/tv_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
                 android:text="@string/my_page_tv_location"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/cv_profile"
@@ -82,137 +84,54 @@
                 android:id="@+id/tv_member_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="16dp"
                 android:text="@string/my_page_tv_member_number"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_location"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
-            <ImageView
-                android:id="@+id/iv_user_edit"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/user_edit"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/public_ic_right_arrow"
-                android:layout_marginEnd="10dp"
+                android:layout_height="0dp"
+                android:background="@drawable/my_page_info_btn_shape"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_user_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/public_ic_right_arrow"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cv_user_act_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:cardCornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cv_user_info">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_count"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:layout_editor_absoluteX="21dp"
-            tools:layout_editor_absoluteY="161dp">
-
-            <TextView
-                android:id="@+id/txt_views"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/my_page_txt_views"
-                app:layout_constraintBottom_toTopOf="@id/txt_views_count"
-                app:layout_constraintEnd_toStartOf="@id/txt_comment"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/txt_comment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/my_page_txt_comment"
-                app:layout_constraintBottom_toTopOf="@id/txt_comment_count"
-                app:layout_constraintEnd_toStartOf="@id/txt_heart"
-                app:layout_constraintStart_toEndOf="@id/txt_views"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/txt_heart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/my_page_txt_heart"
-                app:layout_constraintBottom_toTopOf="@id/txt_heart_count"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/txt_comment"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/txt_views_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="@string/my_page_txt_views_count"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/txt_views"
-                app:layout_constraintStart_toStartOf="@id/txt_views"
-                app:layout_constraintTop_toBottomOf="@id/txt_views" />
-
-            <TextView
-                android:id="@+id/txt_comment_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="@string/my_page_txt_comment_count"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/txt_comment"
-                app:layout_constraintStart_toStartOf="@id/txt_comment"
-                app:layout_constraintTop_toBottomOf="@id/txt_comment" />
-
-            <TextView
-                android:id="@+id/txt_heart_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="@string/my_page_txt_heart_count"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/txt_heart"
-                app:layout_constraintStart_toStartOf="@id/txt_heart"
-                app:layout_constraintTop_toBottomOf="@id/txt_heart" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <Button
-        android:id="@+id/btn_update_profile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/my_page_btn_update_profile"
-        android:background="@drawable/my_page_btn_shape"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cv_user_act_info" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/my_page_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:tabIndicatorColor="@color/mustard"
+        android:layout_marginTop="10dp"
+        android:background="@color/ivory_yellow_background"
+        app:tabIndicatorColor="@color/curry_yellow_txt"
+        app:tabIndicatorFullWidth="true"
         app:tabIndicatorHeight="5dp"
+        app:tabTextColor="@color/black"
+        app:tabSelectedTextColor="@color/curry_yellow_txt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_update_profile" />
+        app:layout_constraintTop_toBottomOf="@+id/cv_user_info" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_my_page_view_pager2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginBottom="-20dp"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -223,7 +142,8 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/my_page_view_pager2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/ivory_yellow_background"/>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
