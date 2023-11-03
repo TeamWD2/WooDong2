@@ -99,7 +99,6 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_password"
             android:layout_width="match_parent"
-
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
             android:theme="@style/EditTextWD2Style"
@@ -135,13 +134,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_password" />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/checkbox_auto_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
             android:text="@string/signin_auto_login"
             android:textSize="14sp"
+            app:buttonTint="@color/pressed_chip"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_login" />
 

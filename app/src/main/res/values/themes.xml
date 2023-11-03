@@ -1,11 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.WooDong2" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Theme.WooDong2" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorControlActivated">@color/dark_yellow_btn</item>
     </style>
-
-    <style name="Theme.WooDong2" parent="Base.Theme.WooDong2"></style>
 
     <style name="EditTextWD2Style" parent="Widget.Design.TextInputLayout">
         <item name="colorPrimary">@color/wd2_main_color</item>
