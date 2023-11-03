@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.wd.woodong2.databinding.GroupDetailAlbumFragmentBinding
@@ -39,8 +40,10 @@ class GroupDetailAlbumFragment: Fragment() {
 
     private fun initView() = with(binding) {
         recyclerViewAddDetailAlbum.adapter = groupDetailAlbumListAdapter
-        val albumList = sharedViewModel.groupDetailItem?.filterIsInstance<GroupItem.GroupAlbum>()
-        groupDetailAlbumListAdapter.submitList(albumList?.flatMap { it.images ?: listOf() })
+        val groupAlbumList = sharedViewModel.groupDetailItem?.filterIsInstance<GroupItem.GroupAlbum>()
+        val albumList = groupAlbumList?.flatMap { it.images ?: listOf() }
+        txtEmptyAlbum.isVisible = albumList.isNullOrEmpty()
+        groupDetailAlbumListAdapter.submitList(albumList)
     }
 
     override fun onDestroyView() {

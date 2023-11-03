@@ -11,6 +11,7 @@ data class GroupItemsEntity(
 data class GroupMainEntity(
     val id: String?,
     val groupName: String?,
+    val introduce: String?,
     val groupTag: String?,
     val ageLimit: String?,
     val memberLimit: String?,
@@ -49,7 +50,8 @@ data class GroupMemberItemEntity(
     val userId: String?,
     val profile: String?,
     val name: String?,
-    val location: String?
+    val location: String?,
+    val comment: String?
 )
 
 /**

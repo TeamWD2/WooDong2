@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/ivory_yellow_background">
 
     <include
         android:id="@+id/include_layout_coordinator"
@@ -19,8 +20,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/yellow"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/public_border_btn"
+        android:padding="16dp"
         android:text="@string/group_detail_btn_join_group"
+        android:textColor="@color/white"
+        android:textSize="@dimen/wd2_main_title"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

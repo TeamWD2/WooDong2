@@ -91,6 +91,7 @@ class GroupViewModel(
                     id = entity.id,
                     title = "Main",
                     groupName = entity.groupName,
+                    introduce = entity.introduce,
                     groupTag = entity.groupTag,
                     ageLimit = entity.ageLimit,
                     memberLimit = entity.memberLimit,
@@ -118,7 +119,8 @@ class GroupViewModel(
                             userId = member.userId,
                             profile = member.profile,
                             name = member.name,
-                            location = member.location
+                            location = member.location,
+                            comment = member.comment
                         )
                     }
                 )

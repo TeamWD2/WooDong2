@@ -12,6 +12,7 @@ sealed class GroupItem(
         override val id: String?,
         override val title: String?,
         val groupName: String?,
+        val introduce: String?,
         val groupTag: String?,
         val ageLimit: String?,
         val memberLimit: String?,
@@ -44,7 +45,8 @@ sealed class GroupItem(
         val userId: String?,
         val profile: String?,
         val name: String?,
-        val location: String?
+        val location: String?,
+        val comment: String?
     ) : Parcelable
 
     @Parcelize

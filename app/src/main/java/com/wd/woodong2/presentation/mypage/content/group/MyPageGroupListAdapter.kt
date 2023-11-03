@@ -44,9 +44,9 @@ class MyPageGroupListAdapter(
                 error(R.drawable.group_ic_no_image)
             }
             txtName.text = item.groupName
-            txtTagCategory.text = item.groupTag
-            txtTagAge.text = item.ageLimit
-            txtTagMemberLimit.text = "${item.memberCount} / ${item.memberLimit.toString()}"
+            txtGroupTag.text = item.groupTag
+            txtAgeLimit.text = item.ageLimit
+            txtMemberLimit.text = "${item.memberCount} / ${item.memberLimit.toString()}"
 
             root.setOnClickListener {
 //                onClickItem(item)
