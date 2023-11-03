@@ -1,5 +1,7 @@
 package com.wd.woodong2.presentation.signup
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -23,13 +25,15 @@ class SignUpActivity : AppCompatActivity() {
         const val SIGN_UP_PW = "sign_up_pw"
     }
 
-
     private var _binding: SignupActivityBinding? = null
     private val binding get() = _binding!!
 
     private val signViewModel: SignUpViewModel by viewModels {
         SignUpViewModelFactory()
     }
+
+    lateinit var id: String
+    lateinit var pw: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,6 +126,8 @@ class SignUpActivity : AppCompatActivity() {
                         editName.text.toString().trim()
                     )
                 }
+                id = editId.text.toString().trim()
+                pw = editPw.text.toString().trim()
             } else {
                 Toast.makeText(
                     applicationContext,
@@ -206,7 +212,18 @@ class SignUpActivity : AppCompatActivity() {
                 }
 
                 true -> {
-
+                    val intent = Intent().apply {
+                        putExtra(
+                            SIGN_UP_ID,
+                            id
+                        )
+                        putExtra(
+                            SIGN_UP_PW,
+                            pw
+                        )
+                    }
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
                 }
             }
             Toast.makeText(

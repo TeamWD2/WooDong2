@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.wd.woodong2.R
@@ -26,6 +27,15 @@ class SignInActivity : AppCompatActivity() {
         SignInViewModelFactory(
             this
         )
+    }
+
+    private val signUpActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            binding.editId.setText(result.data?.getStringExtra(SignUpActivity.SIGN_UP_ID) ?: "")
+            binding.editPassword.setText(result.data?.getStringExtra(SignUpActivity.SIGN_UP_PW) ?: "")
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,9 +68,9 @@ class SignInActivity : AppCompatActivity() {
             )
         }
 
-        //signup btn click
+        // 회원 가입 버튼 클릭 시
         txtSignup.setOnClickListener {
-            startActivity(
+            signUpActivityResultLauncher.launch(
                 Intent(this@SignInActivity, SignUpActivity::class.java)
             )
         }
