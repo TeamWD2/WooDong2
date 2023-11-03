@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.signin
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,12 +14,12 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.GetFirebaseTokenUseCase
 import com.wd.woodong2.domain.usecase.SignInGetUserUseCase
 import com.wd.woodong2.domain.usecase.SignInSaveUserUseCase
 import com.wd.woodong2.domain.usecase.UserSignInUseCase
-import com.wd.woodong2.presentation.provider.ContextProvider
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -74,10 +75,10 @@ class SignInViewModel(
 }
 
 class SignInViewModelFactory(
-    private val contextProvider: ContextProvider,
+    private val context: Context,
 ) : ViewModelProvider.Factory {
 
-    private val userPrefKey = contextProvider.getString(R.string.pref_key_user_preferences_key)
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
 
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
@@ -88,7 +89,11 @@ class SignInViewModelFactory(
     }
 
     private val userPreferencesRepository by lazy {
-        UserPreferencesRepositoryImpl(contextProvider.getSharedPreferences(userPrefKey))
+        UserPreferencesRepositoryImpl(
+            SignInPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            )
+        )
     }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

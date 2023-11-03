@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.SigninActivityBinding
 import com.wd.woodong2.presentation.main.MainActivity
-import com.wd.woodong2.presentation.provider.ContextProviderImpl
 import com.wd.woodong2.presentation.signup.SignUpActivity
 
 class SignInActivity : AppCompatActivity() {
@@ -25,7 +24,7 @@ class SignInActivity : AppCompatActivity() {
 
     private val signInViewModel: SignInViewModel by viewModels {
         SignInViewModelFactory(
-            ContextProviderImpl(this)
+            this
         )
     }
 

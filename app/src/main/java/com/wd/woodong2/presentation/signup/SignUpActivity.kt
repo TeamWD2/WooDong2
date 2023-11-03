@@ -18,6 +18,12 @@ import kotlinx.coroutines.launch
 
 class SignUpActivity : AppCompatActivity() {
 
+    companion object {
+        const val SIGN_UP_ID = "sign_up_id"
+        const val SIGN_UP_PW = "sign_up_pw"
+    }
+
+
     private var _binding: SignupActivityBinding? = null
     private val binding get() = _binding!!
 
@@ -51,10 +57,15 @@ class SignUpActivity : AppCompatActivity() {
             )
         }
 
-        // 중복체크 텍스트 클릭 시
-        txtCheckIdDuplication.setOnClickListener {
-            val id = editId.text.toString()
-            signViewModel.idCheckComplete(id)
+        // id 형식 확인
+        editId.apply {
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun afterTextChanged(p0: Editable?) {
+                    txtCheckIdDuplication.visibility = View.INVISIBLE
+                }
+            })
         }
 
         // 비밀번호 형식 확인
@@ -103,52 +114,25 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         btnSummit.setOnClickListener {
-            signViewModel.isAllCorrect.observe(this@SignUpActivity) { isAllCorrect ->
-                if (isAllCorrect) {
-                    lifecycleScope.launch {
-                        signViewModel.signUp(
-                            editId.text.toString().trim(),
-                            editPw.text.toString().trim(),
-                            editName.text.toString().trim()
-                        )
-                    }
-                } else {
-                    Toast.makeText(
-                        applicationContext,
-                        "모든 항목이 유효하지 않습니다. 다시 확인해주세요.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
-
-    }
-
-
-    private fun initModel() = with(binding) {
-        signViewModel.isDuplication.observe(this@SignUpActivity) { isDuplication ->
-            if (!isDuplication) {
-                Toast.makeText(this@SignUpActivity, "사용 가능한 ID", Toast.LENGTH_SHORT)
-                    .show()
-                binding.tilId.boxStrokeColor =
-                    ContextCompat.getColor(this@SignUpActivity, R.color.dodger_blue)
-                binding.editId.isEnabled = false
-                binding.tilId.defaultHintTextColor =
-                    ContextCompat.getColorStateList(
-                        this@SignUpActivity,
-                        R.color.gray_light
+            if (signViewModel.checkAllConditions()) {
+                lifecycleScope.launch {
+                    signViewModel.signUp(
+                        editId.text.toString().trim(),
+                        editPw.text.toString().trim(),
+                        editName.text.toString().trim()
                     )
+                }
             } else {
                 Toast.makeText(
-                    this@SignUpActivity,
-                    "중복된 ID가 존재합니다",
+                    applicationContext,
+                    "입력 사항을 다시 한 번 확인해주세요",
                     Toast.LENGTH_SHORT
                 ).show()
-                binding.tilId.boxStrokeColor =
-                    ContextCompat.getColor(this@SignUpActivity, R.color.red)
             }
         }
+    }
 
+    private fun initModel() = with(binding) {
         signViewModel.isValidId.observe(this@SignUpActivity) { isValid ->
             if (isValid) {
                 tilId.boxStrokeColor =
@@ -211,6 +195,25 @@ class SignUpActivity : AppCompatActivity() {
                     setTextColor(ContextCompat.getColor(context, R.color.red))
                 }
             }
+        }
+
+        signViewModel.signUpResult.observe(this@SignUpActivity) { result ->
+            when (result) {
+                "ERROR_EMAIL_ALREADY_IN_USE" -> {
+                    txtCheckIdDuplication.visibility = View.VISIBLE
+                    tilId.boxStrokeColor =
+                        ContextCompat.getColor(this@SignUpActivity, R.color.red)
+                }
+
+                true -> {
+
+                }
+            }
+            Toast.makeText(
+                applicationContext,
+                "결과 : $result",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }
