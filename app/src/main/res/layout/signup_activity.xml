@@ -69,7 +69,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/check_id_duplication"
-                    android:textColor="@color/dodger_blue"
+                    android:textColor="@color/red"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/txt_id" />
 
@@ -214,13 +215,14 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_summit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/public_border_btn"
             android:padding="16dp"
             android:text="@string/signup"
+            android:textColor="@color/white"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="parent" />

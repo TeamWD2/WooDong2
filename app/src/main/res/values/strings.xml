@@ -122,7 +122,7 @@
     <string name="start">시작하기</string>
 
     <!-- signin_activity.xml -->
-    <string name="signin_id">아이디</string>
+    <string name="signin_id">아이디(이메일 형식)</string>
     <string name="signin_enter_id">아이디를 입력하세요</string>
     <string name="signin_pw">비밀번호</string>
     <string name="signin_input_pw">비밀번호를 입력하세요</string>
@@ -132,7 +132,7 @@
     <string name="login_fail">로그인 실패</string>
 
     <!-- signup_activity.xml -->
-    <string name="check_id_duplication">중복확인</string>
+    <string name="check_id_duplication">중복</string>
     <string name="signup_pw_check">비밀번호 확인</string>
     <string name="signup_name">닉네임</string>
     <string name="signup_email">이메일</string>
