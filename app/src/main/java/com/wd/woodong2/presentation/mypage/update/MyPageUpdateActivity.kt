@@ -28,8 +28,8 @@ class MyPageUpdateActivity : AppCompatActivity(){
 
     private var profile = userInfo.imgProfile
     private var name = userInfo.name
-    private var email = userInfo.email
-
+    private var password = userInfo.email
+    private var passwordCheck = userInfo.email
     private lateinit var binding : MyPageUpdateActivityBinding
 
     private val editUserLauncher =
@@ -64,7 +64,8 @@ class MyPageUpdateActivity : AppCompatActivity(){
         }
         myPageUpdateBtn.setOnClickListener{
             name = myPageUpdateEtUserNameEdit.text.toString()
-            email = myPageUpdateEtUserEmailEdit.text.toString()
+            password = myPageUpdateEtUserPasswordEdit.text.toString()
+            passwordCheck = myPageUpdateEtUserPasswordEdit.text.toString()
 
             val intent = Intent().apply{
                 putExtra(
@@ -76,14 +77,15 @@ class MyPageUpdateActivity : AppCompatActivity(){
                     profile
                 )
                 putExtra(
-                    MyPageFragment.EXTRA_USER_EMAIL,
-                    email
+                    MyPageFragment.EXTRA_USER_PASSWORD,
+                    password
                 )
             }
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
-        myPageUpdateEtUserEmailEdit.setText(email)
+        myPageUpdateEtUserPasswordEdit.setText(password)
+        myPageUpdateEtUserPasswordCheckEdit.setText(passwordCheck)
         myPageUpdateEtUserNameEdit.setText(name)
 
 
@@ -95,19 +97,22 @@ class MyPageUpdateActivity : AppCompatActivity(){
             .fitCenter()
             .into(myPageUpdateUserImgProfile)
 
-        myPageUpdateIvUserImgProfileEdit.setOnClickListener{
+        myPageUpdateUserImgProfile.setOnClickListener{
             //갤러리로 가기
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             editUserLauncher.launch(intent)
         }
 
-        myPageUpdateIvUserNameEdit.setOnClickListener{
+        myPageUpdateEtUserNameEdit.setOnClickListener{
             myPageUpdateEtUserNameEdit.isEnabled = !myPageUpdateEtUserNameEdit.isEnabled
         }
 
-        myPageUpdateIvUserEmailEdit.setOnClickListener{
-            myPageUpdateEtUserEmailEdit.isEnabled = !myPageUpdateEtUserEmailEdit.isEnabled
+        myPageUpdateEtUserPasswordEdit.setOnClickListener{
+            myPageUpdateEtUserPasswordEdit.isEnabled = !myPageUpdateEtUserPasswordEdit.isEnabled
+        }
+        myPageUpdateEtUserPasswordCheckEdit.setOnClickListener{
+            myPageUpdateEtUserPasswordCheckEdit.isEnabled = !myPageUpdateEtUserPasswordCheckEdit.isEnabled
         }
     }
 }

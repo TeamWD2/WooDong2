@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="10dp"
-    android:layout_marginVertical="5dp"
-    android:background="@drawable/public_border_box"
-    android:padding="10dp">
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/public_border_box_full"
+    android:elevation="2dp"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/txt_board_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/wd2_normal_text"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/constraint_board_1"
         app:layout_constraintEnd_toStartOf="@id/txt_board_count"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,6 +25,9 @@
         android:id="@+id/txt_board_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:textSize="@dimen/wd2_normal_text"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/txt_board_title"
         app:layout_constraintStart_toEndOf="@id/txt_board_title"
         app:layout_constraintTop_toTopOf="@id/txt_board_title"
@@ -32,6 +37,7 @@
         android:id="@+id/constraint_board_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_line"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@id/txt_board_title">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_board_1_profile"
+            android:id="@+id/cardView_member_1_profile"
             android:layout_width="50dp"
             android:layout_height="50dp"
             app:cardCornerRadius="100dp"
@@ -60,28 +66,22 @@
             android:id="@+id/txt_board_1_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textSize="@dimen/wd2_normal_text"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/txt_board_1_date"
-            app:layout_constraintEnd_toStartOf="@id/txt_board_1_location"
-            app:layout_constraintStart_toEndOf="@id/cardView_board_1_profile"
-            app:layout_constraintTop_toTopOf="@id/cardView_board_1_profile"
+            app:layout_constraintStart_toEndOf="@id/cardView_member_1_profile"
+            app:layout_constraintTop_toTopOf="@id/cardView_member_1_profile"
             tools:text="sinw" />
-
-        <TextView
-            android:id="@+id/txt_board_1_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/txt_board_1_name"
-            app:layout_constraintStart_toEndOf="@id/txt_board_1_name"
-            app:layout_constraintTop_toTopOf="@id/txt_board_1_name"
-            tools:text="권선동" />
 
         <TextView
             android:id="@+id/txt_board_1_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_board_1_profile"
-            app:layout_constraintStart_toEndOf="@id/cardView_board_1_profile"
+            android:textColor="@color/light_gray_txt"
+            android:textSize="@dimen/wd2_small_text"
+            app:layout_constraintBottom_toBottomOf="@id/cardView_member_1_profile"
+            app:layout_constraintStart_toStartOf="@id/txt_board_1_name"
             app:layout_constraintTop_toBottomOf="@id/txt_board_1_name"
             tools:text="2023년 10월 23일" />
 
@@ -89,20 +89,31 @@
             android:id="@+id/txt_board_1_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/img_board_1_photo"
+            app:layout_constraintEnd_toStartOf="@id/cardView_board_1_photo"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardView_board_1_profile"
+            app:layout_constraintTop_toBottomOf="@id/cardView_member_1_profile"
             tools:text="안녕하세요, 수원 거주 중인 26살 취준생입니다.\n잘부탁드립니다~" />
 
-        <ImageView
-            android:id="@+id/img_board_1_photo"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_board_1_photo"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            app:cardCornerRadius="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_board_1_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                tools:src="@tools:sample/avatars" />
+        </androidx.cardview.widget.CardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
@@ -120,6 +131,7 @@
         android:id="@+id/constraint_board_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/btn_more"
         app:layout_constraintEnd_toEndOf="parent"
@@ -127,7 +139,7 @@
         app:layout_constraintTop_toBottomOf="@id/view_line">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_board_2_profile"
+            android:id="@+id/cardView_member_2_profile"
             android:layout_width="50dp"
             android:layout_height="50dp"
             app:cardCornerRadius="100dp"
@@ -148,28 +160,22 @@
             android:id="@+id/txt_board_2_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textSize="@dimen/wd2_normal_text"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/txt_board_2_date"
-            app:layout_constraintEnd_toStartOf="@id/txt_board_2_location"
-            app:layout_constraintStart_toEndOf="@id/cardView_board_2_profile"
-            app:layout_constraintTop_toTopOf="@id/cardView_board_2_profile"
+            app:layout_constraintStart_toEndOf="@id/cardView_member_2_profile"
+            app:layout_constraintTop_toTopOf="@id/cardView_member_2_profile"
             tools:text="sinw" />
-
-        <TextView
-            android:id="@+id/txt_board_2_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/txt_board_2_name"
-            app:layout_constraintStart_toEndOf="@id/txt_board_2_name"
-            app:layout_constraintTop_toTopOf="@id/txt_board_2_name"
-            tools:text="권선동" />
 
         <TextView
             android:id="@+id/txt_board_2_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_board_2_profile"
-            app:layout_constraintStart_toEndOf="@id/cardView_board_2_profile"
+            android:textColor="@color/light_gray_txt"
+            android:textSize="@dimen/wd2_small_text"
+            app:layout_constraintBottom_toBottomOf="@id/cardView_member_2_profile"
+            app:layout_constraintStart_toStartOf="@id/txt_board_2_name"
             app:layout_constraintTop_toBottomOf="@id/txt_board_2_name"
             tools:text="2023년 10월 23일" />
 
@@ -177,27 +183,40 @@
             android:id="@+id/txt_board_2_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/img_board_2_photo"
+            app:layout_constraintEnd_toStartOf="@id/cardView_board_2_photo"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardView_board_2_profile"
+            app:layout_constraintTop_toBottomOf="@id/cardView_member_2_profile"
             tools:text="안녕하세요, 수원 거주 중인 26살 취준생입니다.\n잘부탁드립니다~" />
 
-        <ImageView
-            android:id="@+id/img_board_2_photo"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_board_2_photo"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            app:cardCornerRadius="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_board_2_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                tools:src="@tools:sample/avatars" />
+        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_more"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/group_detail_border_box_more_info"
         android:text="@string/group_detail_btn_more"
+        android:textSize="@dimen/wd2_normal_text"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

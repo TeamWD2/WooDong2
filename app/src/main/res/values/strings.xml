@@ -25,6 +25,7 @@
     <string name="home_map_bottom_sheet_near_location_count"> 12 </string>
     <string name="home_map_bottom_sheet_near_location_set_2"> 개 </string>
     <string name="home_map_search_btn">동명(읍, 면)으로 검색(ex. 서초동)</string>
+    <string name="home_map_search_error_btn">동명(읍, 면)으로 검색해주세요.</string>
     <string name="home_map_search_kakao_api">2944f118955b6cf31d773eea99bcc7d2</string>
     <string name="home_map_naver_api">kdzwicc7da</string>
     <string name="home_map_search_location_error">처음 위치 설정이 완료 되지 않았습니다.</string>
@@ -84,6 +85,8 @@
     <string name="group_detail_btn_write_board">게시물 작성하기</string>
     <string name="group_detail_btn_join_group">모임 가입하기</string>
     <string name="group_detail_btn_more">전체보기 ></string>
+    <string name="group_detail_txt_empty_board_list">게시글이 존재하지 않습니다.</string>
+    <string name="group_detail_txt_empty_album_list">앨범이 존재하지 않습니다.</string>
 
     <string name="chat_txt_title">채팅</string>
 
@@ -104,12 +107,14 @@
     <string name="my_page_txt_comment_count">0</string>
     <string name="my_page_txt_heart_count">0</string>
 
+    <string name="my_page_update_dup_check">중복 체크</string>
     <string name="my_page_update_user_name">닉네임</string>
-    <string name="my_page_update_user_email">이메일</string>
-    <string name="my_page_update_et_user_email_edit">asdf@asdfasd.com</string>
-    <string name="my_page_update_user_chat_id">챗 아이디</string>
-    <string name="my_page_update_et_user_chat_id_edit">CHATCHAT</string>
-    <string name="my_page_update_btn">적용하기</string>
+    <string name="my_page_update_et_user_name_edit">변경할 닉네임을 입력해주세요.</string>
+    <string name="my_page_update_user_password">비밀번호 변경</string>
+    <string name="my_page_update_et_user_password_edit">변경할 비밀번호를 입력해주세요.</string>
+    <string name="my_page_update_user_password_check">비밀번호 변경 확인</string>
+    <string name="my_page_update_et_user_password_check_edit">변경할 비밀번호를 다시 입력해주세요.</string>
+    <string name="my_page_update_btn">수정하기</string>
 
     <string name="gcm_api">AAAAkLePWrQ:APA91bEkLe8vhgdQ-ibx2g1jb-crx6v1ky_0MDFMF-fPc7haPJvj_BAila-AUmGlQl2hFUXZQm7_hp5sw-_-9ki4LtXav4LO50_EskbyYHolNNpV_0Q3I_WDgLaV4WmRJNK4JXznhB9E</string>
 

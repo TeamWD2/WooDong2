@@ -42,6 +42,7 @@ class GroupAddSharedViewModel(
     }
 
     fun setGroupIntroduce(groupIntro: String) {
+        groupAddMain.value = groupAddMain.value?.copy(introduce = groupIntro)
         groupAddIntroduce.value = groupAddIntroduce.value?.copy(introduce = groupIntro)
     }
 
@@ -101,6 +102,7 @@ class GroupAddSharedViewModel(
     private fun isCorrectMain(groupAddMain: GroupAddSetItem.GroupAddMain?): Boolean =
         groupAddMain?.let {
             it.groupName.isNullOrBlank().not()
+                    && it.introduce.isNullOrBlank().not()
                     && it.groupTag.isNullOrBlank().not()
                     && it.ageLimit.isNullOrBlank().not()
                     && it.memberLimit.isNullOrBlank().not()
@@ -132,7 +134,8 @@ class GroupAddSharedViewModel(
                             "-NhImSiData",
                             "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
                             "sinw",
-                            "권선동"
+                            "권선동",
+                            "(방장)"
                         )
                     )
                 )

@@ -42,7 +42,7 @@ class GroupDetailAlbumListAdapter : ListAdapter<String, GroupDetailAlbumListAdap
         private val binding: GroupDetailAlbumItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(image: String) = with(binding) {
-            imgPhotos.load(image) {
+            imgPhoto.load(image) {
                 error(R.drawable.group_ic_no_image)
             }
         }
