@@ -132,8 +132,12 @@ class UserRepositoryImpl(
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        updateUserToken(email)
+                    val uid = auth.currentUser?.uid
+
+                    if (uid != null) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            updateUserToken(uid)
+                        }
                     }
 
                     Log.d(TAG, "로그인 성공")
@@ -146,6 +150,9 @@ class UserRepositoryImpl(
         awaitClose { }
     }
 
+    /*
+    * Realtime database 유저 토큰 업데이트
+    * */
     override suspend fun updateUserToken(userId: String): Flow<Boolean> = callbackFlow {
         val userDataReference = databaseReference.child(userId)
         val token = mapOf("token" to tokenProvider.getToken())

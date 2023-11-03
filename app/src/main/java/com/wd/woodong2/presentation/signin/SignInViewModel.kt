@@ -56,7 +56,6 @@ class SignInViewModel(
 
                         if (isSuccess && token != "") {
                             saveUser(id, isAutoLogIn)
-//                            updateUserToken(id)
                         }
                     }
             }.onFailure {
