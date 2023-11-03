@@ -5,7 +5,7 @@ import com.wd.woodong2.domain.repository.UserRepository
 class SignInGetUserUIDUseCase(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(): String? {
+    operator fun invoke(): String? {
         return repository.getUid()
     }
 }

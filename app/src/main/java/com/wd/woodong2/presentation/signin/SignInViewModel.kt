@@ -79,6 +79,16 @@ class SignInViewModel(
         }
         return null
     }
+
+    /*
+    * Auth에서
+    * UID 가져오기 */
+    fun getUserUIDFromAuth(): String? {
+        if (getUserUID() != null) {
+            return getUserUID()
+        }
+        return null
+    }
 }
 
 class SignInViewModelFactory(

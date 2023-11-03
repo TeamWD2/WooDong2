@@ -3,6 +3,7 @@ package com.wd.woodong2.presentation.signin
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
@@ -34,7 +35,9 @@ class SignInActivity : AppCompatActivity() {
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             binding.editId.setText(result.data?.getStringExtra(SignUpActivity.SIGN_UP_ID) ?: "")
-            binding.editPassword.setText(result.data?.getStringExtra(SignUpActivity.SIGN_UP_PW) ?: "")
+            binding.editPassword.setText(
+                result.data?.getStringExtra(SignUpActivity.SIGN_UP_PW) ?: ""
+            )
         }
     }
 
@@ -52,6 +55,9 @@ class SignInActivity : AppCompatActivity() {
         val uid = signInViewModel.isAutoLogin()
 
         if (uid != null) {
+
+            Log.d(TAG, "$uid")
+
             startActivity(MainActivity.newIntentForAutoLogin(this@SignInActivity, uid))
         }
     }
@@ -87,10 +93,18 @@ class SignInActivity : AppCompatActivity() {
 
     private fun initModel() = with(signInViewModel) {
         loginResult.observe(this@SignInActivity) { result ->
-            if (result) {
+
+            val uid = getUserUIDFromAuth()
+
+            if (result && uid != null) {
                 Toast.makeText(this@SignInActivity, R.string.login_success, Toast.LENGTH_SHORT)
                     .show()
-                startActivity(MainActivity.newIntentForMain(this@SignInActivity))
+                startActivity(
+                    MainActivity.newIntentForLogin(
+                        this@SignInActivity,
+                        uid
+                    )
+                )
             } else {
                 Toast.makeText(this@SignInActivity, R.string.login_fail, Toast.LENGTH_SHORT).show()
             }

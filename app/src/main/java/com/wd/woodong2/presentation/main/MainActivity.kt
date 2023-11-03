@@ -23,8 +23,10 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val UID = "UID"
-        fun newIntentForMain(context: Context): Intent =
-            Intent(context, MainActivity::class.java)
+        fun newIntentForLogin(context: Context, uid: String): Intent =
+            Intent(context, MainActivity::class.java).apply {
+                putExtra(UID, uid)
+            }
 
         fun newIntentForAutoLogin(context: Context, uid: String): Intent =
             Intent(context, MainActivity::class.java).apply {
