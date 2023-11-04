@@ -84,7 +84,7 @@ class UserRepositoryImpl(
             user.id to user
         )
 
-        databaseReference.setValue(addItem)
+        databaseReference.updateChildren(addItem)
 
         Log.d(TAG, "addUser 성공")
     }
