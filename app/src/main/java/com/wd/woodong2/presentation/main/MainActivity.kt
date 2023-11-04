@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
@@ -88,8 +87,6 @@ class MainActivity : AppCompatActivity() {
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        Log.d("test", intent.getStringExtra(UID).toString())
-
         //상태바 & 아이콘 색상 변경
         window.statusBarColor =
             ContextCompat.getColor(this@MainActivity, R.color.egg_yellow_toolbar)
@@ -104,9 +101,6 @@ class MainActivity : AppCompatActivity() {
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
         checkPermissions()
-
-        // TODO 삭제
-        val id = intent.getStringExtra(UID)
     }
 
     private fun checkPermissions() {

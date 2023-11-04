@@ -16,18 +16,15 @@ import com.wd.woodong2.presentation.chat.content.ChatItem
 class ChatDetailActivity : AppCompatActivity() {
     companion object {
         const val CHAT_ITEM = "chat_item"
-        const val USER_ID = "user_id"
 
-        fun newIntentForDetail(context: Context, item: ChatItem, userId: String): Intent =
+        fun newIntentForDetail(context: Context, item: ChatItem): Intent =
             Intent(context, ChatDetailActivity::class.java).apply {
                 putExtra(CHAT_ITEM, item)
-                putExtra(USER_ID, userId)
             }
     }
 
     // Test
     var receiveItem: ChatItem? = null
-    var receivedUserId = ""
     var chatKey: String = ""
 
 
@@ -36,7 +33,7 @@ class ChatDetailActivity : AppCompatActivity() {
 
     private val chatDetailViewModel: ChatDetailViewModel by viewModels {
         // Test 후에 null 처리
-        ChatDetailViewModelFactory(receiveItem!!, receivedUserId)
+        ChatDetailViewModelFactory(receiveItem!!)
     }
 
     private val chatDetailItemListAdapter by lazy {
@@ -62,7 +59,6 @@ class ChatDetailActivity : AppCompatActivity() {
 
         // Test
         receiveItem = receivedChatItem
-        receivedUserId = intent.getStringExtra(USER_ID) ?: ""
 
         if (receivedChatItem != null) {
             chatKey = receivedChatItem.id ?: ""
@@ -81,14 +77,14 @@ class ChatDetailActivity : AppCompatActivity() {
             }
         }
 
-        when (receiveItem) {
+        when (val item = receiveItem) {
             is ChatItem.GroupChatItem -> {
-                txtChatType.text = (receiveItem as ChatItem.GroupChatItem).title
-                txtMemberNum.text = "## / ##명"
+                txtChatType.text = item.title
+                txtMemberNum.text = "## / ${item.memberLimit}명"
             }
 
             is ChatItem.PrivateChatItem -> {
-                txtChatType.text = (receiveItem as ChatItem.PrivateChatItem).title
+                txtChatType.text = item.title
                 txtMemberNum.visibility = View.GONE
             }
 
