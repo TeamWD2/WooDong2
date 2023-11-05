@@ -21,13 +21,15 @@ import com.wd.woodong2.presentation.mypage.content.MyPageFragment
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        private const val ID = "ID"
-        fun newIntentForMain(context: Context): Intent =
-            Intent(context, MainActivity::class.java)
-
-        fun newIntentForAutoLogin(context: Context, id: String): Intent =
+        private const val UID = "UID"
+        fun newIntentForLogin(context: Context, uid: String): Intent =
             Intent(context, MainActivity::class.java).apply {
-                putExtra(ID, id)
+                putExtra(UID, uid)
+            }
+
+        fun newIntentForAutoLogin(context: Context, uid: String): Intent =
+            Intent(context, MainActivity::class.java).apply {
+                putExtra(UID, uid)
             }
     }
 
@@ -86,7 +88,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //상태바 & 아이콘 색상 변경
-        window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.egg_yellow_toolbar)
+        window.statusBarColor =
+            ContextCompat.getColor(this@MainActivity, R.color.egg_yellow_toolbar)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
             window.insetsController?.setSystemBarsAppearance(
@@ -98,9 +101,6 @@ class MainActivity : AppCompatActivity() {
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
         checkPermissions()
-
-        // TODO 삭제
-        val id = intent.getStringExtra(ID)
     }
 
     private fun checkPermissions() {

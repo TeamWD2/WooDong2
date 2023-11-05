@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 class ChatRepositoryImpl(
-    private val databaseReference: DatabaseReference
+    private val databaseReference: DatabaseReference,
 ) : ChatRepository {
 
     companion object {
@@ -128,14 +128,15 @@ class ChatRepositoryImpl(
         }
     }
 
-    override suspend fun addChatMessageItem(userId: String, message: String) {
+    override suspend fun addChatMessageItem(userId: String, message: String, nickname: String) {
 
         val messageRef = databaseReference.child("message").push()
 
         val messageData = Message(
-            message,
-            System.currentTimeMillis(),
-            userId
+            content = message,
+            timestamp = System.currentTimeMillis(),
+            senderId = userId,
+            nickname = nickname,
         )
 
         // message 추가

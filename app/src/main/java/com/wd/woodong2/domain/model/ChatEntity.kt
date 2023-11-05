@@ -2,7 +2,7 @@ package com.wd.woodong2.domain.model
 
 
 data class ChatItemsEntity(
-    val chatItems: List<ChatEntity>?
+    val chatItems: List<ChatEntity>?,
 )
 
 data class ChatEntity(
@@ -18,5 +18,6 @@ data class ChatEntity(
 data class Message(
     val content: String?,
     val timestamp: Long?,
+    val nickname: String?,
     val senderId: String?,
 )

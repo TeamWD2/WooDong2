@@ -1,5 +1,7 @@
 package com.wd.woodong2.presentation.signup
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -18,12 +20,20 @@ import kotlinx.coroutines.launch
 
 class SignUpActivity : AppCompatActivity() {
 
+    companion object {
+        const val SIGN_UP_ID = "sign_up_id"
+        const val SIGN_UP_PW = "sign_up_pw"
+    }
+
     private var _binding: SignupActivityBinding? = null
     private val binding get() = _binding!!
 
     private val signViewModel: SignUpViewModel by viewModels {
         SignUpViewModelFactory()
     }
+
+    lateinit var id: String
+    lateinit var pw: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +61,15 @@ class SignUpActivity : AppCompatActivity() {
             )
         }
 
-        // 중복체크 텍스트 클릭 시
-        txtCheckIdDuplication.setOnClickListener {
-            val id = editId.text.toString()
-            signViewModel.isValidId(id)
+        // id 형식 확인
+        editId.apply {
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun afterTextChanged(p0: Editable?) {
+                    txtCheckIdDuplication.visibility = View.INVISIBLE
+                }
+            })
         }
 
         // 비밀번호 형식 확인
@@ -63,7 +78,17 @@ class SignUpActivity : AppCompatActivity() {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
-                    signViewModel.isValidPassword(text.toString().trim())
+                    signViewModel.checkValidPassword(text.toString().trim())
+                }
+            })
+        }
+
+        editId.apply {
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun afterTextChanged(p0: Editable?) {
+                    signViewModel.checkValidId(text.toString().trim())
                 }
             })
         }
@@ -74,7 +99,7 @@ class SignUpActivity : AppCompatActivity() {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
-                    signViewModel.isValidSamePassword(
+                    signViewModel.checkValidSamePassword(
                         editPw.text.toString(),
                         text.toString().trim()
                     )
@@ -87,61 +112,42 @@ class SignUpActivity : AppCompatActivity() {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
-                    signViewModel.isValidNickname(text.toString().trim())
+                    signViewModel.checkValidNickname(text.toString().trim())
                 }
             })
         }
 
         btnSummit.setOnClickListener {
-            signViewModel.isAllCorrect.observe(this@SignUpActivity) { isAllCorrect ->
-                if (isAllCorrect) {
-                    lifecycleScope.launch {
-                        signViewModel.signUp(
-                            editId.text.toString().trim(),
-                            editPw.text.toString().trim(),
-                            editName.text.toString().trim()
-                        )
-                    }
-                } else {
-                    Toast.makeText(
-                        applicationContext,
-                        "모든 항목이 유효하지 않습니다. 다시 확인해주세요.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+            if (signViewModel.checkAllConditions()) {
+                lifecycleScope.launch {
+                    signViewModel.signUp(
+                        editId.text.toString().trim(),
+                        editPw.text.toString().trim(),
+                        editName.text.toString().trim()
+                    )
                 }
+                id = editId.text.toString().trim()
+                pw = editPw.text.toString().trim()
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    "입력 사항을 다시 한 번 확인해주세요",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
-
     }
 
-
     private fun initModel() = with(binding) {
-        signViewModel.isDuplication.observe(this@SignUpActivity) { isDuplicated ->
-            signViewModel.isValidId.observe(this@SignUpActivity) { isValidId ->
-                if (!isDuplicated && isValidId) {
-                    Toast.makeText(this@SignUpActivity, "사용 가능한 ID", Toast.LENGTH_SHORT).show()
-                    binding.tilId.boxStrokeColor =
-                        ContextCompat.getColor(this@SignUpActivity, R.color.dodger_blue)
-                    binding.editId.isEnabled = false
-                    binding.tilId.defaultHintTextColor =
-                        ContextCompat.getColorStateList(this@SignUpActivity, R.color.light_gray_txt)
-                } else if (isDuplicated && !isValidId) {
-                    Toast.makeText(
-                        this@SignUpActivity,
-                        "중복된 ID가 존재합니다",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    binding.tilId.boxStrokeColor =
-                        ContextCompat.getColor(this@SignUpActivity, R.color.red)
-                } else {
-                    Toast.makeText(
-                        this@SignUpActivity,
-                        "지원하지 않는 ID 형식입니다",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    binding.tilId.boxStrokeColor =
-                        ContextCompat.getColor(this@SignUpActivity, R.color.red)
-                }
+        signViewModel.isValidId.observe(this@SignUpActivity) { isValid ->
+            if (isValid) {
+                tilId.boxStrokeColor =
+                    ContextCompat.getColor(this@SignUpActivity, R.color.dodger_blue)
+                txtCheckIdDuplication.isClickable = true
+            } else {
+                tilId.boxStrokeColor =
+                    ContextCompat.getColor(this@SignUpActivity, R.color.red)
+                txtCheckIdDuplication.isClickable = false
             }
         }
 
@@ -195,6 +201,36 @@ class SignUpActivity : AppCompatActivity() {
                     setTextColor(ContextCompat.getColor(context, R.color.red))
                 }
             }
+        }
+
+        signViewModel.signUpResult.observe(this@SignUpActivity) { result ->
+            when (result) {
+                "ERROR_EMAIL_ALREADY_IN_USE" -> {
+                    txtCheckIdDuplication.visibility = View.VISIBLE
+                    tilId.boxStrokeColor =
+                        ContextCompat.getColor(this@SignUpActivity, R.color.red)
+                }
+
+                true -> {
+                    val intent = Intent().apply {
+                        putExtra(
+                            SIGN_UP_ID,
+                            id
+                        )
+                        putExtra(
+                            SIGN_UP_PW,
+                            pw
+                        )
+                    }
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                }
+            }
+            Toast.makeText(
+                applicationContext,
+                "결과 : $result",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }

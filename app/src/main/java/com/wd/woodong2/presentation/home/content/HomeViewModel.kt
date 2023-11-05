@@ -15,10 +15,12 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.wd.woodong2.data.repository.MapSearchRepositoryImpl
+import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.model.MapSearchEntity
 import com.wd.woodong2.domain.repository.MapSearchRepository
 import com.wd.woodong2.domain.usecase.MapSearchCircumLocationGetItemsUseCase
+import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 import com.wd.woodong2.presentation.home.map.HomeMapSearchItem
 import com.wd.woodong2.retrofit.KAKAORetrofitClient
@@ -152,7 +154,8 @@ class HomeViewModelFactory : ViewModelProvider.Factory {
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
             FirebaseDatabase.getInstance().getReference("users"),
-            Firebase.auth
+            Firebase.auth,
+            FirebaseTokenProvider(FirebaseMessaging.getInstance())
         )
     }
     private val circumLocationrepository : MapSearchRepository = MapSearchRepositoryImpl(
