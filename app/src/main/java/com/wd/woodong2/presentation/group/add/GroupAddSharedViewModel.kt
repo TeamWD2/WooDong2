@@ -24,7 +24,7 @@ class GroupAddSharedViewModel(
         private const val TAG = "GroupAddSharedViewModel"
     }
 
-    private val _viewPager2CurItem: MutableLiveData<Int> = MutableLiveData()
+    private val _viewPager2CurItem: MutableLiveData<Int> = MutableLiveData(0)
     val viewPager2CurItem: LiveData<Int> = _viewPager2CurItem
 
     private val groupAddMain: MutableLiveData<GroupAddSetItem.GroupAddMain> =
@@ -41,8 +41,10 @@ class GroupAddSharedViewModel(
     private val _isCreateSuccess: MutableLiveData<Boolean> = MutableLiveData()
     val isCreateSuccess: LiveData<Boolean> get() = _isCreateSuccess
 
-    fun modifyViewPager2() {
-        _viewPager2CurItem.value = viewPager2CurItem.value?.plus(1)
+    fun modifyViewPager2(count: Int) {
+        Log.d("sinw", "${_viewPager2CurItem.value}")
+        _viewPager2CurItem.value = viewPager2CurItem.value?.plus(count)
+        Log.d("sinw", "${_viewPager2CurItem.value}")
     }
 
     fun setItem(textName: String, text: String?) {

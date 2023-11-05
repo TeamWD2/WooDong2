@@ -62,7 +62,7 @@ class GroupAddIntroFragment : Fragment() {
         edtIntroduceDescription.addTextChangedListener(createTextWatcher(edtIntroduceDescription))
 
         btnNext.setOnClickListener {
-            sharedViewModel.modifyViewPager2()
+            sharedViewModel.modifyViewPager2(1)
         }
     }
 
