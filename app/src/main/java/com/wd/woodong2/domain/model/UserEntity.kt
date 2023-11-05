@@ -1,7 +1,7 @@
 package com.wd.woodong2.domain.model
 
 data class UserItemsEntity(
-    val userItems: List<UserEntity>?
+    val userItems: List<UserEntity>?,
 )
 
 data class UserEntity(
@@ -11,5 +11,6 @@ data class UserEntity(
     val email: String?,
     val chatIds: List<String>?,
     val firstLocation: String?,
-    val secondLocation: String?
+    val secondLocation: String?,
+    val token: String?,
 )
