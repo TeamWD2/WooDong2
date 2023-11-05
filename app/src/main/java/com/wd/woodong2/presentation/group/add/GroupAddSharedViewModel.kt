@@ -145,6 +145,8 @@ class GroupAddSharedViewModel(
                     )
                 )
             )
+            add(GroupAddSetItem.GroupAddBoard())
+            add(GroupAddSetItem.GroupAddAlbum())
         }
     }
 
@@ -165,7 +167,7 @@ class GroupAddSharedViewModel(
 class GroupAddSharedViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val imageStorageRepository =
-            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("group_list/${UUID.randomUUID()}"))
+            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/groupList/${UUID.randomUUID()}"))
         val groupRepository =
             GroupRepositoryImpl(FirebaseDatabase.getInstance().getReference("group_list"))
         if (modelClass.isAssignableFrom(GroupAddSharedViewModel::class.java)) {

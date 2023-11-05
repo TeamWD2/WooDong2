@@ -77,6 +77,9 @@
     <string name="group_add_btn_add_group">모임 만들기</string>
     <string name="group_add_toast_create_group">모임이 생성되었습니다.</string>
     <string name="group_add_toast_no_info">입력되지 않은 정보가 있습니다.</string>
+    <string name="group_add_board_add_toast_no_content">내용을 입력해주세요.</string>
+    <string name="group_add_board_add_toast_create_board_success">게시글이 작성되었습니다.</string>
+    <string name="group_add_board_add_toast_create_board_fail">게시글 작성에 실패하였습니다.</string>
 
     <string name="group_detail_tab_home_title">홈</string>
     <string name="group_detail_tab_member_title">멤버</string>

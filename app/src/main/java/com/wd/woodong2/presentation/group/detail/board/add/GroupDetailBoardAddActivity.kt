@@ -20,13 +20,25 @@ import java.util.concurrent.atomic.AtomicLong
 
 class GroupDetailBoardAddActivity : AppCompatActivity() {
     companion object {
+        private const val ITEM_ID = "item_id"
+        private const val USER_ID = "user_id"
+        private const val USER_PROFILE = "user_profile"
+        private const val USER_NAME = "user_name"
         private const val USER_LOCATION = "user_location"
 
         fun newIntent(
             context: Context,
+            id: String?,
+            userId: String,
+            userProfile: String,
+            userName: String,
             userLocation: String
         ): Intent =
             Intent(context, GroupDetailBoardAddActivity::class.java).apply {
+                putExtra(ITEM_ID, id)
+                putExtra(USER_ID, userId)
+                putExtra(USER_PROFILE, userProfile)
+                putExtra(USER_NAME, userName)
                 putExtra(USER_LOCATION, userLocation)
             }
     }
@@ -37,6 +49,18 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         GroupDetailBoardAddViewModelFactory()
     }
 
+    private val itemId by lazy {
+        intent.getStringExtra(ITEM_ID)
+    }
+    private val userId by lazy {
+        intent.getStringExtra(USER_ID)
+    }
+    private val userProfile by lazy {
+        intent.getStringExtra(USER_PROFILE)
+    }
+    private val userName by lazy {
+        intent.getStringExtra(USER_NAME)
+    }
     private val userLocation by lazy {
         intent.getStringExtra(USER_LOCATION)
     }
@@ -101,11 +125,18 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         addImageItem() //초기 데이터 세팅
 
         btnAddBoard.setOnClickListener {
-            if(edtTitle.text.isNullOrBlank() || edtContent.text.isNullOrBlank()) {
-                Toast.makeText(this@GroupDetailBoardAddActivity, R.string.group_add_toast_no_info, Toast.LENGTH_SHORT).show()
+            if(edtContent.text.isNullOrBlank()) {
+                Toast.makeText(this@GroupDetailBoardAddActivity, R.string.group_add_board_add_toast_no_content, Toast.LENGTH_SHORT).show()
             } else {
-                //Todo("게시물 Firebase 추가")
-//                finish()
+                viewModel.setGroupBoardItem(
+                    itemId,
+                    userId,
+                    userProfile,
+                    userName,
+                    userLocation,
+                    edtContent.text.toString()
+                )
+                viewModel.setGroupAlbumItem(itemId)
             }
         }
     }
@@ -113,6 +144,14 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
     private fun initViewModel() = with(viewModel) {
         imageList.observe(this@GroupDetailBoardAddActivity) {
             boardAddListAdapter.submitList(it)
+        }
+        isCreateSuccess.observe(this@GroupDetailBoardAddActivity) { isSuccess ->
+            Toast.makeText(
+                this@GroupDetailBoardAddActivity,
+                if(isSuccess) R.string.group_add_board_add_toast_create_board_success else R.string.group_add_board_add_toast_create_board_fail,
+                Toast.LENGTH_SHORT
+            ).show()
+            finish()
         }
     }
 

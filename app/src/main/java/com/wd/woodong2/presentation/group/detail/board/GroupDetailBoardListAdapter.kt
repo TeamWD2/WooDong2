@@ -2,6 +2,7 @@ package com.wd.woodong2.presentation.group.detail.board
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -53,9 +54,8 @@ class GroupDetailBoardListAdapter :
             txtDate.text =
                 SimpleDateFormat("yyyy년 MM월 dd일").format(Date(board.timestamp))
             txtDescription.text = board.content
-            imgPhoto.load(board.images?.get(0)) {
-                error(R.drawable.group_ic_no_image)
-            }
+            imgPhoto.load(board.images?.get(0))
+            cardViewPhoto.isVisible = board.images.isNullOrEmpty().not()
         }
     }
 }

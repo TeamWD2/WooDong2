@@ -1,27 +1,35 @@
 package com.wd.woodong2.presentation.group.detail.board.add
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
+import com.wd.woodong2.domain.usecase.GroupSetAlbumItemUseCase
+import com.wd.woodong2.domain.usecase.GroupSetBoardItemUseCase
 import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 class GroupDetailBoardAddViewModel(
-    private val imageStorageSetItem: ImageStorageSetItemUseCase
+    private val imageStorageSetItem: ImageStorageSetItemUseCase,
+    private val groupSetBoardItem: GroupSetBoardItemUseCase,
+    private val groupSetAlbumItem: GroupSetAlbumItemUseCase
 ) : ViewModel() {
     companion object {
         private const val TAG = "GroupDetailBoardAddViewModel"
     }
 
-
     private val _imageList: MutableLiveData<List<GroupDetailBoardAddImageItem>> = MutableLiveData()
     val imageList: LiveData<List<GroupDetailBoardAddImageItem>> get() = _imageList
 
+    private val _isCreateSuccess: MutableLiveData<Boolean> = MutableLiveData()
+    val isCreateSuccess: LiveData<Boolean> get() = _isCreateSuccess
 
     fun addBoardImageItem(item: GroupDetailBoardAddImageItem?) {
         if (item == null) {
@@ -57,7 +65,7 @@ class GroupDetailBoardAddViewModel(
     }
 
     fun removeBoardImageItem(position: Int?) {
-        if(position == null || position < 0) {
+        if (position == null || position < 0) {
             return
         }
 
@@ -65,15 +73,97 @@ class GroupDetailBoardAddViewModel(
         currentList.removeAt(position)
         _imageList.value = currentList
     }
+
+    fun setGroupBoardItem(
+        itemId: String?,
+        userId: String?,
+        userProfile: String?,
+        userName: String?,
+        userLocation: String?,
+        edtContent: String
+    ) {
+        if (itemId == null || userId == null || userName == null || userLocation == null) {
+            return
+        }
+        viewModelScope.launch {
+            runCatching {
+                groupSetBoardItem(
+                    itemId,
+                    getBoardItem(userId, userProfile, userName, userLocation, edtContent)
+                )
+                _isCreateSuccess.value = true
+            }.onFailure {
+                Log.e(TAG, it.message.toString())
+                _isCreateSuccess.value = false
+            }
+        }
+    }
+
+    fun setGroupAlbumItem(
+        itemId: String?
+    ) {
+        if(itemId == null) {
+            return
+        }
+        viewModelScope.launch {
+            runCatching {
+                groupSetAlbumItem(
+                    itemId,
+                    createBoardImages()
+                )
+            }.onFailure {
+                Log.e(TAG, it.message.toString())
+            }
+        }
+    }
+
+    private fun getBoardItem(
+        userId: String,
+        userProfile: String?,
+        userName: String,
+        userLocation: String,
+        edtContent: String
+    ): List<GroupDetailBoardAddItem> = mutableListOf(
+        GroupDetailBoardAddItem(
+            userId = userId,
+            profile = userProfile,
+            name = userName,
+            location = userLocation,
+            content = edtContent,
+            images = createBoardImages()
+        )
+    )
+
+    private fun createBoardImages(): List<String> {
+        val uriToStringList = mutableListOf<String>()
+        _imageList.value?.forEach { item ->
+            item.uri?.let { uri ->
+                viewModelScope.launch {
+                    runCatching {
+                        imageStorageSetItem(uri).collect { imageUri ->
+                            uriToStringList.add(imageUri.toString())
+                            Log.d("sinw", "uriToStringList / $uriToStringList")
+                        }
+                    }
+                }
+            }
+        }
+        Log.d("sinw", "return / $uriToStringList")
+        return uriToStringList
+    }
 }
 
 class GroupDetailBoardAddViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val imageStorageRepository =
-            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/${UUID.randomUUID()}"))
+            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/groupList/${UUID.randomUUID()}"))
+        val groupSetItemRepository =
+            GroupRepositoryImpl(FirebaseDatabase.getInstance().getReference("group_list"))
         if (modelClass.isAssignableFrom(GroupDetailBoardAddViewModel::class.java)) {
             return GroupDetailBoardAddViewModel(
-                ImageStorageSetItemUseCase(imageStorageRepository)
+                ImageStorageSetItemUseCase(imageStorageRepository),
+                GroupSetBoardItemUseCase(groupSetItemRepository),
+                GroupSetAlbumItemUseCase(groupSetItemRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")

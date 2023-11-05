@@ -39,4 +39,14 @@ sealed class GroupAddSetItem(
         val location: String?,
         val comment: String?
     )
+
+    data class GroupAddBoard(
+        override val viewType: String = "board",
+        val title: String = "게시판"
+    ) : GroupAddSetItem(viewType)
+
+    data class GroupAddAlbum(
+        override val viewType: String = "album",
+        val title: String = "앨범"
+    ) : GroupAddSetItem(viewType)
 }

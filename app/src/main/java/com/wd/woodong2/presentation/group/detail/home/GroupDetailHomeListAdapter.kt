@@ -3,6 +3,7 @@ package com.wd.woodong2.presentation.group.detail.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -147,6 +148,8 @@ class GroupDetailHomeListAdapter(
                             memberComments[i].text = member[i].comment
                         }
                     }
+                    viewLine.isVisible = member.size > 1
+                    btnMore.isVisible = member.size > 2
                 }
                 btnMore.setOnClickListener {
                     onClickMoreBtn(R.string.group_detail_tab_member_title)
@@ -162,12 +165,14 @@ class GroupDetailHomeListAdapter(
         override fun bind(item: GroupItem) = with(binding) {
             if (item is GroupItem.GroupBoard) {
                 txtBoardTitle.text = item.title
-                txtBoardCount.text = item.boardList?.size.toString()
+                txtBoardCount.text = item.boardList?.size?.toString() ?: "0"
+                btnMore.isVisible = item.boardList.isNullOrEmpty().not()
                 val boardLayouts = listOf(constraintBoard1, constraintBoard2)
                 val boardProfiles = listOf(imgBoard1Profile, imgBoard2Profile)
                 val boardNames = listOf(txtBoard1Name, txtBoard2Name)
                 val boardDates = listOf(txtBoard1Date, txtBoard2Date)
                 val boardDescriptions = listOf(txtBoard1Description, txtBoard2Description)
+                val cardViewPhoto = listOf(cardViewBoard1Photo, cardViewBoard2Photo)
                 val boardPhotos = listOf(imgBoard1Photo, imgBoard2Photo)
                 item.boardList?.let { board ->
                     for (i in board.indices) {
@@ -177,13 +182,15 @@ class GroupDetailHomeListAdapter(
                                 error(R.drawable.group_ic_no_profile)
                             }
                             boardNames[i].text = board[i].name
-                            boardDates[i].text = SimpleDateFormat("yyyy년 MM월 dd일").format(Date(board[i].timestamp))
+                            boardDates[i].text =
+                                SimpleDateFormat("yyyy년 MM월 dd일").format(Date(board[i].timestamp))
                             boardDescriptions[i].text = board[i].content
-                            boardPhotos[i].load(board[i].images?.get(0)) {
-                                error(R.drawable.group_ic_no_image)
-                            }
+                            boardPhotos[i].load(board[i].images?.get(0))
+                            cardViewPhoto[i].isVisible = board[i].images.isNullOrEmpty().not()
                         }
                     }
+                    viewLine.isVisible = board.size > 1
+                    btnMore.isVisible = board.size > 2
                 }
                 btnMore.setOnClickListener {
                     onClickMoreBtn(R.string.group_detail_tab_board_title)
@@ -199,7 +206,8 @@ class GroupDetailHomeListAdapter(
         override fun bind(item: GroupItem) = with(binding) {
             if (item is GroupItem.GroupAlbum) {
                 txtAlbumTitle.text = item.title
-                txtAlbumCount.text = item.images?.size.toString()
+                txtAlbumCount.text = item.images?.size?.toString() ?: "0"
+                btnMore.isVisible = item.images.isNullOrEmpty().not()
                 val albumPhotos = listOf(imgPhoto1, imgPhoto2, imgPhoto3)
                 item.images?.let { image ->
                     for (i in image.indices) {
@@ -210,6 +218,7 @@ class GroupDetailHomeListAdapter(
                             }
                         }
                     }
+                    btnMore.isVisible = image.size > 3
                 }
                 btnMore.setOnClickListener {
                     onClickMoreBtn(R.string.group_detail_tab_album_title)
@@ -220,7 +229,7 @@ class GroupDetailHomeListAdapter(
 
     class UnknownViewHolder(
         private val binding: GroupDetailHomeUnknownItemBinding
-    ): ViewHolder(binding.root) {
+    ) : ViewHolder(binding.root) {
         override fun bind(item: GroupItem) {
             Unit
         }

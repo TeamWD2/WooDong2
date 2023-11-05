@@ -37,22 +37,9 @@
         app:layout_constraintTop_toBottomOf="@id/view_line_toolBar">
 
         <EditText
-            android:id="@+id/edt_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:hint="@string/group_detail_board_add_hint_board_title"
-            android:textSize="@dimen/wd2_main_title"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/edt_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
             android:id="@+id/edt_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:background="@null"
             android:gravity="start|top"
             android:hint="@string/group_detail_board_add_hint_board_content"
@@ -60,7 +47,7 @@
             android:textSize="@dimen/wd2_normal_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edt_title" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
