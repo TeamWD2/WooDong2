@@ -32,66 +32,55 @@ class GroupAddSharedViewModel(
     private val groupAddIntroduce: MutableLiveData<GroupAddSetItem.GroupAddIntroduce> =
         MutableLiveData(GroupAddSetItem.GroupAddIntroduce())
 
-    private val _mainImage: MutableLiveData<Uri> = MutableLiveData()
-    val mainImage: LiveData<Uri> get() = _mainImage
-
-    private val _backgroundImage: MutableLiveData<Uri> = MutableLiveData()
-    val backgroundImage: LiveData<Uri> get() = _backgroundImage
-
     private val _isCreateSuccess: MutableLiveData<Boolean> = MutableLiveData()
     val isCreateSuccess: LiveData<Boolean> get() = _isCreateSuccess
 
     fun modifyViewPager2(count: Int) {
-        Log.d("sinw", "${_viewPager2CurItem.value}")
         _viewPager2CurItem.value = viewPager2CurItem.value?.plus(count)
-        Log.d("sinw", "${_viewPager2CurItem.value}")
     }
 
     fun setItem(textName: String, text: String?) {
-        when(textName) {
+        when (textName) {
             "groupTag" -> {
                 groupAddMain.value = groupAddMain.value?.copy(groupTag = text)
                 groupAddIntroduce.value = groupAddIntroduce.value?.copy(groupTag = text)
             }
+
             "groupName" -> {
                 groupAddMain.value = groupAddMain.value?.copy(groupName = text)
             }
+
             "groupIntro" -> {
                 groupAddMain.value = groupAddMain.value?.copy(introduce = text)
                 groupAddIntroduce.value = groupAddIntroduce.value?.copy(introduce = text)
             }
+
             "ageLimit" -> {
                 groupAddMain.value = groupAddMain.value?.copy(ageLimit = text)
                 groupAddIntroduce.value = groupAddIntroduce.value?.copy(ageLimit = text)
             }
+
             "memberLimit" -> {
                 groupAddMain.value = groupAddMain.value?.copy(memberLimit = text)
                 groupAddIntroduce.value = groupAddIntroduce.value?.copy(memberLimit = text)
             }
+
             "password" -> {
                 groupAddMain.value = groupAddMain.value?.copy(password = text)
             }
         }
     }
 
-
-    fun setImage(currentItem: String?, image: Uri) = viewModelScope.launch {
-        runCatching {
-            imageStorageSetItem(image).collect { imageUri ->
-                when(currentItem) {
-                    "imgMainImage" -> {
-                        _mainImage.value = imageUri
-                        groupAddMain.value = groupAddMain.value?.copy(mainImage = imageUri.toString())
-                    }
-                    "imgBackgroundImage" -> {
-                        _backgroundImage.value = imageUri
-                        groupAddMain.value =
-                            groupAddMain.value?.copy(backgroundImage = imageUri.toString())
-                    }
-                }
+    fun setImage(currentItem: String?, image: Uri) {
+        when (currentItem) {
+            "imgMainImage" -> {
+                groupAddMain.value = groupAddMain.value?.copy(mainImage = image.toString())
             }
-        }.onFailure {
-            Log.e(TAG, it.message.toString())
+
+            "imgBackgroundImage" -> {
+                groupAddMain.value =
+                    groupAddMain.value?.copy(backgroundImage = image.toString())
+            }
         }
     }
 
@@ -133,8 +122,10 @@ class GroupAddSharedViewModel(
                     && it.memberLimit.isNullOrBlank().not()
         } ?: false
 
-    private fun combineGroupItem(): List<GroupAddSetItem> =
-        mutableListOf<GroupAddSetItem>().apply {
+    private fun combineGroupItem(): List<GroupAddSetItem> {
+        getImageStorage("imgMainImage", Uri.parse(groupAddMain.value?.mainImage))
+        getImageStorage("imgBackgroundImage", Uri.parse(groupAddMain.value?.backgroundImage))
+        return mutableListOf<GroupAddSetItem>().apply {
             groupAddMain.value?.let {
                 add(it)
             }
@@ -155,12 +146,26 @@ class GroupAddSharedViewModel(
                 )
             )
         }
+    }
+
+    private fun getImageStorage(currentItem: String, image: Uri) = viewModelScope.launch {
+        runCatching {
+            imageStorageSetItem(image).collect { imageUri ->
+                when(currentItem) {
+                    "imgMainImage" -> groupAddMain.value = groupAddMain.value?.copy(mainImage = imageUri.toString())
+                    "imgBackgroundImage" -> groupAddMain.value = groupAddMain.value?.copy(backgroundImage = imageUri.toString())
+                }
+            }
+        }.onFailure {
+            Log.e(TAG, it.message.toString())
+        }
+    }
 }
 
 class GroupAddSharedViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val imageStorageRepository =
-            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/${UUID.randomUUID()}"))
+            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("group_list/${UUID.randomUUID()}"))
         val groupRepository =
             GroupRepositoryImpl(FirebaseDatabase.getInstance().getReference("group_list"))
         if (modelClass.isAssignableFrom(GroupAddSharedViewModel::class.java)) {
