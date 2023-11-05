@@ -147,7 +147,7 @@ class GroupViewModel(
                     images = entity.images
                 )
             }
-        }
+        }.sortedBy { it.id }
     }
 }
 
