@@ -18,7 +18,7 @@
         android:id="@+id/viewPager2_group_add"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dots_indicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_back" />
@@ -30,7 +30,7 @@
         android:layout_marginBottom="30dp"
         app:dotsColor="@color/light_gray_box"
         app:dotsCornerRadius="8dp"
-        app:dotsSize="16dp"
+        app:dotsSize="14dp"
         app:dotsSpacing="4dp"
         app:dotsWidthFactor="2.5"
         app:layout_constraintBottom_toBottomOf="parent"

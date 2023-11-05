@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.wd.woodong2.R
@@ -20,6 +21,10 @@ class GroupAddActivity : AppCompatActivity() {
 
     private lateinit var binding: GroupAddActivityBinding
 
+    private val viewModel: GroupAddSharedViewModel by viewModels {
+        GroupAddSharedViewModelFactory()
+    }
+
     private val viewPager2Adapter by lazy {
         GroupAddViewPagerAdapter(this@GroupAddActivity)
     }
@@ -30,6 +35,7 @@ class GroupAddActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initView()
+        initViewModel()
     }
 
     private fun initView() = with(binding) {
@@ -53,6 +59,12 @@ class GroupAddActivity : AppCompatActivity() {
 
         imgBack.setOnClickListener {
             finish()
+        }
+    }
+
+    private fun initViewModel() = with(viewModel) {
+        viewModel.viewPager2CurItem.observe(this@GroupAddActivity) { curItem ->
+            binding.viewPager2GroupAdd.setCurrentItem(curItem, true)
         }
     }
 }

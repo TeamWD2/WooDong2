@@ -55,11 +55,15 @@ class GroupAddIntroFragment : Fragment() {
                 R.id.chip_etc -> getString(R.string.group_add_chip_etc)
                 else -> null
             }
-            sharedViewModel.setGroupTag(groupTag)
+            sharedViewModel.setItem("groupTag", groupTag)
         }
 
         edtIntroduceName.addTextChangedListener(createTextWatcher(edtIntroduceName))
         edtIntroduceDescription.addTextChangedListener(createTextWatcher(edtIntroduceDescription))
+
+        btnNext.setOnClickListener {
+            sharedViewModel.modifyViewPager2()
+        }
     }
 
     private fun createTextWatcher(edtText: EditText) = object : TextWatcher {
@@ -71,8 +75,8 @@ class GroupAddIntroFragment : Fragment() {
 
         override fun afterTextChanged(p0: Editable?) {
             when(edtText.id) {
-                R.id.edt_introduce_name -> sharedViewModel.setGroupName(edtText.text.toString())
-                R.id.edt_introduce_description -> sharedViewModel.setGroupIntroduce(edtText.text.toString())
+                R.id.edt_introduce_name -> sharedViewModel.setItem("groupName", edtText.text.toString())
+                R.id.edt_introduce_description -> sharedViewModel.setItem("groupIntro", edtText.text.toString())
             }
         }
     }
