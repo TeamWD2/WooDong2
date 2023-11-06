@@ -14,8 +14,8 @@
         android:elevation="2dp"
         android:padding="@dimen/wd2_box_padding">
 
-        <EditText
-            android:id="@+id/edt_board_content"
+        <TextView
+            android:id="@+id/txt_board_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
@@ -34,7 +34,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edt_board_content" />
+            app:layout_constraintTop_toBottomOf="@id/txt_board_content" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

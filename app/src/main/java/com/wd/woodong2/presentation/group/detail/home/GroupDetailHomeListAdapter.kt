@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class GroupDetailHomeListAdapter(
+    private val onClickBoardItem: (GroupItem.GroupBoard) -> Unit,
     private val onClickMoreBtn: (Int) -> Unit
 ) : ListAdapter<GroupItem, GroupDetailHomeListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<GroupItem>() {
@@ -82,6 +83,7 @@ class GroupDetailHomeListAdapter(
                         parent,
                         false
                     ),
+                    onClickBoardItem,
                     onClickMoreBtn
                 )
 
@@ -160,6 +162,7 @@ class GroupDetailHomeListAdapter(
 
     class HomeBoardViewHolder(
         private val binding: GroupDetailHomeBoardItemBinding,
+        private val onClickBoardItem: (GroupItem.GroupBoard) -> Unit,
         private val onClickMoreBtn: (Int) -> Unit
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupItem) = with(binding) {
@@ -191,6 +194,9 @@ class GroupDetailHomeListAdapter(
                     }
                     viewLine.isVisible = board.size > 1
                     btnMore.isVisible = board.size > 2
+                }
+                itemView.setOnClickListener {
+                    onClickBoardItem(item)
                 }
                 btnMore.setOnClickListener {
                     onClickMoreBtn(R.string.group_detail_tab_board_title)

@@ -8,8 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.wd.woodong2.databinding.GroupDetailHomeFragmentBinding
 import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
+import com.wd.woodong2.presentation.group.detail.board.detail.GroupDetailBoardDetailActivity
 
-class GroupDetailHomeFragment: Fragment() {
+class GroupDetailHomeFragment : Fragment() {
     companion object {
         fun newInstance() = GroupDetailHomeFragment()
     }
@@ -21,6 +22,14 @@ class GroupDetailHomeFragment: Fragment() {
 
     private val groupDetailHomeListAdapter by lazy {
         GroupDetailHomeListAdapter(
+            onClickBoardItem = { groupItem ->
+                startActivity(
+                    GroupDetailBoardDetailActivity.newIntent(
+                        requireContext(),
+                        groupItem
+                    )
+                )
+            },
             onClickMoreBtn = { tabName ->
                 sharedViewModel.modifyTab(tabName)
             }
