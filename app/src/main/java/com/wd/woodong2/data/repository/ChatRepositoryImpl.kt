@@ -182,6 +182,7 @@ class ChatRepositoryImpl(
                     ),
                 )
 
+                // TODO 나중에 메소드로 분리
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         val response = GCMRetrofitClient.gcmRemoteSource.sendNotification(notification)

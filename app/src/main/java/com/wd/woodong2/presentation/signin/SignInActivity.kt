@@ -3,7 +3,6 @@ package com.wd.woodong2.presentation.signin
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
@@ -55,9 +54,6 @@ class SignInActivity : AppCompatActivity() {
         val uid = signInViewModel.isAutoLogin()
 
         if (uid != null) {
-
-            Log.d(TAG, "$uid")
-
             startActivity(MainActivity.newIntentForAutoLogin(this@SignInActivity, uid))
         }
     }
