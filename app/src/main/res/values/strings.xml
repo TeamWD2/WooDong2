@@ -80,6 +80,9 @@
     <string name="group_add_board_add_toast_no_content">내용을 입력해주세요.</string>
     <string name="group_add_board_add_toast_create_board_success">게시글이 작성되었습니다.</string>
     <string name="group_add_board_add_toast_create_board_fail">게시글 작성에 실패하였습니다.</string>
+    <string name="group_add_board_detail_hint_write_comment">댓글을 입력하세요.</string>
+    <string name="group_add_board_detail_btn_write_comment">작성</string>
+    <string name="group_add_board_detail_txt_delete_comment">삭제</string>
 
     <string name="group_detail_tab_home_title">홈</string>
     <string name="group_detail_tab_member_title">멤버</string>
