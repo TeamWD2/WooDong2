@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.SignupActivityBinding
 import kotlinx.coroutines.launch
+import kotlin.math.sign
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -113,8 +114,16 @@ class SignUpActivity : AppCompatActivity() {
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
                     signViewModel.checkValidNickname(text.toString().trim())
+                    txtCheckNicknameDuplication.apply {
+                        text = "중복 체크"
+                        setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
+                    }
                 }
             })
+        }
+
+        txtCheckNicknameDuplication.setOnClickListener {
+            signViewModel.checkNicknameDuplication(editName.text.toString().trim())
         }
 
         btnSummit.setOnClickListener {
@@ -190,16 +199,37 @@ class SignUpActivity : AppCompatActivity() {
             if (isValid) {
                 tilName.boxStrokeColor =
                     ContextCompat.getColor(this@SignUpActivity, R.color.dodger_blue)
-                txtCheckCorrectName.apply {
-                    setText(R.string.nickname_valid)
-                    setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
-                }
+                txtCheckNicknameDuplication.isEnabled = true
             } else {
                 tilName.boxStrokeColor = ContextCompat.getColor(this@SignUpActivity, R.color.red)
-                txtCheckCorrectName.apply {
-                    setText(R.string.nickname_invalid)
+                txtCheckNicknameDuplication.isEnabled = false
+            }
+        }
+
+        signViewModel.isNicknameDuplication.observe(this@SignUpActivity) { isDup ->
+            if (!isDup) {
+                editName.isEnabled = false
+                txtCheckNicknameDuplication.apply {
+                    text = "사용 가능"
+                    isEnabled = false
+                }
+                Toast.makeText(
+                    applicationContext,
+                    "닉네임 사용 가능",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                txtCheckNicknameDuplication.apply {
+                    text = "중복"
                     setTextColor(ContextCompat.getColor(context, R.color.red))
                 }
+                tilName.boxStrokeColor =
+                    ContextCompat.getColor(this@SignUpActivity, R.color.red)
+                Toast.makeText(
+                    applicationContext,
+                    "닉네임 중복",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -209,6 +239,12 @@ class SignUpActivity : AppCompatActivity() {
                     txtCheckIdDuplication.visibility = View.VISIBLE
                     tilId.boxStrokeColor =
                         ContextCompat.getColor(this@SignUpActivity, R.color.red)
+
+                    Toast.makeText(
+                        applicationContext,
+                        "ID 중복",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 true -> {
@@ -223,14 +259,16 @@ class SignUpActivity : AppCompatActivity() {
                         )
                     }
                     setResult(Activity.RESULT_OK, intent)
+
+                    Toast.makeText(
+                        applicationContext,
+                        "회원 가입 성공",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
                     finish()
                 }
             }
-            Toast.makeText(
-                applicationContext,
-                "결과 : $result",
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 }
