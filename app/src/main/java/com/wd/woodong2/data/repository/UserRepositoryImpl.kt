@@ -1,7 +1,11 @@
 package com.wd.woodong2.data.repository
 
 import android.util.Log
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -12,6 +16,7 @@ import com.wd.woodong2.data.model.UserResponse
 import com.wd.woodong2.domain.model.UserEntity
 import com.wd.woodong2.domain.model.UserItemsEntity
 import com.wd.woodong2.domain.model.toEntity
+import com.wd.woodong2.domain.provider.TokenProvider
 import com.wd.woodong2.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +28,7 @@ import kotlinx.coroutines.launch
 class UserRepositoryImpl(
     private val databaseReference: DatabaseReference,
     private val auth: FirebaseAuth,
+    private val tokenProvider: TokenProvider,
 ) : UserRepository {
     companion object {
         const val TAG = "UserRepositoryImpl"
@@ -66,7 +72,10 @@ class UserRepositoryImpl(
             }
         }
 
-    override suspend fun addUser(user: UserEntity) {
+    /*
+    * Realtime database에 user 추가
+    * */
+    override fun addUser(user: UserEntity) {
         if (user.id == null) {
             Log.e(TAG, "user.id == null")
             return
@@ -76,21 +85,25 @@ class UserRepositoryImpl(
             user.id to user
         )
 
-        databaseReference.setValue(addItem)
+        databaseReference.updateChildren(addItem)
 
         Log.d(TAG, "addUser 성공")
     }
 
-    override suspend fun signUp(email: String, password: String, name: String): Flow<Boolean> =
+    /*
+    * Auth 회원가입
+    * */
+    override suspend fun signUp(email: String, password: String, name: String): Flow<Any> =
         callbackFlow {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
+                    if (task.isSuccessful && tokenProvider.getToken() != null) {
 
                         val user = UserEntity(
                             id = task.result?.user?.uid,
                             email = email,
                             name = name,
+
                             chatIds = listOf(),
                             groupIds= listOf(),        //모임
                             likedIds= listOf(),        //좋아요 게시물
@@ -105,20 +118,40 @@ class UserRepositoryImpl(
                             addUser(user)
                         }
 
-                        Log.d(TAG, "$task 성공")
+                            //withContext, runBlocking
+                            token = tokenProvider.getToken()
+                        )
+                        addUser(user)
 
+                        Log.d(TAG, "${task.result} 성공")
                         trySend(true)
-                    } else {
-                        trySend(false)
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    when (exception) {
+                        is FirebaseAuthWeakPasswordException -> trySend("ERROR_WEAK_PASSWORD")
+                        is FirebaseAuthInvalidCredentialsException -> trySend("ERROR_INVALID_EMAIL")
+                        is FirebaseAuthUserCollisionException -> trySend("ERROR_EMAIL_ALREADY_IN_USE")
+                        is FirebaseNetworkException -> trySend("ERROR_NETWORK")
+                        else -> trySend("ERROR_UNKNOWN")
                     }
                 }
             awaitClose { }
         }
 
+
     override suspend fun signIn(email: String, password: String): Flow<Boolean> = callbackFlow {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    val uid = auth.currentUser?.uid
+
+                    if (uid != null) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            updateUserToken(uid)
+                        }
+                    }
+
                     Log.d(TAG, "로그인 성공")
                     trySend(true)
                 } else {
@@ -127,6 +160,23 @@ class UserRepositoryImpl(
                 }
             }
         awaitClose { }
+    }
+
+    /*
+    UID 가져오는 메소드
+    * */
+    override fun getUid(): String? {
+        return auth.currentUser?.uid
+    }
+
+
+    /*
+    * Realtime database 유저 토큰 업데이트
+    * */
+    override suspend fun updateUserToken(userId: String): Flow<Boolean> = callbackFlow {
+        val userDataReference = databaseReference.child(userId)
+        val token = mapOf("token" to tokenProvider.getToken())
+        userDataReference.updateChildren(token)
     }
 
     override fun updateUserLocations(

@@ -77,7 +77,7 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
         private val binding: ChatDetailOpponentItemBinding,
     ) : ViewHolder(binding.root) {
         override fun onBind(item: MessageItem) = with(binding) {
-            txtName.text = item.senderId
+            txtName.text = item.nickname
             txtChat.text = item.content
         }
     }

@@ -3,15 +3,16 @@ package com.wd.woodong2.presentation.signin
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.SigninActivityBinding
 import com.wd.woodong2.presentation.main.MainActivity
-import com.wd.woodong2.presentation.provider.ContextProviderImpl
 import com.wd.woodong2.presentation.signup.SignUpActivity
 
 class SignInActivity : AppCompatActivity() {
@@ -25,8 +26,19 @@ class SignInActivity : AppCompatActivity() {
 
     private val signInViewModel: SignInViewModel by viewModels {
         SignInViewModelFactory(
-            ContextProviderImpl(this)
+            this
         )
+    }
+
+    private val signUpActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            binding.editId.setText(result.data?.getStringExtra(SignUpActivity.SIGN_UP_ID) ?: "")
+            binding.editPassword.setText(
+                result.data?.getStringExtra(SignUpActivity.SIGN_UP_PW) ?: ""
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,10 +52,13 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun initInfo() {
-        val id = signInViewModel.isAutoLogin()
+        val uid = signInViewModel.isAutoLogin()
 
-        if (id != null) {
-            startActivity(MainActivity.newIntentForAutoLogin(this@SignInActivity, id))
+        if (uid != null) {
+
+            Log.d(TAG, "$uid")
+
+            startActivity(MainActivity.newIntentForAutoLogin(this@SignInActivity, uid))
         }
     }
 
@@ -59,9 +74,9 @@ class SignInActivity : AppCompatActivity() {
             )
         }
 
-        //signup btn click
+        // 회원 가입 버튼 클릭 시
         txtSignup.setOnClickListener {
-            startActivity(
+            signUpActivityResultLauncher.launch(
                 Intent(this@SignInActivity, SignUpActivity::class.java)
             )
         }
@@ -78,10 +93,18 @@ class SignInActivity : AppCompatActivity() {
 
     private fun initModel() = with(signInViewModel) {
         loginResult.observe(this@SignInActivity) { result ->
-            if (result) {
+
+            val uid = getUserUIDFromAuth()
+
+            if (result && uid != null) {
                 Toast.makeText(this@SignInActivity, R.string.login_success, Toast.LENGTH_SHORT)
                     .show()
-                startActivity(MainActivity.newIntentForMain(this@SignInActivity))
+                startActivity(
+                    MainActivity.newIntentForLogin(
+                        this@SignInActivity,
+                        uid
+                    )
+                )
             } else {
                 Toast.makeText(this@SignInActivity, R.string.login_fail, Toast.LENGTH_SHORT).show()
             }

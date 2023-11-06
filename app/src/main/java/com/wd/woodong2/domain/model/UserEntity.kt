@@ -3,7 +3,7 @@ package com.wd.woodong2.domain.model
 import com.google.gson.annotations.SerializedName
 
 data class UserItemsEntity(
-    val userItems: List<UserEntity>?
+    val userItems: List<UserEntity>?,
 )
 
 data class UserEntity(

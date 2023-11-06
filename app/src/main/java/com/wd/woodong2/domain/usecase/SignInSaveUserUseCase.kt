@@ -5,8 +5,8 @@ import com.wd.woodong2.domain.repository.UserPreferencesRepository
 class SignInSaveUserUseCase(
     private val userPreferencesRepository: UserPreferencesRepository,
 ) {
-    operator fun invoke(user: String, isLoggedIn: Boolean) {
-        userPreferencesRepository.saveUser(user, isLoggedIn)
+    operator fun invoke(user: String, isLoggedIn: Boolean, uid: String) {
+        userPreferencesRepository.saveUser(user, isLoggedIn, uid)
     }
 }
 

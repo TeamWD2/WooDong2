@@ -13,16 +13,17 @@ data class ChatResponse(
     @SerializedName("mainImage") val mainImage: String?,
     @SerializedName("memberLimit") val memberLimit: String?,
     @SerializedName("message") val message: Map<String, MessageResponse>?,
-    @SerializedName("title") val title: String?
+    @SerializedName("title") val title: String?,
 )
 
 data class MessageItemsResponse(
-    val messageItems: List<MessageResponse>?
+    val messageItems: List<MessageResponse>?,
 )
 
 data class MessageResponse(
     val id: String?,
     @SerializedName("content") val content: String?,
     @SerializedName("senderId") val senderId: String?,
-    @SerializedName("timestamp") val timestamp: Long?
+    @SerializedName("timestamp") val timestamp: Long?,
+    @SerializedName("nickname") val nickname: String?,
 )

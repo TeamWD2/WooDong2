@@ -13,6 +13,6 @@ interface ChatRepository {
         location: String,
     )
 
-    suspend fun addChatMessageItem(userId: String, message: String)
+    suspend fun addChatMessageItem(userId: String, message: String, nickname: String)
     suspend fun getMessageItems(): Flow<MessageItemsEntity?>
 }
