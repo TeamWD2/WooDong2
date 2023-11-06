@@ -13,6 +13,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.data.repository.ChatRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
+import com.wd.woodong2.domain.usecase.ChatInitChatItemTimestampUseCase
 import com.wd.woodong2.domain.usecase.ChatLoadMessageItemsUseCase
 import com.wd.woodong2.domain.usecase.ChatSendMessageUseCase
 import com.wd.woodong2.domain.usecase.SignInGetUserUIDUseCase
@@ -26,6 +27,7 @@ class ChatDetailViewModel(
     private val sendMessageItem: ChatSendMessageUseCase,
     private val getUserUID: SignInGetUserUIDUseCase,
     private val getUser: UserGetItemUseCase,
+    private val initChatItemTimestamp: ChatInitChatItemTimestampUseCase,
 ) : ViewModel(
 ) {
     companion object {
@@ -102,6 +104,12 @@ class ChatDetailViewModel(
             Log.e("danny", it.message.toString())
         }
     }
+
+    fun destroyAll() {
+        if (chatItem.id != null) {
+            initChatItemTimestamp(chatItem.id!!)
+        }
+    }
 }
 
 class ChatDetailViewModelFactory(
@@ -139,6 +147,7 @@ class ChatDetailViewModelFactory(
                 ChatSendMessageUseCase(chatRepository),
                 SignInGetUserUIDUseCase(userRepositoryImpl),
                 UserGetItemUseCase(userRepositoryImpl),
+                ChatInitChatItemTimestampUseCase(chatRepository),
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
