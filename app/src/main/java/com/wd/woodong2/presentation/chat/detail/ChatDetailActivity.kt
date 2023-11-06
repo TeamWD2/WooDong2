@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.wd.woodong2.databinding.ChatDetailActivityBinding
 import com.wd.woodong2.presentation.chat.content.ChatItem
 
@@ -96,7 +97,21 @@ class ChatDetailActivity : AppCompatActivity() {
         recyclerViewChat.apply {
             adapter = chatDetailItemListAdapter
             layoutManager = LinearLayoutManager(context)
+
+            var isInitialLoad = true
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    if (!isInitialLoad && !recyclerViewChat.canScrollVertically(-1)) {
+                        chatDetailViewModel.getMessageItem()
+                    }
+                    isInitialLoad = false
+                }
+            })
         }
+
 
         btnSend.setOnClickListener {
             chatDetailViewModel.sendMessage(
@@ -113,8 +128,13 @@ class ChatDetailActivity : AppCompatActivity() {
     private fun initModel() = with(binding) {
         chatDetailViewModel.messageList.observe(this@ChatDetailActivity) { itemList ->
             chatDetailItemListAdapter.submitList(itemList.toMutableList())
+
+            val isAtBottom = !recyclerViewChat.canScrollVertically(1)
+            chatDetailItemListAdapter.submitList(itemList.toMutableList())
             recyclerViewChat.post {
-                recyclerViewChat.scrollToPosition(itemList.size - 1)
+                if (isAtBottom) {
+                    recyclerViewChat.scrollToPosition(itemList.size - 1)
+                }
             }
         }
         chatDetailViewModel.isLoading.observe(this@ChatDetailActivity) { loadingState ->
