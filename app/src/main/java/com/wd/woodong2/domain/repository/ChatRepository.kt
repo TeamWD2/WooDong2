@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface ChatRepository {
-    suspend fun getChatItems(chatIds: List<String>): Flow<ChatItemsEntity?>
+    suspend fun loadChatItems(chatIds: List<String>): Flow<ChatItemsEntity?>
     suspend fun addChatItem(
         senderId: String,
         imgProfile: String,
@@ -14,5 +14,5 @@ interface ChatRepository {
     )
 
     suspend fun addChatMessageItem(userId: String, message: String, nickname: String)
-    suspend fun getMessageItems(): Flow<MessageItemsEntity?>
+    suspend fun loadMessageItems(chatId: String): Flow<MessageItemsEntity?>
 }

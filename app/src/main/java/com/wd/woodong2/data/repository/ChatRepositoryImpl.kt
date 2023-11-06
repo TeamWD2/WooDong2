@@ -27,14 +27,18 @@ class ChatRepositoryImpl(
     private val databaseReference: DatabaseReference,
 ) : ChatRepository {
 
+
     companion object {
         const val TAG: String = "ChatRepositoryImpl"
+
+        const val pageSize: Int = 20
+        var lastTimestamps: MutableMap<String, Long> = mutableMapOf()
     }
 
     /*
     * "chat_list"
     * */
-    override suspend fun getChatItems(chatIds: List<String>): Flow<ChatItemsEntity?> =
+    override suspend fun loadChatItems(chatIds: List<String>): Flow<ChatItemsEntity?> =
         callbackFlow {
             val listener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -97,32 +101,44 @@ class ChatRepositoryImpl(
 //        chatRef.setValue(chatEntity)
     }
 
-    override suspend fun getMessageItems(): Flow<MessageItemsEntity?> = callbackFlow {
-        val listener =
-            databaseReference.child("message").addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        val gson = GsonBuilder().create()
+    override suspend fun loadMessageItems(chatId: String): Flow<MessageItemsEntity?> = callbackFlow {
+        val sortedDatabaseRef = databaseReference.child("message").orderByChild("timestamp")
 
-                        val messageResponses =
-                            snapshot.children.mapNotNull { childSnapshot ->
-                                val jsonString = gson.toJson(childSnapshot.value)
-                                val response =
-                                    gson.fromJson(jsonString, MessageResponse::class.java)
-                                response.copy(id = childSnapshot.key)
-                            }
+        val lastTimestamp = lastTimestamps[chatId]
 
-                        val entity = MessageItemsResponse(messageResponses).toEntity()
-                        trySend(entity)
-                    } else {
-                        throw RuntimeException("snapshot is not exists")
-                    }
+        val databaseRef = if (lastTimestamp == null) {
+            sortedDatabaseRef.limitToLast(pageSize)
+        } else {
+            sortedDatabaseRef.endAt((lastTimestamp - 1).toDouble()).limitToLast(pageSize)
+        }
+
+        val listener = databaseRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val gson = GsonBuilder().create()
+
+                    val messageResponses =
+                        snapshot.children.mapNotNull { childSnapshot ->
+                            val jsonString = gson.toJson(childSnapshot.value)
+                            val response =
+                                gson.fromJson(jsonString, MessageResponse::class.java)
+                            response.copy(id = childSnapshot.key)
+                        }
+
+                    lastTimestamps[chatId] = messageResponses.firstOrNull()?.timestamp ?: return
+
+                    val entity = MessageItemsResponse(messageResponses).toEntity()
+                    trySend(entity)
+                } else {
+                    // 없으면 빈 리스트 반환
+                    trySend(MessageItemsEntity(emptyList()))
                 }
+            }
 
-                override fun onCancelled(error: DatabaseError) {
-                    throw error.toException()
-                }
-            })
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
         awaitClose {
             databaseReference.removeEventListener(listener)
         }
