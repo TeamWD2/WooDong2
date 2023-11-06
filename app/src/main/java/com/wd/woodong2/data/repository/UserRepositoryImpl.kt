@@ -23,6 +23,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class UserRepositoryImpl(
     private val databaseReference: DatabaseReference,
@@ -196,6 +197,12 @@ class UserRepositoryImpl(
             "email" to email,
         )
         userInfo.updateChildren(updateUserData)
+    }
+
+    override suspend fun checkNicknameDup(nickname: String): Boolean {
+        val query = databaseReference.orderByChild("name").equalTo(nickname)
+        val dataSnapshot = query.get().await()
+        return dataSnapshot.exists() // 중복이면 true, 아니면 false
     }
 }
 

@@ -14,4 +14,5 @@ interface UserRepository {
     suspend fun signUp(email: String, password: String, name: String): Flow<Any>
     suspend fun signIn(email: String, password: String): Flow<Boolean>
     fun getUid(): String?
+    suspend fun checkNicknameDup(nickname: String): Boolean
 }
