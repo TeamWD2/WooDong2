@@ -191,10 +191,12 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/txt_check_correct_name"
+                    android:id="@+id/txt_check_nickname_duplication"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/dodger_blue"
+                    android:text="@string/check_nickname_duplication"
+
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/txt_name" />
 
