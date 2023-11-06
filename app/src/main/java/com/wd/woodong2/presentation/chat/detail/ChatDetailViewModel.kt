@@ -13,7 +13,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.data.repository.ChatRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.ChatGetMessageItemsUseCase
+import com.wd.woodong2.domain.usecase.ChatLoadMessageItemsUseCase
 import com.wd.woodong2.domain.usecase.ChatSendMessageUseCase
 import com.wd.woodong2.domain.usecase.SignInGetUserUIDUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
@@ -21,7 +21,8 @@ import com.wd.woodong2.presentation.chat.content.ChatItem
 import kotlinx.coroutines.launch
 
 class ChatDetailViewModel(
-    private val getMessageItem: ChatGetMessageItemsUseCase,
+    private val chatItem: ChatItem,
+    private val loadMessageItem: ChatLoadMessageItemsUseCase,
     private val sendMessageItem: ChatSendMessageUseCase,
     private val getUserUID: SignInGetUserUIDUseCase,
     private val getUser: UserGetItemUseCase,
@@ -60,10 +61,11 @@ class ChatDetailViewModel(
         }
     }
 
-    private fun getMessageItem() = viewModelScope.launch {
+    fun getMessageItem() = viewModelScope.launch {
         runCatching {
             _isLoading.value = true
-            getMessageItem.invoke().collect { items ->
+            if (chatItem.id == null) return@launch
+            loadMessageItem(chatItem.id!!).collect { items ->
                 val messageItemList = items?.messageItems?.map { messageResponse ->
                     MessageItem(
                         id = messageResponse.id,
@@ -73,8 +75,17 @@ class ChatDetailViewModel(
                         isMyMessage = messageResponse.senderId == uid,
                         nickname = messageResponse.nickname
                     )
-                }?.sortedBy { it.timestamp } ?: emptyList()
-                _massageList.postValue(messageItemList.toMutableList())
+                } ?: emptyList()
+
+                val updatedMessageList = _massageList.value.orEmpty().toMutableList()
+
+                messageItemList.forEach { messageItem ->
+                    if (updatedMessageList.none { it.id == messageItem.id }) {
+                        updatedMessageList.add(messageItem)
+                    }
+                }
+
+                _massageList.postValue(updatedMessageList.sortedBy { it.timestamp }.toMutableList())
                 _isLoading.value = false
             }
         }.onFailure {
@@ -123,7 +134,8 @@ class ChatDetailViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatDetailViewModel::class.java)) {
             return ChatDetailViewModel(
-                ChatGetMessageItemsUseCase(chatRepository),
+                chatItem,
+                ChatLoadMessageItemsUseCase(chatRepository),
                 ChatSendMessageUseCase(chatRepository),
                 SignInGetUserUIDUseCase(userRepositoryImpl),
                 UserGetItemUseCase(userRepositoryImpl),
