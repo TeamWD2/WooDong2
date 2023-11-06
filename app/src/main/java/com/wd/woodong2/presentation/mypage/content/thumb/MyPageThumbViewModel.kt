@@ -14,6 +14,10 @@ import com.wd.woodong2.presentation.home.content.HomeItem
 class MyPageThumbViewModel : ViewModel(){
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
+
+    private val _printList: MutableLiveData<List<HomeItem>> = MutableLiveData()
+    val printList: LiveData<List<HomeItem>> get() = _printList
+
     init {
         loadDataFromFirebase()
     }

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -69,6 +70,9 @@ class ChatFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
+
+
+
         recyclerViewChat.apply {
             adapter = chatItemListAdapter
             layoutManager = LinearLayoutManager(requireContext())
