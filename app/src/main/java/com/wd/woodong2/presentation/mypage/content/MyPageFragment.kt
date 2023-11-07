@@ -30,6 +30,8 @@ class MyPageFragment : Fragment() {
         const val EXTRA_USER_NAME = "extra_user_name"
         const val EXTRA_USER_PROFILE = "extra_user_profile"
         const val EXTRA_USER_PASSWORD = "extra_user_password"
+
+        lateinit var UserInfo : UserItem
         fun newInstance() = MyPageFragment()
         fun extractLocationInfo(address: String): String {
             val parts = address.split(" ")
@@ -43,7 +45,7 @@ class MyPageFragment : Fragment() {
     }
     private lateinit var editUserLauncher : ActivityResultLauncher<Intent>
 
-    private lateinit var UserInfo : UserItem
+
     private var _binding : MyPageFragmentBinding? = null
     private val binding get() = _binding!!
 
@@ -85,6 +87,23 @@ class MyPageFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
+        //로그아웃
+        toolbarImgLogout.setOnClickListener {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("로그아웃")
+                .setMessage("로그아웃 하시겠습니까?")
+                .setPositiveButton(
+                    "확인"
+                ) { _, _ ->
+
+                }
+                .setNegativeButton(
+                    "취소"
+                ) { _, _ ->
+                }
+
+            builder.show()
+        }
 
         myPageViewPagerAdapter = MyPageViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
         myPageViewPager2.adapter = myPageViewPagerAdapter
@@ -117,7 +136,7 @@ class MyPageFragment : Fragment() {
                     .setMessage("기본 이미지로 변경 하시겠습니까?.")
                     .setPositiveButton(
                         "확인"
-                    ) { dialog, id ->
+                    ) { _, _ ->
                         viewModel.updateUserItem(
                             UserInfo.name.toString(),
                             R.drawable.group_ic_no_profile.toString(),
@@ -132,7 +151,7 @@ class MyPageFragment : Fragment() {
                     }
                     .setNegativeButton(
                         "취소"
-                    ) { dialog, id ->
+                    ) { _, _ ->
                     }
                 // 다이얼로그를 띄워주기
                 builder.show()

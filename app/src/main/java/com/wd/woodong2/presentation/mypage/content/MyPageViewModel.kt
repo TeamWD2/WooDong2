@@ -19,48 +19,21 @@ import kotlinx.coroutines.launch
 
 class MyPageViewModel(
     private val userItem: UserGetItemsUseCase,
-    //private val udbReference: DatabaseReference
 ) : ViewModel(
 
 ) {
-    // 누적 조회수, 작성글/댓글 수, 받은 공감 수 설정
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
 
     val userId = "user1"
-    var userInfo: MutableLiveData<UserItem> = MutableLiveData()   //UserItem
+    var userInfo: MutableLiveData<UserItem> = MutableLiveData()
 
     init {
         getUserItem()
-        loadDataFromFirebase()
     }
 
-    //    누적 조회수
-//    조회수 변수 필요 - HOMELIST에 작성한 글에 대한 조회수의 모든 합
-//    HOMELIST에 작성한 글에 대한 thumbCount의 모든 합
-    private fun loadDataFromFirebase() {
-//        databaseReference.addValueEventListener(object :
-//            ValueEventListener {
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                val dataList = ArrayList<HomeItem>()
-//
-//                for (postSnapshot in dataSnapshot.children) {
-//                    val firebaseData = postSnapshot.getValue(HomeItem::class.java)
-//                    if (firebaseData != null) {
-//                        dataList.add(firebaseData)
-//                    }
-//                }
-//                _list.value = dataList
-//            }
-//
-//            override fun onCancelled(databaseError: DatabaseError) {
-//            }
-//        })
-    }
 
-    //    userInfo에
-//    댓글 횟수를 나타내는 변수 필요
-//    작성한 글의 횟수를 나타내는 변수 필요
+
     private fun getUserItem() = viewModelScope.launch {
         runCatching {
             userItem(userId).collect { user ->
@@ -71,20 +44,19 @@ class MyPageViewModel(
                         imgProfile = user?.imgProfile ?: "",
                         email = user?.email ?: "",
                         chatIds = user?.chatIds.orEmpty(),
+                        groupIds = user?.groupIds.orEmpty(),        //모임
+                        likedIds = user?.likedIds.orEmpty(),        //좋아요 게시물
+                        writtenIds = user?.writtenIds.orEmpty(),        //작성한 게시물
                         firstLocation = user?.firstLocation ?: "",
                         secondLocation = user?.secondLocation ?: ""
                     )
+
                 userInfo.postValue(userItem)
             }
         }.onFailure {
             Log.e("homeItem", it.message.toString())
         }
-
     }
-
-    //비밀번호, 이름, 사진 ->
-    // 나중에 정보 입력 받을때 어떤 정보를 받을지 몰라서
-    // 아직은 useCase에 안 옴기겠습니다.
 
     fun updateUserItem(
         name: String,

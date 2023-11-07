@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.databinding.MyPageThumbFragmentBinding
 import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
+import com.wd.woodong2.presentation.mypage.content.MyPageFragment
 
 
 class MyPageThumbFragment : Fragment() {

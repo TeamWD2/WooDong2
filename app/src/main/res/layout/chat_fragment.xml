@@ -30,6 +30,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </LinearLayout>
+
     </androidx.appcompat.widget.Toolbar>
 
     <!-- 구분선을 그릴 레이아웃 -->

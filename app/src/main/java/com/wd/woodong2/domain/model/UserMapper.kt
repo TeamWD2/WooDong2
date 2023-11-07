@@ -1,5 +1,6 @@
 package com.wd.woodong2.domain.model
 
+import com.google.gson.annotations.SerializedName
 import com.wd.woodong2.data.model.UserItemsResponse
 import com.wd.woodong2.data.model.UserResponse
 
@@ -16,6 +17,9 @@ fun UserResponse.toEntity() = UserEntity(
     imgProfile = imgProfile,
     email = email,
     chatIds = chatIds?.map { it }.orEmpty(),
+    groupIds= groupIds?.map { it }.orEmpty(),        //모임
+    likedIds= likedIds?.map { it }.orEmpty(),        //좋아요 게시물
+    writtenIds= writtenIds?.map { it }.orEmpty(),        //작성한 게시물
     firstLocation = firstLocation,
     secondLocation = secondLocation,
     token = token

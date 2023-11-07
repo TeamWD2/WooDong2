@@ -33,6 +33,9 @@ class ChatViewModel(
         chatIds = listOf(
             "-chat_list-group-TestData0", "-chat_list-group-TestData1"
         ),
+        groupIds = listOf(),        //모임
+        likedIds = listOf(),        //좋아요 게시물
+        writtenIds = listOf(),        //작성한 게시물
         email = "대니주@example.com",
         name = "주찬영",
         imgProfile = "URL_TO_USER_1_IMAGE",

@@ -38,14 +38,6 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/img_toolbar_notification"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/public_ic_notice" />
-
-        <ImageView
             android:id="@+id/img_toolbar_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
