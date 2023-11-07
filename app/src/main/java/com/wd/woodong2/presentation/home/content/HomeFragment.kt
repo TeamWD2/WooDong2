@@ -26,17 +26,17 @@ import com.wd.woodong2.presentation.home.map.HomeMapActivity.Companion.EXTRA_SEC
 class HomeFragment : Fragment() {
     private var _binding : HomeFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel : HomeViewModel //= HomeViewModelFactory().create(HomeViewModel::class.java)
+    private val viewModel : HomeViewModel
         by viewModels {
             HomeViewModelFactory()
         }
 
     private var firstLocation :String? = null
     private var secondLocation :String? = null
+    private var locationType : Int? = 0
     private var userName :String? = null
-    private var homeItemCount : Int? = 0
     private lateinit var homeMapLauncher : ActivityResultLauncher<Intent>
-    private var count : Int? = 1
+
     private val listAdapter by lazy {
         HomeListAdapter(requireContext(),
             onClickItem = { item ->
@@ -102,37 +102,48 @@ class HomeFragment : Fragment() {
             )
         }
         fabHomeadd.setOnClickListener {
-            // 과연 주소를 받아 올까 그게 문제야
-            count = count!! + 5
-            HomeMapActivity.getLocationFromAddress(requireContext(), firstLocation.toString())
-            viewModel.circumLocationItemSearch(
-                HomeMapActivity.latitude,
-                HomeMapActivity.longitude,
-                1000* count!!,
-                firstLocation.toString()
-            )
             val intent = HomeAddActivity.homeAddActivityNewIntent(requireContext(),
                 firstLocation.toString(),userName
             )
             startActivity(intent)
         }
     }
-    private fun initViewModel(){
-        with(viewModel){
-            list.observe(viewLifecycleOwner){
+    private fun initViewModel() {
+        with(viewModel) {
+            // 변화가 감지되면 ..
+            printList.observe(viewLifecycleOwner) {
                 listAdapter.submitList(it)
-                homeItemCount = list.value?.size
-                if(homeItemCount!! < 10){
-//
-                }
             }
 
-            userInfo.observe(viewLifecycleOwner){userInfo->
+            userInfo.observe(viewLifecycleOwner) { userInfo ->
+
+                val filteredList = list.value?.filter { it.location == userInfo.firstLocation }
+                _printList.value = filteredList!!
+
+                // 구, 군
+                if (printList.value?.size!! < 10) {
+                    //locationType = 1
+                    HomeMapActivity.getLocationFromAddress(
+                        requireContext(),
+                        userInfo.firstLocation.toString()
+                    )
+                    circumLocationItemSearch(
+                        HomeMapActivity.latitude,
+                        HomeMapActivity.longitude,
+                        20000,
+                        userInfo.firstLocation.toString(),
+                        //locationType,
+                        userInfo.firstLocation.toString()
+                    )
+                    }
+
+
                 firstLocation = userInfo.firstLocation
                 secondLocation = userInfo.secondLocation
                 userName = userInfo.name
-                binding.toolbarTvLocation.text = HomeMapActivity.extractLocationInfo(firstLocation.toString())
-                if(userInfo.firstLocation == ""){
+                binding.toolbarTvLocation.text =
+                    HomeMapActivity.extractLocationInfo(firstLocation.toString())
+                if (userInfo.firstLocation == "") {
 
                     Toast.makeText(requireContext(), "위치 설정이 필요합니다", Toast.LENGTH_SHORT).show()
 
@@ -142,10 +153,11 @@ class HomeFragment : Fragment() {
                         )
                     )
                 }
+
+
             }
         }
     }
-
 
 
     override fun onDestroyView() {
