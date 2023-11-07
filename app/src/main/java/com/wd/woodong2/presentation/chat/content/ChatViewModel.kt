@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.chat.content
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,16 +8,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
+import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.ChatRepositoryImpl
-import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.ChatItemsEntity
 import com.wd.woodong2.domain.usecase.ChatGetItemsUseCase
-import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
+import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
     private val chatItem: ChatGetItemsUseCase,
-//    private val userItem: UserGetItemsUseCase,
+    private val prefSetUserItem: UserPrefGetItemUseCase,
 ) : ViewModel(
 ) {
     private val _chatList = MutableLiveData<MutableList<ChatItem>>()
@@ -27,44 +31,33 @@ class ChatViewModel(
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     // User test
-    val userId = "user1"
-    var user = UserItem(
-        id = "user1",
-        chatIds = listOf(
-            "-chat_list-group-TestData0", "-chat_list-group-TestData1"
-        ),
-        email = "대니주@example.com",
-        name = "주찬영",
-        imgProfile = "URL_TO_USER_1_IMAGE",
-        firstLocation = "",
-        secondLocation = "",
-    )
+    var user: UserItem
 
     init {
-        getChatItems()
+        val getUser = prefSetUserItem()
+        if (getUser != null) {
+            user = UserItem(
+                id = getUser.id,
+                name = getUser.name,
+                imgProfile = getUser.imgProfile,
+                email = getUser.email,
+                chatIds = getUser.chatIds,
+                firstLocation = getUser.firstLocation,
+                secondLocation = getUser.secondLocation,
+            )
+            getChatItems()
+        } else {
+            user = UserItem(
+                id = "(알수 없음)",
+                name = "(알수 없음)",
+                imgProfile = "(알수 없음)",
+                email = "(알수 없음)",
+                chatIds = emptyList(),
+                firstLocation = "(알수 없음)",
+                secondLocation = "(알수 없음)",
+            )
+        }
     }
-
-//    private fun getUserItem() = viewModelScope.launch {
-//        // userId로 채팅방 찾기
-//        runCatching {
-//            userItem(userId) { items ->
-//                val userItem = items?.userItems?.map {
-//                    UserItem(
-//                        id = it.id,
-//                        name = it.name,
-//                        imgProfile = it.imgProfile,
-//                        email = it.email,
-//                        chatIds = it.chatIds,
-//                        firstLocation = it.firstLocation,
-//                        secondLocation = it.secondLocation
-//                    )
-//                }.orEmpty()
-//                user = userItem[0]
-//            }
-//        }.onFailure {
-//            Log.e("sinw", it.message.toString())
-//        }
-//    }
 
     private fun getChatItems() = viewModelScope.launch {
         _isLoading.value = true
@@ -93,9 +86,8 @@ class ChatViewModel(
     /**
      * Firebase 에서 chat 목록 read
      */
-
     private fun readChatItems(
-        items: ChatItemsEntity?
+        items: ChatItemsEntity?,
     ) = items?.chatItems?.map {
         ChatItem.GroupChatItem(
             id = it.id,
@@ -109,24 +101,31 @@ class ChatViewModel(
     }.orEmpty()
 }
 
-class ChatViewModelFactory : ViewModelProvider.Factory {
+class ChatViewModelFactory(
+    val context: Context,
+) : ViewModelProvider.Factory {
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
 
     private val chatDatabaseReference by lazy {
         FirebaseDatabase.getInstance().getReference("chat_list")
     }
 
-    // 삭제 예정
-//    private val userDatabaseReference by lazy {
-//        FirebaseDatabase.getInstance().getReference("users")
-//    }
+    private val userPreferencesRepository by lazy {
+        UserPreferencesRepositoryImpl(
+            SignInPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            ),
+            UserInfoPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            )
+        )
+    }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
             return ChatViewModel(
                 ChatGetItemsUseCase(ChatRepositoryImpl(chatDatabaseReference)),
-
-                // 삭제 예정
-//                UserGetItemsUseCase(UserRepositoryImpl(userDatabaseReference))
+                UserPrefGetItemUseCase(userPreferencesRepository),
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

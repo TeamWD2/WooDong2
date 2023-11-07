@@ -18,14 +18,13 @@ class ChatFragment : Fragment() {
         fun newInstance() = ChatFragment()
     }
 
-    // User Test
-    val userId = "user1"
-
     private var _binding: ChatFragmentBinding? = null
     private val binding get() = _binding!!
 
     private val chatViewModel: ChatViewModel by viewModels {
-        ChatViewModelFactory()
+        ChatViewModelFactory(
+            requireContext(),
+        )
     }
 
     private val chatItemListAdapter by lazy {
@@ -49,7 +48,7 @@ class ChatFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = ChatFragmentBinding.inflate(inflater, container, false)
         return binding.root
