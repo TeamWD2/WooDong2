@@ -214,11 +214,12 @@ class GroupDetailHomeListAdapter(
                 txtAlbumTitle.text = item.title
                 txtAlbumCount.text = item.images?.size?.toString() ?: "0"
                 btnMore.isVisible = item.images.isNullOrEmpty().not()
+                val albumCardView = listOf(cardViewPhoto1, cardViewPhoto2, cardViewPhoto3)
                 val albumPhotos = listOf(imgPhoto1, imgPhoto2, imgPhoto3)
                 item.images?.let { image ->
                     for (i in image.indices) {
                         if (i < albumPhotos.size) {
-                            albumPhotos[i].visibility = View.VISIBLE
+                            albumCardView[i].visibility = View.VISIBLE
                             albumPhotos[i].load(image[i]) {
                                 error(R.drawable.group_ic_no_profile)
                             }

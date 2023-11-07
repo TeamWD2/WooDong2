@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailAlbumFragmentBinding
 import com.wd.woodong2.presentation.group.content.GroupItem
 import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
@@ -40,9 +41,13 @@ class GroupDetailAlbumFragment: Fragment() {
 
     private fun initView() = with(binding) {
         recyclerViewAddDetailAlbum.adapter = groupDetailAlbumListAdapter
-        val groupAlbumList = sharedViewModel.groupDetailItem?.filterIsInstance<GroupItem.GroupAlbum>()
-        val albumList = groupAlbumList?.flatMap { it.images ?: listOf() }
+        val albumList = sharedViewModel.groupDetailItem
+            ?.filterIsInstance<GroupItem.GroupAlbum>()
+            ?.flatMap { it.images ?: listOf() }
         txtEmptyAlbum.isVisible = albumList.isNullOrEmpty()
+        if(albumList.isNullOrEmpty().not()) {
+            recyclerViewAddDetailAlbum.setBackgroundResource(R.drawable.public_border_box_full)
+        }
         groupDetailAlbumListAdapter.submitList(albumList)
     }
 

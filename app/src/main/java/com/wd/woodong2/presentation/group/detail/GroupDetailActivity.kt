@@ -105,10 +105,12 @@ class GroupDetailActivity : AppCompatActivity() {
                 finish() //뒤로가기 아이콘 클릭 시
             }
             appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-                materialToolbar.title = if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
-                    groupMainItem?.groupName
-                } else {
-                    ""
+                materialToolbar.post {
+                    materialToolbar.title = if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
+                        groupMainItem?.groupName
+                    } else {
+                        ""
+                    }
                 }
             }
 
