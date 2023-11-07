@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class ChatViewModel(
     private val chatItem: ChatGetItemsUseCase,
-    private val prefSetUserItem: UserPrefGetItemUseCase,
+    private val prefGetUserItem: UserPrefGetItemUseCase,
 ) : ViewModel(
 ) {
     private val _chatList = MutableLiveData<MutableList<ChatItem>>()
@@ -34,7 +34,7 @@ class ChatViewModel(
     var user: UserItem
 
     init {
-        val getUser = prefSetUserItem()
+        val getUser = prefGetUserItem()
         if (getUser != null) {
             user = UserItem(
                 id = getUser.id,
@@ -44,6 +44,9 @@ class ChatViewModel(
                 chatIds = getUser.chatIds,
                 firstLocation = getUser.firstLocation,
                 secondLocation = getUser.secondLocation,
+                groupIds = emptyList(),        //모임
+                likedIds = emptyList(),        //좋아요 게시물
+                writtenIds = emptyList(),        //작성한 게시물
             )
             getChatItems()
         } else {
@@ -55,8 +58,12 @@ class ChatViewModel(
                 chatIds = emptyList(),
                 firstLocation = "(알수 없음)",
                 secondLocation = "(알수 없음)",
+                groupIds = emptyList(),        //모임
+                likedIds = emptyList(),        //좋아요 게시물
+                writtenIds = emptyList(),        //작성한 게시물
             )
         }
+
     }
 
     private fun getChatItems() = viewModelScope.launch {
