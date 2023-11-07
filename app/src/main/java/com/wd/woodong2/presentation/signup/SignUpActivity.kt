@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -17,7 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.SignupActivityBinding
 import kotlinx.coroutines.launch
-import kotlin.math.sign
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -167,12 +167,14 @@ class SignUpActivity : AppCompatActivity() {
                 txtCheckCorrectPw.apply {
                     setText(R.string.group_add_txt_password_valid)
                     setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.0f)
                 }
             } else {
                 tilPw.boxStrokeColor = ContextCompat.getColor(this@SignUpActivity, R.color.red)
                 txtCheckCorrectPw.apply {
                     setText(R.string.group_add_txt_password_invalid)
                     setTextColor(ContextCompat.getColor(context, R.color.red))
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 10.0f)
                 }
             }
         }
