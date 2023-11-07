@@ -1,5 +1,6 @@
 package com.wd.woodong2.data.repository
 
+import android.net.Uri
 import android.util.Log
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
@@ -93,7 +94,12 @@ class UserRepositoryImpl(
     /*
     * Auth 회원가입
     * */
-    override suspend fun signUp(email: String, password: String, name: String): Flow<Any> =
+    override suspend fun signUp(
+        email: String,
+        password: String,
+        name: String,
+        imgProfile: Uri?,
+    ): Flow<Any> =
         callbackFlow {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
@@ -110,7 +116,7 @@ class UserRepositoryImpl(
                                 "-chat_list-group-TestData1",
                             ),
 
-                            imgProfile = "",
+                            imgProfile = imgProfile?.toString() ?: "",
                             firstLocation = "",
                             secondLocation = "",
 
