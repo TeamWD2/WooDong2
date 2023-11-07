@@ -14,6 +14,7 @@ import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.GroupRepository
 import com.wd.woodong2.presentation.group.add.GroupAddSetItem
 import com.wd.woodong2.presentation.group.detail.board.add.GroupDetailBoardAddItem
+import com.wd.woodong2.presentation.group.detail.board.detail.GroupDetailBoardDetailItem
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -100,6 +101,50 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
                                 push().setValue(item)
                             }
                         }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
+    }
+
+    override suspend fun addGroupBoardComment(
+        itemId: String,
+        groupId: String,
+        boardComment: GroupDetailBoardDetailItem.BoardComment
+    ) {
+        databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { childSnapshot ->
+                    val viewType = childSnapshot.child("viewType").value as? String
+                    if (viewType?.uppercase() == GroupViewType.BOARD.name) {
+                        childSnapshot.ref.child("boardList").child(groupId)
+                            .child("commentList").push().setValue(boardComment)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
+    }
+
+    override suspend fun deleteGroupBoardComment(
+        itemId: String,
+        groupId: String,
+        commentId: String
+    ) {
+        databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { childSnapshot ->
+                    val viewType = childSnapshot.child("viewType").value as? String
+                    if (viewType?.uppercase() == GroupViewType.BOARD.name) {
+                        childSnapshot.ref.child("boardList").child(groupId)
+                            .child("commentList").child(commentId).removeValue()
                     }
                 }
             }

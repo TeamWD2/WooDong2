@@ -25,7 +25,7 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
         private const val USER_PROFILE = "user_profile"
         private const val USER_NAME = "user_name"
         private const val USER_LOCATION = "user_location"
-        private const val GROUP_PK_ID= "group_pk_id"
+        private const val ITEM_PK_ID= "item_pk_id"
         private const val GROUP_BOARD_ITEM = "group_board_item"
 
         fun newIntent(
@@ -42,20 +42,24 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
                 putExtra(USER_PROFILE, userProfile)
                 putExtra(USER_NAME, userName)
                 putExtra(USER_LOCATION, userLocation)
-                putExtra(GROUP_PK_ID, id)
+                putExtra(ITEM_PK_ID, id)
                 putExtra(GROUP_BOARD_ITEM, groupBoardItem)
             }
     }
 
     private lateinit var binding: GroupDetailBoardDetailActivityBinding
 
-    private val viewModel: GroupDetailBoardDetailViewModel by viewModels()
+    private val viewModel: GroupDetailBoardDetailViewModel by viewModels {
+        GroupDetailBoardDetailViewModelFactory()
+    }
 
     private val boardDetailListAdapter by lazy {
         GroupDetailBoardDetailListAdapter(
             onClickDeleteComment = { position ->
                 viewModel.deleteComment(
-                    groupPkId,
+                    itemPkId,
+                    groupBoardItem?.boardId,
+                    groupBoardItem?.commentList?.firstOrNull()?.commentId,
                     position
                 )
             }
@@ -74,8 +78,8 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
     private val userLocation by lazy {
         intent.getStringExtra(USER_LOCATION)
     }
-    private val groupPkId by lazy {
-        intent.getStringExtra(GROUP_PK_ID)
+    private val itemPkId by lazy {
+        intent.getStringExtra(ITEM_PK_ID)
     }
     private val groupBoardItem by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -130,7 +134,8 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
                 ).show()
             } else {
                 viewModel.addBoardComment(
-                    groupPkId,
+                    itemPkId,
+                    groupBoardItem?.boardId,
                     userId,
                     userProfile,
                     userName,

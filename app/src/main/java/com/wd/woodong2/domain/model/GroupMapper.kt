@@ -1,6 +1,7 @@
 package com.wd.woodong2.domain.model
 
 import com.wd.woodong2.data.model.GroupAlbumResponse
+import com.wd.woodong2.data.model.GroupBoardCommentResponse
 import com.wd.woodong2.data.model.GroupBoardItemResponse
 import com.wd.woodong2.data.model.GroupBoardResponse
 import com.wd.woodong2.data.model.GroupIntroduceResponse
@@ -11,7 +12,7 @@ import com.wd.woodong2.data.model.GroupMemberResponse
 
 fun GroupItemsResponse.toEntity() = GroupItemsEntity(
     groupList = groupList.map {
-        when(it) {
+        when (it) {
             is GroupMainResponse -> it.toEntity()
             is GroupIntroduceResponse -> it.toEntity()
             is GroupMemberResponse -> it.toEntity()
@@ -35,6 +36,7 @@ fun GroupMainResponse.toEntity() = GroupMainEntity(
     boardCount = boardCount
 
 )
+
 fun GroupIntroduceResponse.toEntity() = GroupIntroduceEntity(
     id = id,
     title = title,
@@ -75,7 +77,19 @@ fun GroupBoardItemResponse.toEntity() = GroupBoardItemEntity(
     location = location,
     timestamp = timestamp,
     content = content,
-    images = images
+    images = images,
+    commentList = commentList?.mapValues { (_, value) ->
+        value.toEntity()
+    }
+)
+
+fun GroupBoardCommentResponse.toEntity() = GroupBoardCommentEntity(
+    userId = userId,
+    userProfile = userProfile,
+    userName = userName,
+    userLocation = userLocation,
+    timestamp = timestamp,
+    comment = comment
 )
 
 fun GroupAlbumResponse.toEntity() = GroupAlbumEntity(

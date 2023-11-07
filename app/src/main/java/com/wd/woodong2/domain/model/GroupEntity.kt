@@ -74,6 +74,19 @@ data class GroupBoardItemEntity(
     val timestamp: Long,
     val content: String?,
     val images: List<String>?,
+    val commentList: Map<String, GroupBoardCommentEntity>?
+)
+
+/**
+ * 게시판 댓글
+ */
+data class GroupBoardCommentEntity(
+    val userId: String?,
+    val userProfile: String?,
+    val userName: String?,
+    val userLocation: String?,
+    val timestamp: Long?,
+    val comment: String?,
 )
 
 /**

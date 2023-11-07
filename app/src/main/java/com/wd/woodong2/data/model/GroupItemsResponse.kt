@@ -78,6 +78,19 @@ data class GroupBoardItemResponse(
     @SerializedName("timestamp") val timestamp: Long,
     @SerializedName("content") val content: String?,
     @SerializedName("images") val images: List<String>?,
+    @SerializedName("commentList") val commentList: Map<String, GroupBoardCommentResponse>?
+)
+
+/**
+ * 게시판 댓글
+ */
+data class GroupBoardCommentResponse(
+    @SerializedName("userId") val userId: String?,
+    @SerializedName("userProfile") val userProfile: String?,
+    @SerializedName("userName") val userName: String?,
+    @SerializedName("userLocation") val userLocation: String?,
+    @SerializedName("timestamp") val timestamp: Long?,
+    @SerializedName("comment") val comment: String?,
 )
 
 /**

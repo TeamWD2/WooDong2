@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 sealed class GroupItem(
     open val id: String?,
     open val title: String?
-): Parcelable {
+) : Parcelable {
     @Parcelize
     data class GroupMain(
         override val id: String?,
@@ -65,7 +65,19 @@ sealed class GroupItem(
         val location: String?,
         val timestamp: Long,
         val content: String?,
-        val images: List<String>?
+        val images: List<String>?,
+        val commentList: List<BoardComment>?
+    ) : Parcelable
+
+    @Parcelize
+    data class BoardComment(
+        var commentId: String?,
+        val userId: String?,
+        val userProfile: String?,
+        val userName: String?,
+        val userLocation: String?,
+        val timestamp: Long?,
+        val comment: String?,
     ) : Parcelable
 
     @Parcelize

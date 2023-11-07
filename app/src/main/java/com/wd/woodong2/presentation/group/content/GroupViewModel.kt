@@ -139,7 +139,18 @@ class GroupViewModel(
                                 location = board.location,
                                 timestamp = board.timestamp,
                                 content = board.content,
-                                images = board.images
+                                images = board.images,
+                                commentList = board.commentList?.toSortedMap()?.mapValues { (commentId, comment) ->
+                                    GroupItem.BoardComment(
+                                        commentId = commentId,
+                                        userId = comment.userId,
+                                        userProfile = comment.userProfile,
+                                        userName = comment.userName,
+                                        userLocation = comment.userLocation,
+                                        timestamp = comment.timestamp,
+                                        comment = comment.comment
+                                    )
+                                }?.values?.toList()
                             )
                         }?.values?.toList()
                 )

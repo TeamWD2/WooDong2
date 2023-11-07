@@ -17,6 +17,7 @@ sealed class GroupDetailBoardDetailItem(
 
     data class BoardComment(
         override val id: String?,
+        val commentId: String?,
         val userId: String?,
         val userProfile: String?,
         val userName: String?,
