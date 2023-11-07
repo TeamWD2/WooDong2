@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
+import com.google.gson.annotations.SerializedName
 import com.wd.woodong2.data.model.UserResponse
 import com.wd.woodong2.domain.model.UserEntity
 import com.wd.woodong2.domain.model.UserItemsEntity
@@ -103,15 +104,19 @@ class UserRepositoryImpl(
                             email = email,
                             name = name,
 
-                            // TODO Test
-                            chatIds = listOf(
-                                "-chat_list-group-TestData0",
-                                "-chat_list-group-TestData1",
-                            ),
-
+                            chatIds = listOf(),
+                            groupIds= listOf(),        //모임
+                            likedIds= listOf(),        //좋아요 게시물
+                            writtenIds= listOf(),        //작성한 게시물
                             imgProfile = "",
                             firstLocation = "",
                             secondLocation = "",
+                            token = ""
+                        )
+
+                        CoroutineScope(Dispatchers.IO).launch {
+                            addUser(user)
+                        }
 
                             //withContext, runBlocking
                             token = tokenProvider.getToken()

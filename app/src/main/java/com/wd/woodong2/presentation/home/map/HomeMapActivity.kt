@@ -10,6 +10,10 @@ import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.WindowInsetsController
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -40,29 +44,104 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         const val EXTRA_FIRSTLOCATION = "extra_firstlocation"
         const val EXTRA_SECONDLOCATION = "extra_secondlocation"
 
-        private var firstLocation : String? ="Unknown Location"
-        private var secondLocation : String? ="Unknown Location"
+        var firstLocation : String? ="Unknown Location"
+        var secondLocation : String? ="Unknown Location"
 
         // 임의로 위치 설정 초기화
         var latitude: Double = 0.0
         var longitude: Double = 0.0
+
+        var fullLocationName : String? =""
+
+
+
+
         fun newIntent(context: Context,firstLoc: String, secondLoc:String)=
             Intent(context, HomeMapActivity::class.java).apply {
                 firstLocation = firstLoc
                 secondLocation = secondLoc
             }
-        // 동, 읍, 면 추출하기
+
+
+        fun fullNameLocationInfo(address: String) {
+            val parts = address.split(" ")
+            fullLocationName = ""
+
+            for ((index, part) in parts.withIndex()) {
+                fullLocationName += if (index == 0) {
+                    part
+                } else {
+                    " $part"
+                }
+
+                if (part.endsWith("동") || part.endsWith("읍") || part.endsWith("면")) {
+                    break
+                }
+            }
+        }
+
+        // 시, 도 추출하기
+        fun extractCityInfo(address: String): String{
+            val parts = address.split(" ")
+            var city: String? = ""
+            for ((index, part) in parts.withIndex()) {
+                city += if (index == 0) {
+                    part
+                } else {
+                    " $part"
+                }
+                if (part.endsWith("시") || part.endsWith("도")) {
+                    return city.toString()
+                }
+            }
+            return ""
+        }
+        // 구, 군 까지 추출하기
+        fun extractDistrictInfo(address: String):String {
+            val parts = address.split(" ")
+            var district: String? = ""
+            for ((index, part) in parts.withIndex()) {
+                district += if (index == 0) {
+                    part
+                } else {
+                    " $part"
+                }
+                if (part.endsWith("구") || part.endsWith("군")) {
+                    return district.toString()
+                }
+            }
+            return ""
+        }
+        // 구 군 , 동 읍, 면만  추출하기      ->비교할때만 하면 되지 않나??
+        fun extractLocationSetInfo(address: String): String {
+            val parts = address.split(" ")
+            var judge =""
+            for ((index, part) in parts.withIndex()){
+                judge += if ((part.endsWith("구") || part.endsWith("군"))) {
+                    part
+                }
+                else if(part.endsWith("동") || part.endsWith("읍") || part.endsWith("면")){
+                    " $part"
+                } else {
+                    ""
+                }
+            }
+            return judge
+        }
+
+        // 동, 읍, 면만  추출하기
         fun extractLocationInfo(address: String): String {
             val parts = address.split(" ")
-            for (part in parts) {
+            parts.forEach { part ->
                 if (part.endsWith("동") || part.endsWith("읍") || part.endsWith("면")) {
                     return part
                 }
             }
             return ""
         }
+
         // 좌표 -> 주소 변환
-        private fun getAddressFromLocation(context: Context,lat: Double, lng: Double){
+        fun getAddressFromLocation(context: Context,lat: Double, lng: Double){
             val geocoder = Geocoder(context, Locale.KOREAN)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 geocoder.getFromLocation(
@@ -90,7 +169,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             val geocoder = Geocoder(context, Locale.KOREAN)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 geocoder.getFromLocationName(
-                    address, 1
+                    address, 1,
                 ) { addresses ->
                     if(addresses.isNotEmpty()){
                         latitude = addresses[0].latitude
@@ -124,7 +203,27 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var reverse : String? = null
 
+    private val onBackPressedCallback = object: OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            val intent = Intent().apply{
+                putExtra(
+                    EXTRA_FIRSTLOCATION,
+                    firstLocation
+                )
+                putExtra(
+                    EXTRA_SECONDLOCATION,
+                    secondLocation
+                )
+            }
+            setResult(Activity.RESULT_OK, intent)
+            finish()
 
+            overridePendingTransition(
+                R.anim.home_map_none_fragment,
+                R.anim.home_map_slide_down_fragment
+            )
+        }
+    }
 
 
     // 사용자 실시간 위치 반영때 사용됨
@@ -135,7 +234,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             if(result.resultCode == Activity.RESULT_OK){
                 var receivedData = result.data!!.getStringExtra(EXTRA_ADDRESS)
                 getLocationFromAddress(this, receivedData!!)
-                Log.d("itemSet", receivedData.toString())
 
                 // 카메라 이동 설정
                 naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
@@ -191,6 +289,21 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = HomeMapActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        onBackPressedDispatcher.addCallback(this@HomeMapActivity, onBackPressedCallback)
+
+        //상태바 & 아이콘 색상 변경
+        window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
+            window.insetsController?.setSystemBarsAppearance(
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 안드로이드 6.0 이상에서만 동작
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
+
+
         clientId = getString(R.string.home_map_naver_api)
 
         //NAVER 지도 API 호출 및 ID 지정
@@ -213,6 +326,9 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun initHomeMapView(){
+
+
+
         //NAVER 객체 얻기 ( 동적 )
         val fm = supportFragmentManager
         val mapFragment = fm.findFragmentById(R.id.home_map_view) as MapFragment?
@@ -223,8 +339,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         //인터페이스 객체
         mapFragment.getMapAsync(this)
 
-        //처음 map에 들어 갈때 1위치 출력
-        //binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
+
 
         //1위치 없을때
         if(firstLocation!!.isEmpty()){
@@ -241,6 +356,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 .centerCrop()
                 .into(binding.homeMapFirstBtnIvLocation)
         } else{//1위치 있을때 -> 1위치 출력
+
             binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
             binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
             binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
@@ -267,8 +383,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
             binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
         }
-
-
 
         //종료
         binding.homeMapClose.setOnClickListener{
@@ -300,6 +414,9 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                         firstLocation.toString(), secondLocation.toString()
                     )
                 )
+            }
+            else{
+                Toast.makeText(this, "위치 설정은 최대 두개까지 입니다.", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -401,6 +518,8 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             else{//2위치 있을때
                 binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
                 binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+                Log.d("location",firstLocation.toString())
+                Log.d("location",secondLocation.toString())
                 secondLocation = ""
                 binding.homeMapSecondBtnTvLocation.text = ""
                 Glide.with(this)
@@ -458,6 +577,21 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         naverMap.uiSettings.isZoomGesturesEnabled = false       // 확대/축소 제스처 비활성화
         naverMap.uiSettings.isTiltGesturesEnabled = false       // 기울이기 제스처 비활성화
         naverMap.uiSettings.isRotateGesturesEnabled = false     // 회전 제스처 비활성화
+
+        naverMap.uiSettings.isZoomControlEnabled = false
+        // 지도의 초기 확대 레벨 설정
+//        val initialZoomLevel = 14.0 // 예시로 14.0으로 설정
+//
+//        // Naver 지도의 확대 레벨 조절
+//        naverMap.minZoom = initialZoomLevel // 최소 확대 레벨 설정
+//        naverMap.maxZoom = initialZoomLevel // 최대 확대 레벨 설정
+//        naverMap.moveCamera(CameraUpdate.zoomTo(initialZoomLevel)) // 초기 확대 레벨 설정
+
+        //초기 위치 설정
+        getLocationFromAddress(this, firstLocation!!)
+        naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
+        marker(latitude, longitude)
+
         binding.trackingLocation.setOnClickListener{
             locationTrackingEnabled = true
             if(firstLocation == "" &&   //1위치 2위치 없을때
@@ -470,8 +604,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     naverMap.addOnLocationChangeListener{location ->
                         latitude = location.latitude
                         longitude = location.longitude
-                        Log.d("tracking", location.latitude.toString())
-                        Log.d("tracking", location.longitude.toString())
                         naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
                         marker(latitude, longitude)
                         naverMap.locationTrackingMode = LocationTrackingMode.None
@@ -480,7 +612,9 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                         //도로명 주소
                         //1위치 설정
                         getAddressFromLocation(this,latitude,longitude)
+
                         binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
+
                         binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
                         binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
                         binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
@@ -504,41 +638,48 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     naverMap.addOnLocationChangeListener{location ->
                         latitude = location.latitude
                         longitude = location.longitude
-                        Log.d("tracking", location.latitude.toString())
-                        Log.d("tracking", location.longitude.toString())
                         naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
                         marker(latitude, longitude)
                         naverMap.locationTrackingMode = LocationTrackingMode.None
                         binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.white))
                         locationTrackingEnabled = false
 
-                        secondLocation = firstLocation
-                        binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
-                        binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
-                        binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-                        binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-                        Glide.with(this)
-                            .load(R.drawable.home_map_btn_ic_close)
-                            .override(96, 96)
-                            .centerCrop()
-                            .into(binding.homeMapSecondBtnIvLocation)
-                        //도로명 주소
+                        reverse = firstLocation
                         getAddressFromLocation(this,latitude,longitude)
-                        binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
-                        binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
-                        binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                        binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                        Glide.with(this)
-                            .load(R.drawable.home_map_btn_ic_close)
-                            .override(96, 96)
-                            .centerCrop()
-                            .into(binding.homeMapFirstBtnIvLocation)
+
+                        if(extractLocationSetInfo(reverse.toString()) !=
+                            extractLocationSetInfo(firstLocation.toString())){
+                            Log.d("location",extractLocationSetInfo(reverse.toString()))
+                            Log.d("location",extractLocationSetInfo(firstLocation.toString()))
+                            secondLocation = reverse
+                            binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
+                            binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
+                            binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+                            binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+                            Glide.with(this)
+                                .load(R.drawable.home_map_btn_ic_close)
+                                .override(96, 96)
+                                .centerCrop()
+                                .into(binding.homeMapSecondBtnIvLocation)
+
+                            binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
+                            getAddressFromLocation(this,latitude,longitude)
+
+                            binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
+                            binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                            binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                            Glide.with(this)
+                                .load(R.drawable.home_map_btn_ic_close)
+                                .override(96, 96)
+                                .centerCrop()
+                                .into(binding.homeMapFirstBtnIvLocation)
+                        }
                     }
                 } else{
 
                 }
             }else{
-
+                Toast.makeText(this, "위치 설정은 최대 두개까지 입니다.", Toast.LENGTH_SHORT).show()
             }
         }
 
