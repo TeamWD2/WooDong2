@@ -55,6 +55,7 @@ class SignInActivity : AppCompatActivity() {
 
         if (uid != null) {
             startActivity(MainActivity.newIntentForAutoLogin(this@SignInActivity, uid))
+            signInViewModel.setUserInfo(uid)
         }
     }
 
@@ -101,6 +102,7 @@ class SignInActivity : AppCompatActivity() {
                         uid
                     )
                 )
+                signInViewModel.setUserInfo(uid)
             } else {
                 Toast.makeText(this@SignInActivity, R.string.login_fail, Toast.LENGTH_SHORT).show()
             }
