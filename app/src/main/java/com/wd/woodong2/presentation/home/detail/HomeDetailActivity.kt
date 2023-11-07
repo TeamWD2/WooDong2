@@ -5,9 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
@@ -43,6 +46,19 @@ class HomeDetailActivity : AppCompatActivity() {
 
 
     private fun initView() {
+
+        //상태바 & 아이콘 색상 변경
+        window.statusBarColor = ContextCompat.getColor(this@HomeDetailActivity, R.color.yellow)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
+            window.insetsController?.setSystemBarsAppearance(
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 안드로이드 6.0 이상에서만 동작
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
+
         homeItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(EXTRA_HOME_ITEM, HomeItem::class.java)
         } else {
@@ -58,6 +74,7 @@ class HomeDetailActivity : AppCompatActivity() {
         viewModel.fetchComments(homeItem) { updatedComments ->
             commentsAdapter.updateComments(updatedComments)
         }
+
     }
 
     private fun initViewModel() {
@@ -66,7 +83,7 @@ class HomeDetailActivity : AppCompatActivity() {
 
     private fun setupCommentsRecyclerView() {
         commentsAdapter = CommentListAdapter(homeItem, viewModel)
-        binding.recyclerviewComment.layoutManager = LinearLayoutManager(this)
+        binding.recyclerviewComment.layoutManager = NoScrollLinearLayoutManager(this)
         binding.recyclerviewComment.adapter = commentsAdapter
     }
 
@@ -107,6 +124,10 @@ class HomeDetailActivity : AppCompatActivity() {
             crossfade(true)
         }
         txtHomeTimestamp.text = formatTimestamp(homeItem.timeStamp)
+
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
     }
 
     private fun formatTimestamp(timestamp: Long?): String {

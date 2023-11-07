@@ -23,10 +23,11 @@ class HomeDetailViewModel : ViewModel() {
         })
     }
 
-    fun postComment(homeItem: HomeItem, commentContent: String) {
+    fun postComment(homeItem: HomeItem, commentContent: String): HomeItem {
         val comment = CommentItem(username = "익명의 우동이", content = commentContent, location = "화정동")
         homeItem.comments.add(comment)
         itemRef.setValue(homeItem)
+        return homeItem
     }
 
     fun updateChatCount(homeItem: HomeItem) {
@@ -44,11 +45,12 @@ class HomeDetailViewModel : ViewModel() {
         itemRef.setValue(homeItem)
 
     }
+
     fun deleteComment(homeItem: HomeItem, commentToDelete: CommentItem) {
         itemRef.child("comments").child(commentToDelete.timestamp.toString()).removeValue()
         homeItem.comments.remove(commentToDelete)
         updateChatCount(homeItem)
     }
 
-
 }
+

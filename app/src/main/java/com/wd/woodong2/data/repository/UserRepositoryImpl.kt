@@ -93,7 +93,8 @@ class UserRepositoryImpl(
                             chatIds = listOf(),
                             imgProfile = "",
                             firstLocation = "",
-                            secondLocation = ""
+                            secondLocation = "",
+                            token = ""
                         )
 
                         CoroutineScope(Dispatchers.IO).launch {

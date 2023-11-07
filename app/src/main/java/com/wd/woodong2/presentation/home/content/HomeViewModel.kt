@@ -35,6 +35,9 @@ class HomeViewModel(
     private val _circumLocationList: MutableLiveData<List<HomeMapSearchItem>> = MutableLiveData()
     val circumLocationList: LiveData<List<HomeMapSearchItem>> get() = _circumLocationList
 
+    private val _originalList: MutableLiveData<List<HomeItem>> = MutableLiveData()  // 원본 리스트 저장
+    val originalList: LiveData<List<HomeItem>> get() = _originalList
+
     //userItem
     val userId = "user1"
     val userInfo: MutableLiveData<UserItem> = MutableLiveData()
@@ -56,14 +59,16 @@ class HomeViewModel(
                     y,
                     x,
                     radius,
-                    query)
+                    query
+                )
             )
             Log.d("locationWhere", circumLocationItems.toString())
             _circumLocationList.postValue(circumLocationItems)
-        }.onFailure { e->
+        }.onFailure { e ->
             Log.e("Retrofit Error", "Request failed: ${e.message}")
         }
     }
+
     //번지수 제외하기
     fun extractAddressPart(address: String): String {
         val addressEndings = listOf("동", "읍", "면")
@@ -93,6 +98,7 @@ class HomeViewModel(
 
         return createMapSearchItems(Map)
     }
+
     private fun loadDataFromFirebase() {
         val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
         databaseReference.addValueEventListener(object : ValueEventListener {
@@ -105,12 +111,21 @@ class HomeViewModel(
                         dataList.add(firebaseData)
                     }
                 }
+                _originalList.value = dataList
                 _list.value = dataList
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
             }
         })
+    }
+
+    fun filterList(tag: String) {
+        _list.value = if (tag == "All") {
+            _originalList.value  // 전체 리스트
+        } else {
+            _originalList.value?.filter { it.tag == tag }  // 태그가 일치하는 리스트
+        }
     }
 
     private fun getUserItem() = viewModelScope.launch {
@@ -144,7 +159,31 @@ class HomeViewModel(
             userItem(userId, firstLocation, secondLocation)
         }
     }
+    fun deleteItem(item: HomeItem) {
+        // Firebase에서 항목 삭제
+        val itemId = item.id // 항목의 고유 ID 또는 키
+        deleteItemFromFirebase(itemId)
 
+        // 원본 목록에서 항목을 제거하고 LiveData를 업데이트합니다.
+        _originalList.value = _originalList.value?.filter { it != item }
+    }
+
+    private fun deleteItemFromFirebase(itemId: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("home_list")
+        val itemReference = databaseReference.child(itemId)
+
+        itemReference.removeValue()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
+                } else {
+                    val exception = task.exception
+                    if (exception != null) {
+                        // 오류 처리 코드
+                    }
+                }
+            }
+    }
 }
 
 class HomeViewModelFactory : ViewModelProvider.Factory {
@@ -155,9 +194,10 @@ class HomeViewModelFactory : ViewModelProvider.Factory {
             Firebase.auth
         )
     }
-    private val circumLocationrepository : MapSearchRepository = MapSearchRepositoryImpl(
+    private val circumLocationrepository: MapSearchRepository = MapSearchRepositoryImpl(
         KAKAORetrofitClient.search
     )
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(

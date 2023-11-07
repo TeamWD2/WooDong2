@@ -24,27 +24,31 @@ import com.wd.woodong2.presentation.home.map.HomeMapActivity.Companion.EXTRA_SEC
 
 
 class HomeFragment : Fragment() {
-    private var _binding : HomeFragmentBinding? = null
+    private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel : HomeViewModel //= HomeViewModelFactory().create(HomeViewModel::class.java)
-        by viewModels {
-            HomeViewModelFactory()
-        }
+    private val viewModel: HomeViewModel //= HomeViewModelFactory().create(HomeViewModel::class.java)
+            by viewModels {
+                HomeViewModelFactory()
+            }
 
-    private var firstLocation :String? = null
-    private var secondLocation :String? = null
-    private var userName :String? = null
-    private var homeItemCount : Int? = 0
-    private lateinit var homeMapLauncher : ActivityResultLauncher<Intent>
-    private var count : Int? = 1
+    private var firstLocation: String? = null
+    private var secondLocation: String? = null
+    private var userName: String? = null
+    private var homeItemCount: Int? = 0
+    private lateinit var homeMapLauncher: ActivityResultLauncher<Intent>
+    private var count: Int? = 1
     private val listAdapter by lazy {
         HomeListAdapter(requireContext(),
             onClickItem = { item ->
                 startActivity(
                     HomeDetailActivity.homeDetailActivityNewIntent(
                         requireContext(),
-                        item)
+                        item
+                    )
                 )
+            },
+            onDeleteItem = { item ->
+                viewModel.deleteItem(item)
             }
         )
     }
@@ -59,13 +63,19 @@ class HomeFragment : Fragment() {
         homeMapLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
-                    val receivedDataFirstLocation = result.data!!.getStringExtra(EXTRA_FIRSTLOCATION)
-                    val receivedDataSecondLocation = result.data!!.getStringExtra(EXTRA_SECONDLOCATION)
+                    val receivedDataFirstLocation =
+                        result.data!!.getStringExtra(EXTRA_FIRSTLOCATION)
+                    val receivedDataSecondLocation =
+                        result.data!!.getStringExtra(EXTRA_SECONDLOCATION)
                     firstLocation = receivedDataFirstLocation
                     secondLocation = receivedDataSecondLocation
-                    binding.toolbarTvLocation.text = HomeMapActivity.extractLocationInfo(firstLocation.toString())
+                    binding.toolbarTvLocation.text =
+                        HomeMapActivity.extractLocationInfo(firstLocation.toString())
                     // firebase에 있는 값을 변경
-                    viewModel.updateUserLocation(receivedDataFirstLocation.toString(), receivedDataSecondLocation.toString())
+                    viewModel.updateUserLocation(
+                        receivedDataFirstLocation.toString(),
+                        receivedDataSecondLocation.toString()
+                    )
                 } else {
 
                 }
@@ -73,6 +83,7 @@ class HomeFragment : Fragment() {
 
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
@@ -90,45 +101,57 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = listAdapter
         }
-        toolbarLayout.setOnClickListener{
+        toolbarLayout.setOnClickListener {
             homeMapLauncher.launch(
                 HomeMapActivity.newIntent(
                     requireContext(), firstLocation.toString(), secondLocation.toString()
                 )
             )
         }
-        fabHomeadd.setOnClickListener {
+        fabHomeAdd.setOnClickListener {
             // 과연 주소를 받아 올까 그게 문제야
             count = count!! + 5
             HomeMapActivity.getLocationFromAddress(requireContext(), firstLocation.toString())
             viewModel.circumLocationItemSearch(
                 HomeMapActivity.latitude,
                 HomeMapActivity.longitude,
-                1000* count!!,
+                1000 * count!!,
                 firstLocation.toString()
             )
-            val intent = HomeAddActivity.homeAddActivityNewIntent(requireContext(),
-                firstLocation.toString(),userName
+            val intent = HomeAddActivity.homeAddActivityNewIntent(
+                requireContext(),
+                firstLocation.toString(), userName
             )
             startActivity(intent)
         }
+        homeTag1.setOnClickListener { viewModel.filterList("All") }
+        homeTag2.setOnClickListener { viewModel.filterList("동네질문") }
+        homeTag3.setOnClickListener { viewModel.filterList("조심해요!") }
+        homeTag4.setOnClickListener { viewModel.filterList("정보공유") }
+        homeTag5.setOnClickListener { viewModel.filterList("동네소식") }
+        homeTag6.setOnClickListener { viewModel.filterList("사건/사고") }
+        homeTag7.setOnClickListener { viewModel.filterList("동네사진전") }
+        homeTag8.setOnClickListener { viewModel.filterList("분실/실종") }
+        homeTag9.setOnClickListener { viewModel.filterList("생활정보") }
     }
-    private fun initViewModel(){
-        with(viewModel){
-            list.observe(viewLifecycleOwner){
+
+    private fun initViewModel() {
+        with(viewModel) {
+            list.observe(viewLifecycleOwner) {
                 listAdapter.submitList(it)
                 homeItemCount = list.value?.size
-                if(homeItemCount!! < 10){
+                if (homeItemCount!! < 10) {
 //
                 }
             }
 
-            userInfo.observe(viewLifecycleOwner){userInfo->
+            userInfo.observe(viewLifecycleOwner) { userInfo ->
                 firstLocation = userInfo.firstLocation
                 secondLocation = userInfo.secondLocation
                 userName = userInfo.name
-                binding.toolbarTvLocation.text = HomeMapActivity.extractLocationInfo(firstLocation.toString())
-                if(userInfo.firstLocation == ""){
+                binding.toolbarTvLocation.text =
+                    HomeMapActivity.extractLocationInfo(firstLocation.toString())
+                if (userInfo.firstLocation == "") {
 
                     Toast.makeText(requireContext(), "위치 설정이 필요합니다", Toast.LENGTH_SHORT).show()
 
@@ -141,7 +164,6 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
 
 
     override fun onDestroyView() {

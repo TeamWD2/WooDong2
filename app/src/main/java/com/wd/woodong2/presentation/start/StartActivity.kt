@@ -7,6 +7,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.wd.woodong2.databinding.StartActivityBinding
+import com.wd.woodong2.presentation.main.MainActivity
 import com.wd.woodong2.presentation.signin.SignInActivity
 
 class StartActivity : AppCompatActivity() {
@@ -42,7 +43,7 @@ class StartActivity : AppCompatActivity() {
         // start_btn click
         btnStart.setOnClickListener {
             startActivity(
-                Intent(this@StartActivity, SignInActivity::class.java)
+                Intent(this@StartActivity, MainActivity::class.java)
             )
         }
     }
