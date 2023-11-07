@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import com.wd.woodong2.databinding.GroupDetailBoardFragmentBinding
 import com.wd.woodong2.presentation.group.content.GroupItem
 import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
+import com.wd.woodong2.presentation.group.detail.board.detail.GroupDetailBoardDetailActivity
 
 class GroupDetailBoardFragment : Fragment() {
     companion object {
@@ -21,8 +22,23 @@ class GroupDetailBoardFragment : Fragment() {
 
     private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels()
 
+    private lateinit var groupPkId: String
     private val groupDetailBoardListAdapter by lazy {
-        GroupDetailBoardListAdapter()
+        GroupDetailBoardListAdapter(
+            onClickBoardItem = { groupItem ->
+                startActivity(
+                    GroupDetailBoardDetailActivity.newIntent(
+                        requireContext(),
+                        "-NhImSiDataNew", //임시 데이터 (로그인 된 계정의 정보)
+                        "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
+                        "gildong",
+                        "인계동",
+                        groupPkId,
+                        groupItem
+                    )
+                )
+            }
+        )
     }
 
     override fun onCreateView(
@@ -41,6 +57,7 @@ class GroupDetailBoardFragment : Fragment() {
     private fun initView() = with(binding) {
         recyclerViewAddDetailBoard.adapter = groupDetailBoardListAdapter
         val groupBoardList = sharedViewModel.groupDetailItem?.filterIsInstance<GroupItem.GroupBoard>()
+        groupPkId = groupBoardList?.firstOrNull()?.id.toString()
         val boardList = groupBoardList?.flatMap { it.boardList ?: listOf() }
         txtEmptyBoard.isVisible = boardList.isNullOrEmpty()
         groupDetailBoardListAdapter.submitList(boardList)

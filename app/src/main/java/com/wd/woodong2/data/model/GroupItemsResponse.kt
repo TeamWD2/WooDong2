@@ -64,7 +64,7 @@ data class GroupMemberItemResponse(
 data class GroupBoardResponse(
     val id: String?,
     @SerializedName("title") val title: String?,
-    @SerializedName("boardList") val boardList: List<GroupBoardItemResponse>?
+    @SerializedName("boardList") val boardList: Map<String, GroupBoardItemResponse>?
 ) : GroupResponse
 
 /**
@@ -86,5 +86,5 @@ data class GroupBoardItemResponse(
 data class GroupAlbumResponse(
     val id: String?,
     @SerializedName("title") val title: String?,
-    @SerializedName("images") val images: List<String>?
+    @SerializedName("images") val images: Map<String, String>?
 ) : GroupResponse

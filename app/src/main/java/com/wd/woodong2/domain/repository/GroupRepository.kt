@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface GroupRepository {
     suspend fun getGroupItems(): Flow<GroupItemsEntity>
     suspend fun setGroupItem(groupAddSetItem: List<GroupAddSetItem>)
-    suspend fun setGroupBoardItem(itemId: String, groupBoardItem: List<GroupDetailBoardAddItem>)
+    suspend fun setGroupBoardItem(itemId: String, groupBoardItem: GroupDetailBoardAddItem)
 
     suspend fun setGroupAlbumItem(itemId: String, groupAlbumItems: List<String>)
 }

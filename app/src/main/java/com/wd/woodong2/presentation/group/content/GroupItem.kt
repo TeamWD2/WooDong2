@@ -58,6 +58,7 @@ sealed class GroupItem(
 
     @Parcelize
     data class Board(
+        val boardId: String?,
         val userId: String?,
         val profile: String?,
         val name: String?,

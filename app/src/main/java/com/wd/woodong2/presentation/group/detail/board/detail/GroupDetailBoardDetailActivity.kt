@@ -21,11 +21,12 @@ import java.util.Date
 
 class GroupDetailBoardDetailActivity : AppCompatActivity() {
     companion object {
-        private const val GROUP_BOARD_ITEM = "group_board_item"
         private const val USER_ID = "user_id"
         private const val USER_PROFILE = "user_profile"
         private const val USER_NAME = "user_name"
         private const val USER_LOCATION = "user_location"
+        private const val GROUP_PK_ID= "group_pk_id"
+        private const val GROUP_BOARD_ITEM = "group_board_item"
 
         fun newIntent(
             context: Context,
@@ -33,13 +34,15 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
             userProfile: String,
             userName: String,
             userLocation: String,
-            groupBoardItem: GroupItem.GroupBoard
+            id: String,
+            groupBoardItem: GroupItem.Board
         ): Intent =
             Intent(context, GroupDetailBoardDetailActivity::class.java).apply {
                 putExtra(USER_ID, userId)
                 putExtra(USER_PROFILE, userProfile)
                 putExtra(USER_NAME, userName)
                 putExtra(USER_LOCATION, userLocation)
+                putExtra(GROUP_PK_ID, id)
                 putExtra(GROUP_BOARD_ITEM, groupBoardItem)
             }
     }
@@ -51,7 +54,10 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
     private val boardDetailListAdapter by lazy {
         GroupDetailBoardDetailListAdapter(
             onClickDeleteComment = { position ->
-                viewModel.deleteComment(position)
+                viewModel.deleteComment(
+                    groupPkId,
+                    position
+                )
             }
         )
     }
@@ -68,9 +74,12 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
     private val userLocation by lazy {
         intent.getStringExtra(USER_LOCATION)
     }
+    private val groupPkId by lazy {
+        intent.getStringExtra(GROUP_PK_ID)
+    }
     private val groupBoardItem by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(GROUP_BOARD_ITEM, GroupItem.GroupBoard::class.java)
+            intent.getParcelableExtra(GROUP_BOARD_ITEM, GroupItem.Board::class.java)
         } else {
             intent.getParcelableExtra(GROUP_BOARD_ITEM)
         }
@@ -104,12 +113,10 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        val boardItem = groupBoardItem?.boardList?.get(0)
-
-        imgProfile.load(boardItem?.profile)
-        txtName.text = boardItem?.name
-        txtLocation.text = boardItem?.location
-        txtDate.text = boardItem?.timestamp?.let { Date(it) }
+        imgProfile.load(groupBoardItem?.profile)
+        txtName.text = groupBoardItem?.name
+        txtLocation.text = groupBoardItem?.location
+        txtDate.text = groupBoardItem?.timestamp?.let { Date(it) }
             ?.let { SimpleDateFormat("yyyy년 MM월 dd일").format(it) }
 
         viewModel.initGroupBoardItem(groupBoardItem)
@@ -123,6 +130,7 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
                 ).show()
             } else {
                 viewModel.addBoardComment(
+                    groupPkId,
                     userId,
                     userProfile,
                     userName,

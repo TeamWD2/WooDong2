@@ -63,8 +63,8 @@ fun GroupMemberItemResponse.toEntity() = GroupMemberItemEntity(
 fun GroupBoardResponse.toEntity() = GroupBoardEntity(
     id = id,
     title = title,
-    boardList = boardList?.map {
-        it.toEntity()
+    boardList = boardList?.mapValues { (_, value) ->
+        value.toEntity()
     }
 )
 

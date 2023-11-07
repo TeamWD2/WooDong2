@@ -7,34 +7,31 @@ import androidx.lifecycle.ViewModel
 import com.wd.woodong2.presentation.group.content.GroupItem
 
 class GroupDetailBoardDetailViewModel : ViewModel() {
-    private val _groupBoardItem: MutableLiveData<List<GroupDetailBoardDetailItem>> = MutableLiveData()
+    private val _groupBoardItem: MutableLiveData<List<GroupDetailBoardDetailItem>> =
+        MutableLiveData()
     val groupBoardItem: LiveData<List<GroupDetailBoardDetailItem>> get() = _groupBoardItem
 
     /**
      * 넘겨받아온 데이터 화면에 출력하기 위해 ViewType 별로 가공
      */
-    fun initGroupBoardItem(groupBoardItem: GroupItem.GroupBoard?) {
+    fun initGroupBoardItem(groupBoardItem: GroupItem.Board?) {
         val boardItem = mutableListOf<GroupDetailBoardDetailItem>()
         groupBoardItem?.let { board ->
-            board.boardList?.let { boardList ->
-                for(item in boardList) {
-                    boardItem.add(
-                        GroupDetailBoardDetailItem.BoardContent(
-                            id = board.id,
-                            content = item.content,
-                            images = item.images
-                        )
-                    )
-                    boardItem.add(
-                        GroupDetailBoardDetailItem.BoardTitle(
-                            id = board.id,
-                            title = "댓글",
-                            boardCount = "0" //임시
-                        )
-                    )
-                    //Todo("Comment 관련 데이터 추가 - BoardComment + BoardDivider")
-                }
-            }
+            boardItem.add(
+                GroupDetailBoardDetailItem.BoardContent(
+                    id = board.boardId,
+                    content = board.content,
+                    images = board.images
+                )
+            )
+            boardItem.add(
+                GroupDetailBoardDetailItem.BoardTitle(
+                    id = board.boardId,
+                    title = "댓글",
+                    boardCount = "0" //임시
+                )
+            )
+            //Todo("Comment 관련 데이터 추가 - BoardComment + BoardDivider")
         }
         _groupBoardItem.value = boardItem
     }
@@ -43,13 +40,14 @@ class GroupDetailBoardDetailViewModel : ViewModel() {
      * Firebase 댓글 데이터 추가 및 화면 출력
      */
     fun addBoardComment(
+        groupPkId: String?,
         userId: String?,
         userProfile: String?,
         userName: String?,
         userLocation: String?,
         comment: String
     ) {
-        if(userId == null || userName == null || userLocation == null) {
+        if (groupPkId == null || userId == null || userName == null || userLocation == null) {
             return
         }
         //Firebase 댓글 데이터 추가
@@ -80,7 +78,14 @@ class GroupDetailBoardDetailViewModel : ViewModel() {
     /**
      * Firebase 댓글 데이터 삭제 및 화면 출력
      */
-    fun deleteComment(position: Int) {
+    fun deleteComment(
+        groupPkId: String?,
+        position: Int
+    ) {
+        if(groupPkId == null) {
+            return
+        }
+
         //Firebase 댓글 데이터 삭제
         //Todo("Firebase 댓글 데이터 삭제")
 

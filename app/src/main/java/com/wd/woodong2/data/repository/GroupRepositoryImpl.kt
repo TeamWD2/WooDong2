@@ -68,14 +68,14 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
 
     override suspend fun setGroupBoardItem(
         itemId: String,
-        groupBoardItem: List<GroupDetailBoardAddItem>
+        groupBoardItem: GroupDetailBoardAddItem
     ) {
         databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach { childSnapshot ->
                     val viewType = childSnapshot.child("viewType").value as? String
                     if (viewType?.uppercase() == GroupViewType.BOARD.name) {
-                        childSnapshot.ref.child("boardList").setValue(groupBoardItem)
+                        childSnapshot.ref.child("boardList").push().setValue(groupBoardItem)
                     }
                 }
             }
@@ -95,7 +95,11 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
                 snapshot.children.forEach { childSnapshot ->
                     val viewType = childSnapshot.child("viewType").value as? String
                     if (viewType?.uppercase() == GroupViewType.ALBUM.name) {
-                        childSnapshot.ref.child("images").setValue(groupAlbumItems)
+                        childSnapshot.ref.child("images").apply {
+                            groupAlbumItems.forEach { item ->
+                                push().setValue(item)
+                            }
+                        }
                     }
                 }
             }

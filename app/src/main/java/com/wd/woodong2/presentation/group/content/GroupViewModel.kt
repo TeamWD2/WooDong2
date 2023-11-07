@@ -65,15 +65,16 @@ class GroupViewModel(
      * 로그인 된 계정의 선택한 모임 가입 여부 확인
      */
     fun isUserInGroup(groupId: String?, userId: String?): Boolean {
-        if(userId == null) {
+        if (userId == null) {
             return false
         }
         return getRelatedItems(groupId).any { groupItem ->
-            when(groupItem) {
+            when (groupItem) {
                 is GroupItem.GroupMember ->
                     groupItem.memberList?.any {
                         it.userId == userId
                     } == true
+
                 else -> false
             }
         }
@@ -86,7 +87,7 @@ class GroupViewModel(
         items: GroupItemsEntity
     ): List<GroupItem> {
         return items.groupList.map { entity ->
-            when(entity) {
+            when (entity) {
                 is GroupMainEntity -> GroupItem.GroupMain(
                     id = entity.id,
                     title = "Main",
@@ -128,23 +129,25 @@ class GroupViewModel(
                 is GroupBoardEntity -> GroupItem.GroupBoard(
                     id = entity.id,
                     title = entity.title,
-                    boardList = entity.boardList?.map { board ->
-                        GroupItem.Board(
-                            userId = board.userId,
-                            profile = board.profile,
-                            name = board.name,
-                            location = board.location,
-                            timestamp = board.timestamp,
-                            content = board.content,
-                            images = board.images
-                        )
-                    }
+                    boardList = entity.boardList?.toSortedMap(reverseOrder())
+                        ?.mapValues { (boardId, board) ->
+                            GroupItem.Board(
+                                boardId = boardId,
+                                userId = board.userId,
+                                profile = board.profile,
+                                name = board.name,
+                                location = board.location,
+                                timestamp = board.timestamp,
+                                content = board.content,
+                                images = board.images
+                            )
+                        }?.values?.toList()
                 )
 
                 is GroupAlbumEntity -> GroupItem.GroupAlbum(
                     id = entity.id,
                     title = entity.title,
-                    images = entity.images
+                    images = entity.images?.toSortedMap(reverseOrder())?.values?.toList()
                 )
             }
         }.sortedBy { it.id }

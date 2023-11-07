@@ -48,6 +48,7 @@
             android:layout_marginEnd="10dp"
             android:visibility="invisible"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             app:cardCornerRadius="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/cardView_photo_2"

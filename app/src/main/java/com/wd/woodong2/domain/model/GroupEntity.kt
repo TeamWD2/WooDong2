@@ -60,7 +60,7 @@ data class GroupMemberItemEntity(
 data class GroupBoardEntity(
     val id: String?,
     val title: String?,
-    val boardList: List<GroupBoardItemEntity>?
+    val boardList: Map<String, GroupBoardItemEntity>?
 ) : GroupEntity
 
 /**
@@ -82,5 +82,5 @@ data class GroupBoardItemEntity(
 data class GroupAlbumEntity(
     val id: String?,
     val title: String?,
-    val images: List<String>?
+    val images: Map<String, String>?
 ) : GroupEntity

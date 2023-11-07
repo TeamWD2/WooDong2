@@ -22,7 +22,7 @@ class GroupDetailHomeFragment : Fragment() {
 
     private val groupDetailHomeListAdapter by lazy {
         GroupDetailHomeListAdapter(
-            onClickBoardItem = { groupItem ->
+            onClickBoardItem = { id, groupItem ->
                 startActivity(
                     GroupDetailBoardDetailActivity.newIntent(
                         requireContext(),
@@ -30,6 +30,7 @@ class GroupDetailHomeFragment : Fragment() {
                         "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
                         "gildong",
                         "인계동",
+                        id,
                         groupItem
                     )
                 )

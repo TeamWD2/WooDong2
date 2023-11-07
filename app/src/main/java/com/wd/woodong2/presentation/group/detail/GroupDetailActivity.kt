@@ -146,7 +146,7 @@ class GroupDetailActivity : AppCompatActivity() {
                     GroupDetailContentType.WRITE_BOARD -> startActivity(
                         GroupDetailBoardAddActivity.newIntent(
                             this@GroupDetailActivity,
-                            groupItems?.get(0)?.id,
+                            groupItems?.firstOrNull()?.id,
                             "-NhImSiDataNew", //임시 데이터 (로그인 된 계정의 정보)
                             "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
                             "gildong",

@@ -87,9 +87,17 @@ class GroupDetailBoardAddViewModel(
         }
         viewModelScope.launch {
             runCatching {
+                val uriImageList = createBoardImages()
                 groupSetBoardItem(
                     itemId,
-                    getBoardItem(userId, userProfile, userName, userLocation, edtContent)
+                    GroupDetailBoardAddItem(
+                        userId = userId,
+                        profile = userProfile,
+                        name = userName,
+                        location = userLocation,
+                        content = edtContent,
+                        images = uriImageList
+                    )
                 )
                 _isCreateSuccess.value = true
             }.onFailure {
@@ -102,14 +110,15 @@ class GroupDetailBoardAddViewModel(
     fun setGroupAlbumItem(
         itemId: String?
     ) {
-        if(itemId == null) {
+        if (itemId == null) {
             return
         }
         viewModelScope.launch {
             runCatching {
+                val uriImageList = createBoardImages()
                 groupSetAlbumItem(
                     itemId,
-                    createBoardImages()
+                    uriImageList
                 )
             }.onFailure {
                 Log.e(TAG, it.message.toString())
@@ -117,38 +126,17 @@ class GroupDetailBoardAddViewModel(
         }
     }
 
-    private fun getBoardItem(
-        userId: String,
-        userProfile: String?,
-        userName: String,
-        userLocation: String,
-        edtContent: String
-    ): List<GroupDetailBoardAddItem> = mutableListOf(
-        GroupDetailBoardAddItem(
-            userId = userId,
-            profile = userProfile,
-            name = userName,
-            location = userLocation,
-            content = edtContent,
-            images = createBoardImages()
-        )
-    )
-
-    private fun createBoardImages(): List<String> {
+    private suspend fun createBoardImages(): List<String> {
         val uriToStringList = mutableListOf<String>()
         _imageList.value?.forEach { item ->
             item.uri?.let { uri ->
-                viewModelScope.launch {
-                    runCatching {
-                        imageStorageSetItem(uri).collect { imageUri ->
-                            uriToStringList.add(imageUri.toString())
-                            Log.d("sinw", "uriToStringList / $uriToStringList")
-                        }
+                runCatching {
+                    imageStorageSetItem(uri).collect { imageUri ->
+                        uriToStringList.add(imageUri.toString())
                     }
                 }
             }
         }
-        Log.d("sinw", "return / $uriToStringList")
         return uriToStringList
     }
 }

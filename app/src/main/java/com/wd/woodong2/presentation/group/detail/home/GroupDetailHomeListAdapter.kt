@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.group.detail.home
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class GroupDetailHomeListAdapter(
-    private val onClickBoardItem: (GroupItem.GroupBoard) -> Unit,
+    private val onClickBoardItem: (String, GroupItem.Board) -> Unit,
     private val onClickMoreBtn: (Int) -> Unit
 ) : ListAdapter<GroupItem, GroupDetailHomeListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<GroupItem>() {
@@ -162,7 +163,7 @@ class GroupDetailHomeListAdapter(
 
     class HomeBoardViewHolder(
         private val binding: GroupDetailHomeBoardItemBinding,
-        private val onClickBoardItem: (GroupItem.GroupBoard) -> Unit,
+        private val onClickBoardItem: (String, GroupItem.Board) -> Unit,
         private val onClickMoreBtn: (Int) -> Unit
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupItem) = with(binding) {
@@ -188,15 +189,15 @@ class GroupDetailHomeListAdapter(
                             boardDates[i].text =
                                 SimpleDateFormat("yyyy년 MM월 dd일").format(Date(board[i].timestamp))
                             boardDescriptions[i].text = board[i].content
-                            boardPhotos[i].load(board[i].images?.get(0))
+                            boardPhotos[i].load(board[i].images?.firstOrNull())
                             cardViewPhoto[i].isVisible = board[i].images.isNullOrEmpty().not()
+                            boardLayouts[i].setOnClickListener {
+                                item.id?.let { id -> onClickBoardItem(id, board[i]) }
+                            }
                         }
                     }
                     viewLine.isVisible = board.size > 1
                     btnMore.isVisible = board.size > 2
-                }
-                itemView.setOnClickListener {
-                    onClickBoardItem(item)
                 }
                 btnMore.setOnClickListener {
                     onClickMoreBtn(R.string.group_detail_tab_board_title)
@@ -214,6 +215,11 @@ class GroupDetailHomeListAdapter(
                 txtAlbumTitle.text = item.title
                 txtAlbumCount.text = item.images?.size?.toString() ?: "0"
                 btnMore.isVisible = item.images.isNullOrEmpty().not()
+                if(item.images.isNullOrEmpty()) {
+                    cardViewPhoto1.visibility = View.GONE
+                    cardViewPhoto2.visibility = View.GONE
+                    cardViewPhoto3.visibility = View.GONE
+                }
                 val albumCardView = listOf(cardViewPhoto1, cardViewPhoto2, cardViewPhoto3)
                 val albumPhotos = listOf(imgPhoto1, imgPhoto2, imgPhoto3)
                 item.images?.let { image ->
