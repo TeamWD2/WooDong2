@@ -7,8 +7,6 @@ class SignInPreferenceImpl(
     private val sharedPreferences: SharedPreferences,
 ) : SignInPreference {
     companion object {
-        const val TAG = "UserPref"
-
         const val USER_ID = "userId"
         const val USER_UID = "userUID"
         const val IS_LOGGED_IN = "isLoggedIn"
