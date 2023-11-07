@@ -2,10 +2,7 @@ package com.wd.woodong2.domain.repository
 
 import com.wd.woodong2.domain.model.UserEntity
 
-interface UserPreferencesRepository {
-    fun saveUser(userId: String, isLoggedIn: Boolean, uid: String)
+interface UserInfoPreference {
     fun setUserInfo(user: UserEntity)
     fun getUserInfo(): UserEntity?
-    fun getUID(): String?
-    fun deleteUser()
 }
