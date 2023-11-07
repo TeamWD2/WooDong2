@@ -4,61 +4,54 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import coil.load
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailActivityBinding
-import com.wd.woodong2.databinding.GroupDetailActivityCoordinatorBinding
 import com.wd.woodong2.presentation.group.content.GroupItem
 import com.wd.woodong2.presentation.group.detail.board.add.GroupDetailBoardAddActivity
 import kotlin.math.abs
 
 class GroupDetailActivity : AppCompatActivity() {
     companion object {
-        private const val EXTRA_GROUP_DETAIL_CONTENT_TYPE = "extra_group_detail_content_type"
-        private const val EXTRA_GROUP_ITEM = "extra_group_item"
+        private const val GROUP_DETAIL_CONTENT_TYPE = "group_detail_content_type"
+        private const val ITEM_ID = "item_id"
         fun newIntent(
             context: Context,
             groupDetailContentType: String,
-            groupItems: List<GroupItem>
+            itemId: String?
         ): Intent =
             Intent(context, GroupDetailActivity::class.java).apply {
-                putExtra(EXTRA_GROUP_DETAIL_CONTENT_TYPE, groupDetailContentType)
-                putParcelableArrayListExtra(EXTRA_GROUP_ITEM, ArrayList(groupItems))
+                putExtra(GROUP_DETAIL_CONTENT_TYPE, groupDetailContentType)
+                putExtra(ITEM_ID, itemId)
             }
     }
 
     private lateinit var binding: GroupDetailActivityBinding
-    private lateinit var includeBinding: GroupDetailActivityCoordinatorBinding
 
-    private val viewModel: GroupDetailSharedViewModel by viewModels()
+    private val viewModel: GroupDetailSharedViewModel by viewModels {
+        GroupDetailSharedViewModelFactory()
+    }
 
     private val groupDetailContentType by lazy {
         GroupDetailContentType.from(
             intent.getStringExtra(
-                EXTRA_GROUP_DETAIL_CONTENT_TYPE
+                GROUP_DETAIL_CONTENT_TYPE
             )
         )
     }
 
-    private val groupItems by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableArrayListExtra(
-                EXTRA_GROUP_ITEM,
-                GroupItem::class.java
-            )
-        } else {
-            intent.getParcelableArrayListExtra(
-                EXTRA_GROUP_ITEM
-            )
-        }
+    private val itemId by lazy {
+        intent.getStringExtra(ITEM_ID)
     }
 
     private val viewPager2Adapter by lazy {
@@ -70,13 +63,11 @@ class GroupDetailActivity : AppCompatActivity() {
         binding = GroupDetailActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        includeBinding = binding.includeLayoutCoordinator
-
         initView()
         initViewModel()
     }
 
-    private fun initView() {
+    private fun initView() = with(binding) {
         //상태바 & 아이콘 색상 변경
         window.statusBarColor = ContextCompat.getColor(this@GroupDetailActivity, R.color.white)
 
@@ -89,101 +80,112 @@ class GroupDetailActivity : AppCompatActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
-        with(includeBinding) {
-            viewModel.setDetailItem(groupItems)
+        //초기 데이터 출력
+        viewModel.getGroupDetailItem(itemId)
 
-            //넘겨 받은 데이터 출력
-            val groupMainItem =
-                groupItems?.find { it is GroupItem.GroupMain } as? GroupItem.GroupMain
-            initClickItem(groupMainItem)
-
-            //Toolbar init
-            setSupportActionBar(materialToolbar)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setDisplayShowTitleEnabled(false)
-            materialToolbar.setNavigationOnClickListener {
-                finish() //뒤로가기 아이콘 클릭 시
-            }
-            appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-                materialToolbar.post {
-                    materialToolbar.title = if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
-                        groupMainItem?.groupName
-                    } else {
-                        ""
-                    }
-                }
-            }
-
-            //ViewPager2Adapter init
-            viewPager2.isUserInputEnabled = false //swipe
-            viewPager2.adapter = viewPager2Adapter
-            viewPager2.offscreenPageLimit = viewPager2Adapter.itemCount
-
-            //TabLayout X ViewPager2
-            TabLayoutMediator(tabLayout, viewPager2) { tab, pos ->
-                tab.setText(viewPager2Adapter.getTitle(pos))
-            }.attach()
-
-            tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    viewPager2.setCurrentItem(tab.position, false)
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab) {}
-
-                override fun onTabReselected(tab: TabLayout.Tab) {}
-            })
+        //Toolbar init
+        setSupportActionBar(includeLayoutCoordinator.materialToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        includeLayoutCoordinator.materialToolbar.setNavigationOnClickListener {
+            finish() //뒤로가기 아이콘 클릭 시
         }
-        with(binding) {
-            btnAddInfo.text = when (groupDetailContentType) {
-                GroupDetailContentType.WRITE_BOARD -> getString(R.string.group_detail_btn_write_board)
-                GroupDetailContentType.JOIN_GROUP -> getString(R.string.group_detail_btn_join_group)
-                else -> ""
+
+        //ViewPager2Adapter init
+        includeLayoutCoordinator.viewPager2.apply {
+            isUserInputEnabled = false
+            adapter = viewPager2Adapter
+            offscreenPageLimit = viewPager2Adapter.itemCount
+        } //swipe
+
+        //TabLayout X ViewPager2
+        TabLayoutMediator(
+            includeLayoutCoordinator.tabLayout,
+            includeLayoutCoordinator.viewPager2
+        ) { tab, pos ->
+            tab.setText(viewPager2Adapter.getTitle(pos))
+        }.attach()
+
+        includeLayoutCoordinator.tabLayout.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                includeLayoutCoordinator.viewPager2.setCurrentItem(tab.position, false)
             }
-            btnAddInfo.setOnClickListener {
-                //Todo("화면 이동 구현")
-                when (groupDetailContentType) {
-                    GroupDetailContentType.WRITE_BOARD -> startActivity(
-                        GroupDetailBoardAddActivity.newIntent(
-                            this@GroupDetailActivity,
-                            groupItems?.firstOrNull()?.id,
-                            "-NhImSiDataNew", //임시 데이터 (로그인 된 계정의 정보)
-                            "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
-                            "gildong",
-                            "인계동"
-                        )
-                    )
 
-                    GroupDetailContentType.JOIN_GROUP -> Toast.makeText(
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
+
+
+        btnAddInfo.text = when (groupDetailContentType) {
+            GroupDetailContentType.WRITE_BOARD -> getString(R.string.group_detail_btn_write_board)
+            GroupDetailContentType.JOIN_GROUP -> getString(R.string.group_detail_btn_join_group)
+            else -> ""
+        }
+        btnAddInfo.setOnClickListener {
+            //Todo("화면 이동 구현")
+            when (groupDetailContentType) {
+                GroupDetailContentType.WRITE_BOARD -> startActivity(
+                    GroupDetailBoardAddActivity.newIntent(
                         this@GroupDetailActivity,
-                        "모임 가입하기 클릭",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        itemId,
+                        "-NhImSiDataNew", //임시 데이터 (로그인 된 계정의 정보)
+                        "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
+                        "gildong",
+                        "인계동"
+                    )
+                )
 
-                    else -> Unit
-                }
+                GroupDetailContentType.JOIN_GROUP -> Toast.makeText(
+                    this@GroupDetailActivity,
+                    "모임 가입하기 클릭",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                else -> Unit
             }
         }
     }
 
     private fun initViewModel() = with(viewModel) {
+        viewModel.loadingState.observe(this@GroupDetailActivity) { loadingState ->
+            binding.includeLayoutCoordinator.progressBar.isVisible = loadingState
+        }
+
+        groupDetailItem.observe(this@GroupDetailActivity) { detailItem ->
+            //넘겨 받은 데이터 출력
+            initClickItem(detailItem)
+
+            binding.includeLayoutCoordinator.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+                binding.includeLayoutCoordinator.materialToolbar.post {
+                    binding.includeLayoutCoordinator.materialToolbar.title =
+                        if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
+                            detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.groupName
+                        } else {
+                            ""
+                        }
+                }
+            }
+        }
+
         viewModel.tabName.observe(this@GroupDetailActivity) { tabName ->
-            includeBinding.viewPager2.setCurrentItem(
+            binding.includeLayoutCoordinator.viewPager2.setCurrentItem(
                 viewPager2Adapter.findTabPositionByName(tabName),
                 false
             )
         }
     }
 
-    private fun initClickItem(groupMainItem: GroupItem.GroupMain?) = with(includeBinding) {
-        imgBackground.load(groupMainItem?.backgroundImage) {
+    private fun initClickItem(detailItem: List<GroupItem>?) = with(binding.includeLayoutCoordinator) {
+        imgBackground.load(detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.backgroundImage) {
             error(R.drawable.group_ic_no_image)
         }
-        imgMain.load(groupMainItem?.mainImage) {
+        imgMain.load(detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.mainImage) {
             error(R.drawable.group_ic_no_image)
         }
-        txtTitle.text = groupMainItem?.groupName
-        txtCount.text = "멤버 ${groupMainItem?.memberCount ?: "1"} " +
-                "/ 게시판 ${groupMainItem?.boardCount ?: "0"}"
+        txtTitle.text = detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.groupName
+        txtMemberCount.text = detailItem?.filterIsInstance<GroupItem.GroupMember>()?.firstOrNull()?.memberList?.size?.toString() ?: "1"
+        txtBoardCount.text = detailItem?.filterIsInstance<GroupItem.GroupBoard>()?.firstOrNull()?.boardList?.size?.toString() ?: "0"
     }
 }

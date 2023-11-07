@@ -18,9 +18,7 @@ sealed class GroupItem(
         val memberLimit: String?,
         val password: String?,
         val mainImage: String?,
-        val backgroundImage: String?,
-        val memberCount: Int?,
-        val boardCount: Int?
+        val backgroundImage: String?
     ) : GroupItem(id, title), Parcelable
 
     @Parcelize

@@ -22,9 +22,7 @@ data class GroupMainResponse(
     @SerializedName("memberLimit") val memberLimit: String?,
     @SerializedName("password") val password: String?,
     @SerializedName("mainImage") val mainImage: String?,
-    @SerializedName("backgroundImage") val backgroundImage: String?,
-    @SerializedName("memberCount") val memberCount: Int?,
-    @SerializedName("boardCount") val boardCount: Int?
+    @SerializedName("backgroundImage") val backgroundImage: String?
 ) : GroupResponse
 /**
  * 소개

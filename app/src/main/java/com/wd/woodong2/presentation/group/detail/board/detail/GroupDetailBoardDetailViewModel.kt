@@ -42,7 +42,7 @@ class GroupDetailBoardDetailViewModel(
                 GroupDetailBoardDetailItem.BoardTitle(
                     id = board.boardId,
                     title = "댓글",
-                    boardCount = board.commentList?.size.toString()
+                    boardCount = board.commentList?.size?.toString() ?: "0"
                 )
             )
             board.commentList?.forEach { comment ->
@@ -64,7 +64,6 @@ class GroupDetailBoardDetailViewModel(
                     )
                 )
             }
-            //Todo("Comment 관련 데이터 추가 - BoardComment + BoardDivider")
         }
         _groupBoardItem.value = boardItem
     }

@@ -31,10 +31,7 @@ fun GroupMainResponse.toEntity() = GroupMainEntity(
     memberLimit = memberLimit,
     password = password,
     mainImage = mainImage,
-    backgroundImage = backgroundImage,
-    memberCount = memberCount,
-    boardCount = boardCount
-
+    backgroundImage = backgroundImage
 )
 
 fun GroupIntroduceResponse.toEntity() = GroupIntroduceEntity(

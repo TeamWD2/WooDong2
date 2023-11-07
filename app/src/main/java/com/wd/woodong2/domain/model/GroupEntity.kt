@@ -17,9 +17,7 @@ data class GroupMainEntity(
     val memberLimit: String?,
     val password: String?,
     val mainImage: String?,
-    val backgroundImage: String?,
-    val memberCount: Int?,
-    val boardCount: Int?
+    val backgroundImage: String?
 ) : GroupEntity
 
 /**

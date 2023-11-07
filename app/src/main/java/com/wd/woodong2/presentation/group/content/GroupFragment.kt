@@ -77,7 +77,7 @@ class GroupFragment : Fragment() {
                         "-NhImSiDataNew" //테스트용 userId (임시데이터)
                     )
                 ) GroupDetailContentType.WRITE_BOARD.name else GroupDetailContentType.JOIN_GROUP.name,
-                viewModel.getRelatedItems(item.id)
+                item.id
             )
         )
     }
