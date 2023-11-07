@@ -4,24 +4,42 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import coil.load
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailBoardDetailActivityBinding
 import com.wd.woodong2.presentation.group.content.GroupItem
+import com.wd.woodong2.presentation.group.detail.board.add.GroupDetailBoardAddActivity
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class GroupDetailBoardDetailActivity : AppCompatActivity() {
     companion object {
         private const val GROUP_BOARD_ITEM = "group_board_item"
+        private const val USER_ID = "user_id"
+        private const val USER_PROFILE = "user_profile"
+        private const val USER_NAME = "user_name"
+        private const val USER_LOCATION = "user_location"
 
         fun newIntent(
             context: Context,
+            userId: String,
+            userProfile: String,
+            userName: String,
+            userLocation: String,
             groupBoardItem: GroupItem.GroupBoard
         ): Intent =
             Intent(context, GroupDetailBoardDetailActivity::class.java).apply {
+                putExtra(USER_ID, userId)
+                putExtra(USER_PROFILE, userProfile)
+                putExtra(USER_NAME, userName)
+                putExtra(USER_LOCATION, userLocation)
                 putExtra(GROUP_BOARD_ITEM, groupBoardItem)
             }
     }
@@ -31,9 +49,25 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
     private val viewModel: GroupDetailBoardDetailViewModel by viewModels()
 
     private val boardDetailListAdapter by lazy {
-        GroupDetailBoardDetailListAdapter()
+        GroupDetailBoardDetailListAdapter(
+            onClickDeleteComment = { position ->
+                viewModel.deleteComment(position)
+            }
+        )
     }
 
+    private val userId by lazy {
+        intent.getStringExtra(USER_ID)
+    }
+    private val userProfile by lazy {
+        intent.getStringExtra(USER_PROFILE)
+    }
+    private val userName by lazy {
+        intent.getStringExtra(USER_NAME)
+    }
+    private val userLocation by lazy {
+        intent.getStringExtra(USER_LOCATION)
+    }
     private val groupBoardItem by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(GROUP_BOARD_ITEM, GroupItem.GroupBoard::class.java)
@@ -66,7 +100,39 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
 
         recyclerViewBoardDetail.adapter = boardDetailListAdapter
 
-        viewModel.setGroupBoardItem(groupBoardItem)
+        imgBack.setOnClickListener {
+            finish()
+        }
+
+        val boardItem = groupBoardItem?.boardList?.get(0)
+
+        imgProfile.load(boardItem?.profile)
+        txtName.text = boardItem?.name
+        txtLocation.text = boardItem?.location
+        txtDate.text = boardItem?.timestamp?.let { Date(it) }
+            ?.let { SimpleDateFormat("yyyy년 MM월 dd일").format(it) }
+
+        viewModel.initGroupBoardItem(groupBoardItem)
+
+        btnWriteComment.setOnClickListener {
+            if(edtWriteComment.text.isNullOrBlank()) {
+                Toast.makeText(
+                    this@GroupDetailBoardDetailActivity,
+                    R.string.group_detail_board_detail_no_comment,
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                viewModel.addBoardComment(
+                    userId,
+                    userProfile,
+                    userName,
+                    userLocation,
+                    edtWriteComment.text.toString()
+                )
+                edtWriteComment.setText("")
+//                binding.recyclerViewBoardDetail.scrollToPosition()
+            }
+        }
     }
 
     private fun initViewModel() = with(viewModel) {

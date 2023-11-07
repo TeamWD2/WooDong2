@@ -56,7 +56,7 @@
         android:layout_marginTop="3dp"
         android:textColor="@color/light_gray_txt"
         android:textSize="@dimen/wd2_small_text"
-        app:layout_constraintBottom_toTopOf="@id/txt_description"
+        app:layout_constraintBottom_toTopOf="@id/txt_comment"
         app:layout_constraintEnd_toStartOf="@id/txt_date"
         app:layout_constraintStart_toStartOf="@id/txt_name"
         app:layout_constraintTop_toBottomOf="@id/txt_name"
@@ -75,7 +75,7 @@
         tools:text="2023년 10월 23일" />
 
     <TextView
-        android:id="@+id/txt_description"
+        android:id="@+id/txt_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"

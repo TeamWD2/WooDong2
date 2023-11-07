@@ -1,8 +1,10 @@
 package com.wd.woodong2.presentation.group.detail.board.detail
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,22 +15,26 @@ import com.wd.woodong2.databinding.GroupDetailBoardDetailDividerItemBinding
 import com.wd.woodong2.databinding.GroupDetailBoardDetailImageItemBinding
 import com.wd.woodong2.databinding.GroupDetailBoardDetailTitleItemBinding
 import com.wd.woodong2.databinding.GroupDetailBoardDetailUnknownItemBinding
+import java.text.SimpleDateFormat
+import java.util.Date
 
-class GroupDetailBoardDetailListAdapter: ListAdapter<GroupDetailBoardDetailItem, GroupDetailBoardDetailListAdapter.ViewHolder>(
-    object: DiffUtil.ItemCallback<GroupDetailBoardDetailItem>() {
-        override fun areItemsTheSame(
-            oldItem: GroupDetailBoardDetailItem,
-            newItem: GroupDetailBoardDetailItem
-        ): Boolean =
-            oldItem.id == newItem.id
+class GroupDetailBoardDetailListAdapter(
+    private val onClickDeleteComment: (Int) -> Unit
+) : ListAdapter<GroupDetailBoardDetailItem, GroupDetailBoardDetailListAdapter.ViewHolder>(
+        object : DiffUtil.ItemCallback<GroupDetailBoardDetailItem>() {
+            override fun areItemsTheSame(
+                oldItem: GroupDetailBoardDetailItem,
+                newItem: GroupDetailBoardDetailItem
+            ): Boolean =
+                oldItem.id == newItem.id
 
-        override fun areContentsTheSame(
-            oldItem: GroupDetailBoardDetailItem,
-            newItem: GroupDetailBoardDetailItem
-        ): Boolean =
-            oldItem == newItem
-    }
-) {
+            override fun areContentsTheSame(
+                oldItem: GroupDetailBoardDetailItem,
+                newItem: GroupDetailBoardDetailItem
+            ): Boolean =
+                oldItem == newItem
+        }
+    ) {
     enum class BoardDetailItemViewType {
         CONTENT,
         TITLE,
@@ -40,7 +46,7 @@ class GroupDetailBoardDetailListAdapter: ListAdapter<GroupDetailBoardDetailItem,
         abstract fun bind(item: GroupDetailBoardDetailItem)
     }
 
-    override fun getItemViewType(position: Int): Int = when(getItem(position)) {
+    override fun getItemViewType(position: Int): Int = when (getItem(position)) {
         is GroupDetailBoardDetailItem.BoardContent -> BoardDetailItemViewType.CONTENT.ordinal
         is GroupDetailBoardDetailItem.BoardTitle -> BoardDetailItemViewType.TITLE.ordinal
         is GroupDetailBoardDetailItem.BoardComment -> BoardDetailItemViewType.COMMENT.ordinal
@@ -48,7 +54,7 @@ class GroupDetailBoardDetailListAdapter: ListAdapter<GroupDetailBoardDetailItem,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return when(viewType) {
+        return when (viewType) {
             BoardDetailItemViewType.CONTENT.ordinal ->
                 BoardContentViewHolder(
                     GroupDetailBoardDetailContentItemBinding.inflate(
@@ -73,7 +79,8 @@ class GroupDetailBoardDetailListAdapter: ListAdapter<GroupDetailBoardDetailItem,
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ),
+                    onClickDeleteComment
                 )
 
             BoardDetailItemViewType.DIVIDER.ordinal ->
@@ -102,9 +109,9 @@ class GroupDetailBoardDetailListAdapter: ListAdapter<GroupDetailBoardDetailItem,
 
     class BoardContentViewHolder(
         private val binding: GroupDetailBoardDetailContentItemBinding
-    ): ViewHolder(binding.root) {
+    ) : ViewHolder(binding.root) {
         override fun bind(item: GroupDetailBoardDetailItem) = with(binding) {
-            if(item is GroupDetailBoardDetailItem.BoardContent) {
+            if (item is GroupDetailBoardDetailItem.BoardContent) {
                 txtBoardContent.text = item.content
                 linearLayoutImage.removeAllViews()
                 item.images?.forEach { image ->
@@ -122,9 +129,9 @@ class GroupDetailBoardDetailListAdapter: ListAdapter<GroupDetailBoardDetailItem,
 
     class BoardTitleViewHolder(
         private val binding: GroupDetailBoardDetailTitleItemBinding
-    ): ViewHolder(binding.root) {
+    ) : ViewHolder(binding.root) {
         override fun bind(item: GroupDetailBoardDetailItem) = with(binding) {
-            if(item is GroupDetailBoardDetailItem.BoardTitle) {
+            if (item is GroupDetailBoardDetailItem.BoardTitle) {
                 txtTitle.text = item.title
                 txtCount.text = item.boardCount
             }
@@ -132,22 +139,30 @@ class GroupDetailBoardDetailListAdapter: ListAdapter<GroupDetailBoardDetailItem,
     }
 
     class BoardCommentViewHolder(
-        private val binding: GroupDetailBoardDetailCommentItemBinding
-    ): ViewHolder(binding.root) {
+        private val binding: GroupDetailBoardDetailCommentItemBinding,
+        private val onClickDeleteComment: (Int) -> Unit
+    ) : ViewHolder(binding.root) {
         override fun bind(item: GroupDetailBoardDetailItem) = with(binding) {
-            if(item is GroupDetailBoardDetailItem.BoardComment) {
-
+            if (item is GroupDetailBoardDetailItem.BoardComment) {
+                imgProfile.load(item.userProfile)
+                txtName.text = item.userName
+                txtLocation.text = item.userLocation
+                txtDate.text = item.timestamp?.let { Date(it) }
+                    ?.let { SimpleDateFormat("yyyy년 MM월 dd일").format(it) }
+                txtComment.text = item.comment
+                txtDelete.isVisible = item.userId.equals("-NhImSiDataNew") //임시 데이터
+                txtDelete.setOnClickListener {
+                    onClickDeleteComment(bindingAdapterPosition)
+                }
             }
         }
     }
 
     class BoardDividerViewHolder(
         private val binding: GroupDetailBoardDetailDividerItemBinding
-    ): ViewHolder(binding.root) {
+    ) : ViewHolder(binding.root) {
         override fun bind(item: GroupDetailBoardDetailItem) = with(binding) {
-            if(item is GroupDetailBoardDetailItem.BoardDivider) {
 
-            }
         }
     }
 

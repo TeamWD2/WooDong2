@@ -17,10 +17,11 @@ sealed class GroupDetailBoardDetailItem(
 
     data class BoardComment(
         override val id: String?,
+        val userId: String?,
         val userProfile: String?,
         val userName: String?,
         val userLocation: String?,
-        val date: Long?,
+        val timestamp: Long?,
         val comment: String?
     ) : GroupDetailBoardDetailItem(id)
 
