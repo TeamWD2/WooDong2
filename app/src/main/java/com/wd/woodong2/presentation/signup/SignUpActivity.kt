@@ -2,8 +2,10 @@ package com.wd.woodong2.presentation.signup
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
@@ -11,9 +13,11 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.SignupActivityBinding
@@ -28,6 +32,42 @@ class SignUpActivity : AppCompatActivity() {
 
     private var _binding: SignupActivityBinding? = null
     private val binding get() = _binding!!
+
+    /**
+     * 갤러리 접근 권한 설정
+     * Target SDK 33 부터 READ_EXTERNAL_STORAGE 권한 세분화 (이미지/동영상/오디오)
+     * Android 13(VERSION_CODES.TIRAMISU) 버전 체크하여 권한 요청 필요
+     */
+    private val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(
+            android.Manifest.permission.READ_MEDIA_IMAGES,
+            android.Manifest.permission.READ_MEDIA_VIDEO
+        )
+    } else {
+        arrayOf(
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    }
+
+    private val galleryPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (permissions.values.all { it }) {
+                initView()
+            } else {
+                Toast.makeText(this, getString(R.string.main_toast_permission), Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.let { uri ->
+                    binding.ivProfile.setImageURI(uri)
+                    signViewModel.setProfileImage(uri)
+                }
+            }
+        }
 
     private val signViewModel: SignUpViewModel by viewModels {
         SignUpViewModelFactory()
@@ -60,6 +100,11 @@ class SignUpActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
+        }
+
+        // 프로필 버튼 클릭 시
+        ivProfile.setOnClickListener {
+            checkPermissions()
         }
 
         // id 형식 확인
@@ -208,12 +253,16 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
+        /*
+        * 닉네임 중복 체크 메소드
+        */
         signViewModel.isNicknameDuplication.observe(this@SignUpActivity) { isDup ->
             if (!isDup) {
                 editName.isEnabled = false
                 txtCheckNicknameDuplication.apply {
                     text = "사용 가능"
                     isEnabled = false
+                    setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
                 }
                 Toast.makeText(
                     applicationContext,
@@ -271,6 +320,25 @@ class SignUpActivity : AppCompatActivity() {
                     finish()
                 }
             }
+        }
+    }
+
+    private fun checkPermissions() {
+        if (permissions.all {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            }
+        ) {
+            galleryLauncher.launch(
+                Intent(Intent.ACTION_PICK).setDataAndType(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    "image/*"
+                )
+            )
+        } else {
+            galleryPermissionLauncher.launch(permissions)
         }
     }
 }

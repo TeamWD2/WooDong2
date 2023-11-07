@@ -1,5 +1,7 @@
 package com.wd.woodong2.presentation.signup
 
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,16 +11,21 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.storage.FirebaseStorage
+import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
+import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
 import com.wd.woodong2.domain.usecase.SignUpCheckNickNameDupUseCase
 import com.wd.woodong2.domain.usecase.UserSignUpUseCase
 import kotlinx.coroutines.launch
+import java.util.UUID
 import java.util.regex.Pattern
 
 class SignUpViewModel(
     private val signUpUser: UserSignUpUseCase,
     private val checkNicknameDup: SignUpCheckNickNameDupUseCase,
+    private val imageStorageSetItem: ImageStorageSetItemUseCase,
 ) : ViewModel(
 ) {
     companion object {
@@ -48,6 +55,8 @@ class SignUpViewModel(
 
     private val _isValidNickname: MutableLiveData<Boolean> = MutableLiveData()
     val isValidNickname: LiveData<Boolean> get() = _isValidNickname
+
+    private var imgProfile: Uri? = null
 
     // 닉네임 중복 판단 메소드
     fun checkNicknameDuplication(nickname: String) {
@@ -90,11 +99,13 @@ class SignUpViewModel(
                 && isNicknameDuplication.value == false
     }
 
-
+    /*
+    * 회원가입 메소드
+    * */
     fun signUp(id: String, pw: String, name: String) {
         viewModelScope.launch {
             try {
-                signUpUser(id, pw, name)
+                signUpUser(id, pw, name, imgProfile)
                     .collect { result ->
                         // 성공 처리
                         _signUpResult.value = result
@@ -103,6 +114,16 @@ class SignUpViewModel(
                 // 에러 처리
                 _signUpResult.value = "ERROR: ${e.message}"
             }
+        }
+    }
+
+    fun setProfileImage(uri: Uri) = viewModelScope.launch {
+        runCatching {
+            imageStorageSetItem(uri).collect { imageUri ->
+                imgProfile = imageUri
+            }
+        }.onFailure {
+            Log.e(TAG, it.message.toString())
         }
     }
 }
@@ -117,11 +138,15 @@ class SignUpViewModelFactory : ViewModelProvider.Factory {
         )
     }
 
+    private val imageStorageRepository =
+        ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/${UUID.randomUUID()}"))
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SignUpViewModel::class.java)) {
             return SignUpViewModel(
                 UserSignUpUseCase(userRepositoryImpl),
-                SignUpCheckNickNameDupUseCase(userRepositoryImpl)
+                SignUpCheckNickNameDupUseCase(userRepositoryImpl),
+                ImageStorageSetItemUseCase(imageStorageRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
