@@ -105,20 +105,12 @@ class UserRepositoryImpl(
                             name = name,
 
                             chatIds = listOf(),
-                            groupIds= listOf(),        //모임
-                            likedIds= listOf(),        //좋아요 게시물
-                            writtenIds= listOf(),        //작성한 게시물
+                            groupIds = listOf(),        //모임
+                            likedIds = listOf(),        //좋아요 게시물
+                            writtenIds = listOf(),        //작성한 게시물
                             imgProfile = "",
                             firstLocation = "",
                             secondLocation = "",
-                            token = ""
-                        )
-
-                        CoroutineScope(Dispatchers.IO).launch {
-                            addUser(user)
-                        }
-
-                            //withContext, runBlocking
                             token = tokenProvider.getToken()
                         )
                         addUser(user)
