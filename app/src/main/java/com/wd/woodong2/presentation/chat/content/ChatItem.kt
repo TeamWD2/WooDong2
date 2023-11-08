@@ -15,6 +15,7 @@ sealed class ChatItem : Parcelable {
         val mainImage: String?,
         val memberLimit: String?,
         val title: String?,
+        val isRead: Boolean?,
     ) : ChatItem()
 
     data class PrivateChatItem(
