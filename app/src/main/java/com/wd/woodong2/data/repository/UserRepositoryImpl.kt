@@ -2,7 +2,11 @@ package com.wd.woodong2.data.repository
 
 import android.net.Uri
 import android.util.Log
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.ActionCodeSettings
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -12,6 +16,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
+import com.google.gson.annotations.SerializedName
 import com.wd.woodong2.data.model.UserResponse
 import com.wd.woodong2.domain.model.UserEntity
 import com.wd.woodong2.domain.model.UserItemsEntity
@@ -21,6 +26,7 @@ import com.wd.woodong2.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.onFailure
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
@@ -121,7 +127,11 @@ class UserRepositoryImpl(
                             secondLocation = "",
 
                             //withContext, runBlocking
-                            token = tokenProvider.getToken()
+                            token = tokenProvider.getToken(),
+
+                            groupIds = emptyList(),        //모임
+                            likedIds = emptyList(),        //좋아요 게시물
+                            writtenIds = emptyList(),        //작성한 게시물
                         )
                         addUser(user)
 
@@ -149,6 +159,7 @@ class UserRepositoryImpl(
                     val uid = auth.currentUser?.uid
 
                     if (uid != null) {
+                        // TODO Global 사용 지양
                         CoroutineScope(Dispatchers.IO).launch {
                             updateUserToken(uid)
                         }
