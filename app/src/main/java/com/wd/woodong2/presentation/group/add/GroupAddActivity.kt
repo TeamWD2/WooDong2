@@ -23,7 +23,7 @@ class GroupAddActivity : AppCompatActivity() {
     private lateinit var binding: GroupAddActivityBinding
 
     private val viewModel: GroupAddSharedViewModel by viewModels {
-        GroupAddSharedViewModelFactory()
+        GroupAddSharedViewModelFactory(this@GroupAddActivity)
     }
 
     private val viewPager2Adapter by lazy {

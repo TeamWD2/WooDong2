@@ -16,30 +16,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailBoardAddActivityBinding
+import com.wd.woodong2.presentation.group.GroupUserInfoItem
+import com.wd.woodong2.presentation.group.detail.board.detail.GroupDetailBoardDetailActivity
 import java.util.concurrent.atomic.AtomicLong
 
 class GroupDetailBoardAddActivity : AppCompatActivity() {
     companion object {
         private const val ITEM_ID = "item_id"
-        private const val USER_ID = "user_id"
-        private const val USER_PROFILE = "user_profile"
-        private const val USER_NAME = "user_name"
-        private const val USER_LOCATION = "user_location"
+        private const val USER_INFO = "user_info"
 
         fun newIntent(
             context: Context,
             id: String?,
-            userId: String,
-            userProfile: String,
-            userName: String,
-            userLocation: String
+            userInfo: GroupUserInfoItem?
         ): Intent =
             Intent(context, GroupDetailBoardAddActivity::class.java).apply {
                 putExtra(ITEM_ID, id)
-                putExtra(USER_ID, userId)
-                putExtra(USER_PROFILE, userProfile)
-                putExtra(USER_NAME, userName)
-                putExtra(USER_LOCATION, userLocation)
+                putExtra(USER_INFO, userInfo)
             }
     }
 
@@ -52,17 +45,12 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
     private val itemId by lazy {
         intent.getStringExtra(ITEM_ID)
     }
-    private val userId by lazy {
-        intent.getStringExtra(USER_ID)
-    }
-    private val userProfile by lazy {
-        intent.getStringExtra(USER_PROFILE)
-    }
-    private val userName by lazy {
-        intent.getStringExtra(USER_NAME)
-    }
-    private val userLocation by lazy {
-        intent.getStringExtra(USER_LOCATION)
+    private val userInfo by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(USER_INFO, GroupUserInfoItem::class.java)
+        } else {
+            intent.getParcelableExtra(USER_INFO)
+        }
     }
 
     private val idGenerate = AtomicLong(1L)
@@ -118,7 +106,7 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
         //넘겨 받은 사용자 위치 ToolBar 출력
-        toolBar.title = userLocation
+        toolBar.title = userInfo?.userLocation
 
         recyclerviewPhoto.adapter = boardAddListAdapter
 
@@ -128,15 +116,11 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
             if(edtContent.text.isNullOrBlank()) {
                 Toast.makeText(this@GroupDetailBoardAddActivity, R.string.group_add_board_add_toast_no_content, Toast.LENGTH_SHORT).show()
             } else {
-                viewModel.setGroupBoardItem(
+                viewModel.setGroupBoardAlbumItem(
                     itemId,
-                    userId,
-                    userProfile,
-                    userName,
-                    userLocation,
+                    userInfo,
                     edtContent.text.toString()
                 )
-                viewModel.setGroupAlbumItem(itemId)
             }
         }
     }

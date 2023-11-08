@@ -27,7 +27,7 @@ sealed class GroupAddSetItem(
     data class GroupAddMember(
         override val viewType: String = "member",
         val title: String = "멤버",
-        val memberList: List<AddMember>?
+        val memberList: List<AddMember>? = null
     ) : GroupAddSetItem(viewType)
 
     data class AddMember(

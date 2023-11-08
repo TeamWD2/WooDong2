@@ -21,7 +21,7 @@ class GroupFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: GroupViewModel by viewModels {
-        GroupViewModelFactory()
+        GroupViewModelFactory(requireContext())
     }
 
     private val groupListAdapter by lazy {
@@ -72,11 +72,6 @@ class GroupFragment : Fragment() {
         startActivity(
             GroupDetailActivity.newIntent(
                 requireContext(),
-                if (viewModel.isUserInGroup(
-                        item.id,
-                        "-NhImSiDataNew" //테스트용 userId (임시데이터)
-                    )
-                ) GroupDetailContentType.WRITE_BOARD.name else GroupDetailContentType.JOIN_GROUP.name,
                 item.id
             )
         )

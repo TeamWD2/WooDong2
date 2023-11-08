@@ -20,7 +20,7 @@ class GroupDetailMemberFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels {
-        GroupDetailSharedViewModelFactory()
+        GroupDetailSharedViewModelFactory(requireContext())
     }
 
     private val groupDetailMemberListAdapter by lazy {

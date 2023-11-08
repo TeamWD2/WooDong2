@@ -13,6 +13,7 @@ import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
 import com.wd.woodong2.domain.usecase.GroupSetAlbumItemUseCase
 import com.wd.woodong2.domain.usecase.GroupSetBoardItemUseCase
 import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
+import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -74,15 +75,12 @@ class GroupDetailBoardAddViewModel(
         _imageList.value = currentList
     }
 
-    fun setGroupBoardItem(
+    fun setGroupBoardAlbumItem(
         itemId: String?,
-        userId: String?,
-        userProfile: String?,
-        userName: String?,
-        userLocation: String?,
+        userInfo: GroupUserInfoItem?,
         edtContent: String
     ) {
-        if (itemId == null || userId == null || userName == null || userLocation == null) {
+        if (itemId == null || userInfo == null) {
             return
         }
         viewModelScope.launch {
@@ -91,37 +89,22 @@ class GroupDetailBoardAddViewModel(
                 groupSetBoardItem(
                     itemId,
                     GroupDetailBoardAddItem(
-                        userId = userId,
-                        profile = userProfile,
-                        name = userName,
-                        location = userLocation,
+                        userId = userInfo.userId,
+                        profile = userInfo.userProfile,
+                        name = userInfo.userName,
+                        location = userInfo.userLocation,
                         content = edtContent,
                         images = uriImageList
                     )
+                )
+                groupSetAlbumItem(
+                    itemId,
+                    uriImageList
                 )
                 _isCreateSuccess.value = true
             }.onFailure {
                 Log.e(TAG, it.message.toString())
                 _isCreateSuccess.value = false
-            }
-        }
-    }
-
-    fun setGroupAlbumItem(
-        itemId: String?
-    ) {
-        if (itemId == null) {
-            return
-        }
-        viewModelScope.launch {
-            runCatching {
-                val uriImageList = createBoardImages()
-                groupSetAlbumItem(
-                    itemId,
-                    uriImageList
-                )
-            }.onFailure {
-                Log.e(TAG, it.message.toString())
             }
         }
     }
@@ -144,7 +127,7 @@ class GroupDetailBoardAddViewModel(
 class GroupDetailBoardAddViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val imageStorageRepository =
-            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/groupList/${UUID.randomUUID()}"))
+            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference)
         val groupSetItemRepository =
             GroupRepositoryImpl(FirebaseDatabase.getInstance().getReference("group_list"))
         if (modelClass.isAssignableFrom(GroupDetailBoardAddViewModel::class.java)) {

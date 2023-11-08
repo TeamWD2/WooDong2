@@ -74,24 +74,33 @@
         <activity
             android:name=".presentation.home.map.HomeMapActivity"
             android:exported="false" />
+
         <activity
             android:name=".presentation.home.map.HomeMapSearchActivity"
             android:exported="false" />
+
         <activity
             android:name=".presentation.group.add.GroupAddActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".presentation.mypage.update.MyPageUpdateActivity"
             android:exported="false" />
+
         <activity
             android:name=".presentation.group.detail.GroupDetailActivity"
             android:exported="false" />
+
         <activity
             android:name=".presentation.group.detail.board.add.GroupDetailBoardAddActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".presentation.group.detail.board.detail.GroupDetailBoardDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
 
         <service
             android:name=".services.fcm.MyFirebaseMessagingService"

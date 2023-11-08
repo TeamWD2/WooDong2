@@ -22,7 +22,7 @@ class GroupAddWithFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val sharedViewModel: GroupAddSharedViewModel by activityViewModels {
-        GroupAddSharedViewModelFactory()
+        GroupAddSharedViewModelFactory(requireContext())
     }
 
     private val textWatcher by lazy {

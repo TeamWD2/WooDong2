@@ -18,6 +18,10 @@ import com.wd.woodong2.domain.model.MessageItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.ChatRepository
 import com.wd.woodong2.data.model.GCMRequest
+import com.wd.woodong2.data.model.GroupItemsResponse
+import com.wd.woodong2.data.model.GroupItemsResponseJsonDeserializer
+import com.wd.woodong2.domain.model.GroupItemsEntity
+import com.wd.woodong2.presentation.group.detail.GroupDetailChatItem
 import com.wd.woodong2.retrofit.GCMRetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +32,7 @@ import kotlinx.coroutines.launch
 
 class ChatRepositoryImpl(
     private val chatDatabaseReference: DatabaseReference,
-    private val timeDatabaseReference: DatabaseReference,
+    private val timeDatabaseReference: DatabaseReference?,
 ) : ChatRepository {
 
     companion object {
@@ -83,26 +87,17 @@ class ChatRepositoryImpl(
             }
         }
 
-    override suspend fun addChatItem(
-        senderId: String,
-        imgProfile: String,
-        location: String,
-    ) {
-//        val currentTimeMillis = System.currentTimeMillis()
-//
-//        val chatRef = databaseReference.push()
-//
-//        val chatEntity = ChatEntity(
-//            id = chatRef.key,
-//            groupId = imgProfile,
-//            last = senderId,
-//            mainImage = location,
-//            memberLimit = currentTimeMillis,
-//            title = "",
-//            message = emptyMap()
-//        )
-//
-//        chatRef.setValue(chatEntity)
+    override suspend fun setChatItem(chatItem: GroupDetailChatItem): String {
+        val chatRef = chatDatabaseReference.push()
+        val chatKey = chatRef.key
+        chatRef.setValue(chatItem) { databaseError, _ ->
+            if (databaseError != null) {
+                Log.e(GroupRepositoryImpl.TAG, "Fail: ${databaseError.message}")
+            } else {
+                Log.e(GroupRepositoryImpl.TAG, "Success")
+            }
+        }
+        return chatKey.toString()
     }
 
     override suspend fun loadMessageItems(chatId: String): Flow<MessageItemsEntity?> =
@@ -158,7 +153,7 @@ class ChatRepositoryImpl(
 
 
     override suspend fun addChatMessageItem(userId: String, message: String, nickname: String) {
-        timeDatabaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+        timeDatabaseReference?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val offset = snapshot.value as Long
                 val estimatedServerTimeMs = System.currentTimeMillis() + offset
@@ -220,7 +215,7 @@ class ChatRepositoryImpl(
 
     override fun initChatItemTimestamp(chatId: String, userId: String) {
         lastTimestamps.remove(chatId)
-        timeDatabaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+        timeDatabaseReference?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val offset = dataSnapshot.value as Long
                 val estimatedServerTimeMs = System.currentTimeMillis() + offset
@@ -238,5 +233,19 @@ class ChatRepositoryImpl(
         })
     }
 
-}
+    override suspend fun getChatId(groupId: String): Flow<String> = callbackFlow {
+        chatDatabaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.forEach { snapshot ->
+                    if (snapshot.child("groupId").getValue(String::class.java) == groupId) {
+                        trySend(snapshot.key.toString())
+                    }
+                }
+            }
 
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
+    }
+}

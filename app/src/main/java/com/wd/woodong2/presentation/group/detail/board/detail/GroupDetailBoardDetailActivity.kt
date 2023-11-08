@@ -1,6 +1,7 @@
 package com.wd.woodong2.presentation.group.detail.board.detail
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,11 +10,14 @@ import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import coil.load
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailBoardDetailActivityBinding
+import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import com.wd.woodong2.presentation.group.content.GroupItem
 import com.wd.woodong2.presentation.group.detail.board.add.GroupDetailBoardAddActivity
 import java.text.SimpleDateFormat
@@ -21,62 +25,61 @@ import java.util.Date
 
 class GroupDetailBoardDetailActivity : AppCompatActivity() {
     companion object {
-        private const val USER_ID = "user_id"
-        private const val USER_PROFILE = "user_profile"
-        private const val USER_NAME = "user_name"
-        private const val USER_LOCATION = "user_location"
+        private const val USER_INFO = "user_info"
         private const val ITEM_PK_ID= "item_pk_id"
         private const val GROUP_BOARD_ITEM = "group_board_item"
+        private const val IS_JOIN_GROUP = "is_join_group"
 
         fun newIntent(
             context: Context,
-            userId: String,
-            userProfile: String,
-            userName: String,
-            userLocation: String,
+            userInfo: GroupUserInfoItem?,
             id: String,
-            groupBoardItem: GroupItem.Board
+            groupBoardItem: GroupItem.Board,
+            isJoinGroup: Boolean?
         ): Intent =
             Intent(context, GroupDetailBoardDetailActivity::class.java).apply {
-                putExtra(USER_ID, userId)
-                putExtra(USER_PROFILE, userProfile)
-                putExtra(USER_NAME, userName)
-                putExtra(USER_LOCATION, userLocation)
+                putExtra(USER_INFO, userInfo)
                 putExtra(ITEM_PK_ID, id)
                 putExtra(GROUP_BOARD_ITEM, groupBoardItem)
+                putExtra(IS_JOIN_GROUP, isJoinGroup)
             }
     }
 
     private lateinit var binding: GroupDetailBoardDetailActivityBinding
 
     private val viewModel: GroupDetailBoardDetailViewModel by viewModels {
-        GroupDetailBoardDetailViewModelFactory()
+        GroupDetailBoardDetailViewModelFactory(this@GroupDetailBoardDetailActivity)
     }
 
     private val boardDetailListAdapter by lazy {
         GroupDetailBoardDetailListAdapter(
             onClickDeleteComment = { position ->
-                viewModel.deleteComment(
-                    itemPkId,
-                    groupBoardItem?.boardId,
-                    groupBoardItem?.commentList?.firstOrNull()?.commentId,
-                    position
-                )
+                AlertDialog.Builder(this@GroupDetailBoardDetailActivity).apply {
+                    setTitle(R.string.group_detail_board_detail_dialog_title)
+                    setMessage(R.string.group_detail_board_detail_dialog_message)
+                    setPositiveButton(R.string.group_detail_board_detail_dialog_delete) { _, _ ->
+                        viewModel.deleteComment(
+                            itemPkId,
+                            groupBoardItem?.boardId,
+                            groupBoardItem?.commentList?.firstOrNull()?.commentId,
+                            position
+                        )
+                    }
+                    setNegativeButton(R.string.group_detail_board_detail_dialog_cancel) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    show()
+                }
             }
         )
     }
 
-    private val userId by lazy {
-        intent.getStringExtra(USER_ID)
-    }
-    private val userProfile by lazy {
-        intent.getStringExtra(USER_PROFILE)
-    }
-    private val userName by lazy {
-        intent.getStringExtra(USER_NAME)
-    }
-    private val userLocation by lazy {
-        intent.getStringExtra(USER_LOCATION)
+    private val userInfo by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(USER_INFO, GroupUserInfoItem::class.java)
+        } else {
+            intent.getParcelableExtra(USER_INFO)
+        }
     }
     private val itemPkId by lazy {
         intent.getStringExtra(ITEM_PK_ID)
@@ -87,6 +90,9 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
         } else {
             intent.getParcelableExtra(GROUP_BOARD_ITEM)
         }
+    }
+    private val isJoinGroup by lazy {
+        intent.getBooleanExtra(IS_JOIN_GROUP, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,6 +131,7 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
 
         viewModel.initGroupBoardItem(groupBoardItem)
 
+        constraintCommentWrite.isVisible = isJoinGroup
         btnWriteComment.setOnClickListener {
             if(edtWriteComment.text.isNullOrBlank()) {
                 Toast.makeText(
@@ -136,10 +143,7 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
                 viewModel.addBoardComment(
                     itemPkId,
                     groupBoardItem?.boardId,
-                    userId,
-                    userProfile,
-                    userName,
-                    userLocation,
+                    userInfo,
                     edtWriteComment.text.toString()
                 )
                 edtWriteComment.setText("")
