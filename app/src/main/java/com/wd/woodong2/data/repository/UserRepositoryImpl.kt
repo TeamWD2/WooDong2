@@ -2,6 +2,7 @@ package com.wd.woodong2.data.repository
 
 import android.net.Uri
 import android.util.Log
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.FirebaseNetworkException
@@ -18,6 +19,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import com.wd.woodong2.data.model.UserResponse
+import com.wd.woodong2.domain.model.ChatItemsEntity
 import com.wd.woodong2.domain.model.UserEntity
 import com.wd.woodong2.domain.model.UserItemsEntity
 import com.wd.woodong2.domain.model.toEntity
@@ -166,13 +168,34 @@ class UserRepositoryImpl(
         awaitClose { }
     }
 
+    override suspend fun updateUserPassword(
+        email: String,
+        currentPassword: String,
+        newPassword: String
+    ): Flow<Boolean> =
+        callbackFlow {
+            //패스워드 재설정
+            try {
+                val credential = EmailAuthProvider.getCredential(email, currentPassword)
+                auth?.currentUser?.reauthenticate(credential)?.await()
+                auth?.currentUser?.updatePassword(newPassword)?.await()
+                Log.d(TAG, "비밀번호 변경 성공")
+                trySend(true)
+            } catch (e: Exception) {
+                Log.d(TAG, "비밀번호 변경 실패")
+                trySend(false)
+            }
+            awaitClose {
+
+            }
+        }
+
     /*
     UID 가져오는 메소드
     * */
     override fun getUid(): String? {
         return auth?.currentUser?.uid
     }
-
 
     /*
     * Realtime database 유저 토큰 업데이트
@@ -183,29 +206,54 @@ class UserRepositoryImpl(
         userDataReference.updateChildren(token)
     }
 
-    override fun updateUserLocations(
+    override fun updateUserInfo(
         userId: String,
+        imgProfile: String,
+        name: String,
         firstLocation: String,
-        secondLocation: String,
+        secondLocation: String
     ) {
-        val userLocations = databaseReference.child(userId)
-        val locations = mapOf(
+        Log.d("locationcf", firstLocation)
+        Log.d("locationcf", secondLocation)
+        Log.d("mypagename", name)
+        val userInfo = databaseReference.child(userId)
+        val updateUserInfo = mapOf(
+            "name" to name,
+            "imgProfile" to imgProfile,
             "firstLocation" to firstLocation,
             "secondLocation" to secondLocation
         )
-        Log.d("location", firstLocation)
-        userLocations.updateChildren(locations)
+
+
+        userInfo.updateChildren(updateUserInfo)
     }
 
-    override fun updateUserInfo(userId: String, name: String, imgProfile: String, email: String) {
-        val userInfo = databaseReference.child(userId)
-        val updateUserData = mapOf(
-            "name" to name,
-            "imgProfile" to imgProfile,
-            "email" to email,
-        )
-        userInfo.updateChildren(updateUserData)
-    }
+    override suspend fun addUserIds(
+        userId: String,
+        writtenId: String?,
+        groupId: String?,
+        likedId: String?
+    ): Flow<UserEntity?> =
+        callbackFlow {
+            val userIds = databaseReference.child(userId)
+
+            if (!writtenId.isNullOrBlank()) {
+                val writtenIds = userIds.child("writtenIds")
+                writtenIds.push().setValue(writtenId)
+            }
+            if (!groupId.isNullOrBlank()) {
+                val groupIds = userIds.child("groupIds")
+                groupIds.push().setValue(groupId)
+            }
+            if (!likedId.isNullOrBlank()) {
+                val likedIds = userIds.child("likedIds")
+                likedIds.push().setValue(likedId)
+            }
+
+            awaitClose {
+
+            }
+        }
 
     override suspend fun checkNicknameDup(nickname: String): Boolean {
         val query = databaseReference.orderByChild("name").equalTo(nickname)

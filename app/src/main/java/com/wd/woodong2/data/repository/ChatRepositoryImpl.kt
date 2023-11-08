@@ -4,7 +4,6 @@ import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
 import com.wd.woodong2.R
@@ -31,15 +30,16 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
 class ChatRepositoryImpl(
-    private val databaseReference: DatabaseReference,
+    private val chatDatabaseReference: DatabaseReference,
+    private val timeDatabaseReference: DatabaseReference,
 ) : ChatRepository {
-
 
     companion object {
         const val TAG: String = "ChatRepositoryImpl"
 
         const val pageSize: Int = 20
         var lastTimestamps: MutableMap<String, Long> = mutableMapOf()
+        var lastSeemTime: MutableMap<String, Long> = mutableMapOf()
     }
 
     /*
@@ -47,7 +47,7 @@ class ChatRepositoryImpl(
     * */
     override suspend fun loadChatItems(chatIds: List<String>): Flow<ChatItemsEntity?> =
         callbackFlow {
-            val listener = databaseReference.addValueEventListener(object : ValueEventListener {
+            val listener = chatDatabaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val gson = GsonBuilder().create()
@@ -82,7 +82,7 @@ class ChatRepositoryImpl(
                 }
             })
             awaitClose {
-                databaseReference.removeEventListener(listener)
+                chatDatabaseReference.removeEventListener(listener)
             }
         }
 
@@ -101,7 +101,9 @@ class ChatRepositoryImpl(
 
     override suspend fun loadMessageItems(chatId: String): Flow<MessageItemsEntity?> =
         callbackFlow {
-            val sortedDatabaseRef = databaseReference.child("message").orderByChild("timestamp")
+            var flag = true
+
+            val sortedDatabaseRef = chatDatabaseReference.child("message").orderByChild("timestamp")
 
             val lastTimestamp = lastTimestamps[chatId]
 
@@ -124,10 +126,15 @@ class ChatRepositoryImpl(
                                 response.copy(id = childSnapshot.key)
                             }
 
-                        lastTimestamps[chatId] = messageResponses.firstOrNull()?.timestamp ?: return
+                        if (flag) {
+                            lastTimestamps[chatId] =
+                                messageResponses.firstOrNull()?.timestamp ?: return
+                        }
 
                         val entity = MessageItemsResponse(messageResponses).toEntity()
                         trySend(entity)
+
+                        flag = false
                     } else {
                         // 없으면 빈 리스트 반환
                         trySend(MessageItemsEntity(emptyList()))
@@ -139,19 +146,18 @@ class ChatRepositoryImpl(
                 }
             })
             awaitClose {
-                databaseReference.removeEventListener(listener)
+                chatDatabaseReference.removeEventListener(listener)
             }
         }
 
-    override suspend fun addChatMessageItem(userId: String, message: String, nickname: String) {
-        val timeRef = FirebaseDatabase.getInstance().getReference(".info/serverTimeOffset")
 
-        timeRef.addListenerForSingleValueEvent(object : ValueEventListener {
+    override suspend fun addChatMessageItem(userId: String, message: String, nickname: String) {
+        timeDatabaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val offset = snapshot.value as Long
                 val estimatedServerTimeMs = System.currentTimeMillis() + offset
 
-                val messageRef = databaseReference.child("message").push()
+                val messageRef = chatDatabaseReference.child("message").push()
 
                 val messageData = Message(
                     content = message,
@@ -164,7 +170,7 @@ class ChatRepositoryImpl(
                 messageRef.setValue(messageData)
 
                 // lastMessage 업데이트
-                databaseReference.child("last").setValue(messageData)
+                chatDatabaseReference.child("last").setValue(messageData)
 
                 // FCM Notification 객체 생성
                 val notification = GCMRequest(
@@ -179,10 +185,14 @@ class ChatRepositoryImpl(
                 // TODO 나중에 메소드로 분리
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        val response = GCMRetrofitClient.gcmRemoteSource.sendNotification(notification)
+                        val response =
+                            GCMRetrofitClient.gcmRemoteSource.sendNotification(notification)
 
                         if (response.isSuccessful) {
-                            Log.d(TAG, "Notification sent successfully. ${response.body()?.string()}")
+                            Log.d(
+                                TAG,
+                                "Notification sent successfully. ${response.body()?.string()}"
+                            )
                         } else {
                             Log.e(
                                 TAG,
@@ -202,8 +212,25 @@ class ChatRepositoryImpl(
     }
 
 
-    override fun initChatItemTimestamp(chatId: String) {
+    override fun initChatItemTimestamp(chatId: String, userId: String) {
         lastTimestamps.remove(chatId)
+        timeDatabaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val offset = dataSnapshot.value as Long
+                val estimatedServerTimeMs = System.currentTimeMillis() + offset
+
+                lastSeemTime[chatId] = estimatedServerTimeMs
+
+                // lastSeemTime 업데이트
+                chatDatabaseReference.child("lastSeemTime").child(userId)
+                    .setValue(estimatedServerTimeMs)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // 에러 처리
+            }
+        })
     }
+
 }
 
