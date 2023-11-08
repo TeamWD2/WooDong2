@@ -25,7 +25,7 @@ class GroupAddImageFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val sharedViewModel: GroupAddSharedViewModel by activityViewModels {
-        GroupAddSharedViewModelFactory()
+        GroupAddSharedViewModelFactory(requireContext())
     }
 
     private lateinit var currentItem: String

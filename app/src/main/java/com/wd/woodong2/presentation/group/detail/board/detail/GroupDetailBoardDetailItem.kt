@@ -23,6 +23,7 @@ sealed class GroupDetailBoardDetailItem(
         val userName: String?,
         val userLocation: String?,
         val timestamp: Long?,
+        val isWriteOwner: Boolean?,
         val comment: String?
     ) : GroupDetailBoardDetailItem(id)
 

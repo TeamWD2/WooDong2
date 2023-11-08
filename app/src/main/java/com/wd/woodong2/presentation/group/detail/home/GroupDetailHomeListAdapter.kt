@@ -227,7 +227,7 @@ class GroupDetailHomeListAdapter(
                         if (i < albumPhotos.size) {
                             albumCardView[i].visibility = View.VISIBLE
                             albumPhotos[i].load(image[i]) {
-                                error(R.drawable.group_ic_no_profile)
+                                error(R.drawable.group_ic_no_image)
                             }
                         }
                     }

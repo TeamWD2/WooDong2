@@ -21,7 +21,7 @@ class GroupAddIntroFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val sharedViewModel: GroupAddSharedViewModel by activityViewModels {
-        GroupAddSharedViewModelFactory()
+        GroupAddSharedViewModelFactory(requireContext())
     }
 
     override fun onCreateView(

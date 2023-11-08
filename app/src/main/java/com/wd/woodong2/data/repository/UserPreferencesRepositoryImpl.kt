@@ -6,7 +6,7 @@ import com.wd.woodong2.domain.repository.UserInfoPreference
 import com.wd.woodong2.domain.repository.UserPreferencesRepository
 
 class UserPreferencesRepositoryImpl(
-    private val signinPref: SignInPreference,
+    private val signinPref: SignInPreference?,
     private val userInfoPref: UserInfoPreference,
 ) : UserPreferencesRepository {
 
@@ -18,15 +18,15 @@ class UserPreferencesRepositoryImpl(
      * SignInPreference
      * */
     override fun saveUser(userId: String, isLoggedIn: Boolean, uid: String) {
-        signinPref.saveUser(userId, isLoggedIn, uid)
+        signinPref?.saveUser(userId, isLoggedIn, uid)
     }
 
     override fun getUID(): String? {
-        return signinPref.getUID()
+        return signinPref?.getUID()
     }
 
     override fun deleteUser() {
-        return signinPref.deleteUser()
+        signinPref?.deleteUser()
     }
 
     /**
