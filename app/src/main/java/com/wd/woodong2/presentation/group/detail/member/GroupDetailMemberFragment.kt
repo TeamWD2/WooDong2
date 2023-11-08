@@ -9,8 +9,9 @@ import androidx.fragment.app.activityViewModels
 import com.wd.woodong2.databinding.GroupDetailMemberFragmentBinding
 import com.wd.woodong2.presentation.group.content.GroupItem
 import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
+import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModelFactory
 
-class GroupDetailMemberFragment: Fragment() {
+class GroupDetailMemberFragment : Fragment() {
     companion object {
         fun newInstance() = GroupDetailMemberFragment()
     }
@@ -18,7 +19,9 @@ class GroupDetailMemberFragment: Fragment() {
     private var _binding: GroupDetailMemberFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels()
+    private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels {
+        GroupDetailSharedViewModelFactory()
+    }
 
     private val groupDetailMemberListAdapter by lazy {
         GroupDetailMemberListAdapter()
@@ -35,12 +38,20 @@ class GroupDetailMemberFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        initViewModel()
     }
 
     private fun initView() = with(binding) {
         recyclerViewAddDetailMember.adapter = groupDetailMemberListAdapter
-        val groupMemberList = sharedViewModel.groupDetailItem?.filterIsInstance<GroupItem.GroupMember>()
-        groupDetailMemberListAdapter.submitList(groupMemberList?.flatMap { it.memberList ?: listOf() })
+    }
+
+    private fun initViewModel() = with(sharedViewModel) {
+        groupDetailItem.observe(viewLifecycleOwner) { detailItem ->
+            val groupMemberList = detailItem?.filterIsInstance<GroupItem.GroupMember>()
+            groupDetailMemberListAdapter.submitList(
+                groupMemberList?.flatMap { it.memberList ?: listOf() }
+            )
+        }
     }
 
     override fun onDestroyView() {

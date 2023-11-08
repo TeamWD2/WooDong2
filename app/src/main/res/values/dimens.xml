@@ -6,6 +6,7 @@
     <dimen name="wd2_text_margin">8dp</dimen>
     <dimen name="wd2_chip_vertical_padding">5dp</dimen>
     <dimen name="wd2_chip_horizontal_padding">12dp</dimen>
+    <dimen name="wd2_ic_back_padding">20dp</dimen>
 
     //Text Size
     <dimen name="wd2_main_title">20sp</dimen>

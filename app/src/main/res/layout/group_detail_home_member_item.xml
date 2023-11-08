@@ -106,6 +106,7 @@
         android:layout_height="1dp"
         android:layout_marginVertical="3dp"
         android:background="@color/gray"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/constraint_member_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

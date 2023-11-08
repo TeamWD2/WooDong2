@@ -1,34 +1,26 @@
-package com.wd.woodong2.presentation.start
+package com.wd.woodong2.presentation.splash
 
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import com.wd.woodong2.databinding.StartActivityBinding
+import com.wd.woodong2.databinding.SplashActivityBinding
 import com.wd.woodong2.presentation.signin.SignInActivity
 
-class StartActivity : AppCompatActivity() {
-    private var _binding: StartActivityBinding? = null
+class SplashActivity : AppCompatActivity() {
+
+    private var _binding: SplashActivityBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = StartActivityBinding.inflate(layoutInflater)
+        _binding = SplashActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initInfo()
-        initView()
-        initModel()
-    }
-
-    private fun initInfo() {
-
-    }
-
-    private fun initView() = with(binding) {
-        // 상태바 감추기
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
         } else {
@@ -39,15 +31,13 @@ class StartActivity : AppCompatActivity() {
             )
         }
 
-        // start_btn click
-        btnStart.setOnClickListener {
-            startActivity(
-                Intent(this@StartActivity, SignInActivity::class.java)
-            )
-        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            startActivity(Intent(this, SignInActivity::class.java))
+            finish()
+        }, SPLASH_DISPLAY_LENGTH)
     }
 
-    private fun initModel() {
-
+    companion object {
+        const val SPLASH_DISPLAY_LENGTH = 2000L
     }
 }

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFD358">
+    android:background="@color/egg_yellow_toolbar"
+    android:fitsSystemWindows="true">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -64,6 +65,7 @@
         android:id="@+id/recyclerView_chat"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         android:background="@color/white"
         app:layout_constraintBottom_toTopOf="@id/constraint_add_chat"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,29 +77,36 @@
         android:id="@+id/constraint_add_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
-            android:id="@+id/img_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/public_ic_add"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/edt_add_chat"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!--        <ImageView-->
+        <!--            android:id="@+id/img_add"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:src="@drawable/public_ic_add"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toStartOf="@id/edt_add_chat"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
 
         <EditText
             android:id="@+id/edt_add_chat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="메세지를 입력하세요."
+            android:layout_margin="5dp"
+            android:background="@drawable/public_border_box"
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:padding="16dp"
+            android:scrollbars="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_send"
-            app:layout_constraintStart_toEndOf="@id/img_add"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <ImageButton
             android:id="@+id/btn_send"

@@ -8,6 +8,6 @@ class ChatGetItemsUseCase(
     private val repository: ChatRepository
 ) {
     suspend operator fun invoke(chatIds: List<String>): Flow<ChatItemsEntity?> {
-        return repository.getChatItems(chatIds)
+        return repository.loadChatItems(chatIds)
     }
 }

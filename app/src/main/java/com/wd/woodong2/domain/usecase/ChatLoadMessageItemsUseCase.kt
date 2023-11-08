@@ -5,10 +5,10 @@ import com.wd.woodong2.domain.repository.ChatRepository
 import kotlinx.coroutines.flow.Flow
 
 
-class ChatGetMessageItemsUseCase(
+class ChatLoadMessageItemsUseCase(
     private val repository: ChatRepository
 ) {
-    suspend operator fun invoke(): Flow<MessageItemsEntity?> {
-        return repository.getMessageItems()
+    suspend operator fun invoke(chatId: String): Flow<MessageItemsEntity?> {
+        return repository.loadMessageItems(chatId)
     }
 }

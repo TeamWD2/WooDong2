@@ -6,6 +6,8 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.wd.woodong2.R
@@ -20,8 +22,18 @@ class GroupAddActivity : AppCompatActivity() {
 
     private lateinit var binding: GroupAddActivityBinding
 
+    private val viewModel: GroupAddSharedViewModel by viewModels {
+        GroupAddSharedViewModelFactory()
+    }
+
     private val viewPager2Adapter by lazy {
         GroupAddViewPagerAdapter(this@GroupAddActivity)
+    }
+
+    private val onBackPressedCallback = object: OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finishViewPager2()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,9 +42,12 @@ class GroupAddActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initView()
+        initViewModel()
     }
 
     private fun initView() = with(binding) {
+        onBackPressedDispatcher.addCallback(this@GroupAddActivity, onBackPressedCallback)
+
         //상태바 & 아이콘 색상 변경
         window.statusBarColor = ContextCompat.getColor(this@GroupAddActivity, R.color.white)
 
@@ -52,6 +67,20 @@ class GroupAddActivity : AppCompatActivity() {
         dotsIndicator.attachTo(viewPager2GroupAdd)
 
         imgBack.setOnClickListener {
+            finishViewPager2()
+        }
+    }
+
+    private fun initViewModel() = with(viewModel) {
+        viewModel.viewPager2CurItem.observe(this@GroupAddActivity) { curItem ->
+            binding.viewPager2GroupAdd.setCurrentItem(curItem, true)
+        }
+    }
+
+    private fun finishViewPager2() {
+        if(binding.viewPager2GroupAdd.currentItem > 0) {
+            viewModel.modifyViewPager2(-1)
+        } else {
             finish()
         }
     }

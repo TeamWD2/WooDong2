@@ -5,12 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16sp"
-    android:layout_marginTop="8dp"
+    android:layout_marginVertical="6dp"
     android:background="@drawable/chat_item_round_bg"
-    android:padding="16dp"
-    android:clipToPadding="false"
-    android:clipChildren="false"
-    android:elevation="10dp">
+    android:elevation="10dp"
+    android:padding="16dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -77,6 +75,8 @@
             android:id="@+id/txt_last_massage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/constraint_chat"
             app:layout_constraintTop_toBottomOf="@id/txt_name"

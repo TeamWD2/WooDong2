@@ -22,6 +22,7 @@ import com.wd.woodong2.domain.usecase.MapSearchCircumLocationGetItemsUseCase
 import com.wd.woodong2.domain.usecase.MapSearchGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserUpdateInfoUseCase
+import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.home.map.HomeMapSearchItem
 import com.wd.woodong2.retrofit.KAKAORetrofitClient
@@ -311,7 +312,8 @@ class HomeViewModelFactory : ViewModelProvider.Factory {
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
             FirebaseDatabase.getInstance().getReference("users"),
-            Firebase.auth
+            Firebase.auth,
+            FirebaseTokenProvider(FirebaseMessaging.getInstance())
         )
     }
     private val circumLocationrepository : MapSearchRepository = MapSearchRepositoryImpl(

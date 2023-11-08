@@ -42,7 +42,7 @@ class MyPageGroupListAdapter(
             txtIntroduce.text = item.introduce
             txtGroupTag.text = item.groupTag
             txtAgeLimit.text = item.ageLimit
-            txtMemberLimit.text = "${item.memberCount} / ${item.memberLimit.toString()}"
+            txtMemberLimit.text = item.memberLimit.toString()
 
             root.setOnClickListener {
                 itemClickListener(item)

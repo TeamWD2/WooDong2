@@ -4,58 +4,80 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5sp"
-    android:layout_marginEnd="50dp">
+    android:layout_margin="2dp">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="50sp"
-        android:layout_height="50sp"
-        app:cardCornerRadius="100sp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_opponent_chat"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/constraint_chat"
+        app:layout_constraintEnd_toStartOf="@+id/layout_gap"
+        app:layout_constraintHorizontal_weight="7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/img_profile"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars" />
-    </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            app:cardCornerRadius="100dp"
+            app:layout_constraintEnd_toStartOf="@id/txt_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/txt_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10sp"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/cardView"
-        app:layout_constraintTop_toTopOf="@id/cardView"
-        tools:text="WD2" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_chat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10sp"
-        android:background="@drawable/chat_detail_opponent_item_background"
-        app:layout_constraintStart_toEndOf="@id/cardView"
-        app:layout_constraintTop_toBottomOf="@id/txt_name">
+            <ImageView
+                android:id="@+id/img_profile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                tools:src="@tools:sample/avatars" />
+        </androidx.cardview.widget.CardView>
 
         <TextView
-            android:id="@+id/txt_chat"
+            android:id="@+id/txt_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10sp"
+            android:layout_marginStart="10sp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/cardView"
+            app:layout_constraintTop_toTopOf="@id/cardView"
+            tools:text="WD2" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chat_detail_opponent_item_background"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="채팅 테스트입니다." />
+            app:layout_constraintStart_toStartOf="@id/txt_name"
+            app:layout_constraintTop_toBottomOf="@id/txt_name">
+
+            <TextView
+                android:id="@+id/txt_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="185dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="채팅 테스트입니다.테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_gap"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="3"
+        app:layout_constraintStart_toEndOf="@+id/layout_opponent_chat"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

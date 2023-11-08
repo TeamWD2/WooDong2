@@ -37,9 +37,9 @@
                     android:id="@+id/cardView_main"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    app:cardCornerRadius="4dp"
                     android:layout_marginStart="15dp"
-                    app:layout_constraintBottom_toBottomOf="@id/txt_count"
+                    app:cardCornerRadius="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_member"
                     app:layout_constraintEnd_toStartOf="@id/txt_title"
                     app:layout_constraintStart_toStartOf="parent">
 
@@ -58,21 +58,60 @@
                     android:layout_margin="10dp"
                     android:textSize="@dimen/wd2_main_title"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/txt_count"
+                    app:layout_constraintBottom_toTopOf="@id/txt_member_count"
                     app:layout_constraintStart_toEndOf="@id/cardView_main"
                     app:layout_constraintTop_toBottomOf="@id/img_background"
                     tools:text="자전거 동호회. 젊은 사람만~" />
 
                 <TextView
-                    android:id="@+id/txt_count"
+                    android:id="@+id/txt_member"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/group_detail_txt_member"
                     android:textColor="@color/normal_gray_txt"
                     android:textSize="@dimen/wd2_normal_text"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/txt_member_count"
                     app:layout_constraintStart_toStartOf="@id/txt_title"
-                    app:layout_constraintTop_toBottomOf="@id/txt_title"
-                    tools:text="멤버 41 / 게시물 1" />
+                    app:layout_constraintTop_toBottomOf="@id/txt_title" />
+
+                <TextView
+                    android:id="@+id/txt_member_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/normal_gray_txt"
+                    android:textSize="@dimen/wd2_normal_text"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_member"
+                    app:layout_constraintEnd_toStartOf="@id/txt_board"
+                    app:layout_constraintStart_toEndOf="@id/txt_member"
+                    app:layout_constraintTop_toTopOf="@id/txt_member"
+                    tools:text="41" />
+
+                <TextView
+                    android:id="@+id/txt_board"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/group_detail_txt_board"
+                    android:textColor="@color/normal_gray_txt"
+                    android:textSize="@dimen/wd2_normal_text"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_member_count"
+                    app:layout_constraintEnd_toStartOf="@id/txt_board_count"
+                    app:layout_constraintStart_toEndOf="@id/txt_member_count"
+                    app:layout_constraintTop_toTopOf="@id/txt_member_count" />
+
+                <TextView
+                    android:id="@+id/txt_board_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/normal_gray_txt"
+                    android:textSize="@dimen/wd2_normal_text"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_board"
+                    app:layout_constraintStart_toEndOf="@id/txt_board"
+                    app:layout_constraintTop_toTopOf="@id/txt_board"
+                    tools:text="11" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -92,9 +131,9 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
-            android:paddingTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="10dp"
             app:layout_constraintBottom_toTopOf="@id/viewPager2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -113,6 +152,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="200dp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/viewPager2"
+            app:layout_constraintStart_toStartOf="@id/viewPager2"
+            app:layout_constraintTop_toTopOf="@id/viewPager2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

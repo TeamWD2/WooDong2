@@ -238,4 +238,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_introduce_description" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/public_border_btn"
+        android:padding="16dp"
+        android:text="@string/group_add_btn_next"
+        android:textColor="@color/white"
+        android:textSize="@dimen/wd2_main_title"
+        android:textStyle="bold"
+        android:layout_marginVertical="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

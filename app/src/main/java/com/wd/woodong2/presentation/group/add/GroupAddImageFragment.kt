@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import coil.load
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupAddImageFragmentBinding
 
@@ -33,21 +34,17 @@ class GroupAddImageFragment: Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.data?.let { uri ->
-                    when (currentItem) {
+                    when(currentItem) {
                         "imgMainImage" -> {
-                            binding.imgMainImage.setImageURI(uri)
+                            binding.imgMainImage.load(uri)
                             binding.imgMainImageInit.isVisible = false
-                            sharedViewModel.setMainImage(uri)
                         }
-
                         "imgBackgroundImage" -> {
-                            binding.imgBackgroundImage.setImageURI(uri)
+                            binding.imgBackgroundImage.load(uri)
                             binding.imgBackgroundImageInit.isVisible = false
-                            sharedViewModel.setBackgroundImage(uri)
                         }
-
-                        else -> Unit
                     }
+                    sharedViewModel.setImage(currentItem, uri)
                 }
             }
         }

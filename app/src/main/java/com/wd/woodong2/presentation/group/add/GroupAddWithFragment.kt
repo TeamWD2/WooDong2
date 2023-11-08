@@ -42,7 +42,7 @@ class GroupAddWithFragment: Fragment() {
                     binding.txtPasswordValid.apply {
                         setText(R.string.group_add_txt_password_valid)
                         setTextColor(Color.GREEN)
-                        sharedViewModel.setPassword(binding.edtPassword.text.toString())
+                        sharedViewModel.setItem("password", binding.edtPassword.text.toString())
                     }
                 } else {
                     binding.txtPasswordValid.apply {
@@ -75,7 +75,7 @@ class GroupAddWithFragment: Fragment() {
                 R.id.chip_nineteen_over -> getString(R.string.group_add_chip_nineteen_over)
                 else -> null
             }
-            sharedViewModel.setAgeLimit(ageLimit)
+            sharedViewModel.setItem("ageLimit", ageLimit)
         }
 
         chipGroupMemberLimit.setOnCheckedChangeListener { _, checkedId ->
@@ -88,7 +88,7 @@ class GroupAddWithFragment: Fragment() {
                 R.id.chip_50_people -> getString(R.string.group_add_chip_50_people)
                 else -> null
             }
-            sharedViewModel.setMemberLimit(memberLimit)
+            sharedViewModel.setItem("memberLimit", memberLimit)
         }
 
         edtPassword.addTextChangedListener(textWatcher)
@@ -99,14 +99,18 @@ class GroupAddWithFragment: Fragment() {
                 if (isChkBox) {
                     setBackgroundResource(R.drawable.group_border_box_disabled)
                     removeTextChangedListener(textWatcher)
-                    sharedViewModel.setPassword("[WD2] No Password")
+                    sharedViewModel.setItem("password", "[WD2] No Password")
                     txtPasswordValid.text = ""
                 } else {
                     setBackgroundResource(R.drawable.public_border_box)
                     addTextChangedListener(textWatcher)
-                    sharedViewModel.setPassword("")
+                    sharedViewModel.setItem("password", "")
                 }
             }
+        }
+
+        btnNext.setOnClickListener {
+            sharedViewModel.modifyViewPager2(1)
         }
     }
 

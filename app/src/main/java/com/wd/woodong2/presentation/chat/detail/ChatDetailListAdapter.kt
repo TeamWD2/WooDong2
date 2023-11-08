@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.chat.detail
 
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +15,12 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
     object : DiffUtil.ItemCallback<MessageItem>() {
         override fun areItemsTheSame(
             oldItem: MessageItem,
-            newItem: MessageItem
+            newItem: MessageItem,
         ): Boolean = oldItem.id == newItem.id
 
         override fun areContentsTheSame(
             oldItem: MessageItem,
-            newItem: MessageItem
+            newItem: MessageItem,
         ): Boolean = oldItem == newItem
     }) {
 
@@ -29,14 +30,14 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
 
 
     abstract class ViewHolder(
-        root: View
+        root: View,
     ) : RecyclerView.ViewHolder(root) {
-        abstract fun onBind(item: MessageItem)
+        abstract fun onBind(currentItem: MessageItem, previousItem: MessageItem?)
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): ViewHolder {
         return when (MessageViewType.values()[viewType]) {
             MessageViewType.MY_MESSAGE -> {
@@ -63,7 +64,9 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.onBind(getItem(position))
+        val currentItem = getItem(position)
+        val previousItem = if (position > 0) getItem(position - 1) else null
+        holder.onBind(currentItem, previousItem)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -76,21 +79,48 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
     class OpponentMessageViewHolder(
         private val binding: ChatDetailOpponentItemBinding,
     ) : ViewHolder(binding.root) {
-        override fun onBind(item: MessageItem) = with(binding) {
-            txtName.text = item.senderId
-            txtChat.text = item.content
+        override fun onBind(currentItem: MessageItem, previousItem: MessageItem?) = with(binding) {
+            txtName.text = currentItem.nickname
+            txtChat.text = currentItem.content
+
+            // TODO 변경 예정
+            val dpValue = 60
+
+            val pxValue = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dpValue.toFloat(),
+                binding.root.context.resources.displayMetrics
+            )
+            val params = constraintChat.layoutParams as ViewGroup.MarginLayoutParams
+
+            // 이어지는 메시지
+            if (previousItem == null || previousItem.senderId == currentItem.senderId) {
+                cardView.visibility = View.GONE
+                txtName.visibility = View.GONE
+
+                params.setMargins(pxValue.toInt(), 0, 0, 0) // 왼쪽 마진을 10dp로 설정
+            } else {
+                // 초기 메시지
+                cardView.visibility = View.VISIBLE
+                txtName.visibility = View.VISIBLE
+
+                params.setMargins(0, 0, 0, 0) // 마진을 원래대로 설정
+            }
+            constraintChat.layoutParams = params
         }
     }
+
 
     class MyMessageViewHolder(
         private val binding: ChatDetailMyItemBinding,
     ) : ViewHolder(binding.root) {
-        override fun onBind(item: MessageItem) = with(binding) {
+        override fun onBind(currentItem: MessageItem, previousItem: MessageItem?) = with(binding) {
             val params = txtChat.layoutParams as ConstraintLayout.LayoutParams
             params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
             params.startToStart = ConstraintLayout.LayoutParams.UNSET
             txtChat.layoutParams = params
-            txtChat.text = item.content
+
+            txtChat.text = currentItem.content
         }
     }
 }

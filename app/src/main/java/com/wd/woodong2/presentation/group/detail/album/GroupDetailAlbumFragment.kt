@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailAlbumFragmentBinding
 import com.wd.woodong2.presentation.group.content.GroupItem
 import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
+import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModelFactory
 
 class GroupDetailAlbumFragment: Fragment() {
     companion object {
@@ -19,7 +21,9 @@ class GroupDetailAlbumFragment: Fragment() {
     private var _binding: GroupDetailAlbumFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels()
+    private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels {
+        GroupDetailSharedViewModelFactory()
+    }
 
     private val groupDetailAlbumListAdapter by lazy {
         GroupDetailAlbumListAdapter()
@@ -36,14 +40,23 @@ class GroupDetailAlbumFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        initViewModel()
     }
 
     private fun initView() = with(binding) {
         recyclerViewAddDetailAlbum.adapter = groupDetailAlbumListAdapter
-        val groupAlbumList = sharedViewModel.groupDetailItem?.filterIsInstance<GroupItem.GroupAlbum>()
-        val albumList = groupAlbumList?.flatMap { it.images ?: listOf() }
-        txtEmptyAlbum.isVisible = albumList.isNullOrEmpty()
-        groupDetailAlbumListAdapter.submitList(albumList)
+    }
+
+    private fun initViewModel() = with(sharedViewModel) {
+        groupDetailItem.observe(viewLifecycleOwner) { detailItem ->
+            val albumList = detailItem?.filterIsInstance<GroupItem.GroupAlbum>()
+                ?.flatMap { it.images ?: listOf() }
+            binding.txtEmptyAlbum.isVisible = albumList.isNullOrEmpty()
+            if(albumList.isNullOrEmpty().not()) {
+                binding.recyclerViewAddDetailAlbum.setBackgroundResource(R.drawable.public_border_box_full)
+            }
+            groupDetailAlbumListAdapter.submitList(albumList)
+        }
     }
 
     override fun onDestroyView() {
