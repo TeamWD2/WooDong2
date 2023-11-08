@@ -54,6 +54,20 @@ class MyPageGroupViewModel(
         getUserItem()
     }
 
+    fun printListSet()= viewModelScope.launch{
+        _loadingState.value = true
+        runCatching {
+            _printList.value = groupList.value?.filter { item ->
+                userInfo.value?.groupIds!!.contains(item.id)
+            }
+            _isEmptyList.value = _printList.value?.isEmpty()
+            _loadingState.value = false
+        }.onFailure {
+            _loadingState.value = false
+            Log.e("Item", "비어있음")
+        }
+    }
+
     fun getGroupItem() = viewModelScope.launch {
         _loadingState.value = true
         runCatching {

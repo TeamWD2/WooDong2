@@ -52,8 +52,9 @@ class MyPageThumbFragment : Fragment() {
     }
     private fun initViewModel(){
         with(viewModel){
-            printList.observe(viewLifecycleOwner){
-                listAdapter.submitList(it)
+            list.observe(viewLifecycleOwner){
+                printListSet()
+                listAdapter.submitList(printList.value)
             }
             loadingState.observe(viewLifecycleOwner) { loadingState ->
                 binding.progressBar.isVisible = loadingState
@@ -63,6 +64,7 @@ class MyPageThumbFragment : Fragment() {
             }
         }
     }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

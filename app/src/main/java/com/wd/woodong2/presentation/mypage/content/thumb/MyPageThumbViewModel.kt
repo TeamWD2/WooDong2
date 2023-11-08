@@ -43,27 +43,20 @@ class MyPageThumbViewModel(
         printListSet()
     }
 
-    private fun printListSet()= viewModelScope.launch{
-        var checkCount = 0
+    fun printListSet()= viewModelScope.launch{
         _loadingState.value = true
         runCatching {
-            for (likedIds in userInfo.value?.likedIds!!) {
-                val existingList = _printList.value.orEmpty()
-                val filteredList = list.value?.filter { it.id == likedIds }
-                checkCount++
-                if (checkCount == userInfo.value?.likedIds!!.size) {
-                    _isEmptyList.value = _printList.value?.isEmpty()
-                    val combinedList =
-                        existingList.toMutableList().apply { addAll(filteredList!!) }
-                    _printList.value = combinedList
-                }
+            _printList.value = list.value?.filter { item ->
+                userInfo.value?.likedIds!!.contains(item.id)
             }
+            _isEmptyList.value = _printList.value?.isEmpty()
             _loadingState.value = false
         }.onFailure {
             _loadingState.value = false
             Log.e("Item", "비어있음")
         }
     }
+
     private fun getUserItem() = viewModelScope.launch {
         runCatching {
             userItem(userId).collect { user ->
@@ -99,7 +92,7 @@ class MyPageThumbViewModel(
                         dataList.add(firebaseData)
                     }
                 }
-                _list.value = dataList
+                _list.value = dataList.reversed()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

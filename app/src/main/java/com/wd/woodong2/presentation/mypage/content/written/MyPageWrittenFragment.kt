@@ -51,7 +51,8 @@ class MyPageWrittenFragment : Fragment() {
     private fun initViewModel(){
         with(viewModel){
             list.observe(viewLifecycleOwner){
-                listAdapter.submitList(it)
+                printListSet()
+                listAdapter.submitList(printList.value)
             }
             loadingState.observe(viewLifecycleOwner) { loadingState ->
                 binding.progressBar.isVisible = loadingState

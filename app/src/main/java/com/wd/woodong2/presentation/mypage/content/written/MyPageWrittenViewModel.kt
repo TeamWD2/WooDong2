@@ -30,6 +30,7 @@ class MyPageWrittenViewModel (
 
     private val _printList: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val printList: LiveData<List<HomeItem>> get() = _printList
+
     private val _loadingState: MutableLiveData<Boolean> = MutableLiveData()
     val loadingState: LiveData<Boolean> get() = _loadingState
     private val _isEmptyList: MutableLiveData<Boolean> = MutableLiveData()
@@ -41,30 +42,18 @@ class MyPageWrittenViewModel (
     init {
         getUserItem()
         loadDataFromFirebase()
-
-        printListSet()
     }
-    private fun printListSet() = viewModelScope.launch{
-        var checkCount = 0
+    fun printListSet()= viewModelScope.launch{
         _loadingState.value = true
         runCatching {
-            for (writtenIds in userInfo.value?.writtenIds!!) {
-                val existingList = _printList.value.orEmpty()
-                val filteredList = list.value?.filter { it.id == writtenIds }
-                checkCount++
-                if (checkCount == userInfo.value?.writtenIds!!.size) {
-                    _isEmptyList.value = _printList.value?.isEmpty()
-                    val combinedList =
-                        existingList.toMutableList().apply { addAll(filteredList!!) }
-                    _printList.value = combinedList
-                }
+            _printList.value = list.value?.filter { item ->
+                userInfo.value?.writtenIds!!.contains(item.id)
             }
+            _isEmptyList.value = _printList.value?.isEmpty()
             _loadingState.value = false
         }.onFailure {
             _loadingState.value = false
-
             Log.e("Item", "비어있음")
-
         }
     }
     private fun getUserItem() = viewModelScope.launch {
@@ -102,7 +91,7 @@ class MyPageWrittenViewModel (
                         dataList.add(firebaseData)
                     }
                 }
-                _list.value = dataList
+                _list.value = dataList.reversed()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

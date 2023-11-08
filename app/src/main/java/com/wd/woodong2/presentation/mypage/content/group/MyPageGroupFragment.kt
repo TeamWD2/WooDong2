@@ -53,9 +53,9 @@ class MyPageGroupFragment : Fragment() {
     }
     private fun initViewModel(){
         with(viewModel){
-
             groupList.observe(viewLifecycleOwner) {
-                myGroupListAdapter.submitList(it?.filterIsInstance<GroupItem.GroupMain>())
+                printListSet()
+                myGroupListAdapter.submitList(printList.value?.filterIsInstance<GroupItem.GroupMain>())
             }
             loadingState.observe(viewLifecycleOwner) { loadingState ->
                 binding.progressBar.isVisible = loadingState

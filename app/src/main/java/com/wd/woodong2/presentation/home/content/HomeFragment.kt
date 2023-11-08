@@ -33,7 +33,6 @@ class HomeFragment : Fragment() {
 
     private var firstLocation: String? = null
     private var secondLocation: String? = null
-    private var locationType: Int? = 0
     private var userName: String? = null
     private lateinit var homeMapLauncher: ActivityResultLauncher<Intent>
 
@@ -120,21 +119,20 @@ class HomeFragment : Fragment() {
 
     private fun initViewModel() {
         with(viewModel) {
-            // 변화가 감지되면 ..
-            printList.observe(viewLifecycleOwner) {
-                listAdapter.submitList(it)
+            list.observe(viewLifecycleOwner) {
+                _printList.value = list.value?.filter { item ->
+                    circumLocation.contains(item.location)
+                }
+                listAdapter.submitList(printList.value)
             }
 
             userInfo.observe(viewLifecycleOwner) { userInfo ->
-
-
                 val filteredList =
                     list.value?.filter { it.location == userInfo.firstLocation } ?: emptyList()
                 _printList.value = filteredList
 
                 // 구, 군
                 if (printList.value?.size!! < 10) {
-                    //locationType = 1
                     HomeMapActivity.getLocationFromAddress(
                         requireContext(),
                         userInfo.firstLocation.toString()
@@ -144,7 +142,6 @@ class HomeFragment : Fragment() {
                         HomeMapActivity.longitude,
                         20000,
                         userInfo.firstLocation.toString(),
-                        //locationType,
                         userInfo.firstLocation.toString()
                     )
                 }
