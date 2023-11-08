@@ -3,6 +3,7 @@ package com.wd.woodong2.presentation.home.add
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -40,13 +41,22 @@ class HomeAddActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 selectedImageUri = result.data?.data
-                binding.homeThumbnail.setImageURI(selectedImageUri)
-                //사진 갯수 추가
-                if (selectedImageUri != null && selectedImageUri.toString().isNotEmpty()) {
-                    selectedThumbnailCount = selectedThumbnailCount?.plus(1)
+                    selectedImageUri?.let { uri ->
+                        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                        val resizedBitmap = Bitmap.createScaledBitmap(
+                            bitmap,
+                            binding.homeThumbnail.width,
+                            binding.homeThumbnail.height,
+                            false
+                        )
+                        binding.homeThumbnail.setImageBitmap(resizedBitmap)
+                        //사진 갯수 추가
+                        if (selectedImageUri != null && selectedImageUri.toString().isNotEmpty()) {
+                            selectedThumbnailCount = selectedThumbnailCount?.plus(1)
+                        }
+                    }
                 }
             }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

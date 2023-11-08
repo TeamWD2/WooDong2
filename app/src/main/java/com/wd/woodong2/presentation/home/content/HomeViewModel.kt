@@ -42,6 +42,9 @@ class HomeViewModel(
 
     private val _circumLocationList: MutableLiveData<List<HomeMapSearchItem>> = MutableLiveData()
     val circumLocationList: LiveData<List<HomeMapSearchItem>> get() = _circumLocationList
+
+    private val _searchResults = MutableLiveData<List<HomeItem>>()
+    val searchResults: LiveData<List<HomeItem>> = _searchResults
     //주변 위치 값 받아오기
     private var circumLocation = mutableSetOf<String>()
 
@@ -257,7 +260,7 @@ class HomeViewModel(
 
     private fun loadDataFromFirebase() {
         val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
-        databaseReference.addValueEventListener(object : ValueEventListener {
+        databaseReference.orderByChild("timestamp").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val dataList = ArrayList<HomeItem>()
 
@@ -267,8 +270,9 @@ class HomeViewModel(
                         dataList.add(firebaseData)
                     }
                 }
-                _originalList.value = dataList
-                _list.value = dataList
+                //최신게시물 가장 위로 오게
+                _originalList.value = dataList.reversed()
+                _list.value = dataList.reversed()
 
             }
 
@@ -277,12 +281,19 @@ class HomeViewModel(
         })
     }
 
-    fun filterList(tag: String) {
+    fun tagFilterList(tag: String) {
         _list.value = if (tag == "All") {
             _originalList.value  // 전체 리스트
         } else {
             _originalList.value?.filter { it.tag == tag }  // 태그가 일치하는 리스트
         }
+    }
+
+    fun searchItems(query: String) {
+        val filteredList = list.value?.filter { item ->
+            item.title.contains(query, ignoreCase = true)
+        } ?: emptyList()
+        _searchResults.value = filteredList
     }
 
     private fun getUserItem() = viewModelScope.launch {
@@ -324,7 +335,6 @@ class HomeViewModel(
         val itemId = item.id // 항목의 고유 ID 또는 키
         deleteItemFromFirebase(itemId)
 
-        // 원본 목록에서 항목을 제거하고 LiveData를 업데이트합니다.
         _originalList.value = _originalList.value?.filter { it != item }
     }
 

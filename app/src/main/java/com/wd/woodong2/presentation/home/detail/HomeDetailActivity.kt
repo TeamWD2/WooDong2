@@ -47,6 +47,12 @@ class HomeDetailActivity : AppCompatActivity() {
 
     private fun initView() {
 
+        viewModel.commentsLiveData.observe(this) { comments ->
+            commentsAdapter.updateComments(comments)
+            updateCommentCount(comments.size) // 댓글 수를 업데이트하는 메소드
+            binding.textViewNoComments.visibility = if (comments.isEmpty()) View.VISIBLE else View.GONE
+            binding.recyclerviewComment.visibility = if (comments.isEmpty()) View.GONE else View.VISIBLE
+        }
         //상태바 & 아이콘 색상 변경
         window.statusBarColor = ContextCompat.getColor(this@HomeDetailActivity, R.color.yellow)
 
@@ -73,7 +79,13 @@ class HomeDetailActivity : AppCompatActivity() {
 
         viewModel.fetchComments(homeItem) { updatedComments ->
             commentsAdapter.updateComments(updatedComments)
+            updateCommentCount(updatedComments.size)
         }
+
+        viewModel.thumbCountLiveData.observe(this) { thumbCount ->
+            updateLikeCountUI(thumbCount)
+        }
+        initLikeButton(homeItem)
 
     }
 
@@ -81,6 +93,15 @@ class HomeDetailActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[HomeDetailViewModel::class.java]
     }
 
+    private fun updateCommentCount(count: Int) {
+        binding.txtCommentCount.text = count.toString()
+        binding.textViewNoComments.visibility = if (count == 0) View.VISIBLE else View.GONE
+        binding.recyclerviewComment.visibility = if (count == 0) View.GONE else View.VISIBLE
+    }
+
+    private fun updateLikeCountUI(thumbCount: Int) {
+        binding.txtDetailThumbCount.text = thumbCount.toString()
+    }
     private fun setupCommentsRecyclerView() {
         commentsAdapter = CommentListAdapter(homeItem, viewModel)
         binding.recyclerviewComment.layoutManager = NoScrollLinearLayoutManager(this)
@@ -124,6 +145,9 @@ class HomeDetailActivity : AppCompatActivity() {
             crossfade(true)
         }
         txtHomeTimestamp.text = formatTimestamp(homeItem.timeStamp)
+        txtCommentCount.text = homeItem.chatCount.toString()
+        txtDetailThumbCount.text = homeItem.thumbCount.toString()
+
 
         toolbar.setNavigationOnClickListener {
             finish()
