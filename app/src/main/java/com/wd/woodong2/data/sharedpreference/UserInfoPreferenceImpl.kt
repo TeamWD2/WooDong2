@@ -23,4 +23,12 @@ class UserInfoPreferenceImpl(
         val userJson = sharedPreferences.getString(USER_INFO, "")
         return gson.fromJson(userJson, UserEntity::class.java)
     }
+
+    override fun deleteUser() {
+        sharedPreferences.edit().apply {
+            remove(USER_INFO)
+            apply()
+        }
+
+    }
 }

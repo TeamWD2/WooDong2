@@ -31,6 +31,7 @@ class SignInPreferenceImpl(
     override fun deleteUser() {
         sharedPreferences.edit().apply {
             remove(USER_ID)
+            remove(USER_UID)
             remove(IS_LOGGED_IN)
             apply()
         }

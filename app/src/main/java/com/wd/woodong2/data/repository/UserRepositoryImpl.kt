@@ -3,11 +3,7 @@ package com.wd.woodong2.data.repository
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.auth.EmailAuthProvider
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.auth.ActionCodeSettings
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -17,9 +13,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
-import com.google.gson.annotations.SerializedName
 import com.wd.woodong2.data.model.UserResponse
-import com.wd.woodong2.domain.model.ChatItemsEntity
 import com.wd.woodong2.domain.model.UserEntity
 import com.wd.woodong2.domain.model.UserItemsEntity
 import com.wd.woodong2.domain.model.toEntity
@@ -28,7 +22,6 @@ import com.wd.woodong2.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.onFailure
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
@@ -171,7 +164,7 @@ class UserRepositoryImpl(
     override suspend fun updateUserPassword(
         email: String,
         currentPassword: String,
-        newPassword: String
+        newPassword: String,
     ): Flow<Boolean> =
         callbackFlow {
             //패스워드 재설정
@@ -211,7 +204,7 @@ class UserRepositoryImpl(
         imgProfile: String,
         name: String,
         firstLocation: String,
-        secondLocation: String
+        secondLocation: String,
     ) {
         Log.d("locationcf", firstLocation)
         Log.d("locationcf", secondLocation)
@@ -232,7 +225,7 @@ class UserRepositoryImpl(
         userId: String,
         writtenId: String?,
         groupId: String?,
-        likedId: String?
+        likedId: String?,
     ): Flow<UserEntity?> =
         callbackFlow {
             val userIds = databaseReference.child(userId)
@@ -262,7 +255,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun updateGroupInfo(userId: String, groupId: String?, chatId: String?) {
-        if(groupId.isNullOrBlank().not()) {
+        if (groupId.isNullOrBlank().not()) {
             databaseReference.child(userId).child("groupIds").push()
                 .setValue(groupId) { databaseError, _ ->
                     if (databaseError != null) {
@@ -274,7 +267,7 @@ class UserRepositoryImpl(
 
         }
 
-        if(chatId.isNullOrBlank().not()) {
+        if (chatId.isNullOrBlank().not()) {
             databaseReference.child(userId).child("chatIds").push()
                 .setValue(chatId) { databaseError, _ ->
                     if (databaseError != null) {
@@ -284,6 +277,10 @@ class UserRepositoryImpl(
                     }
                 }
         }
+    }
+
+    override fun logout() {
+        auth?.signOut()
     }
 }
 

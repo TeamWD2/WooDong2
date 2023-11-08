@@ -27,6 +27,7 @@ class UserPreferencesRepositoryImpl(
 
     override fun deleteUser() {
         signinPref?.deleteUser()
+        userInfoPref.deleteUser()
     }
 
     /**
