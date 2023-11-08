@@ -10,13 +10,17 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.wd.woodong2.data.repository.UserRepositoryImpl
-import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
+import com.wd.woodong2.domain.usecase.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.UserUpdateInfoUseCase
+import com.wd.woodong2.domain.usecase.UserUpdatePasswordUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.content.HomeItem
 import kotlinx.coroutines.launch
 
 class MyPageViewModel(
-    private val userItem: UserGetItemsUseCase,
+    private val userItem: UserGetItemUseCase,
+    private val userUpdateInfoUseCase: UserUpdateInfoUseCase,
+    private val userUpdatePasswordUseCase: UserUpdatePasswordUseCase
 ) : ViewModel(
 
 ) {
@@ -59,12 +63,23 @@ class MyPageViewModel(
     fun updateUserItem(
         name: String,
         imgProfile: String,
-        email: String,
     ) = viewModelScope.launch {
         runCatching {
-            userItem(userId, name, imgProfile, email)
+            userUpdateInfoUseCase(userId, imgProfile, name,
+                userInfo.value?.firstLocation.toString(), userInfo.value?.secondLocation.toString()
+            )
         }
     }
+
+    fun updatePasswordItem(
+        currentPassword: String,
+        newPassword: String
+    ) = viewModelScope.launch {
+        runCatching {
+            userUpdatePasswordUseCase(userInfo.value?.email.toString(), currentPassword, newPassword)
+        }
+    }
+
 }
 
 class MyPageViewModelFactory : ViewModelProvider.Factory {
@@ -79,7 +94,9 @@ class MyPageViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MyPageViewModel::class.java)) {
             return MyPageViewModel(
-                UserGetItemsUseCase(userRepositoryImpl),
+                UserGetItemUseCase(userRepositoryImpl),
+                UserUpdateInfoUseCase(userRepositoryImpl),
+                UserUpdatePasswordUseCase(userRepositoryImpl)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

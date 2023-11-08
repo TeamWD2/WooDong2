@@ -110,6 +110,8 @@
     <string name="my_page_update_dup_check">중복 체크</string>
     <string name="my_page_update_user_name">닉네임</string>
     <string name="my_page_update_et_user_name_edit">변경할 닉네임을 입력해주세요.</string>
+    <string name="my_page_update_user_current_password">현재 비밀번호 입력</string>
+    <string name="my_page_update_et_user_current_password_edit">현재 비밀번호를 입력해주세요.</string>
     <string name="my_page_update_user_password">비밀번호 변경</string>
     <string name="my_page_update_et_user_password_edit">변경할 비밀번호를 입력해주세요.</string>
     <string name="my_page_update_user_password_check">비밀번호 변경 확인</string>

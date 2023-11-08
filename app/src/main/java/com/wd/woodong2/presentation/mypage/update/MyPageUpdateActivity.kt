@@ -8,8 +8,10 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
@@ -18,6 +20,8 @@ import com.wd.woodong2.R
 import com.wd.woodong2.databinding.MyPageUpdateActivityBinding
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.mypage.content.MyPageFragment
+import com.wd.woodong2.presentation.signup.SignUpViewModel
+import com.wd.woodong2.presentation.signup.SignUpViewModelFactory
 
 
 class MyPageUpdateActivity : AppCompatActivity(){
@@ -33,14 +37,20 @@ class MyPageUpdateActivity : AppCompatActivity(){
 
     private var profile = userInfo.imgProfile
     private var name = userInfo.name
-    private var password = userInfo.email
-    private var passwordCheck = userInfo.email
+    private var cureentPassword = ""
+    private var password = ""
+    private var passwordCheck = ""
+
     private lateinit var binding : MyPageUpdateActivityBinding
 
     private val onBackPressedCallback = object: OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             finish()
         }
+    }
+
+    private val myPageUpdateViewModel: MyPageUpdateViewModel by viewModels {
+        MyPageUpdateViewModelFactory()
     }
 
     private val editUserLauncher =
@@ -86,31 +96,44 @@ class MyPageUpdateActivity : AppCompatActivity(){
         }
 
         myPageUpdateBtn.setOnClickListener{
-            name = myPageUpdateEtUserNameEdit.text.toString()
-            password = myPageUpdateEtUserPasswordEdit.text.toString()
-            passwordCheck = myPageUpdateEtUserPasswordEdit.text.toString()
+            myPageUpdateViewModel.isAllCorrect.observe(this@MyPageUpdateActivity){isAllCorrect ->
+                if(isAllCorrect){
+//                    name = myPageUpdateEtUserNameEdit.text.toString()
+//                    cureentPassword = myPageUpdateEtUserCurrentPasswordEdit.text.toString()
+//                    password = myPageUpdateEtUserPasswordEdit.text.toString()
+//                    passwordCheck = myPageUpdateEtUserPasswordEdit.text.toString()
 
-            val intent = Intent().apply{
-                putExtra(
-                    MyPageFragment.EXTRA_USER_NAME,
-                    name
-                )
-                putExtra(
-                    MyPageFragment.EXTRA_USER_PROFILE,
-                    profile
-                )
-                putExtra(
-                    MyPageFragment.EXTRA_USER_PASSWORD,
-                    password
-                )
+                    val intent = Intent().apply{
+                        putExtra(
+                            MyPageFragment.EXTRA_USER_NAME,
+                            name
+                        )
+                        putExtra(
+                            MyPageFragment.EXTRA_USER_PROFILE,
+                            profile
+                        )
+                        putExtra(
+                            MyPageFragment.EXTRA_USER_CURRENT_PASSWORD,
+                            cureentPassword
+                        )
+                        putExtra(
+                            MyPageFragment.EXTRA_USER_PASSWORD,
+                            password
+                        )
+
+                    }
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                }
+                else {
+                    Toast.makeText(
+                        applicationContext,
+                        "모든 항목이 유효하지 않습니다. 다시 확인해주세요.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
-            setResult(Activity.RESULT_OK, intent)
-            finish()
         }
-        myPageUpdateEtUserPasswordEdit.setText(password)
-        myPageUpdateEtUserPasswordCheckEdit.setText(passwordCheck)
-        myPageUpdateEtUserNameEdit.setText(name)
-
 
         val imgProfileUri = if (profile != null) Uri.parse(profile) else null
 
@@ -127,15 +150,5 @@ class MyPageUpdateActivity : AppCompatActivity(){
             editUserLauncher.launch(intent)
         }
 
-        myPageUpdateEtUserNameEdit.setOnClickListener{
-            myPageUpdateEtUserNameEdit.isEnabled = !myPageUpdateEtUserNameEdit.isEnabled
-        }
-
-        myPageUpdateEtUserPasswordEdit.setOnClickListener{
-            myPageUpdateEtUserPasswordEdit.isEnabled = !myPageUpdateEtUserPasswordEdit.isEnabled
-        }
-        myPageUpdateEtUserPasswordCheckEdit.setOnClickListener{
-            myPageUpdateEtUserPasswordCheckEdit.isEnabled = !myPageUpdateEtUserPasswordCheckEdit.isEnabled
-        }
     }
 }

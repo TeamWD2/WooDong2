@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
@@ -29,6 +30,7 @@ class MyPageFragment : Fragment() {
     companion object {
         const val EXTRA_USER_NAME = "extra_user_name"
         const val EXTRA_USER_PROFILE = "extra_user_profile"
+        const val EXTRA_USER_CURRENT_PASSWORD = "extra_user_current_password"
         const val EXTRA_USER_PASSWORD = "extra_user_password"
 
         lateinit var UserInfo : UserItem
@@ -67,8 +69,10 @@ class MyPageFragment : Fragment() {
                 if (result.resultCode == Activity.RESULT_OK) {
                     val receivedNameData = result.data?.getStringExtra(EXTRA_USER_NAME)
                     val receivedProfileData = result.data?.getStringExtra(EXTRA_USER_PROFILE)
-                    val receivedEmailData = result.data?.getStringExtra(EXTRA_USER_PASSWORD)
-                    viewModel.updateUserItem(receivedNameData.toString(),receivedProfileData.toString(),receivedEmailData.toString())
+                    val receivedPasswordData = result.data?.getStringExtra(EXTRA_USER_PASSWORD)
+                    val receivedCurrentPasswordData = result.data?.getStringExtra(EXTRA_USER_CURRENT_PASSWORD)
+                    viewModel.updateUserItem(receivedNameData.toString(),receivedProfileData.toString())
+                    viewModel.updatePasswordItem(receivedCurrentPasswordData.toString(),receivedPasswordData.toString())
 
                     imgCheck = true
                 }else{
@@ -109,10 +113,11 @@ class MyPageFragment : Fragment() {
         myPageViewPager2.adapter = myPageViewPagerAdapter
         myPageViewPager2.offscreenPageLimit = myPageViewPagerAdapter?.itemCount?:0
 
-
         TabLayoutMediator(myPageTabLayout, myPageViewPager2) { tab, position ->
             myPageViewPagerAdapter?.getTitle(position)?.let { tab.setText(it) }
         }.attach()
+
+
 
         //프로필 변경
         ivUserEdit.setOnClickListener{
@@ -139,8 +144,7 @@ class MyPageFragment : Fragment() {
                     ) { _, _ ->
                         viewModel.updateUserItem(
                             UserInfo.name.toString(),
-                            R.drawable.group_ic_no_profile.toString(),
-                            UserInfo.email.toString()
+                            R.drawable.group_ic_no_profile.toString()
                         )
                         Glide.with(requireContext())
                             .load(R.drawable.group_ic_no_profile)

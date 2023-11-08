@@ -39,7 +39,6 @@ class HomeFragment : Fragment() {
 
     private var firstLocation :String? = null
     private var secondLocation :String? = null
-    private var locationType : Int? = 0
     private var userName :String? = null
     private lateinit var homeMapLauncher : ActivityResultLauncher<Intent>
 
@@ -141,7 +140,7 @@ class HomeFragment : Fragment() {
                         //locationType,
                         userInfo.firstLocation.toString()
                     )
-                    }
+                }
 
 
                 firstLocation = userInfo.firstLocation

@@ -6,8 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
+import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.model.GroupAlbumEntity
 import com.wd.woodong2.domain.model.GroupBoardEntity
 import com.wd.woodong2.domain.model.GroupIntroduceEntity
@@ -15,13 +18,17 @@ import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
+import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
+import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.group.content.GroupItem
 import com.wd.woodong2.presentation.group.content.GroupViewModel
+import com.wd.woodong2.presentation.home.content.HomeItem
 import com.wd.woodong2.presentation.mypage.content.thumb.MyPageThumbViewModel
 import kotlinx.coroutines.launch
 
 class MyPageGroupViewModel(
-    private val groupGetItems: GroupGetItemsUseCase
+    private val groupGetItems: GroupGetItemsUseCase,
+    private val userItem: UserGetItemsUseCase,
 ) : ViewModel(){
     companion object {
         private const val TAG = "GroupViewModel"
@@ -29,11 +36,21 @@ class MyPageGroupViewModel(
     private val _groupList: MutableLiveData<List<GroupItem>> = MutableLiveData()
     val groupList: LiveData<List<GroupItem>> get() = _groupList
 
+    private val _printList: MutableLiveData<List<GroupItem>> = MutableLiveData()
+    val printList: LiveData<List<GroupItem>> get() = _printList
+
     private val _loadingState: MutableLiveData<Boolean> = MutableLiveData()
     val loadingState: LiveData<Boolean> get() = _loadingState
 
     private val _isEmptyList: MutableLiveData<Boolean> = MutableLiveData()
     val isEmptyList: LiveData<Boolean> get() = _isEmptyList
+
+    val userId= "user1"
+    private var userInfo: MutableLiveData<UserItem> = MutableLiveData()
+
+    init {
+        getUserItem()
+    }
 
     fun getGroupItem() = viewModelScope.launch {
         _loadingState.value = true
@@ -150,15 +167,45 @@ class MyPageGroupViewModel(
             }
         }
     }
+    private fun getUserItem() = viewModelScope.launch {
+        runCatching {
+            userItem(userId).collect { user ->
+                val userItem =
+                    UserItem(
+                        id = user?.id ?: "",
+                        name = user?.name ?: "",
+                        imgProfile = user?.imgProfile ?: "",
+                        email = user?.email ?: "",
+                        chatIds = user?.chatIds.orEmpty(),
+                        groupIds = user?.groupIds.orEmpty(),        //모임
+                        likedIds = user?.likedIds.orEmpty(),        //좋아요 게시물
+                        writtenIds = user?.writtenIds.orEmpty(),        //작성한 게시물
+                        firstLocation = user?.firstLocation ?: "",
+                        secondLocation = user?.secondLocation ?: ""
+                    )
+
+                userInfo.postValue(userItem)
+            }
+        }.onFailure {
+            Log.e("homeItem", it.message.toString())
+        }
+    }
 }
 
 class MyPageGroupViewModelFactory : ViewModelProvider.Factory {
+    private val userRepositoryImpl by lazy {
+        UserRepositoryImpl(
+            FirebaseDatabase.getInstance().getReference("users"),
+            Firebase.auth
+        )
+    }
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val databaseReference = FirebaseDatabase.getInstance().getReference("group_list")
         val repository = GroupRepositoryImpl(databaseReference)
         if (modelClass.isAssignableFrom(MyPageGroupViewModel::class.java)) {
             return MyPageGroupViewModel(
-                GroupGetItemsUseCase(repository)
+                GroupGetItemsUseCase(repository),
+                UserGetItemsUseCase(userRepositoryImpl),
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")
