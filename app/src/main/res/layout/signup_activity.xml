@@ -111,9 +111,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/dodger_blue"
-                    app:layout_constraintTop_toTopOf="@+id/txt_pw"
                     app:layout_constraintBottom_toBottomOf="@+id/txt_pw"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/txt_pw" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_pw"
