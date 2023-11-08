@@ -169,19 +169,20 @@ class UserRepositoryImpl(
     }
     override suspend fun updateUserPassword(email: String, currentPassword: String, newPassword: String): Flow<Boolean> =
         callbackFlow {
-        //패스워드 재설정
-        try {
-            val credential = EmailAuthProvider.getCredential(email, currentPassword)
-            auth.currentUser?.reauthenticate(credential)?.await()
-            auth.currentUser?.updatePassword(newPassword)?.await()
-            Log.d(TAG, "비밀번호 변경 성공")
-            trySend(true)
-        } catch (e: Exception) {
-            Log.d(TAG, "비밀번호 변경 실패")
-            trySend(false)
-        }
-        awaitClose {
+            //패스워드 재설정
+            try {
+                val credential = EmailAuthProvider.getCredential(email, currentPassword)
+                auth.currentUser?.reauthenticate(credential)?.await()
+                auth.currentUser?.updatePassword(newPassword)?.await()
+                Log.d(TAG, "비밀번호 변경 성공")
+                trySend(true)
+            } catch (e: Exception) {
+                Log.d(TAG, "비밀번호 변경 실패")
+                trySend(false)
+            }
+            awaitClose {
 
+            }
         }
     /*
     UID 가져오는 메소드
@@ -202,6 +203,7 @@ class UserRepositoryImpl(
     {
             Log.d("locationcf", firstLocation)
             Log.d("locationcf", secondLocation)
+            Log.d("mypagename", name)
             val userInfo = databaseReference.child(userId)
             val updateUserInfo = mapOf(
                 "name" to name,
@@ -241,5 +243,6 @@ class UserRepositoryImpl(
         val dataSnapshot = query.get().await()
         return dataSnapshot.exists() // 중복이면 true, 아니면 false
     }
+
 }
 

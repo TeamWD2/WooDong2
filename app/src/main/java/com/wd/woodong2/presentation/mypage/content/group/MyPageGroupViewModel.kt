@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.model.GroupAlbumEntity
@@ -17,6 +18,7 @@ import com.wd.woodong2.domain.model.GroupIntroduceEntity
 import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
+import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
@@ -207,7 +209,8 @@ class MyPageGroupViewModelFactory : ViewModelProvider.Factory {
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
             FirebaseDatabase.getInstance().getReference("users"),
-            Firebase.auth
+            Firebase.auth,
+            FirebaseTokenProvider(FirebaseMessaging.getInstance())
         )
     }
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

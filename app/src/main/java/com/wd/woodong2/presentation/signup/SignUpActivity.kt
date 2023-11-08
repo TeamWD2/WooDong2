@@ -180,6 +180,7 @@ class SignUpActivity : AppCompatActivity() {
                         editName.text.toString().trim()
                     )
                 }
+
                 id = editId.text.toString().trim()
                 pw = editPw.text.toString().trim()
             } else {

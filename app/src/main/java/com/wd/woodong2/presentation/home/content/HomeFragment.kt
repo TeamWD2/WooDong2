@@ -115,9 +115,9 @@ class HomeFragment : Fragment() {
             }
 
             userInfo.observe(viewLifecycleOwner) { userInfo ->
-
+                //오류가 있어
                 val filteredList = list.value?.filter { it.location == userInfo.firstLocation }
-                _printList.value = filteredList!!
+                _printList.value = filteredList
 
                 // 구, 군
                 if (printList.value?.size!! < 10) {

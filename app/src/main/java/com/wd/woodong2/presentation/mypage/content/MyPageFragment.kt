@@ -71,8 +71,16 @@ class MyPageFragment : Fragment() {
                     val receivedProfileData = result.data?.getStringExtra(EXTRA_USER_PROFILE)
                     val receivedPasswordData = result.data?.getStringExtra(EXTRA_USER_PASSWORD)
                     val receivedCurrentPasswordData = result.data?.getStringExtra(EXTRA_USER_CURRENT_PASSWORD)
+                    Log.d("mypage2", receivedNameData.toString())
                     viewModel.updateUserItem(receivedNameData.toString(),receivedProfileData.toString())
                     viewModel.updatePasswordItem(receivedCurrentPasswordData.toString(),receivedPasswordData.toString())
+
+                    Glide.with(requireContext())
+                        .load(Uri.parse(receivedProfileData))
+                        .error(R.drawable.group_ic_no_image)
+                        .fitCenter()
+                        .into(binding.ivProfile)
+                    binding.tvName.text = receivedNameData
 
                     imgCheck = true
                 }else{
