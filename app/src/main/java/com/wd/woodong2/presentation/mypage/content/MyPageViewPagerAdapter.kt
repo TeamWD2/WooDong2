@@ -13,7 +13,6 @@ class MyPageViewPagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
-    //생명주기에 맞쳐서 저장하고 갖고오는 반복 역할 뷰페이저 20년도 부터 있는 이슈..
     private val size = 3
 
     fun getTitle(position: Int): Int {

@@ -130,7 +130,7 @@ class HomeMapSearchActivity : AppCompatActivity() {
 
         binding.homeMapSearchBtn.setOnClickListener{
             address = binding.homeMapEtSearch.text.toString()
-            val spaceAddress = address.replace(" ", "")
+            val spaceAddress = address.replace("\\s".toRegex(), "")
             if (address.endsWith("동") || address.endsWith("읍") || address.endsWith("면")) {
                 viewModel.search(spaceAddress)
             }

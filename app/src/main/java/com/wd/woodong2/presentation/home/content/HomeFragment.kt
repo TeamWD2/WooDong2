@@ -127,6 +127,7 @@ class HomeFragment : Fragment() {
 
             userInfo.observe(viewLifecycleOwner) { userInfo ->
 
+
                 val filteredList =
                     list.value?.filter { it.location == userInfo.firstLocation } ?: emptyList()
                 _printList.value = filteredList
