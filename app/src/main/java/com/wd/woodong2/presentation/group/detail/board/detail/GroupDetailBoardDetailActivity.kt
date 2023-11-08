@@ -1,6 +1,7 @@
 package com.wd.woodong2.presentation.group.detail.board.detail
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -52,12 +54,22 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
     private val boardDetailListAdapter by lazy {
         GroupDetailBoardDetailListAdapter(
             onClickDeleteComment = { position ->
-                viewModel.deleteComment(
-                    itemPkId,
-                    groupBoardItem?.boardId,
-                    groupBoardItem?.commentList?.firstOrNull()?.commentId,
-                    position
-                )
+                AlertDialog.Builder(this@GroupDetailBoardDetailActivity).apply {
+                    setTitle(R.string.group_detail_board_detail_dialog_title)
+                    setMessage(R.string.group_detail_board_detail_dialog_message)
+                    setPositiveButton(R.string.group_detail_board_detail_dialog_delete) { _, _ ->
+                        viewModel.deleteComment(
+                            itemPkId,
+                            groupBoardItem?.boardId,
+                            groupBoardItem?.commentList?.firstOrNull()?.commentId,
+                            position
+                        )
+                    }
+                    setNegativeButton(R.string.group_detail_board_detail_dialog_cancel) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    show()
+                }
             }
         )
     }

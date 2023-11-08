@@ -116,12 +116,11 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
             if(edtContent.text.isNullOrBlank()) {
                 Toast.makeText(this@GroupDetailBoardAddActivity, R.string.group_add_board_add_toast_no_content, Toast.LENGTH_SHORT).show()
             } else {
-                viewModel.setGroupBoardItem(
+                viewModel.setGroupBoardAlbumItem(
                     itemId,
                     userInfo,
                     edtContent.text.toString()
                 )
-                viewModel.setGroupAlbumItem(itemId)
             }
         }
     }

@@ -105,6 +105,8 @@ class GroupAddSharedViewModel(
         if (isCorrectGroupAddItem()) {
             viewModelScope.launch {
                 runCatching {
+                    getImageStorage("imgMainImage", Uri.parse(groupAddMain.value?.mainImage))
+                    getImageStorage("imgBackgroundImage", Uri.parse(groupAddMain.value?.backgroundImage))
                     groupSetItem(combineGroupItem())
                     _isCreateSuccess.value = true
                 }.onFailure {
@@ -139,10 +141,8 @@ class GroupAddSharedViewModel(
                     && it.memberLimit.isNullOrBlank().not()
         } ?: false
 
-    private fun combineGroupItem(): List<GroupAddSetItem> {
-        getImageStorage("imgMainImage", Uri.parse(groupAddMain.value?.mainImage))
-        getImageStorage("imgBackgroundImage", Uri.parse(groupAddMain.value?.backgroundImage))
-        return mutableListOf<GroupAddSetItem>().apply {
+    private fun combineGroupItem(): List<GroupAddSetItem> =
+        mutableListOf<GroupAddSetItem>().apply {
             groupAddMain.value?.let {
                 add(it)
             }
@@ -165,9 +165,8 @@ class GroupAddSharedViewModel(
             add(GroupAddSetItem.GroupAddBoard())
             add(GroupAddSetItem.GroupAddAlbum())
         }
-    }
 
-    private fun getImageStorage(currentItem: String, image: Uri) = viewModelScope.launch {
+    private suspend fun getImageStorage(currentItem: String, image: Uri) {
         runCatching {
             imageStorageSetItem(image).collect { imageUri ->
                 when(currentItem) {
@@ -193,7 +192,7 @@ class GroupAddSharedViewModelFactory(
             )
         )
         val imageStorageRepository =
-            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/groupList/${UUID.randomUUID()}"))
+            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference)
         val groupSetRepository =
             GroupRepositoryImpl(FirebaseDatabase.getInstance().getReference("group_list"))
         if (modelClass.isAssignableFrom(GroupAddSharedViewModel::class.java)) {

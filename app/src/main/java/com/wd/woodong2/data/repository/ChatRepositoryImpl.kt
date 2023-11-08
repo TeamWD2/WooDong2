@@ -19,6 +19,9 @@ import com.wd.woodong2.domain.model.MessageItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.ChatRepository
 import com.wd.woodong2.data.model.GCMRequest
+import com.wd.woodong2.data.model.GroupItemsResponse
+import com.wd.woodong2.data.model.GroupItemsResponseJsonDeserializer
+import com.wd.woodong2.presentation.group.detail.GroupDetailChatItem
 import com.wd.woodong2.retrofit.GCMRetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -83,26 +86,17 @@ class ChatRepositoryImpl(
             }
         }
 
-    override suspend fun addChatItem(
-        senderId: String,
-        imgProfile: String,
-        location: String,
-    ) {
-//        val currentTimeMillis = System.currentTimeMillis()
-//
-//        val chatRef = databaseReference.push()
-//
-//        val chatEntity = ChatEntity(
-//            id = chatRef.key,
-//            groupId = imgProfile,
-//            last = senderId,
-//            mainImage = location,
-//            memberLimit = currentTimeMillis,
-//            title = "",
-//            message = emptyMap()
-//        )
-//
-//        chatRef.setValue(chatEntity)
+    override suspend  fun setChatItem(chatItem: GroupDetailChatItem): String {
+        val chatRef = databaseReference.push()
+        val chatKey = chatRef.key
+        chatRef.setValue(chatItem) { databaseError, _ ->
+            if (databaseError != null) {
+                Log.e(GroupRepositoryImpl.TAG, "Fail: ${databaseError.message}")
+            } else {
+                Log.e(GroupRepositoryImpl.TAG, "Success")
+            }
+        }
+        return chatKey.toString()
     }
 
     override suspend fun loadMessageItems(chatId: String): Flow<MessageItemsEntity?> =

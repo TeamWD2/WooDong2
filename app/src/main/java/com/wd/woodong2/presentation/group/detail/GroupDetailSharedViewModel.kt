@@ -9,8 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
 import com.wd.woodong2.R
+import com.wd.woodong2.data.repository.ChatRepositoryImpl
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
+import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.GroupAlbumEntity
 import com.wd.woodong2.domain.model.GroupBoardEntity
@@ -18,15 +20,19 @@ import com.wd.woodong2.domain.model.GroupIntroduceEntity
 import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
+import com.wd.woodong2.domain.usecase.ChatSetItemUseCase
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.UserUpdateGroupInfoUseCase
 import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import com.wd.woodong2.presentation.group.content.GroupItem
 import kotlinx.coroutines.launch
 
 class GroupDetailSharedViewModel(
     private val prefGetUserItem: UserPrefGetItemUseCase,
-    private val getGroupItems: GroupGetItemsUseCase
+    private val getGroupItems: GroupGetItemsUseCase,
+    private val setChatItem: ChatSetItemUseCase,
+    private val updateGroupInfo: UserUpdateGroupInfoUseCase
 ) : ViewModel() {
     companion object {
         private const val TAG = "GroupDetailSharedViewModel"
@@ -169,12 +175,39 @@ class GroupDetailSharedViewModel(
     fun modifyTab(tabName: Int) {
         _tabName.value = tabName
     }
+
+    /**
+     * 모임 가입 시, User 정보 업데이트 및 채팅방 생성
+     */
+    fun updateUserInfo(groupId: String?) {
+        if (groupId == null) {
+            return
+        }
+        viewModelScope.launch {
+            runCatching {
+                val groupMainItem = groupDetailItem.value as? GroupItem.GroupMain
+                //채팅방 생성
+                val chatId = setChatItem(
+                    GroupDetailChatItem(
+                        groupId = groupId,
+                        mainImage = groupMainItem?.mainImage,
+                        backgroundImage = groupMainItem?.backgroundImage,
+                        title = groupMainItem?.title ?: "Group Title"
+                    )
+                )
+
+                //User 정보 업데이트
+                updateGroupInfo(getUserInfo()?.userId ?: "UserId", groupId, chatId)
+            }
+        }
+    }
 }
 
 class GroupDetailSharedViewModelFactory(
     val context: Context
 ) : ViewModelProvider.Factory {
     private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
+    private val databaseReference = FirebaseDatabase.getInstance()
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val userPrefRepository = UserPreferencesRepositoryImpl(
             null,
@@ -182,12 +215,15 @@ class GroupDetailSharedViewModelFactory(
                 context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
             )
         )
-        val databaseReference = FirebaseDatabase.getInstance().getReference("group_list")
-        val groupGetRepository = GroupRepositoryImpl(databaseReference)
+        val groupGetRepository = GroupRepositoryImpl(databaseReference.getReference("group_list"))
+        val chatSetRepository = ChatRepositoryImpl(databaseReference.getReference("chat_list").child("group"))
+        val userUpdateRepository = UserRepositoryImpl(databaseReference.getReference("users"), null, null)
         if (modelClass.isAssignableFrom(GroupDetailSharedViewModel::class.java)) {
             return GroupDetailSharedViewModel(
                 UserPrefGetItemUseCase(userPrefRepository),
-                GroupGetItemsUseCase(groupGetRepository)
+                GroupGetItemsUseCase(groupGetRepository),
+                ChatSetItemUseCase(chatSetRepository),
+                UserUpdateGroupInfoUseCase(userUpdateRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")

@@ -34,8 +34,8 @@ import kotlinx.coroutines.tasks.await
 
 class UserRepositoryImpl(
     private val databaseReference: DatabaseReference,
-    private val auth: FirebaseAuth,
-    private val tokenProvider: TokenProvider,
+    private val auth: FirebaseAuth?,
+    private val tokenProvider: TokenProvider?,
 ) : UserRepository {
     companion object {
         const val TAG = "UserRepositoryImpl"
@@ -107,9 +107,9 @@ class UserRepositoryImpl(
         imgProfile: Uri?,
     ): Flow<Any> =
         callbackFlow {
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful && tokenProvider.getToken() != null) {
+            auth?.createUserWithEmailAndPassword(email, password)
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful && tokenProvider?.getToken() != null) {
 
                         val user = UserEntity(
                             id = task.result?.user?.uid,
@@ -130,7 +130,7 @@ class UserRepositoryImpl(
                         trySend(true)
                     }
                 }
-                .addOnFailureListener { exception ->
+                ?.addOnFailureListener { exception ->
                     when (exception) {
                         is FirebaseAuthWeakPasswordException -> trySend("ERROR_WEAK_PASSWORD")
                         is FirebaseAuthInvalidCredentialsException -> trySend("ERROR_INVALID_EMAIL")
@@ -144,8 +144,8 @@ class UserRepositoryImpl(
 
 
     override suspend fun signIn(email: String, password: String): Flow<Boolean> = callbackFlow {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
+        auth?.signInWithEmailAndPassword(email, password)
+            ?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val uid = auth.currentUser?.uid
 
@@ -170,7 +170,7 @@ class UserRepositoryImpl(
     UID 가져오는 메소드
     * */
     override fun getUid(): String? {
-        return auth.currentUser?.uid
+        return auth?.currentUser?.uid
     }
 
 
@@ -179,7 +179,7 @@ class UserRepositoryImpl(
     * */
     override suspend fun updateUserToken(userId: String): Flow<Boolean> = callbackFlow {
         val userDataReference = databaseReference.child(userId)
-        val token = mapOf("token" to tokenProvider.getToken())
+        val token = mapOf("token" to tokenProvider?.getToken())
         userDataReference.updateChildren(token)
     }
 
@@ -211,6 +211,26 @@ class UserRepositoryImpl(
         val query = databaseReference.orderByChild("name").equalTo(nickname)
         val dataSnapshot = query.get().await()
         return dataSnapshot.exists() // 중복이면 true, 아니면 false
+    }
+
+    override suspend fun updateGroupInfo(userId: String, groupId: String, chatId: String) {
+        databaseReference.child(userId).child("groupIds").push()
+            .setValue(groupId) { databaseError, _ ->
+                if (databaseError != null) {
+                    Log.e(GroupRepositoryImpl.TAG, "Fail: ${databaseError.message}")
+                } else {
+                    Log.e(GroupRepositoryImpl.TAG, "Success")
+                }
+            }
+
+        databaseReference.child(userId).child("chatIds").push()
+            .setValue(chatId) { databaseError, _ ->
+                if (databaseError != null) {
+                    Log.e(GroupRepositoryImpl.TAG, "Fail: ${databaseError.message}")
+                } else {
+                    Log.e(GroupRepositoryImpl.TAG, "Success")
+                }
+            }
     }
 }
 

@@ -139,7 +139,7 @@ class SignUpViewModelFactory : ViewModelProvider.Factory {
     }
 
     private val imageStorageRepository =
-        ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/${UUID.randomUUID()}"))
+        ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference)
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SignUpViewModel::class.java)) {

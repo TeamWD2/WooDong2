@@ -9,6 +9,7 @@ import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -135,11 +136,18 @@ class GroupDetailActivity : AppCompatActivity() {
                     )
                 )
 
-                GroupDetailContentType.JOIN_GROUP -> Toast.makeText(
-                    this@GroupDetailActivity,
-                    "모임 가입하기 클릭",
-                    Toast.LENGTH_SHORT
-                ).show()
+                GroupDetailContentType.JOIN_GROUP ->
+                    AlertDialog.Builder(this@GroupDetailActivity).apply {
+                    setTitle(R.string.group_detail_dialog_title)
+                    setMessage(R.string.group_detail_dialog_message)
+                    setPositiveButton(R.string.group_detail_dialog_ok) { _, _ ->
+                        viewModel.updateUserInfo(itemId)
+                    }
+                    setNegativeButton(R.string.group_detail_dialog_ok) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    show()
+                }
 
                 else -> Unit
             }

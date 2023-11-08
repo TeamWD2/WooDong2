@@ -75,7 +75,7 @@ class GroupDetailBoardAddViewModel(
         _imageList.value = currentList
     }
 
-    fun setGroupBoardItem(
+    fun setGroupBoardAlbumItem(
         itemId: String?,
         userInfo: GroupUserInfoItem?,
         edtContent: String
@@ -97,29 +97,14 @@ class GroupDetailBoardAddViewModel(
                         images = uriImageList
                     )
                 )
-                _isCreateSuccess.value = true
-            }.onFailure {
-                Log.e(TAG, it.message.toString())
-                _isCreateSuccess.value = false
-            }
-        }
-    }
-
-    fun setGroupAlbumItem(
-        itemId: String?
-    ) {
-        if (itemId == null) {
-            return
-        }
-        viewModelScope.launch {
-            runCatching {
-                val uriImageList = createBoardImages()
                 groupSetAlbumItem(
                     itemId,
                     uriImageList
                 )
+                _isCreateSuccess.value = true
             }.onFailure {
                 Log.e(TAG, it.message.toString())
+                _isCreateSuccess.value = false
             }
         }
     }
@@ -142,7 +127,7 @@ class GroupDetailBoardAddViewModel(
 class GroupDetailBoardAddViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val imageStorageRepository =
-            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/groupList/${UUID.randomUUID()}"))
+            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference)
         val groupSetItemRepository =
             GroupRepositoryImpl(FirebaseDatabase.getInstance().getReference("group_list"))
         if (modelClass.isAssignableFrom(GroupDetailBoardAddViewModel::class.java)) {
