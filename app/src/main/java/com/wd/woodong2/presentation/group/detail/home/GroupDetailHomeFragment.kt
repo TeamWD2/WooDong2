@@ -32,7 +32,7 @@ class GroupDetailHomeFragment : Fragment() {
                         sharedViewModel.getUserInfo(),
                         id,
                         groupItem,
-                        sharedViewModel.isJoinGroup
+                        sharedViewModel.isJoinGroup.value
                     )
                 )
             },

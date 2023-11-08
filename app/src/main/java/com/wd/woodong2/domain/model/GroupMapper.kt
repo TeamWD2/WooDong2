@@ -46,7 +46,7 @@ fun GroupIntroduceResponse.toEntity() = GroupIntroduceEntity(
 fun GroupMemberResponse.toEntity() = GroupMemberEntity(
     id = id,
     title = title,
-    memberList = memberList?.map {
+    memberList = memberList?.values?.map {
         it.toEntity()
     }
 )

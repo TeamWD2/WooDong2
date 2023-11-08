@@ -266,9 +266,9 @@ class UserRepositoryImpl(
             databaseReference.child(userId).child("groupIds").push()
                 .setValue(groupId) { databaseError, _ ->
                     if (databaseError != null) {
-                        Log.e(GroupRepositoryImpl.TAG, "Fail: ${databaseError.message}")
+                        Log.e(TAG, "Fail: ${databaseError.message}")
                     } else {
-                        Log.e(GroupRepositoryImpl.TAG, "Success")
+                        Log.e(TAG, "Success")
                     }
                 }
 
@@ -278,9 +278,9 @@ class UserRepositoryImpl(
             databaseReference.child(userId).child("chatIds").push()
                 .setValue(chatId) { databaseError, _ ->
                     if (databaseError != null) {
-                        Log.e(GroupRepositoryImpl.TAG, "Fail: ${databaseError.message}")
+                        Log.e(TAG, "Fail: ${databaseError.message}")
                     } else {
-                        Log.e(GroupRepositoryImpl.TAG, "Success")
+                        Log.e(TAG, "Success")
                     }
                 }
         }

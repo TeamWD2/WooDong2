@@ -19,11 +19,13 @@ import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.usecase.ChatSetItemUseCase
 import com.wd.woodong2.domain.usecase.GroupSetItemUseCase
+import com.wd.woodong2.domain.usecase.GroupSetMemberItemUseCase
 import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserUpdateGroupInfoUseCase
 import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import com.wd.woodong2.presentation.group.detail.GroupDetailChatItem
+import com.wd.woodong2.presentation.group.detail.GroupDetailMemberAddItem
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -32,7 +34,8 @@ class GroupAddSharedViewModel(
     private val imageStorageSetItem: ImageStorageSetItemUseCase,
     private val groupSetItem: GroupSetItemUseCase,
     private val setChatItem: ChatSetItemUseCase,
-    private val updateGroupInfo: UserUpdateGroupInfoUseCase
+    private val updateGroupInfo: UserUpdateGroupInfoUseCase,
+    private val groupSetMemberItem: GroupSetMemberItemUseCase,
 ) : ViewModel() {
     companion object {
         private const val TAG = "GroupAddSharedViewModel"
@@ -121,8 +124,19 @@ class GroupAddSharedViewModel(
                         Uri.parse(groupAddMain.value?.backgroundImage)
                     )
 
+                    val userInfo = getUserInfo()
                     // 모임 생성
                     val groupId = groupSetItem(combineGroupItem())
+                    groupSetMemberItem(
+                        groupId,
+                        GroupDetailMemberAddItem(
+                            userId = userInfo?.userId ?: "UserId",
+                            profile = userInfo?.userProfile,
+                            name = userInfo?.userName ?: "UserName",
+                            location = userInfo?.userLocation ?: "UserLocation",
+                            comment = "모임 멤버"
+                        )
+                    )
 
                     // 채팅방 생성
                     val chatId = setChatItem(
@@ -178,19 +192,7 @@ class GroupAddSharedViewModel(
             groupAddIntroduce.value?.let {
                 add(it)
             }
-            add(
-                GroupAddSetItem.GroupAddMember(
-                    memberList = listOf(
-                        GroupAddSetItem.AddMember(
-                            getUserInfo()?.userId,
-                            getUserInfo()?.userProfile,
-                            getUserInfo()?.userName,
-                            getUserInfo()?.userLocation,
-                            "(방장)"
-                        )
-                    )
-                )
-            )
+            add(GroupAddSetItem.GroupAddMember())
             add(GroupAddSetItem.GroupAddBoard())
             add(GroupAddSetItem.GroupAddAlbum())
         }
@@ -226,7 +228,7 @@ class GroupAddSharedViewModelFactory(
         )
         val imageStorageRepository =
             ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference)
-        val groupSetRepository = GroupRepositoryImpl(databaseReference.getReference("group_list"))
+        val groupRepository = GroupRepositoryImpl(databaseReference.getReference("group_list"))
         val chatSetRepository =
             ChatRepositoryImpl(databaseReference.getReference("chat_list").child("group"), null)
         val userUpdateRepository =
@@ -235,9 +237,10 @@ class GroupAddSharedViewModelFactory(
             return GroupAddSharedViewModel(
                 UserPrefGetItemUseCase(userPrefRepository),
                 ImageStorageSetItemUseCase(imageStorageRepository),
-                GroupSetItemUseCase(groupSetRepository),
+                GroupSetItemUseCase(groupRepository),
                 ChatSetItemUseCase(chatSetRepository),
-                UserUpdateGroupInfoUseCase(userUpdateRepository)
+                UserUpdateGroupInfoUseCase(userUpdateRepository),
+                GroupSetMemberItemUseCase(groupRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")

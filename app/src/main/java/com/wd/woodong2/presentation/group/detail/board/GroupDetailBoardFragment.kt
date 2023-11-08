@@ -35,7 +35,7 @@ class GroupDetailBoardFragment : Fragment() {
                         sharedViewModel.getUserInfo(),
                         groupPkId,
                         groupItem,
-                        sharedViewModel.isJoinGroup
+                        sharedViewModel.isJoinGroup.value
                     )
                 )
             }

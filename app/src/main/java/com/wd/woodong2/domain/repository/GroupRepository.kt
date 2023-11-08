@@ -2,6 +2,7 @@ package com.wd.woodong2.domain.repository
 
 import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.presentation.group.add.GroupAddSetItem
+import com.wd.woodong2.presentation.group.detail.GroupDetailMemberAddItem
 import com.wd.woodong2.presentation.group.detail.board.add.GroupDetailBoardAddItem
 import com.wd.woodong2.presentation.group.detail.board.detail.GroupDetailBoardDetailItem
 import kotlinx.coroutines.flow.Flow
@@ -24,4 +25,6 @@ interface GroupRepository {
         groupId: String,
         commentId: String
     )
+
+    suspend fun setGroupMemberItem(itemId: String, groupMemberItem: GroupDetailMemberAddItem)
 }

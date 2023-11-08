@@ -30,7 +30,7 @@ class GroupListAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: GroupItem.GroupMain) = with(binding) {
             imgGroupProfile.load(item.mainImage) {
-                error(R.drawable.group_ic_no_image)
+                error(R.drawable.group_ic_no_profile)
             }
             txtName.text = item.groupName
             txtIntroduce.text = item.introduce

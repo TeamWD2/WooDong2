@@ -22,9 +22,11 @@ import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.usecase.ChatGetChatIdUseCase
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
+import com.wd.woodong2.domain.usecase.GroupSetMemberItemUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserUpdateGroupInfoUseCase
 import com.wd.woodong2.presentation.group.GroupUserInfoItem
+import com.wd.woodong2.presentation.group.add.GroupAddSetItem
 import com.wd.woodong2.presentation.group.content.GroupItem
 import kotlinx.coroutines.launch
 
@@ -32,13 +34,15 @@ class GroupDetailSharedViewModel(
     private val prefGetUserItem: UserPrefGetItemUseCase,
     private val getGroupItems: GroupGetItemsUseCase,
     private val getChatId: ChatGetChatIdUseCase,
-    private val updateGroupInfo: UserUpdateGroupInfoUseCase
+    private val updateGroupInfo: UserUpdateGroupInfoUseCase,
+    private val groupSetMemberItem: GroupSetMemberItemUseCase,
 ) : ViewModel() {
     companion object {
         private const val TAG = "GroupDetailSharedViewModel"
     }
 
-    var isJoinGroup: Boolean = false
+    private val _isJoinGroup: MutableLiveData<Boolean> = MutableLiveData()
+    val isJoinGroup: LiveData<Boolean> get() = _isJoinGroup
 
     private val _tabName: MutableLiveData<Int> = MutableLiveData()
     val tabName: LiveData<Int> get() = _tabName
@@ -49,8 +53,17 @@ class GroupDetailSharedViewModel(
     private val _groupDetailItem: MutableLiveData<List<GroupItem>> = MutableLiveData()
     val groupDetailItem: LiveData<List<GroupItem>> get() = _groupDetailItem
 
-    fun initIsJoinGroup(groupDetailContentType: GroupDetailContentType?) {
-        isJoinGroup = groupDetailContentType == GroupDetailContentType.WRITE_BOARD
+    /**
+     * 로그인 된 계정의 선택한 모임 가입 여부 확인
+     */
+    fun initIsJoinGroup() {
+            ?.firstOrNull()?.memberList}")
+        _isJoinGroup.value = groupDetailItem.value?.filterIsInstance<GroupItem.GroupMember>()
+            ?.firstOrNull()?.memberList?.any {
+                it.userId == prefGetUserItem().let { userInfo ->
+                    userInfo?.id
+                }
+            } == true
     }
 
     fun getUserInfo() =
@@ -177,7 +190,7 @@ class GroupDetailSharedViewModel(
     }
 
     /**
-     * 모임 가입 시, User 정보 업데이트
+     * 모임 가입 시, User 정보 업데이트 및 멤버 추가
      */
     fun updateUserInfo(groupId: String?) {
         if (groupId == null) {
@@ -185,18 +198,33 @@ class GroupDetailSharedViewModel(
         }
         viewModelScope.launch {
             runCatching {
-                val groupMainItem = groupDetailItem.value?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()
-
-                if(groupMainItem != null) {
+                val groupMainItem =
+                    groupDetailItem.value?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()
+                if (groupMainItem != null) {
                     //User 정보 업데이트
                     var chatId: String? = null
                     getChatId(groupId).collect { id ->
                         chatId = id
                     }
                     updateGroupInfo(getUserInfo()?.userId ?: "UserId", groupId, chatId)
+
+                    //멤버 추가
+                    val userInfo = getUserInfo()
+                    groupSetMemberItem(
+                        groupId,
+                        GroupDetailMemberAddItem(
+                            userId = userInfo?.userId ?: "UserId",
+                            profile = userInfo?.userProfile,
+                            name = userInfo?.userName ?: "UserName",
+                            location = userInfo?.userLocation ?: "UserLocation",
+                            comment = "모임 멤버"
+                        )
+                    )
                 } else {
                     Log.d(TAG, "groupMainItem is null")
                 }
+            }.onFailure {
+                Log.e(TAG, it.message.toString())
             }
         }
     }
@@ -214,15 +242,19 @@ class GroupDetailSharedViewModelFactory(
                 context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
             )
         )
-        val groupGetRepository = GroupRepositoryImpl(databaseReference.getReference("group_list"))
-        val chatGetRepository = ChatRepositoryImpl(databaseReference.getReference("chat_list").child("group"), null)
-        val userUpdateRepository = UserRepositoryImpl(databaseReference.getReference("users"), null, null)
+        val groupRepository =
+            GroupRepositoryImpl(databaseReference.getReference("group_list"))
+        val chatGetRepository =
+            ChatRepositoryImpl(databaseReference.getReference("chat_list").child("group"), null)
+        val userUpdateRepository =
+            UserRepositoryImpl(databaseReference.getReference("users"), null, null)
         if (modelClass.isAssignableFrom(GroupDetailSharedViewModel::class.java)) {
             return GroupDetailSharedViewModel(
                 UserPrefGetItemUseCase(userPrefRepository),
-                GroupGetItemsUseCase(groupGetRepository),
+                GroupGetItemsUseCase(groupRepository),
                 ChatGetChatIdUseCase(chatGetRepository),
-                UserUpdateGroupInfoUseCase(userUpdateRepository)
+                UserUpdateGroupInfoUseCase(userUpdateRepository),
+                GroupSetMemberItemUseCase(groupRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")

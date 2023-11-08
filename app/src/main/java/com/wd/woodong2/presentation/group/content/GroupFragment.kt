@@ -72,7 +72,6 @@ class GroupFragment : Fragment() {
         startActivity(
             GroupDetailActivity.newIntent(
                 requireContext(),
-                if (viewModel.isUserInGroup(item.id)) GroupDetailContentType.WRITE_BOARD.name else GroupDetailContentType.JOIN_GROUP.name,
                 item.id
             )
         )

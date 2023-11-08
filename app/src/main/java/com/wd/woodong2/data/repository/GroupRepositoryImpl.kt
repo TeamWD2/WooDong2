@@ -13,6 +13,7 @@ import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.GroupRepository
 import com.wd.woodong2.presentation.group.add.GroupAddSetItem
+import com.wd.woodong2.presentation.group.detail.GroupDetailMemberAddItem
 import com.wd.woodong2.presentation.group.detail.board.add.GroupDetailBoardAddItem
 import com.wd.woodong2.presentation.group.detail.board.detail.GroupDetailBoardDetailItem
 import kotlinx.coroutines.channels.awaitClose
@@ -147,6 +148,26 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
                     if (viewType?.uppercase() == GroupViewType.BOARD.name) {
                         childSnapshot.ref.child("boardList").child(groupId)
                             .child("commentList").child(commentId).removeValue()
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
+    }
+
+    override suspend fun setGroupMemberItem(
+        itemId: String,
+        groupMemberItem: GroupDetailMemberAddItem
+    ) {
+        databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { childSnapshot ->
+                    val viewType = childSnapshot.child("viewType").value as? String
+                    if (viewType?.uppercase() == GroupViewType.MEMBER.name) {
+                        childSnapshot.ref.child("memberList").push().setValue(groupMemberItem)
                     }
                 }
             }

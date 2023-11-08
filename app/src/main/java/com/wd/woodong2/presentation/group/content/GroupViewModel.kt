@@ -56,36 +56,6 @@ class GroupViewModel(
     }
 
     /**
-     * 로그인 된 계정의 선택한 모임 가입 여부 확인
-     */
-    fun isUserInGroup(groupId: String?): Boolean {
-        /**
-         * ViewType(Main)의 id와 동일한 id를 가진 항목 찾기
-         */
-        fun getRelatedItems(id: String?): List<GroupItem> {
-            if (id == null) {
-                return emptyList()
-            }
-            return groupList.value?.filter {
-                it.id == id
-            } ?: emptyList()
-        }
-
-        return getRelatedItems(groupId).any { groupItem ->
-            when (groupItem) {
-                is GroupItem.GroupMember ->
-                    groupItem.memberList?.any {
-                        it.userId == prefGetUserItem().let { userInfo ->
-                            userInfo?.id
-                        }
-                    } == true
-
-                else -> false
-            }
-        }
-    }
-
-    /**
      * Firebase 에서 모임 목록 read
      */
     private fun readGroupItems(

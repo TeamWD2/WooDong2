@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -24,15 +23,12 @@ import kotlin.math.abs
 
 class GroupDetailActivity : AppCompatActivity() {
     companion object {
-        private const val GROUP_DETAIL_CONTENT_TYPE = "group_detail_content_type"
         private const val ITEM_ID = "item_id"
         fun newIntent(
             context: Context,
-            groupDetailContentType: String,
             itemId: String?
         ): Intent =
             Intent(context, GroupDetailActivity::class.java).apply {
-                putExtra(GROUP_DETAIL_CONTENT_TYPE, groupDetailContentType)
                 putExtra(ITEM_ID, itemId)
             }
     }
@@ -43,14 +39,6 @@ class GroupDetailActivity : AppCompatActivity() {
         GroupDetailSharedViewModelFactory(this@GroupDetailActivity)
     }
 
-    private val groupDetailContentType by lazy {
-        GroupDetailContentType.from(
-            intent.getStringExtra(
-                GROUP_DETAIL_CONTENT_TYPE
-            )
-        )
-    }
-
     private val itemId by lazy {
         intent.getStringExtra(ITEM_ID)
     }
@@ -58,6 +46,8 @@ class GroupDetailActivity : AppCompatActivity() {
     private val viewPager2Adapter by lazy {
         GroupDetailViewPagerAdapter(this@GroupDetailActivity)
     }
+
+    private lateinit var groupDetailContentType: GroupDetailContentType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +73,6 @@ class GroupDetailActivity : AppCompatActivity() {
 
         //초기 데이터 출력
         viewModel.getGroupDetailItem(itemId)
-        viewModel.initIsJoinGroup(groupDetailContentType)
 
         //Toolbar init
         setSupportActionBar(includeLayoutCoordinator.materialToolbar)
@@ -118,50 +107,17 @@ class GroupDetailActivity : AppCompatActivity() {
 
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
-
-
-        btnAddInfo.text = when (groupDetailContentType) {
-            GroupDetailContentType.WRITE_BOARD -> getString(R.string.group_detail_btn_write_board)
-            GroupDetailContentType.JOIN_GROUP -> getString(R.string.group_detail_btn_join_group)
-            else -> ""
-        }
-        btnAddInfo.setOnClickListener {
-            //Todo("화면 이동 구현")
-            when (groupDetailContentType) {
-                GroupDetailContentType.WRITE_BOARD -> startActivity(
-                    GroupDetailBoardAddActivity.newIntent(
-                        this@GroupDetailActivity,
-                        itemId,
-                        viewModel.getUserInfo()
-                    )
-                )
-
-                GroupDetailContentType.JOIN_GROUP ->
-                    AlertDialog.Builder(this@GroupDetailActivity).apply {
-                    setTitle(R.string.group_detail_dialog_title)
-                    setMessage(R.string.group_detail_dialog_message)
-                    setPositiveButton(R.string.group_detail_dialog_ok) { _, _ ->
-                        viewModel.updateUserInfo(itemId)
-                    }
-                    setNegativeButton(R.string.group_detail_dialog_ok) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    show()
-                }
-
-                else -> Unit
-            }
-        }
     }
 
     private fun initViewModel() = with(viewModel) {
-        viewModel.loadingState.observe(this@GroupDetailActivity) { loadingState ->
+        loadingState.observe(this@GroupDetailActivity) { loadingState ->
             binding.includeLayoutCoordinator.progressBar.isVisible = loadingState
         }
 
         groupDetailItem.observe(this@GroupDetailActivity) { detailItem ->
             //넘겨 받은 데이터 출력
             initClickItem(detailItem)
+            viewModel.initIsJoinGroup()
 
             binding.includeLayoutCoordinator.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
                 binding.includeLayoutCoordinator.materialToolbar.post {
@@ -175,11 +131,46 @@ class GroupDetailActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.tabName.observe(this@GroupDetailActivity) { tabName ->
+        tabName.observe(this@GroupDetailActivity) { tabName ->
             binding.includeLayoutCoordinator.viewPager2.setCurrentItem(
                 viewPager2Adapter.findTabPositionByName(tabName),
                 false
             )
+        }
+
+        isJoinGroup.observe(this@GroupDetailActivity) { isJoinGroup ->
+            groupDetailContentType = if(isJoinGroup) GroupDetailContentType.WRITE_BOARD else GroupDetailContentType.JOIN_GROUP
+
+            binding.btnAddInfo.text = when (groupDetailContentType) {
+                GroupDetailContentType.WRITE_BOARD -> getString(R.string.group_detail_btn_write_board)
+                GroupDetailContentType.JOIN_GROUP -> getString(R.string.group_detail_btn_join_group)
+            }
+            binding.btnAddInfo.setOnClickListener {
+                when (groupDetailContentType) {
+                    GroupDetailContentType.WRITE_BOARD -> startActivity(
+                        GroupDetailBoardAddActivity.newIntent(
+                            this@GroupDetailActivity,
+                            itemId,
+                            viewModel.getUserInfo()
+                        )
+                    )
+
+                    GroupDetailContentType.JOIN_GROUP ->
+                        AlertDialog.Builder(this@GroupDetailActivity).apply {
+                            setTitle(R.string.group_detail_dialog_title)
+                            setMessage(R.string.group_detail_dialog_message)
+                            setPositiveButton(R.string.group_detail_dialog_ok) { _, _ ->
+                                viewModel.updateUserInfo(itemId)
+                            }
+                            setNegativeButton(R.string.group_detail_dialog_cancel) { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            show()
+                        }
+
+                    else -> Unit
+                }
+            }
         }
     }
 
