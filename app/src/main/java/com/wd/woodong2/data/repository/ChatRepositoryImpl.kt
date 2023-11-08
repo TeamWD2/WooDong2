@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 class ChatRepositoryImpl(
     private val chatDatabaseReference: DatabaseReference,
-    private val timeDatabaseReference: DatabaseReference,
+    private val timeDatabaseReference: DatabaseReference?,
 ) : ChatRepository {
 
     companion object {
@@ -87,7 +87,7 @@ class ChatRepositoryImpl(
         }
 
     override suspend  fun setChatItem(chatItem: GroupDetailChatItem): String {
-        val chatRef = databaseReference.push()
+        val chatRef = chatDatabaseReference.push()
         val chatKey = chatRef.key
         chatRef.setValue(chatItem) { databaseError, _ ->
             if (databaseError != null) {
@@ -152,7 +152,7 @@ class ChatRepositoryImpl(
 
 
     override suspend fun addChatMessageItem(userId: String, message: String, nickname: String) {
-        timeDatabaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+        timeDatabaseReference?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val offset = snapshot.value as Long
                 val estimatedServerTimeMs = System.currentTimeMillis() + offset
@@ -214,7 +214,7 @@ class ChatRepositoryImpl(
 
     override fun initChatItemTimestamp(chatId: String, userId: String) {
         lastTimestamps.remove(chatId)
-        timeDatabaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+        timeDatabaseReference?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val offset = dataSnapshot.value as Long
                 val estimatedServerTimeMs = System.currentTimeMillis() + offset
