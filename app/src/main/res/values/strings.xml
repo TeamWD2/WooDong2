@@ -118,7 +118,7 @@
 
     <string name="gcm_api">AAAAkLePWrQ:APA91bEkLe8vhgdQ-ibx2g1jb-crx6v1ky_0MDFMF-fPc7haPJvj_BAila-AUmGlQl2hFUXZQm7_hp5sw-_-9ki4LtXav4LO50_EskbyYHolNNpV_0Q3I_WDgLaV4WmRJNK4JXznhB9E</string>
 
-    <string name="test_client_token">eeWxak2xSXWJSottR1ePec:APA91bHLvExw1Sc1ueUKvLc-qnFsgWC85stYsdppK05UuYQG3JuCd6kxYA05eGWSc9S9Xi6RsZTx-JlXzHQA-bzZ70g8SygvIc10NBNVYE-tgb1YzAx62keHfAenL2USwSNCFbS0JkSp</string>
+    <string name="test_client_token">cqy3qh3SQA26GzsUXZz7Kv:APA91bHAhNGwyN1rf4PSJ4rSe5kWySQh-pHy_6Mr5RLKE9Gl5kZyKAoMQvHYYp_bC5L8U-EOLN17TB6DbEKYQhZ3rfJZt2c3Z9nBQ8ctNVo01prjvaWnjiPzbN_V9fdph6FurVouZvwQ</string>
 
     <string name="wd2">우동이</string>
 
@@ -138,6 +138,7 @@
 
     <!-- signup_activity.xml -->
     <string name="check_id_duplication">중복</string>
+    <string name="check_nickname_duplication">중복 체크</string>
     <string name="signup_pw_check">비밀번호 확인</string>
     <string name="signup_name">닉네임</string>
     <string name="signup_email">이메일</string>

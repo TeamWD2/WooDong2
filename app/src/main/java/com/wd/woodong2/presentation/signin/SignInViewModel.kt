@@ -15,11 +15,14 @@ import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.GetFirebaseTokenUseCase
 import com.wd.woodong2.domain.usecase.SignInGetUserUIDUseCase
 import com.wd.woodong2.domain.usecase.SignInGetUIDUseCase
 import com.wd.woodong2.domain.usecase.SignInSaveUserUseCase
+import com.wd.woodong2.domain.usecase.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.UserPrefSetItemUseCase
 import com.wd.woodong2.domain.usecase.UserSignInUseCase
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
@@ -32,6 +35,8 @@ class SignInViewModel(
     private val getUID: SignInGetUIDUseCase,
     private val getFirebaseToken: GetFirebaseTokenUseCase,
     private val getUserUID: SignInGetUserUIDUseCase,
+    private val getUserItem: UserGetItemUseCase,
+    private val prefSetUserItem: UserPrefSetItemUseCase,
 ) : ViewModel(
 ) {
     companion object {
@@ -89,6 +94,14 @@ class SignInViewModel(
         }
         return null
     }
+
+    fun setUserInfo(uid: String) = viewModelScope.launch {
+        getUserItem(uid).collect { user ->
+            if (user != null) {
+                prefSetUserItem(user)
+            }
+        }
+    }
 }
 
 class SignInViewModelFactory(
@@ -109,6 +122,9 @@ class SignInViewModelFactory(
         UserPreferencesRepositoryImpl(
             SignInPreferenceImpl(
                 context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            ),
+            UserInfoPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
             )
         )
     }
@@ -121,6 +137,8 @@ class SignInViewModelFactory(
                 SignInGetUIDUseCase(userPreferencesRepository),
                 GetFirebaseTokenUseCase(),
                 SignInGetUserUIDUseCase(userRepositoryImpl),
+                UserGetItemUseCase(userRepositoryImpl),
+                UserPrefSetItemUseCase(userPreferencesRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

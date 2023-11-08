@@ -1,7 +1,8 @@
 package com.wd.woodong2.presentation.signup
 
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,16 +11,21 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.storage.FirebaseStorage
+import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
+import com.wd.woodong2.domain.usecase.SignUpCheckNickNameDupUseCase
 import com.wd.woodong2.domain.usecase.UserSignUpUseCase
 import kotlinx.coroutines.launch
+import java.util.UUID
 import java.util.regex.Pattern
 
 class SignUpViewModel(
-    private val getUser: UserGetItemUseCase,
     private val signUpUser: UserSignUpUseCase,
+    private val checkNicknameDup: SignUpCheckNickNameDupUseCase,
+    private val imageStorageSetItem: ImageStorageSetItemUseCase,
 ) : ViewModel(
 ) {
     companion object {
@@ -35,8 +41,8 @@ class SignUpViewModel(
     val signUpResult: LiveData<Any> get() = _signUpResult
 
 
-    private val _isDuplication: MutableLiveData<Boolean> = MutableLiveData()
-    val isDuplication: LiveData<Boolean> get() = _isDuplication
+    private val _isNicknameDuplication: MutableLiveData<Boolean> = MutableLiveData()
+    val isNicknameDuplication: LiveData<Boolean> get() = _isNicknameDuplication
 
     private val _isValidId: MutableLiveData<Boolean> = MutableLiveData()
     val isValidId: LiveData<Boolean> get() = _isValidId
@@ -50,18 +56,14 @@ class SignUpViewModel(
     private val _isValidNickname: MutableLiveData<Boolean> = MutableLiveData()
     val isValidNickname: LiveData<Boolean> get() = _isValidNickname
 
-    val isAllCorrect: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
+    private var imgProfile: Uri? = null
 
-
-        addSource(isValidId) { value = checkAllConditions() }
-        addSource(isValidPassword) { value = checkAllConditions() }
-        addSource(isValidSamePassword) { value = checkAllConditions() }
-        addSource(isValidNickname) { value = checkAllConditions() }
-    }
-
-    // ID 유효성 판단 메소드
-    fun checkIdDuplication(id: String) {
-//        _isDuplication.value =
+    // 닉네임 중복 판단 메소드
+    fun checkNicknameDuplication(nickname: String) {
+        viewModelScope.launch {
+            val result = checkNicknameDup(nickname)
+            _isNicknameDuplication.value = result
+        }
     }
 
     fun checkValidId(id: String) {
@@ -94,13 +96,16 @@ class SignUpViewModel(
                 && isValidPassword.value == true
                 && isValidSamePassword.value == true
                 && isValidNickname.value == true
+                && isNicknameDuplication.value == false
     }
 
-
+    /*
+    * 회원가입 메소드
+    * */
     fun signUp(id: String, pw: String, name: String) {
         viewModelScope.launch {
             try {
-                signUpUser(id, pw, name)
+                signUpUser(id, pw, name, imgProfile)
                     .collect { result ->
                         // 성공 처리
                         _signUpResult.value = result
@@ -109,6 +114,16 @@ class SignUpViewModel(
                 // 에러 처리
                 _signUpResult.value = "ERROR: ${e.message}"
             }
+        }
+    }
+
+    fun setProfileImage(uri: Uri) = viewModelScope.launch {
+        runCatching {
+            imageStorageSetItem(uri).collect { imageUri ->
+                imgProfile = imageUri
+            }
+        }.onFailure {
+            Log.e(TAG, it.message.toString())
         }
     }
 }
@@ -123,11 +138,15 @@ class SignUpViewModelFactory : ViewModelProvider.Factory {
         )
     }
 
+    private val imageStorageRepository =
+        ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/${UUID.randomUUID()}"))
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SignUpViewModel::class.java)) {
             return SignUpViewModel(
-                UserGetItemUseCase(userRepositoryImpl),
                 UserSignUpUseCase(userRepositoryImpl),
+                SignUpCheckNickNameDupUseCase(userRepositoryImpl),
+                ImageStorageSetItemUseCase(imageStorageRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
