@@ -71,7 +71,8 @@ class ChatDetailActivity : AppCompatActivity() {
 
     private fun initView() = with(binding) {
         //상태바 & 아이콘 색상 변경
-        window.statusBarColor = ContextCompat.getColor(this@ChatDetailActivity, R.color.egg_yellow_toolbar)
+        window.statusBarColor =
+            ContextCompat.getColor(this@ChatDetailActivity, R.color.egg_yellow_toolbar)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
             window.insetsController?.setSystemBarsAppearance(
@@ -129,10 +130,14 @@ class ChatDetailActivity : AppCompatActivity() {
 
 
         btnSend.setOnClickListener {
-            chatDetailViewModel.sendMessage(
-                edtAddChat.text.toString()
-            )
-            edtAddChat.text.clear()
+            if (edtAddChat.text.toString().isNotBlank()) {
+                chatDetailViewModel.sendMessage(
+                    edtAddChat.text.toString()
+                )
+                edtAddChat.text.clear()
+            } else {
+                edtAddChat.text.clear()
+            }
         }
 
         btnBack.setOnClickListener {
