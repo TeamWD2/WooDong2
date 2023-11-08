@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.wd.woodong2.databinding.GroupFragmentBinding
@@ -48,7 +47,6 @@ class GroupFragment : Fragment() {
 
     private fun initView() = with(binding) {
         // TODO("toolbar 설정")
-
 
         fabAddGroup.setOnClickListener {
             startActivity(GroupAddActivity.newIntent(requireContext()))

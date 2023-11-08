@@ -6,10 +6,14 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowInsetsController
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.ChatDetailActivityBinding
 import com.wd.woodong2.presentation.chat.content.ChatItem
 
@@ -66,6 +70,18 @@ class ChatDetailActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
+        //상태바 & 아이콘 색상 변경
+        window.statusBarColor = ContextCompat.getColor(this@ChatDetailActivity, R.color.egg_yellow_toolbar)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
+            window.insetsController?.setSystemBarsAppearance(
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 안드로이드 6.0 이상에서만 동작
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
+
         root.viewTreeObserver.addOnGlobalLayoutListener {
             val r = Rect()
             root.getWindowVisibleDisplayFrame(r)
@@ -96,7 +112,21 @@ class ChatDetailActivity : AppCompatActivity() {
         recyclerViewChat.apply {
             adapter = chatDetailItemListAdapter
             layoutManager = LinearLayoutManager(context)
+
+            var isInitialLoad = true
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    if (!isInitialLoad && !recyclerViewChat.canScrollVertically(-1)) {
+                        chatDetailViewModel.getMessageItem()
+                    }
+                    isInitialLoad = false
+                }
+            })
         }
+
 
         btnSend.setOnClickListener {
             chatDetailViewModel.sendMessage(
@@ -113,12 +143,23 @@ class ChatDetailActivity : AppCompatActivity() {
     private fun initModel() = with(binding) {
         chatDetailViewModel.messageList.observe(this@ChatDetailActivity) { itemList ->
             chatDetailItemListAdapter.submitList(itemList.toMutableList())
+
+            val isAtBottom = !recyclerViewChat.canScrollVertically(1)
+            chatDetailItemListAdapter.submitList(itemList.toMutableList())
             recyclerViewChat.post {
-                recyclerViewChat.scrollToPosition(itemList.size - 1)
+                if (isAtBottom) {
+                    recyclerViewChat.scrollToPosition(itemList.size - 1)
+                }
             }
         }
         chatDetailViewModel.isLoading.observe(this@ChatDetailActivity) { loadingState ->
             binding.progressBar.isVisible = loadingState
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        chatDetailViewModel.destroyAll()
+    }
+
 }

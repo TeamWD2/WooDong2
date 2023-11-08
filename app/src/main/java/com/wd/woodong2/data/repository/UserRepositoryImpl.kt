@@ -1,7 +1,12 @@
 package com.wd.woodong2.data.repository
 
+import android.net.Uri
 import android.util.Log
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.ActionCodeSettings
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -21,9 +26,11 @@ import com.wd.woodong2.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.onFailure
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class UserRepositoryImpl(
     private val databaseReference: DatabaseReference,
@@ -93,7 +100,12 @@ class UserRepositoryImpl(
     /*
     * Auth 회원가입
     * */
-    override suspend fun signUp(email: String, password: String, name: String): Flow<Any> =
+    override suspend fun signUp(
+        email: String,
+        password: String,
+        name: String,
+        imgProfile: Uri?,
+    ): Flow<Any> =
         callbackFlow {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
@@ -103,7 +115,6 @@ class UserRepositoryImpl(
                             id = task.result?.user?.uid,
                             email = email,
                             name = name,
-
                             chatIds = listOf(),
                             groupIds = listOf(),        //모임
                             likedIds = listOf(),        //좋아요 게시물
@@ -139,6 +150,7 @@ class UserRepositoryImpl(
                     val uid = auth.currentUser?.uid
 
                     if (uid != null) {
+                        // TODO Global 사용 지양
                         CoroutineScope(Dispatchers.IO).launch {
                             updateUserToken(uid)
                         }
@@ -193,6 +205,12 @@ class UserRepositoryImpl(
             "email" to email,
         )
         userInfo.updateChildren(updateUserData)
+    }
+
+    override suspend fun checkNicknameDup(nickname: String): Boolean {
+        val query = databaseReference.orderByChild("name").equalTo(nickname)
+        val dataSnapshot = query.get().await()
+        return dataSnapshot.exists() // 중복이면 true, 아니면 false
     }
 }
 
