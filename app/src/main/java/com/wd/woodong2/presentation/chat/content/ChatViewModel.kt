@@ -104,6 +104,7 @@ class ChatViewModel(
             mainImage = it.mainImage,
             memberLimit = it.memberLimit,
             title = it.title,
+            isRead = (it.lastSeemTime?.get(user.id ?: "") ?: 0) > (it.last?.timestamp ?: 0)
         )
     }.orEmpty()
 }
@@ -113,8 +114,11 @@ class ChatViewModelFactory(
 ) : ViewModelProvider.Factory {
     private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
 
-    private val chatDatabaseReference by lazy {
-        FirebaseDatabase.getInstance().getReference("chat_list")
+    private val chatRepositoryImpl by lazy {
+        ChatRepositoryImpl(
+            FirebaseDatabase.getInstance().getReference("chat_list"),
+            FirebaseDatabase.getInstance().getReference(".info/serverTimeOffset")
+        )
     }
 
     private val userPreferencesRepository by lazy {
@@ -131,7 +135,7 @@ class ChatViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
             return ChatViewModel(
-                ChatGetItemsUseCase(ChatRepositoryImpl(chatDatabaseReference)),
+                ChatGetItemsUseCase(chatRepositoryImpl),
                 UserPrefGetItemUseCase(userPreferencesRepository),
             ) as T
         } else {

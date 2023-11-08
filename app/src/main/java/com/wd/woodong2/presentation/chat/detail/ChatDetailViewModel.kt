@@ -106,8 +106,9 @@ class ChatDetailViewModel(
     }
 
     fun destroyAll() {
-        if (chatItem.id != null) {
-            initChatItemTimestamp(chatItem.id!!)
+        val chatId = chatItem.id
+        if (chatId != null) {
+            initChatItemTimestamp(chatId, uid)
         }
     }
 }
@@ -115,6 +116,7 @@ class ChatDetailViewModel(
 class ChatDetailViewModelFactory(
     private val chatItem: ChatItem,
 ) : ViewModelProvider.Factory {
+
     private val chatRepository by lazy {
         ChatRepositoryImpl(
             when (chatItem) {
@@ -127,7 +129,8 @@ class ChatDetailViewModelFactory(
                     FirebaseDatabase.getInstance().getReference("chat_list").child("private")
                         .child(chatItem.id.orEmpty())
                 }
-            }
+            },
+            FirebaseDatabase.getInstance().getReference(".info/serverTimeOffset")
         )
     }
 

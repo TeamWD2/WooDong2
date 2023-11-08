@@ -14,6 +14,7 @@ data class ChatResponse(
     @SerializedName("memberLimit") val memberLimit: String?,
     @SerializedName("message") val message: Map<String, MessageResponse>?,
     @SerializedName("title") val title: String?,
+    @SerializedName("lastSeemTime") val lastSeemTime: Map<String, Long>?,
 )
 
 data class MessageItemsResponse(

@@ -13,13 +13,13 @@ import java.util.Date
 import java.util.Locale
 
 class ChatItemListAdapter(
-    private val onClick: (ChatItem) -> Unit
+    private val onClick: (ChatItem) -> Unit,
 ) : ListAdapter<ChatItem, ChatItemListAdapter.ViewHolder>(
 
     object : DiffUtil.ItemCallback<ChatItem>() {
         override fun areItemsTheSame(
             oldItem: ChatItem,
-            newItem: ChatItem
+            newItem: ChatItem,
         ): Boolean = if (oldItem is ChatItem.GroupChatItem && newItem is ChatItem.GroupChatItem) {
             oldItem.id == newItem.id
         } else {
@@ -28,7 +28,7 @@ class ChatItemListAdapter(
 
         override fun areContentsTheSame(
             oldItem: ChatItem,
-            newItem: ChatItem
+            newItem: ChatItem,
         ): Boolean = oldItem == newItem
     }
 ) {
@@ -38,7 +38,7 @@ class ChatItemListAdapter(
     }
 
     abstract class ViewHolder(
-        root: View
+        root: View,
     ) : RecyclerView.ViewHolder(root) {
         abstract fun onBind(item: ChatItem)
     }
@@ -121,7 +121,7 @@ class ChatItemListAdapter(
     // 뷰 홀더
     inner class GroupChatViewHolder(
         private val binding: ChatListItemBinding,
-        private val onClick: (ChatItem) -> Unit
+        private val onClick: (ChatItem) -> Unit,
     ) : ViewHolder(binding.root) {
 
         override fun onBind(item: ChatItem) = with(binding) {
@@ -130,6 +130,12 @@ class ChatItemListAdapter(
                 txtLastMassage.text = item.lastMessage
                 txtMemberNum.text = item.memberLimit
                 txtTimestamp.text = formatTimestamp(item.timeStamp ?: System.currentTimeMillis())
+
+                if (item.isRead != false) {
+                    txtNew.visibility = View.INVISIBLE
+                } else {
+                    txtNew.visibility = View.VISIBLE
+                }
             }
             itemView.setOnClickListener {
                 onClick(item)
@@ -139,7 +145,7 @@ class ChatItemListAdapter(
 
     inner class PrivateChatViewHolder(
         private val binding: ChatListItemBinding,
-        private val onClick: (ChatItem) -> Unit
+        private val onClick: (ChatItem) -> Unit,
     ) : ViewHolder(binding.root) {
 
         override fun onBind(item: ChatItem) = with(binding) {
@@ -156,7 +162,7 @@ class ChatItemListAdapter(
     }
 
     class UnknownViewHolder(
-        binding: ChatListItemBinding
+        binding: ChatListItemBinding,
     ) : ViewHolder(binding.root) {
 
         override fun onBind(item: ChatItem) = Unit
