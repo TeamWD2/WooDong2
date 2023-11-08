@@ -31,7 +31,7 @@ class SignUpViewModel(
     companion object {
         const val TAG = "SignUpViewModel"
 
-        const val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+        const val emailPattern = "[a-zA-Z0-9._-]+@[a-zA-Z]+\\.+[a-zA-Z]+\\.?[a-zA-Z]*"
         const val nicknamePattern = "^[a-zA-Z0-9가-힣_]+$"
         const val passwordPattern =
             "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{8,16}$"
@@ -68,7 +68,7 @@ class SignUpViewModel(
 
     fun checkValidId(id: String) {
         _isValidId.value =
-            id.isNotEmpty() && id.length in 5..18 && !id.contains(" ") && Pattern.matches(
+            id.isNotEmpty() && id.length in 5..22 && !id.contains(" ") && Pattern.matches(
                 emailPattern,
                 id
             )
@@ -117,6 +117,8 @@ class SignUpViewModel(
         }
     }
 
+    /**
+     * 이미지 설정 메소드*/
     fun setProfileImage(uri: Uri) = viewModelScope.launch {
         runCatching {
             imageStorageSetItem(uri).collect { imageUri ->
