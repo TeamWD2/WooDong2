@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.databinding.MyPageGroupFragmentBinding
 import com.wd.woodong2.presentation.group.content.GroupItem
+import com.wd.woodong2.presentation.group.content.GroupListAdapter
+import com.wd.woodong2.presentation.group.detail.GroupDetailActivity
+import com.wd.woodong2.presentation.group.detail.GroupDetailContentType
 
 
 class MyPageGroupFragment : Fragment() {
@@ -17,21 +21,18 @@ class MyPageGroupFragment : Fragment() {
     private var _binding : MyPageGroupFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val listAdapter by lazy {
+    private val myGroupListAdapter by lazy {
         MyPageGroupListAdapter(
-            //클릭시 GroupDetailHomeActivity로 넘어가기
-            onClickItem = { _,item ->
-//                startActivity(
-//                    GroupDetailHomeActivity.newIntent(
-//                        requireContext(),
-//                        item)
-//                )
+            itemClickListener = { item ->
+                clickGroupItem(item)
             }
         )
     }
+
     private val viewModel : MyPageGroupViewModel by viewModels {
         MyPageGroupViewModelFactory()
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,17 +47,36 @@ class MyPageGroupFragment : Fragment() {
         initViewModel()
     }
     private fun initView() = with(binding){
-        myPageGroupRecyclerView.apply {
-            adapter = listAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-        }
+
+        myPageGroupRecyclerView.adapter = myGroupListAdapter
+        viewModel.getGroupItem()
     }
     private fun initViewModel(){
         with(viewModel){
-            list.observe(viewLifecycleOwner){
-                listAdapter.submitList(it?.filterIsInstance<GroupItem.GroupMain>())
+
+            groupList.observe(viewLifecycleOwner) {
+                myGroupListAdapter.submitList(it?.filterIsInstance<GroupItem.GroupMain>())
+            }
+            loadingState.observe(viewLifecycleOwner) { loadingState ->
+                binding.progressBar.isVisible = loadingState
+            }
+            isEmptyList.observe(viewLifecycleOwner) { isEmptyList ->
+                binding.txtEmptyGroupList.isVisible = isEmptyList
             }
         }
+    }
+    private fun clickGroupItem(item: GroupItem.GroupMain) {
+        startActivity(
+            GroupDetailActivity.newIntent(
+                requireContext(),
+                if (viewModel.isUserInGroup(
+                        item.id,
+                        "-NhImSiDataNew" //테스트용 userId (임시데이터)
+                    )
+                ) GroupDetailContentType.WRITE_BOARD.name else GroupDetailContentType.JOIN_GROUP.name,
+                item.id
+            )
+        )
     }
     override fun onDestroyView() {
         _binding = null

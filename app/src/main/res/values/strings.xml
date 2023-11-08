@@ -77,16 +77,28 @@
     <string name="group_add_btn_add_group">모임 만들기</string>
     <string name="group_add_toast_create_group">모임이 생성되었습니다.</string>
     <string name="group_add_toast_no_info">입력되지 않은 정보가 있습니다.</string>
+    <string name="group_add_board_add_toast_no_content">내용을 입력해주세요.</string>
+    <string name="group_add_board_add_toast_create_board_success">게시글이 작성되었습니다.</string>
+    <string name="group_add_board_add_toast_create_board_fail">게시글 작성에 실패하였습니다.</string>
+    <string name="group_add_board_detail_hint_write_comment">댓글을 입력하세요.</string>
+    <string name="group_add_board_detail_btn_write_comment">작성</string>
+    <string name="group_add_board_detail_txt_delete_comment">삭제</string>
 
     <string name="group_detail_tab_home_title">홈</string>
     <string name="group_detail_tab_member_title">멤버</string>
     <string name="group_detail_tab_board_title">게시판</string>
     <string name="group_detail_tab_album_title">앨범</string>
-    <string name="group_detail_btn_write_board">게시물 작성하기</string>
+    <string name="group_detail_txt_member">멤버</string>
+    <string name="group_detail_txt_board">/ 게시판</string>
+    <string name="group_detail_btn_write_board">게시글 작성하기</string>
     <string name="group_detail_btn_join_group">모임 가입하기</string>
     <string name="group_detail_btn_more">전체보기 ></string>
     <string name="group_detail_txt_empty_board_list">게시글이 존재하지 않습니다.</string>
     <string name="group_detail_txt_empty_album_list">앨범이 존재하지 않습니다.</string>
+    <string name="group_detail_board_add_hint_board_title">제목을 입력하세요.</string>
+    <string name="group_detail_board_add_hint_board_content">내용을 입력하세요.</string>
+    <string name="group_detail_board_add_txt_add_image">사진 첨부</string>
+    <string name="group_detail_board_detail_no_comment">댓글을 입력해주세요.</string>
 
     <string name="chat_txt_title">채팅</string>
 
@@ -118,7 +130,7 @@
 
     <string name="gcm_api">AAAAkLePWrQ:APA91bEkLe8vhgdQ-ibx2g1jb-crx6v1ky_0MDFMF-fPc7haPJvj_BAila-AUmGlQl2hFUXZQm7_hp5sw-_-9ki4LtXav4LO50_EskbyYHolNNpV_0Q3I_WDgLaV4WmRJNK4JXznhB9E</string>
 
-    <string name="test_client_token">eeWxak2xSXWJSottR1ePec:APA91bHLvExw1Sc1ueUKvLc-qnFsgWC85stYsdppK05UuYQG3JuCd6kxYA05eGWSc9S9Xi6RsZTx-JlXzHQA-bzZ70g8SygvIc10NBNVYE-tgb1YzAx62keHfAenL2USwSNCFbS0JkSp</string>
+    <string name="test_client_token">cqy3qh3SQA26GzsUXZz7Kv:APA91bHAhNGwyN1rf4PSJ4rSe5kWySQh-pHy_6Mr5RLKE9Gl5kZyKAoMQvHYYp_bC5L8U-EOLN17TB6DbEKYQhZ3rfJZt2c3Z9nBQ8ctNVo01prjvaWnjiPzbN_V9fdph6FurVouZvwQ</string>
 
     <string name="wd2">우동이</string>
 
@@ -127,7 +139,7 @@
     <string name="start">시작하기</string>
 
     <!-- signin_activity.xml -->
-    <string name="signin_id">아이디</string>
+    <string name="signin_id">아이디(이메일 형식)</string>
     <string name="signin_enter_id">아이디를 입력하세요</string>
     <string name="signin_pw">비밀번호</string>
     <string name="signin_input_pw">비밀번호를 입력하세요</string>
@@ -137,7 +149,8 @@
     <string name="login_fail">로그인 실패</string>
 
     <!-- signup_activity.xml -->
-    <string name="check_id_duplication">중복확인</string>
+    <string name="check_id_duplication">중복</string>
+    <string name="check_nickname_duplication">중복 체크</string>
     <string name="signup_pw_check">비밀번호 확인</string>
     <string name="signup_name">닉네임</string>
     <string name="signup_email">이메일</string>

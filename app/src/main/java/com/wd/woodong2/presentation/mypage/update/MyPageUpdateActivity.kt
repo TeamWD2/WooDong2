@@ -4,10 +4,15 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsetsController
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.MyPageUpdateActivityBinding
@@ -32,6 +37,12 @@ class MyPageUpdateActivity : AppCompatActivity(){
     private var passwordCheck = userInfo.email
     private lateinit var binding : MyPageUpdateActivityBinding
 
+    private val onBackPressedCallback = object: OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+        }
+    }
+
     private val editUserLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -48,7 +59,16 @@ class MyPageUpdateActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = MyPageUpdateActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.ivory_yellow_background)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
+            window.insetsController?.setSystemBarsAppearance(
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 안드로이드 6.0 이상에서만 동작
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
         initView()
         initViewModel()
     }
@@ -59,9 +79,12 @@ class MyPageUpdateActivity : AppCompatActivity(){
 
     private fun initView() = with(binding) {
 
+        onBackPressedDispatcher.addCallback(this@MyPageUpdateActivity, onBackPressedCallback)
+
         myPageUpdateClose.setOnClickListener{
             finish()
         }
+
         myPageUpdateBtn.setOnClickListener{
             name = myPageUpdateEtUserNameEdit.text.toString()
             password = myPageUpdateEtUserPasswordEdit.text.toString()

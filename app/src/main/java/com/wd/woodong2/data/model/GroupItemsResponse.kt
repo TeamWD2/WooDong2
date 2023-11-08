@@ -22,9 +22,7 @@ data class GroupMainResponse(
     @SerializedName("memberLimit") val memberLimit: String?,
     @SerializedName("password") val password: String?,
     @SerializedName("mainImage") val mainImage: String?,
-    @SerializedName("backgroundImage") val backgroundImage: String?,
-    @SerializedName("memberCount") val memberCount: Int?,
-    @SerializedName("boardCount") val boardCount: Int?
+    @SerializedName("backgroundImage") val backgroundImage: String?
 ) : GroupResponse
 /**
  * 소개
@@ -64,7 +62,7 @@ data class GroupMemberItemResponse(
 data class GroupBoardResponse(
     val id: String?,
     @SerializedName("title") val title: String?,
-    @SerializedName("boardList") val boardList: List<GroupBoardItemResponse>?
+    @SerializedName("boardList") val boardList: Map<String, GroupBoardItemResponse>?
 ) : GroupResponse
 
 /**
@@ -78,6 +76,19 @@ data class GroupBoardItemResponse(
     @SerializedName("timestamp") val timestamp: Long,
     @SerializedName("content") val content: String?,
     @SerializedName("images") val images: List<String>?,
+    @SerializedName("commentList") val commentList: Map<String, GroupBoardCommentResponse>?
+)
+
+/**
+ * 게시판 댓글
+ */
+data class GroupBoardCommentResponse(
+    @SerializedName("userId") val userId: String?,
+    @SerializedName("userProfile") val userProfile: String?,
+    @SerializedName("userName") val userName: String?,
+    @SerializedName("userLocation") val userLocation: String?,
+    @SerializedName("timestamp") val timestamp: Long?,
+    @SerializedName("comment") val comment: String?,
 )
 
 /**
@@ -86,5 +97,5 @@ data class GroupBoardItemResponse(
 data class GroupAlbumResponse(
     val id: String?,
     @SerializedName("title") val title: String?,
-    @SerializedName("images") val images: List<String>?
+    @SerializedName("images") val images: Map<String, String>?
 ) : GroupResponse

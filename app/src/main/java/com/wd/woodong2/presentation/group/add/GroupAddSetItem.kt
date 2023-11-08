@@ -12,9 +12,7 @@ sealed class GroupAddSetItem(
         val memberLimit: String? = null,
         val password: String? = null,
         val mainImage: String? = null,
-        val backgroundImage: String? = null,
-        val memberCount: Int = 1,
-        val boardCount: Int = 0
+        val backgroundImage: String? = null
     ) : GroupAddSetItem(viewType)
 
     data class GroupAddIntroduce(
@@ -39,4 +37,14 @@ sealed class GroupAddSetItem(
         val location: String?,
         val comment: String?
     )
+
+    data class GroupAddBoard(
+        override val viewType: String = "board",
+        val title: String = "게시판"
+    ) : GroupAddSetItem(viewType)
+
+    data class GroupAddAlbum(
+        override val viewType: String = "album",
+        val title: String = "앨범"
+    ) : GroupAddSetItem(viewType)
 }

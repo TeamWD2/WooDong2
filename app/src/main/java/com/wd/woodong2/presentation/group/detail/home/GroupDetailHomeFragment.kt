@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.wd.woodong2.databinding.GroupDetailHomeFragmentBinding
 import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
+import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModelFactory
+import com.wd.woodong2.presentation.group.detail.board.detail.GroupDetailBoardDetailActivity
 
-class GroupDetailHomeFragment: Fragment() {
+class GroupDetailHomeFragment : Fragment() {
     companion object {
         fun newInstance() = GroupDetailHomeFragment()
     }
@@ -17,10 +19,25 @@ class GroupDetailHomeFragment: Fragment() {
     private var _binding: GroupDetailHomeFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels()
+    private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels {
+        GroupDetailSharedViewModelFactory()
+    }
 
     private val groupDetailHomeListAdapter by lazy {
         GroupDetailHomeListAdapter(
+            onClickBoardItem = { id, groupItem ->
+                startActivity(
+                    GroupDetailBoardDetailActivity.newIntent(
+                        requireContext(),
+                        "-NhImSiDataNew", //임시 데이터 (로그인 된 계정의 정보)
+                        "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
+                        "gildong",
+                        "인계동",
+                        id,
+                        groupItem
+                    )
+                )
+            },
             onClickMoreBtn = { tabName ->
                 sharedViewModel.modifyTab(tabName)
             }
@@ -38,11 +55,17 @@ class GroupDetailHomeFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        initViewModel()
     }
 
     private fun initView() = with(binding) {
         recyclerViewAddDetailHome.adapter = groupDetailHomeListAdapter
-        groupDetailHomeListAdapter.submitList(sharedViewModel.groupDetailItem)
+    }
+
+    private fun initViewModel() = with(sharedViewModel) {
+        groupDetailItem.observe(viewLifecycleOwner) { detailItem ->
+            groupDetailHomeListAdapter.submitList(detailItem)
+        }
     }
 
     override fun onDestroyView() {

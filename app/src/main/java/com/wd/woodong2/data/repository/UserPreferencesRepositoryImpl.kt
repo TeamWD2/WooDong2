@@ -1,34 +1,42 @@
 package com.wd.woodong2.data.repository
 
-import android.content.SharedPreferences
+import com.wd.woodong2.domain.model.UserEntity
+import com.wd.woodong2.domain.repository.SignInPreference
+import com.wd.woodong2.domain.repository.UserInfoPreference
 import com.wd.woodong2.domain.repository.UserPreferencesRepository
 
 class UserPreferencesRepositoryImpl(
-    private val sharedPreferences: SharedPreferences,
+    private val signinPref: SignInPreference,
+    private val userInfoPref: UserInfoPreference,
 ) : UserPreferencesRepository {
 
     companion object {
         const val TAG = "UserPreferencesRepository"
     }
 
-    override fun saveUser(userId: String, isLoggedIn: Boolean) {
-        sharedPreferences.edit().apply {
-            putString("userId", userId)
-            putBoolean("isLoggedIn", isLoggedIn)
-        }.apply()
+    /**
+     * SignInPreference
+     * */
+    override fun saveUser(userId: String, isLoggedIn: Boolean, uid: String) {
+        signinPref.saveUser(userId, isLoggedIn, uid)
     }
 
-    override fun getUser(): String? {
-        return if (sharedPreferences.getBoolean("isLoggedIn", false)) {
-            sharedPreferences.getString("userId", null)
-        } else null
+    override fun getUID(): String? {
+        return signinPref.getUID()
     }
 
     override fun deleteUser() {
-        sharedPreferences.edit().apply {
-            remove("userId")
-            remove("isLoggedIn")
-            apply()
-        }
+        return signinPref.deleteUser()
+    }
+
+    /**
+     * UserInfoPreference
+     * */
+    override fun setUserInfo(user: UserEntity) {
+        userInfoPref.setUserInfo(user)
+    }
+
+    override fun getUserInfo(): UserEntity? {
+        return userInfoPref.getUserInfo()
     }
 }

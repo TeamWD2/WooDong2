@@ -6,12 +6,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
+import com.wd.woodong2.common.GroupViewType
 import com.wd.woodong2.data.model.GroupItemsResponse
 import com.wd.woodong2.data.model.GroupItemsResponseJsonDeserializer
 import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.GroupRepository
 import com.wd.woodong2.presentation.group.add.GroupAddSetItem
+import com.wd.woodong2.presentation.group.detail.board.add.GroupDetailBoardAddItem
+import com.wd.woodong2.presentation.group.detail.board.detail.GroupDetailBoardDetailItem
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -20,6 +23,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
     companion object {
         const val TAG = "GroupRepositoryImpl"
     }
+
     override suspend fun getGroupItems(): Flow<GroupItemsEntity> = callbackFlow {
         val listener = databaseReference.addValueEventListener(object : ValueEventListener {
 
@@ -61,5 +65,93 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
                 Log.e(TAG, "Success")
             }
         }
+    }
+
+    override suspend fun setGroupBoardItem(
+        itemId: String,
+        groupBoardItem: GroupDetailBoardAddItem
+    ) {
+        databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { childSnapshot ->
+                    val viewType = childSnapshot.child("viewType").value as? String
+                    if (viewType?.uppercase() == GroupViewType.BOARD.name) {
+                        childSnapshot.ref.child("boardList").push().setValue(groupBoardItem)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
+    }
+
+    override suspend fun setGroupAlbumItem(
+        itemId: String,
+        groupAlbumItems: List<String>
+    ) {
+        databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { childSnapshot ->
+                    val viewType = childSnapshot.child("viewType").value as? String
+                    if (viewType?.uppercase() == GroupViewType.ALBUM.name) {
+                        childSnapshot.ref.child("images").apply {
+                            groupAlbumItems.forEach { item ->
+                                push().setValue(item)
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
+    }
+
+    override suspend fun addGroupBoardComment(
+        itemId: String,
+        groupId: String,
+        boardComment: GroupDetailBoardDetailItem.BoardComment
+    ) {
+        databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { childSnapshot ->
+                    val viewType = childSnapshot.child("viewType").value as? String
+                    if (viewType?.uppercase() == GroupViewType.BOARD.name) {
+                        childSnapshot.ref.child("boardList").child(groupId)
+                            .child("commentList").push().setValue(boardComment)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
+    }
+
+    override suspend fun deleteGroupBoardComment(
+        itemId: String,
+        groupId: String,
+        commentId: String
+    ) {
+        databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { childSnapshot ->
+                    val viewType = childSnapshot.child("viewType").value as? String
+                    if (viewType?.uppercase() == GroupViewType.BOARD.name) {
+                        childSnapshot.ref.child("boardList").child(groupId)
+                            .child("commentList").child(commentId).removeValue()
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
     }
 }

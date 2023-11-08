@@ -35,7 +35,7 @@
             android:resource="@color/wd2_main_color" />
 
         <activity
-            android:name=".presentation.start.StartActivity"
+            android:name=".presentation.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,7 +63,8 @@
         <activity
             android:name=".presentation.chat.detail.ChatDetailActivity"
             android:exported="true"
-            android:label="ChatDetailActivity">
+            android:label="ChatDetailActivity"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="com.wd.woodong2.OPEN_CHAT" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -84,6 +85,12 @@
             android:exported="false" />
         <activity
             android:name=".presentation.group.detail.GroupDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.group.detail.board.add.GroupDetailBoardAddActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.group.detail.board.detail.GroupDetailBoardDetailActivity"
             android:exported="false" />
 
         <service
