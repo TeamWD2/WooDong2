@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.group.add
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -9,14 +10,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.usecase.GroupSetItemUseCase
 import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
+import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 class GroupAddSharedViewModel(
+    private val prefGetUserItem: UserPrefGetItemUseCase,
     private val imageStorageSetItem: ImageStorageSetItemUseCase,
     private val groupSetItem: GroupSetItemUseCase
 ) : ViewModel() {
@@ -38,6 +45,16 @@ class GroupAddSharedViewModel(
     fun modifyViewPager2(count: Int) {
         _viewPager2CurItem.value = viewPager2CurItem.value?.plus(count)
     }
+
+    fun getUserInfo() =
+        prefGetUserItem()?.let {
+            GroupUserInfoItem(
+                userId = it.id ?: "(알 수 없음)",
+                userProfile = it.imgProfile,
+                userName = it.name ?: "(알 수 없음)",
+                userLocation = it.firstLocation ?: "(알 수 없음)"
+            )
+        }
 
     fun setItem(textName: String, text: String?) {
         when (textName) {
@@ -136,10 +153,10 @@ class GroupAddSharedViewModel(
                 GroupAddSetItem.GroupAddMember(
                     memberList = listOf(
                         GroupAddSetItem.AddMember(
-                            "-NhImSiData",
-                            "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
-                            "sinw",
-                            "권선동",
+                            getUserInfo()?.userId,
+                            getUserInfo()?.userProfile,
+                            getUserInfo()?.userName,
+                            getUserInfo()?.userLocation,
                             "(방장)"
                         )
                     )
@@ -164,16 +181,26 @@ class GroupAddSharedViewModel(
     }
 }
 
-class GroupAddSharedViewModelFactory : ViewModelProvider.Factory {
+class GroupAddSharedViewModelFactory(
+    val context: Context
+) : ViewModelProvider.Factory {
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val userPrefRepository = UserPreferencesRepositoryImpl(
+            null,
+            UserInfoPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            )
+        )
         val imageStorageRepository =
             ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/groupList/${UUID.randomUUID()}"))
-        val groupRepository =
+        val groupSetRepository =
             GroupRepositoryImpl(FirebaseDatabase.getInstance().getReference("group_list"))
         if (modelClass.isAssignableFrom(GroupAddSharedViewModel::class.java)) {
             return GroupAddSharedViewModel(
+                UserPrefGetItemUseCase(userPrefRepository),
                 ImageStorageSetItemUseCase(imageStorageRepository),
-                GroupSetItemUseCase(groupRepository)
+                GroupSetItemUseCase(groupSetRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")

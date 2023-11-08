@@ -39,7 +39,7 @@ class GroupDetailActivity : AppCompatActivity() {
     private lateinit var binding: GroupDetailActivityBinding
 
     private val viewModel: GroupDetailSharedViewModel by viewModels {
-        GroupDetailSharedViewModelFactory()
+        GroupDetailSharedViewModelFactory(this@GroupDetailActivity)
     }
 
     private val groupDetailContentType by lazy {
@@ -82,6 +82,7 @@ class GroupDetailActivity : AppCompatActivity() {
 
         //초기 데이터 출력
         viewModel.getGroupDetailItem(itemId)
+        viewModel.initIsJoinGroup(groupDetailContentType)
 
         //Toolbar init
         setSupportActionBar(includeLayoutCoordinator.materialToolbar)
@@ -130,10 +131,7 @@ class GroupDetailActivity : AppCompatActivity() {
                     GroupDetailBoardAddActivity.newIntent(
                         this@GroupDetailActivity,
                         itemId,
-                        "-NhImSiDataNew", //임시 데이터 (로그인 된 계정의 정보)
-                        "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
-                        "gildong",
-                        "인계동"
+                        viewModel.getUserInfo()
                     )
                 )
 

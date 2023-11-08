@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.group.detail
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
+import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.GroupAlbumEntity
 import com.wd.woodong2.domain.model.GroupBoardEntity
 import com.wd.woodong2.domain.model.GroupIntroduceEntity
@@ -15,15 +19,20 @@ import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
+import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import com.wd.woodong2.presentation.group.content.GroupItem
 import kotlinx.coroutines.launch
 
 class GroupDetailSharedViewModel(
+    private val prefGetUserItem: UserPrefGetItemUseCase,
     private val getGroupItems: GroupGetItemsUseCase
 ) : ViewModel() {
     companion object {
         private const val TAG = "GroupDetailSharedViewModel"
     }
+
+    var isJoinGroup: Boolean = false
 
     private val _tabName: MutableLiveData<Int> = MutableLiveData()
     val tabName: LiveData<Int> get() = _tabName
@@ -33,6 +42,20 @@ class GroupDetailSharedViewModel(
 
     private val _groupDetailItem: MutableLiveData<List<GroupItem>> = MutableLiveData()
     val groupDetailItem: LiveData<List<GroupItem>> get() = _groupDetailItem
+
+    fun initIsJoinGroup(groupDetailContentType: GroupDetailContentType?) {
+        isJoinGroup = groupDetailContentType == GroupDetailContentType.WRITE_BOARD
+    }
+
+    fun getUserInfo() =
+        prefGetUserItem()?.let {
+            GroupUserInfoItem(
+                userId = it.id ?: "(알 수 없음)",
+                userProfile = it.imgProfile,
+                userName = it.name ?: "(알 수 없음)",
+                userLocation = it.firstLocation ?: "(알 수 없음)"
+            )
+        }
 
     fun getGroupDetailItem(itemId: String?) {
         if (itemId == null) {
@@ -57,8 +80,8 @@ class GroupDetailSharedViewModel(
         items: GroupItemsEntity,
         itemId: String
     ): List<GroupItem> = readGroupItems(items).filter {
-            it.id == itemId
-        }
+        it.id == itemId
+    }
 
     /**
      * Firebase 에서 모임 목록 read
@@ -148,13 +171,23 @@ class GroupDetailSharedViewModel(
     }
 }
 
-class GroupDetailSharedViewModelFactory : ViewModelProvider.Factory {
+class GroupDetailSharedViewModelFactory(
+    val context: Context
+) : ViewModelProvider.Factory {
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val userPrefRepository = UserPreferencesRepositoryImpl(
+            null,
+            UserInfoPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            )
+        )
         val databaseReference = FirebaseDatabase.getInstance().getReference("group_list")
-        val repository = GroupRepositoryImpl(databaseReference)
+        val groupGetRepository = GroupRepositoryImpl(databaseReference)
         if (modelClass.isAssignableFrom(GroupDetailSharedViewModel::class.java)) {
             return GroupDetailSharedViewModel(
-                GroupGetItemsUseCase(repository)
+                UserPrefGetItemUseCase(userPrefRepository),
+                GroupGetItemsUseCase(groupGetRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")

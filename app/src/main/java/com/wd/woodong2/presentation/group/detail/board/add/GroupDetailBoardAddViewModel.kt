@@ -13,6 +13,7 @@ import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
 import com.wd.woodong2.domain.usecase.GroupSetAlbumItemUseCase
 import com.wd.woodong2.domain.usecase.GroupSetBoardItemUseCase
 import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
+import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -76,13 +77,10 @@ class GroupDetailBoardAddViewModel(
 
     fun setGroupBoardItem(
         itemId: String?,
-        userId: String?,
-        userProfile: String?,
-        userName: String?,
-        userLocation: String?,
+        userInfo: GroupUserInfoItem?,
         edtContent: String
     ) {
-        if (itemId == null || userId == null || userName == null || userLocation == null) {
+        if (itemId == null || userInfo == null) {
             return
         }
         viewModelScope.launch {
@@ -91,10 +89,10 @@ class GroupDetailBoardAddViewModel(
                 groupSetBoardItem(
                     itemId,
                     GroupDetailBoardAddItem(
-                        userId = userId,
-                        profile = userProfile,
-                        name = userName,
-                        location = userLocation,
+                        userId = userInfo.userId,
+                        profile = userInfo.userProfile,
+                        name = userInfo.userName,
+                        location = userInfo.userLocation,
                         content = edtContent,
                         images = uriImageList
                     )

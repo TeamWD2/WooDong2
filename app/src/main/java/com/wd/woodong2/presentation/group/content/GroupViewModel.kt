@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.group.content
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
+import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.GroupAlbumEntity
 import com.wd.woodong2.domain.model.GroupBoardEntity
 import com.wd.woodong2.domain.model.GroupIntroduceEntity
@@ -15,9 +19,11 @@ import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
+import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import kotlinx.coroutines.launch
 
 class GroupViewModel(
+    private val prefGetUserItem: UserPrefGetItemUseCase,
     private val groupGetItems: GroupGetItemsUseCase
 ) : ViewModel() {
 
@@ -52,11 +58,7 @@ class GroupViewModel(
     /**
      * 로그인 된 계정의 선택한 모임 가입 여부 확인
      */
-    fun isUserInGroup(groupId: String?, userId: String?): Boolean {
-        if (userId == null) {
-            return false
-        }
-
+    fun isUserInGroup(groupId: String?): Boolean {
         /**
          * ViewType(Main)의 id와 동일한 id를 가진 항목 찾기
          */
@@ -73,7 +75,9 @@ class GroupViewModel(
             when (groupItem) {
                 is GroupItem.GroupMember ->
                     groupItem.memberList?.any {
-                        it.userId == userId
+                        it.userId == prefGetUserItem().let { userInfo ->
+                            userInfo?.id
+                        }
                     } == true
 
                 else -> false
@@ -164,13 +168,23 @@ class GroupViewModel(
     }
 }
 
-class GroupViewModelFactory : ViewModelProvider.Factory {
+class GroupViewModelFactory(
+    val context: Context
+) : ViewModelProvider.Factory {
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val userPrefRepository = UserPreferencesRepositoryImpl(
+            null,
+            UserInfoPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            )
+        )
         val databaseReference = FirebaseDatabase.getInstance().getReference("group_list")
-        val repository = GroupRepositoryImpl(databaseReference)
+        val groupGetRepository = GroupRepositoryImpl(databaseReference)
         if (modelClass.isAssignableFrom(GroupViewModel::class.java)) {
             return GroupViewModel(
-                GroupGetItemsUseCase(repository)
+                UserPrefGetItemUseCase(userPrefRepository),
+                GroupGetItemsUseCase(groupGetRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")
