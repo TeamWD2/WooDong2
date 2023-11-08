@@ -115,23 +115,14 @@ class UserRepositoryImpl(
                             id = task.result?.user?.uid,
                             email = email,
                             name = name,
-
-                            // TODO Test
-                            chatIds = listOf(
-                                "-chat_list-group-TestData0",
-                                "-chat_list-group-TestData1",
-                            ),
-
-                            imgProfile = imgProfile?.toString() ?: "",
+                            chatIds = listOf(),
+                            groupIds = listOf(),        //모임
+                            likedIds = listOf(),        //좋아요 게시물
+                            writtenIds = listOf(),        //작성한 게시물
+                            imgProfile = "",
                             firstLocation = "",
                             secondLocation = "",
-
-                            //withContext, runBlocking
-                            token = tokenProvider.getToken(),
-
-                            groupIds = emptyList(),        //모임
-                            likedIds = emptyList(),        //좋아요 게시물
-                            writtenIds = emptyList(),        //작성한 게시물
+                            token = tokenProvider.getToken()
                         )
                         addUser(user)
 

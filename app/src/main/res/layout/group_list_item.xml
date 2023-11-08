@@ -53,21 +53,22 @@
 
         <TextView
             android:id="@+id/txt_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="8dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="@dimen/wd2_main_title"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/txt_group_tag"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/txt_group_tag"
             app:layout_constraintTop_toTopOf="@id/txt_group_tag"
             tools:text="나이X 남여 상관X 모여라" />
 
         <TextView
             android:id="@+id/txt_introduce"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
@@ -75,6 +76,7 @@
             android:textColor="@color/normal_gray_txt"
             android:textSize="@dimen/wd2_normal_text"
             app:layout_constraintBottom_toTopOf="@id/view_line"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_group_tag"
             tools:text="쪽지 주세요 고고!!" />

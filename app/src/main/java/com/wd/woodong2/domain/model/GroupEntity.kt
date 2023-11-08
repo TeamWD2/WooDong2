@@ -17,9 +17,7 @@ data class GroupMainEntity(
     val memberLimit: String?,
     val password: String?,
     val mainImage: String?,
-    val backgroundImage: String?,
-    val memberCount: Int?,
-    val boardCount: Int?
+    val backgroundImage: String?
 ) : GroupEntity
 
 /**
@@ -60,7 +58,7 @@ data class GroupMemberItemEntity(
 data class GroupBoardEntity(
     val id: String?,
     val title: String?,
-    val boardList: List<GroupBoardItemEntity>?
+    val boardList: Map<String, GroupBoardItemEntity>?
 ) : GroupEntity
 
 /**
@@ -74,6 +72,19 @@ data class GroupBoardItemEntity(
     val timestamp: Long,
     val content: String?,
     val images: List<String>?,
+    val commentList: Map<String, GroupBoardCommentEntity>?
+)
+
+/**
+ * 게시판 댓글
+ */
+data class GroupBoardCommentEntity(
+    val userId: String?,
+    val userProfile: String?,
+    val userName: String?,
+    val userLocation: String?,
+    val timestamp: Long?,
+    val comment: String?,
 )
 
 /**
@@ -82,5 +93,5 @@ data class GroupBoardItemEntity(
 data class GroupAlbumEntity(
     val id: String?,
     val title: String?,
-    val images: List<String>?
+    val images: Map<String, String>?
 ) : GroupEntity

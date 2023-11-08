@@ -86,6 +86,12 @@
         <activity
             android:name=".presentation.group.detail.GroupDetailActivity"
             android:exported="false" />
+        <activity
+            android:name=".presentation.group.detail.board.add.GroupDetailBoardAddActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.group.detail.board.detail.GroupDetailBoardDetailActivity"
+            android:exported="false" />
 
         <service
             android:name=".services.fcm.MyFirebaseMessagingService"
