@@ -20,6 +20,7 @@ import com.wd.woodong2.domain.repository.ChatRepository
 import com.wd.woodong2.data.model.GCMRequest
 import com.wd.woodong2.data.model.GroupItemsResponse
 import com.wd.woodong2.data.model.GroupItemsResponseJsonDeserializer
+import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.presentation.group.detail.GroupDetailChatItem
 import com.wd.woodong2.retrofit.GCMRetrofitClient
 import kotlinx.coroutines.CoroutineScope
@@ -86,7 +87,7 @@ class ChatRepositoryImpl(
             }
         }
 
-    override suspend  fun setChatItem(chatItem: GroupDetailChatItem): String {
+    override suspend fun setChatItem(chatItem: GroupDetailChatItem): String {
         val chatRef = chatDatabaseReference.push()
         val chatKey = chatRef.key
         chatRef.setValue(chatItem) { databaseError, _ ->
@@ -232,5 +233,19 @@ class ChatRepositoryImpl(
         })
     }
 
-}
+    override suspend fun getChatId(groupId: String): Flow<String> = callbackFlow {
+        chatDatabaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.forEach { snapshot ->
+                    if (snapshot.child("groupId").getValue(String::class.java) == groupId) {
+                        trySend(snapshot.key.toString())
+                    }
+                }
+            }
 
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
+    }
+}

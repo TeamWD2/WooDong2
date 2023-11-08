@@ -20,7 +20,7 @@ import com.wd.woodong2.domain.model.GroupIntroduceEntity
 import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
-import com.wd.woodong2.domain.usecase.ChatSetItemUseCase
+import com.wd.woodong2.domain.usecase.ChatGetChatIdUseCase
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserUpdateGroupInfoUseCase
@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 class GroupDetailSharedViewModel(
     private val prefGetUserItem: UserPrefGetItemUseCase,
     private val getGroupItems: GroupGetItemsUseCase,
-    private val setChatItem: ChatSetItemUseCase,
+    private val getChatId: ChatGetChatIdUseCase,
     private val updateGroupInfo: UserUpdateGroupInfoUseCase
 ) : ViewModel() {
     companion object {
@@ -177,7 +177,7 @@ class GroupDetailSharedViewModel(
     }
 
     /**
-     * 모임 가입 시, User 정보 업데이트 및 채팅방 생성
+     * 모임 가입 시, User 정보 업데이트
      */
     fun updateUserInfo(groupId: String?) {
         if (groupId == null) {
@@ -185,19 +185,18 @@ class GroupDetailSharedViewModel(
         }
         viewModelScope.launch {
             runCatching {
-                val groupMainItem = groupDetailItem.value as? GroupItem.GroupMain
-                //채팅방 생성
-                val chatId = setChatItem(
-                    GroupDetailChatItem(
-                        groupId = groupId,
-                        mainImage = groupMainItem?.mainImage,
-                        backgroundImage = groupMainItem?.backgroundImage,
-                        title = groupMainItem?.title ?: "Group Title"
-                    )
-                )
+                val groupMainItem = groupDetailItem.value?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()
 
-                //User 정보 업데이트
-                updateGroupInfo(getUserInfo()?.userId ?: "UserId", groupId, chatId)
+                if(groupMainItem != null) {
+                    //User 정보 업데이트
+                    var chatId: String? = null
+                    getChatId(groupId).collect { id ->
+                        chatId = id
+                    }
+                    updateGroupInfo(getUserInfo()?.userId ?: "UserId", groupId, chatId)
+                } else {
+                    Log.d(TAG, "groupMainItem is null")
+                }
             }
         }
     }
@@ -216,13 +215,13 @@ class GroupDetailSharedViewModelFactory(
             )
         )
         val groupGetRepository = GroupRepositoryImpl(databaseReference.getReference("group_list"))
-        val chatSetRepository = ChatRepositoryImpl(databaseReference.getReference("chat_list").child("group"), null)
+        val chatGetRepository = ChatRepositoryImpl(databaseReference.getReference("chat_list").child("group"), null)
         val userUpdateRepository = UserRepositoryImpl(databaseReference.getReference("users"), null, null)
         if (modelClass.isAssignableFrom(GroupDetailSharedViewModel::class.java)) {
             return GroupDetailSharedViewModel(
                 UserPrefGetItemUseCase(userPrefRepository),
                 GroupGetItemsUseCase(groupGetRepository),
-                ChatSetItemUseCase(chatSetRepository),
+                ChatGetChatIdUseCase(chatGetRepository),
                 UserUpdateGroupInfoUseCase(userUpdateRepository)
             ) as T
         } else {

@@ -56,8 +56,9 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
         }
     }
 
-    override suspend fun setGroupItem(groupAddSetItem: List<GroupAddSetItem>) {
+    override suspend fun setGroupItem(groupAddSetItem: List<GroupAddSetItem>): String {
         val groupRef = databaseReference.push()
+        val groupKey = groupRef.key
         groupRef.setValue(groupAddSetItem) { databaseError, _ ->
             if (databaseError != null) {
                 Log.e(TAG, "Fail: ${databaseError.message}")
@@ -65,6 +66,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
                 Log.e(TAG, "Success")
             }
         }
+        return groupKey.toString()
     }
 
     override suspend fun setGroupBoardItem(

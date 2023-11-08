@@ -261,24 +261,29 @@ class UserRepositoryImpl(
         return dataSnapshot.exists() // 중복이면 true, 아니면 false
     }
 
-    override suspend fun updateGroupInfo(userId: String, groupId: String, chatId: String) {
-        databaseReference.child(userId).child("groupIds").push()
-            .setValue(groupId) { databaseError, _ ->
-                if (databaseError != null) {
-                    Log.e(GroupRepositoryImpl.TAG, "Fail: ${databaseError.message}")
-                } else {
-                    Log.e(GroupRepositoryImpl.TAG, "Success")
+    override suspend fun updateGroupInfo(userId: String, groupId: String?, chatId: String?) {
+        if(groupId.isNullOrBlank().not()) {
+            databaseReference.child(userId).child("groupIds").push()
+                .setValue(groupId) { databaseError, _ ->
+                    if (databaseError != null) {
+                        Log.e(GroupRepositoryImpl.TAG, "Fail: ${databaseError.message}")
+                    } else {
+                        Log.e(GroupRepositoryImpl.TAG, "Success")
+                    }
                 }
-            }
 
-        databaseReference.child(userId).child("chatIds").push()
-            .setValue(chatId) { databaseError, _ ->
-                if (databaseError != null) {
-                    Log.e(GroupRepositoryImpl.TAG, "Fail: ${databaseError.message}")
-                } else {
-                    Log.e(GroupRepositoryImpl.TAG, "Success")
+        }
+
+        if(chatId.isNullOrBlank().not()) {
+            databaseReference.child(userId).child("chatIds").push()
+                .setValue(chatId) { databaseError, _ ->
+                    if (databaseError != null) {
+                        Log.e(GroupRepositoryImpl.TAG, "Fail: ${databaseError.message}")
+                    } else {
+                        Log.e(GroupRepositoryImpl.TAG, "Success")
+                    }
                 }
-            }
+        }
     }
 }
 
