@@ -1,11 +1,9 @@
 package com.wd.woodong2.presentation.mypage.content
 
 import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,17 +12,15 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.MyPageFragmentBinding
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.mypage.update.MyPageUpdateActivity
+import com.wd.woodong2.presentation.signin.SignInActivity
+
 class MyPageFragment : Fragment() {
 
     companion object {
@@ -33,7 +29,7 @@ class MyPageFragment : Fragment() {
         const val EXTRA_USER_CURRENT_PASSWORD = "extra_user_current_password"
         const val EXTRA_USER_PASSWORD = "extra_user_password"
 
-        lateinit var UserInfo : UserItem
+        lateinit var UserInfo: UserItem
         fun newInstance() = MyPageFragment()
         fun extractLocationInfo(address: String): String {
             val parts = address.split(" ")
@@ -45,22 +41,25 @@ class MyPageFragment : Fragment() {
             return ""
         }
     }
-    private lateinit var editUserLauncher : ActivityResultLauncher<Intent>
+
+    private lateinit var editUserLauncher: ActivityResultLauncher<Intent>
 
 
-    private var _binding : MyPageFragmentBinding? = null
+    private var _binding: MyPageFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private var myPageViewPagerAdapter :MyPageViewPagerAdapter? = null
+    private var myPageViewPagerAdapter: MyPageViewPagerAdapter? = null
 
-    private var imgCheck : Boolean = false
-    private val viewModel : MyPageViewModel by viewModels {
-            MyPageViewModelFactory()
-        }
+    private var imgCheck: Boolean = false
+    private val viewModel: MyPageViewModel by viewModels {
+        MyPageViewModelFactory(
+            requireContext(),
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?     //이전 상태에 대한 데이터 제공
+        savedInstanceState: Bundle?,     //이전 상태에 대한 데이터 제공
     ): View {
         _binding = MyPageFragmentBinding.inflate(inflater, container, false)
 
@@ -70,10 +69,17 @@ class MyPageFragment : Fragment() {
                     val receivedNameData = result.data?.getStringExtra(EXTRA_USER_NAME)
                     val receivedProfileData = result.data?.getStringExtra(EXTRA_USER_PROFILE)
                     val receivedPasswordData = result.data?.getStringExtra(EXTRA_USER_PASSWORD)
-                    val receivedCurrentPasswordData = result.data?.getStringExtra(EXTRA_USER_CURRENT_PASSWORD)
+                    val receivedCurrentPasswordData =
+                        result.data?.getStringExtra(EXTRA_USER_CURRENT_PASSWORD)
                     Log.d("mypage2", receivedNameData.toString())
-                    viewModel.updateUserItem(receivedNameData.toString(),receivedProfileData.toString())
-                    viewModel.updatePasswordItem(receivedCurrentPasswordData.toString(),receivedPasswordData.toString())
+                    viewModel.updateUserItem(
+                        receivedNameData.toString(),
+                        receivedProfileData.toString()
+                    )
+                    viewModel.updatePasswordItem(
+                        receivedCurrentPasswordData.toString(),
+                        receivedPasswordData.toString()
+                    )
 
                     Glide.with(requireContext())
                         .load(Uri.parse(receivedProfileData))
@@ -83,7 +89,7 @@ class MyPageFragment : Fragment() {
                     binding.tvName.text = receivedNameData
 
                     imgCheck = true
-                }else{
+                } else {
 
                 }
             }
@@ -107,7 +113,15 @@ class MyPageFragment : Fragment() {
                 .setPositiveButton(
                     "확인"
                 ) { _, _ ->
+                    viewModel.logout()
 
+                    /*
+                    * 로그인 화면으로 돌아가기
+                    * */
+                    startActivity(
+                        Intent(context, SignInActivity::class.java)
+                    )
+                    activity?.finish()
                 }
                 .setNegativeButton(
                     "취소"
@@ -117,25 +131,25 @@ class MyPageFragment : Fragment() {
             builder.show()
         }
 
-        myPageViewPagerAdapter = MyPageViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+        myPageViewPagerAdapter =
+            MyPageViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
         myPageViewPager2.adapter = myPageViewPagerAdapter
-        myPageViewPager2.offscreenPageLimit = myPageViewPagerAdapter?.itemCount?:0
+        myPageViewPager2.offscreenPageLimit = myPageViewPagerAdapter?.itemCount ?: 0
 
         TabLayoutMediator(myPageTabLayout, myPageViewPager2) { tab, position ->
             myPageViewPagerAdapter?.getTitle(position)?.let { tab.setText(it) }
         }.attach()
 
 
-
         //프로필 변경
-        ivUserEdit.setOnClickListener{
+        ivUserEdit.setOnClickListener {
             UserInfo.let { notNullUser ->
                 editUserLauncher.launch(
                     MyPageUpdateActivity.newIntent(requireContext(), notNullUser)
                 )
             }
         }
-        userEdit.setOnClickListener{
+        userEdit.setOnClickListener {
             UserInfo.let { notNullUser ->
                 editUserLauncher.launch(
                     MyPageUpdateActivity.newIntent(requireContext(), notNullUser)
@@ -171,9 +185,9 @@ class MyPageFragment : Fragment() {
         }
     }
 
-    private fun initViewModel(){
-        with(viewModel){
-            userInfo.observe(viewLifecycleOwner){userInfo->
+    private fun initViewModel() {
+        with(viewModel) {
+            userInfo.observe(viewLifecycleOwner) { userInfo ->
                 UserInfo = userInfo
                 Glide.with(requireContext())
                     .load(Uri.parse(userInfo.imgProfile))
@@ -185,8 +199,6 @@ class MyPageFragment : Fragment() {
             }
         }
     }
-
-
 
 
     override fun onDestroyView() {
