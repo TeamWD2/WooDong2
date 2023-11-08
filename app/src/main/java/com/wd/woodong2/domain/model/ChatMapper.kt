@@ -17,4 +17,5 @@ fun ChatResponse.toEntity() = ChatEntity(
     memberLimit = memberLimit,
     message = message?.map { it.value.toMessage() }.orEmpty(),
     title = title,
+    lastSeemTime = lastSeemTime
 )

@@ -5,7 +5,7 @@ import com.wd.woodong2.domain.repository.ChatRepository
 class ChatInitChatItemTimestampUseCase(
     private val repository: ChatRepository,
 ) {
-    operator fun invoke(chatId: String) {
-        repository.initChatItemTimestamp(chatId)
+    operator fun invoke(chatId: String, userId: String) {
+        repository.initChatItemTimestamp(chatId, userId)
     }
 }

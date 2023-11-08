@@ -10,5 +10,5 @@ interface ChatRepository {
     suspend fun addChatItem(senderId: String, imgProfile: String, location: String)
     suspend fun addChatMessageItem(userId: String, message: String, nickname: String)
     suspend fun loadMessageItems(chatId: String): Flow<MessageItemsEntity?>
-    fun initChatItemTimestamp(chatId: String)
+    fun initChatItemTimestamp(chatId: String, userId: String)
 }

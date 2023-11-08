@@ -75,20 +75,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "remoteMessage Body: " + remoteMessage.notification?.body)
 
         // TODO sTest
-
-        val noti = remoteMessage.notification
-
-        val chatItem = ChatItem.GroupChatItem(
-            id = "-chat_list-group-TestData1",
-            groupId = "groupId",
-            lastMessage = "lastMessage",
-            timeStamp = 12510436307,
-            mainImage = "mainImage",
-            memberLimit = "memberLimit",
-            title = "Test title",
-        )
-        val userId = "user1"
-
-        createNotification(chatItem, userId, noti)
+//
+//        val noti = remoteMessage.notification
+//
+//        val chatItem = ChatItem.GroupChatItem(
+//            id = "-chat_list-group-TestData1",
+//            groupId = "groupId",
+//            lastMessage = "lastMessage",
+//            timeStamp = 12510436307,
+//            mainImage = "mainImage",
+//            memberLimit = "memberLimit",
+//            title = "Test title",
+//        )
+//        val userId = "user1"
+//
+//        createNotification(chatItem, userId, noti)
     }
 }

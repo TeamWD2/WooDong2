@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.wd.woodong2.databinding.HomeListItemBinding
 import com.wd.woodong2.presentation.home.content.HomeItem
+import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -50,7 +51,7 @@ class MyPageThumbListAdapter (
                 homeListItemTvTitle.text = item.title
                 homeListItemTvDescription.text = item.description
 
-                homeListItemTvLocation.text = item.location
+                homeListItemTvLocation.text = HomeMapActivity.extractLocationInfo(item.location)
                 homeListItemTvTimeStamp.text = formatTimestamp(item.timeStamp)
 
                 homeListItemTvThumbCount.text = item.thumbCount.toString()

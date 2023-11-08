@@ -1,7 +1,6 @@
 package com.wd.woodong2.presentation.home.content
 
 import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,23 +14,25 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
-import com.wd.woodong2.data.repository.MapSearchRepositoryImpl
 import com.google.firebase.messaging.FirebaseMessaging
+import com.wd.woodong2.data.repository.MapSearchRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.model.MapSearchEntity
+import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.repository.MapSearchRepository
 import com.wd.woodong2.domain.usecase.MapSearchCircumLocationGetItemsUseCase
 import com.wd.woodong2.domain.usecase.MapSearchGetItemsUseCase
-import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
+import com.wd.woodong2.domain.usecase.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.UserUpdateInfoUseCase
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.home.map.HomeMapSearchItem
 import com.wd.woodong2.retrofit.KAKAORetrofitClient
 
 class HomeViewModel(
-    private val userItem: UserGetItemsUseCase,
+    private val userItem: UserGetItemUseCase,
+    private val userUpdateInfoUseCase: UserUpdateInfoUseCase,
     private val circumLocationItem: MapSearchCircumLocationGetItemsUseCase,
-    private val MapSearch : MapSearchGetItemsUseCase
+    private val mapSearch : MapSearchGetItemsUseCase
 ) : ViewModel(
 ) {
 
@@ -97,7 +98,7 @@ class HomeViewModel(
 
                 _circumLocationList.postValue(circumLocationItems)
                 circumLocationItems = createCircumLocationItems(
-                    Map = MapSearch(query)
+                    Map = mapSearch(query)
                 )
                 _circumLocationList.postValue(circumLocationItems)
 
@@ -313,7 +314,9 @@ class HomeViewModel(
         secondLocation: String,
     ) = viewModelScope.launch {
         runCatching {
-            userItem(userId, firstLocation, secondLocation)
+            userUpdateInfoUseCase(userId, userInfo.value?.imgProfile.toString(),userInfo.value?.name.toString() ,firstLocation, secondLocation)
+        }.onFailure {
+            Log.e("locationhv", it.message.toString())
         }
     }
     fun deleteItem(item: HomeItem) {
@@ -358,7 +361,8 @@ class HomeViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(
-                UserGetItemsUseCase(userRepositoryImpl),
+                UserGetItemUseCase(userRepositoryImpl),
+                UserUpdateInfoUseCase(userRepositoryImpl),
                 MapSearchCircumLocationGetItemsUseCase(circumLocationrepository),
                 MapSearchGetItemsUseCase(circumLocationrepository)
             ) as T

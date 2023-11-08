@@ -24,18 +24,18 @@ import com.wd.woodong2.presentation.home.map.HomeMapActivity.Companion.EXTRA_SEC
 
 
 class HomeFragment : Fragment() {
-    private var _binding : HomeFragmentBinding? = null
+    private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel : HomeViewModel
-        by viewModels {
-            HomeViewModelFactory()
-        }
+    private val viewModel: HomeViewModel
+            by viewModels {
+                HomeViewModelFactory()
+            }
 
-    private var firstLocation :String? = null
-    private var secondLocation :String? = null
-    private var locationType : Int? = 0
-    private var userName :String? = null
-    private lateinit var homeMapLauncher : ActivityResultLauncher<Intent>
+    private var firstLocation: String? = null
+    private var secondLocation: String? = null
+    private var locationType: Int? = 0
+    private var userName: String? = null
+    private lateinit var homeMapLauncher: ActivityResultLauncher<Intent>
 
     private val listAdapter by lazy {
         HomeListAdapter(requireContext(),
@@ -43,7 +43,8 @@ class HomeFragment : Fragment() {
                 startActivity(
                     HomeDetailActivity.homeDetailActivityNewIntent(
                         requireContext(),
-                        item)
+                        item
+                    )
                 )
             },
             onDeleteItem = { item ->
@@ -55,7 +56,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = HomeFragmentBinding.inflate(inflater, container, false)
 
@@ -108,8 +109,9 @@ class HomeFragment : Fragment() {
             )
         }
         fabHomeadd.setOnClickListener {
-            val intent = HomeAddActivity.homeAddActivityNewIntent(requireContext(),
-                firstLocation.toString(),userName
+            val intent = HomeAddActivity.homeAddActivityNewIntent(
+                requireContext(),
+                firstLocation.toString(), userName
             )
             startActivity(intent)
         }
@@ -123,6 +125,7 @@ class HomeFragment : Fragment() {
         homeTag8.setOnClickListener { viewModel.filterList("분실/실종") }
         homeTag9.setOnClickListener { viewModel.filterList("생활정보") }
     }
+
     private fun initViewModel() {
         with(viewModel) {
             // 변화가 감지되면 ..
@@ -132,8 +135,10 @@ class HomeFragment : Fragment() {
 
             userInfo.observe(viewLifecycleOwner) { userInfo ->
 
-                val filteredList = list.value?.filter { it.location == userInfo.firstLocation }
-                _printList.value = filteredList!!
+
+                val filteredList =
+                    list.value?.filter { it.location == userInfo.firstLocation } ?: emptyList()
+                _printList.value = filteredList
 
                 // 구, 군
                 if (printList.value?.size!! < 10) {
@@ -150,7 +155,7 @@ class HomeFragment : Fragment() {
                         //locationType,
                         userInfo.firstLocation.toString()
                     )
-                    }
+                }
 
 
                 firstLocation = userInfo.firstLocation
