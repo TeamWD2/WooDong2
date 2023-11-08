@@ -22,7 +22,7 @@ class GroupDetailAlbumFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels {
-        GroupDetailSharedViewModelFactory()
+        GroupDetailSharedViewModelFactory(requireContext())
     }
 
     private val groupDetailAlbumListAdapter by lazy {

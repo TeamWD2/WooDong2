@@ -22,7 +22,7 @@ class GroupDetailBoardFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels {
-        GroupDetailSharedViewModelFactory()
+        GroupDetailSharedViewModelFactory(requireContext())
     }
 
     private lateinit var groupPkId: String
@@ -32,12 +32,10 @@ class GroupDetailBoardFragment : Fragment() {
                 startActivity(
                     GroupDetailBoardDetailActivity.newIntent(
                         requireContext(),
-                        "-NhImSiDataNew", //임시 데이터 (로그인 된 계정의 정보)
-                        "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
-                        "gildong",
-                        "인계동",
+                        sharedViewModel.getUserInfo(),
                         groupPkId,
-                        groupItem
+                        groupItem,
+                        sharedViewModel.isJoinGroup.value
                     )
                 )
             }

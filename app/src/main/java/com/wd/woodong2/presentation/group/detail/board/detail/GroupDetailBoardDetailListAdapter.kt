@@ -150,7 +150,7 @@ class GroupDetailBoardDetailListAdapter(
                 txtDate.text = item.timestamp?.let { Date(it) }
                     ?.let { SimpleDateFormat("yyyy년 MM월 dd일").format(it) }
                 txtComment.text = item.comment
-                txtDelete.isVisible = item.userId.equals("-NhImSiDataNew") //임시 데이터
+                txtDelete.isVisible = item.isWriteOwner ?: false
                 txtDelete.setOnClickListener {
                     onClickDeleteComment(bindingAdapterPosition)
                 }

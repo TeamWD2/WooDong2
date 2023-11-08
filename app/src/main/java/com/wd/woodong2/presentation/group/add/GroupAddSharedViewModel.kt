@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.group.add
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -9,16 +10,32 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.wd.woodong2.R
+import com.wd.woodong2.data.repository.ChatRepositoryImpl
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
+import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
+import com.wd.woodong2.domain.usecase.ChatSetItemUseCase
 import com.wd.woodong2.domain.usecase.GroupSetItemUseCase
+import com.wd.woodong2.domain.usecase.GroupSetMemberItemUseCase
 import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
+import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.UserUpdateGroupInfoUseCase
+import com.wd.woodong2.presentation.group.GroupUserInfoItem
+import com.wd.woodong2.presentation.group.detail.GroupDetailChatItem
+import com.wd.woodong2.presentation.group.detail.GroupDetailMemberAddItem
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 class GroupAddSharedViewModel(
+    private val prefGetUserItem: UserPrefGetItemUseCase,
     private val imageStorageSetItem: ImageStorageSetItemUseCase,
-    private val groupSetItem: GroupSetItemUseCase
+    private val groupSetItem: GroupSetItemUseCase,
+    private val setChatItem: ChatSetItemUseCase,
+    private val updateGroupInfo: UserUpdateGroupInfoUseCase,
+    private val groupSetMemberItem: GroupSetMemberItemUseCase,
 ) : ViewModel() {
     companion object {
         private const val TAG = "GroupAddSharedViewModel"
@@ -38,6 +55,16 @@ class GroupAddSharedViewModel(
     fun modifyViewPager2(count: Int) {
         _viewPager2CurItem.value = viewPager2CurItem.value?.plus(count)
     }
+
+    fun getUserInfo() =
+        prefGetUserItem()?.let {
+            GroupUserInfoItem(
+                userId = it.id ?: "(알 수 없음)",
+                userProfile = it.imgProfile,
+                userName = it.name ?: "(알 수 없음)",
+                userLocation = it.firstLocation ?: "(알 수 없음)"
+            )
+        }
 
     fun setItem(textName: String, text: String?) {
         when (textName) {
@@ -84,11 +111,46 @@ class GroupAddSharedViewModel(
         }
     }
 
+    /**
+     * 모임 생성 및 채팅방 생성
+     */
     fun setGroupAddItem() {
         if (isCorrectGroupAddItem()) {
             viewModelScope.launch {
                 runCatching {
-                    groupSetItem(combineGroupItem())
+                    getImageStorage("imgMainImage", Uri.parse(groupAddMain.value?.mainImage))
+                    getImageStorage(
+                        "imgBackgroundImage",
+                        Uri.parse(groupAddMain.value?.backgroundImage)
+                    )
+
+                    val userInfo = getUserInfo()
+                    // 모임 생성
+                    val groupId = groupSetItem(combineGroupItem())
+                    groupSetMemberItem(
+                        groupId,
+                        GroupDetailMemberAddItem(
+                            userId = userInfo?.userId ?: "UserId",
+                            profile = userInfo?.userProfile,
+                            name = userInfo?.userName ?: "UserName",
+                            location = userInfo?.userLocation ?: "UserLocation",
+                            comment = "모임 멤버"
+                        )
+                    )
+
+                    // 채팅방 생성
+                    val chatId = setChatItem(
+                        GroupDetailChatItem(
+                            groupId = groupId,
+                            mainImage = groupAddMain.value?.mainImage,
+                            backgroundImage = groupAddMain.value?.backgroundImage,
+                            title = groupAddMain.value?.groupName ?: "Group Name"
+                        )
+                    )
+
+                    //사용자 정보 업데이트 (방장 자격)
+                    updateGroupInfo(getUserInfo()?.userId ?: "UserId", groupId, chatId)
+
                     _isCreateSuccess.value = true
                 }.onFailure {
                     Log.e(TAG, it.message.toString())
@@ -122,40 +184,28 @@ class GroupAddSharedViewModel(
                     && it.memberLimit.isNullOrBlank().not()
         } ?: false
 
-    private fun combineGroupItem(): List<GroupAddSetItem> {
-        getImageStorage("imgMainImage", Uri.parse(groupAddMain.value?.mainImage))
-        getImageStorage("imgBackgroundImage", Uri.parse(groupAddMain.value?.backgroundImage))
-        return mutableListOf<GroupAddSetItem>().apply {
+    private fun combineGroupItem(): List<GroupAddSetItem> =
+        mutableListOf<GroupAddSetItem>().apply {
             groupAddMain.value?.let {
                 add(it)
             }
             groupAddIntroduce.value?.let {
                 add(it)
             }
-            add(
-                GroupAddSetItem.GroupAddMember(
-                    memberList = listOf(
-                        GroupAddSetItem.AddMember(
-                            "-NhImSiData",
-                            "https://i.ytimg.com/vi/dhZH7NLCOmk/default.jpg",
-                            "sinw",
-                            "권선동",
-                            "(방장)"
-                        )
-                    )
-                )
-            )
+            add(GroupAddSetItem.GroupAddMember())
             add(GroupAddSetItem.GroupAddBoard())
             add(GroupAddSetItem.GroupAddAlbum())
         }
-    }
 
-    private fun getImageStorage(currentItem: String, image: Uri) = viewModelScope.launch {
+    private suspend fun getImageStorage(currentItem: String, image: Uri) {
         runCatching {
             imageStorageSetItem(image).collect { imageUri ->
-                when(currentItem) {
-                    "imgMainImage" -> groupAddMain.value = groupAddMain.value?.copy(mainImage = imageUri.toString())
-                    "imgBackgroundImage" -> groupAddMain.value = groupAddMain.value?.copy(backgroundImage = imageUri.toString())
+                when (currentItem) {
+                    "imgMainImage" -> groupAddMain.value =
+                        groupAddMain.value?.copy(mainImage = imageUri.toString())
+
+                    "imgBackgroundImage" -> groupAddMain.value =
+                        groupAddMain.value?.copy(backgroundImage = imageUri.toString())
                 }
             }
         }.onFailure {
@@ -164,16 +214,33 @@ class GroupAddSharedViewModel(
     }
 }
 
-class GroupAddSharedViewModelFactory : ViewModelProvider.Factory {
+class GroupAddSharedViewModelFactory(
+    val context: Context
+) : ViewModelProvider.Factory {
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
+    private val databaseReference = FirebaseDatabase.getInstance()
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val userPrefRepository = UserPreferencesRepositoryImpl(
+            null,
+            UserInfoPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            )
+        )
         val imageStorageRepository =
-            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/groupList/${UUID.randomUUID()}"))
-        val groupRepository =
-            GroupRepositoryImpl(FirebaseDatabase.getInstance().getReference("group_list"))
+            ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference)
+        val groupRepository = GroupRepositoryImpl(databaseReference.getReference("group_list"))
+        val chatSetRepository =
+            ChatRepositoryImpl(databaseReference.getReference("chat_list").child("group"), null)
+        val userUpdateRepository =
+            UserRepositoryImpl(databaseReference.getReference("users"), null, null)
         if (modelClass.isAssignableFrom(GroupAddSharedViewModel::class.java)) {
             return GroupAddSharedViewModel(
+                UserPrefGetItemUseCase(userPrefRepository),
                 ImageStorageSetItemUseCase(imageStorageRepository),
-                GroupSetItemUseCase(groupRepository)
+                GroupSetItemUseCase(groupRepository),
+                ChatSetItemUseCase(chatSetRepository),
+                UserUpdateGroupInfoUseCase(userUpdateRepository),
+                GroupSetMemberItemUseCase(groupRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")

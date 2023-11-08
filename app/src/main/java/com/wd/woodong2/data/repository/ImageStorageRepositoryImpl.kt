@@ -7,6 +7,7 @@ import com.wd.woodong2.domain.repository.ImageStorageRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import java.util.UUID
 
 class ImageStorageRepositoryImpl (
     private val storageReference: StorageReference
@@ -17,8 +18,9 @@ class ImageStorageRepositoryImpl (
     }
 
     override suspend fun getImageUri(galleryUri: Uri): Flow<Uri> = callbackFlow {
-        storageReference.putFile(galleryUri).addOnSuccessListener {
-            storageReference.downloadUrl.addOnSuccessListener { imageUri ->
+        val storageRef = storageReference.child("\"images/${UUID.randomUUID()}")
+        storageRef.putFile(galleryUri).addOnSuccessListener {
+            storageRef.downloadUrl.addOnSuccessListener { imageUri ->
                 trySend(imageUri)
                 close()
             }.addOnFailureListener { exception ->

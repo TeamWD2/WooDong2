@@ -42,7 +42,7 @@ data class GroupIntroduceResponse(
 data class GroupMemberResponse(
     val id: String?,
     @SerializedName("title") val title: String?,
-    @SerializedName("memberList") val memberList: List<GroupMemberItemResponse>?
+    @SerializedName("memberList") val memberList: Map<String, GroupMemberItemResponse>?
 ) : GroupResponse
 
 /**

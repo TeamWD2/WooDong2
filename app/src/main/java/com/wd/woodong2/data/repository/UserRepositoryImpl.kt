@@ -36,8 +36,8 @@ import kotlinx.coroutines.tasks.await
 
 class UserRepositoryImpl(
     private val databaseReference: DatabaseReference,
-    private val auth: FirebaseAuth,
-    private val tokenProvider: TokenProvider,
+    private val auth: FirebaseAuth?,
+    private val tokenProvider: TokenProvider?,
 ) : UserRepository {
     companion object {
         const val TAG = "UserRepositoryImpl"
@@ -109,9 +109,9 @@ class UserRepositoryImpl(
         imgProfile: Uri?,
     ): Flow<Any> =
         callbackFlow {
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful && tokenProvider.getToken() != null) {
+            auth?.createUserWithEmailAndPassword(email, password)
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful && tokenProvider?.getToken() != null) {
 
                         val user = UserEntity(
                             id = task.result?.user?.uid,
@@ -132,7 +132,7 @@ class UserRepositoryImpl(
                         trySend(true)
                     }
                 }
-                .addOnFailureListener { exception ->
+                ?.addOnFailureListener { exception ->
                     when (exception) {
                         is FirebaseAuthWeakPasswordException -> trySend("ERROR_WEAK_PASSWORD")
                         is FirebaseAuthInvalidCredentialsException -> trySend("ERROR_INVALID_EMAIL")
@@ -146,8 +146,8 @@ class UserRepositoryImpl(
 
 
     override suspend fun signIn(email: String, password: String): Flow<Boolean> = callbackFlow {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
+        auth?.signInWithEmailAndPassword(email, password)
+            ?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val uid = auth.currentUser?.uid
 
@@ -167,13 +167,18 @@ class UserRepositoryImpl(
             }
         awaitClose { }
     }
-    override suspend fun updateUserPassword(email: String, currentPassword: String, newPassword: String): Flow<Boolean> =
+
+    override suspend fun updateUserPassword(
+        email: String,
+        currentPassword: String,
+        newPassword: String
+    ): Flow<Boolean> =
         callbackFlow {
             //패스워드 재설정
             try {
                 val credential = EmailAuthProvider.getCredential(email, currentPassword)
-                auth.currentUser?.reauthenticate(credential)?.await()
-                auth.currentUser?.updatePassword(newPassword)?.await()
+                auth?.currentUser?.reauthenticate(credential)?.await()
+                auth?.currentUser?.updatePassword(newPassword)?.await()
                 Log.d(TAG, "비밀번호 변경 성공")
                 trySend(true)
             } catch (e: Exception) {
@@ -184,11 +189,12 @@ class UserRepositoryImpl(
 
             }
         }
+
     /*
     UID 가져오는 메소드
     * */
     override fun getUid(): String? {
-        return auth.currentUser?.uid
+        return auth?.currentUser?.uid
     }
 
     /*
@@ -196,27 +202,38 @@ class UserRepositoryImpl(
     * */
     override suspend fun updateUserToken(userId: String): Flow<Boolean> = callbackFlow {
         val userDataReference = databaseReference.child(userId)
-        val token = mapOf("token" to tokenProvider.getToken())
+        val token = mapOf("token" to tokenProvider?.getToken())
         userDataReference.updateChildren(token)
     }
-    override fun updateUserInfo(userId: String, imgProfile: String, name: String, firstLocation: String, secondLocation: String)
-    {
-            Log.d("locationcf", firstLocation)
-            Log.d("locationcf", secondLocation)
-            Log.d("mypagename", name)
-            val userInfo = databaseReference.child(userId)
-            val updateUserInfo = mapOf(
-                "name" to name,
-                "imgProfile" to imgProfile,
-                "firstLocation" to firstLocation,
-                "secondLocation" to secondLocation
-                )
+
+    override fun updateUserInfo(
+        userId: String,
+        imgProfile: String,
+        name: String,
+        firstLocation: String,
+        secondLocation: String
+    ) {
+        Log.d("locationcf", firstLocation)
+        Log.d("locationcf", secondLocation)
+        Log.d("mypagename", name)
+        val userInfo = databaseReference.child(userId)
+        val updateUserInfo = mapOf(
+            "name" to name,
+            "imgProfile" to imgProfile,
+            "firstLocation" to firstLocation,
+            "secondLocation" to secondLocation
+        )
 
 
-            userInfo.updateChildren(updateUserInfo)
-        }
+        userInfo.updateChildren(updateUserInfo)
+    }
 
-    override suspend fun addUserIds(userId: String,writtenId: String?, groupId: String?, likedId: String?): Flow<UserEntity?> =
+    override suspend fun addUserIds(
+        userId: String,
+        writtenId: String?,
+        groupId: String?,
+        likedId: String?
+    ): Flow<UserEntity?> =
         callbackFlow {
             val userIds = databaseReference.child(userId)
 
@@ -244,5 +261,29 @@ class UserRepositoryImpl(
         return dataSnapshot.exists() // 중복이면 true, 아니면 false
     }
 
+    override suspend fun updateGroupInfo(userId: String, groupId: String?, chatId: String?) {
+        if(groupId.isNullOrBlank().not()) {
+            databaseReference.child(userId).child("groupIds").push()
+                .setValue(groupId) { databaseError, _ ->
+                    if (databaseError != null) {
+                        Log.e(TAG, "Fail: ${databaseError.message}")
+                    } else {
+                        Log.e(TAG, "Success")
+                    }
+                }
+
+        }
+
+        if(chatId.isNullOrBlank().not()) {
+            databaseReference.child(userId).child("chatIds").push()
+                .setValue(chatId) { databaseError, _ ->
+                    if (databaseError != null) {
+                        Log.e(TAG, "Fail: ${databaseError.message}")
+                    } else {
+                        Log.e(TAG, "Success")
+                    }
+                }
+        }
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.group.detail.board.detail
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,13 +8,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
+import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.usecase.GroupAddBoardCommentUseCase
 import com.wd.woodong2.domain.usecase.GroupDeleteBoardCommentUseCase
+import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import com.wd.woodong2.presentation.group.content.GroupItem
 import kotlinx.coroutines.launch
 
 class GroupDetailBoardDetailViewModel(
+    private val prefGetUserItem: UserPrefGetItemUseCase,
     private val groupAddBoardCommentItem: GroupAddBoardCommentUseCase,
     private val groupDeleteBoardCommentItem: GroupDeleteBoardCommentUseCase
 ) : ViewModel() {
@@ -55,6 +62,9 @@ class GroupDetailBoardDetailViewModel(
                         userName = comment.userName,
                         userLocation = comment.userLocation,
                         timestamp = comment.timestamp,
+                        isWriteOwner = (comment.userId == prefGetUserItem().let { userInfo ->
+                            userInfo?.id
+                        }),
                         comment = comment.comment
                     )
                 )
@@ -74,13 +84,10 @@ class GroupDetailBoardDetailViewModel(
     fun addBoardComment(
         itemPkId: String?,
         groupId: String?,
-        userId: String?,
-        userProfile: String?,
-        userName: String?,
-        userLocation: String?,
+        userInfo: GroupUserInfoItem?,
         comment: String
     ) {
-        if (itemPkId == null || groupId == null || userId == null || userName == null || userLocation == null) {
+        if (itemPkId == null || groupId == null || userInfo == null) {
             return
         }
         //Firebase 댓글 데이터 추가
@@ -92,11 +99,12 @@ class GroupDetailBoardDetailViewModel(
                     GroupDetailBoardDetailItem.BoardComment(
                         id = "newComment",
                         commentId = null,
-                        userId = userId,
-                        userProfile = userProfile,
-                        userName = userName,
-                        userLocation = userLocation,
+                        userId = userInfo.userId,
+                        userProfile = userInfo.userProfile,
+                        userName = userInfo.userName,
+                        userLocation = userInfo.userLocation,
                         timestamp = System.currentTimeMillis(),
+                        isWriteOwner = true,
                         comment = comment
                     )
                 )
@@ -112,11 +120,12 @@ class GroupDetailBoardDetailViewModel(
                 GroupDetailBoardDetailItem.BoardComment(
                     id = "newComment",
                     commentId = null,
-                    userId = userId,
-                    userProfile = userProfile,
-                    userName = userName,
-                    userLocation = userLocation,
+                    userId = userInfo.userId,
+                    userProfile = userInfo.userProfile,
+                    userName = userInfo.userName,
+                    userLocation = userInfo.userLocation,
                     timestamp = System.currentTimeMillis(),
+                    isWriteOwner = true,
                     comment = comment
                 )
             )
@@ -137,7 +146,7 @@ class GroupDetailBoardDetailViewModel(
         commentId: String?,
         position: Int
     ) {
-        if(itemPkId == null || groupId == null || commentId == null) {
+        if (itemPkId == null || groupId == null || commentId == null) {
             return
         }
 
@@ -162,14 +171,24 @@ class GroupDetailBoardDetailViewModel(
     }
 }
 
-class GroupDetailBoardDetailViewModelFactory : ViewModelProvider.Factory {
+class GroupDetailBoardDetailViewModelFactory(
+    val context: Context
+) : ViewModelProvider.Factory {
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val repository =
+        val userPrefRepository = UserPreferencesRepositoryImpl(
+            null,
+            UserInfoPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            )
+        )
+        val groupBoardCommentRepository =
             GroupRepositoryImpl(FirebaseDatabase.getInstance().getReference("group_list"))
         if (modelClass.isAssignableFrom(GroupDetailBoardDetailViewModel::class.java)) {
             return GroupDetailBoardDetailViewModel(
-                GroupAddBoardCommentUseCase(repository),
-                GroupDeleteBoardCommentUseCase(repository)
+                UserPrefGetItemUseCase(userPrefRepository),
+                GroupAddBoardCommentUseCase(groupBoardCommentRepository),
+                GroupDeleteBoardCommentUseCase(groupBoardCommentRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")
