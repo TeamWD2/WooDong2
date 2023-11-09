@@ -200,15 +200,15 @@ class GroupDetailSharedViewModel(
                 val groupMainItem =
                     groupDetailItem.value?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()
                 if (groupMainItem != null) {
+                    val userInfo = getUserInfo()
                     //User 정보 업데이트
                     var chatId: String? = null
                     getChatId(groupId).collect { id ->
                         chatId = id
                     }
-                    updateGroupInfo(getUserInfo()?.userId ?: "UserId", groupId, chatId)
+                    updateGroupInfo(userInfo?.userId ?: "UserId", groupId, chatId)
 
                     //멤버 추가
-                    val userInfo = getUserInfo()
                     groupSetMemberItem(
                         groupId,
                         GroupDetailMemberAddItem(

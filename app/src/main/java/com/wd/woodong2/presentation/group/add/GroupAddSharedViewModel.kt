@@ -134,7 +134,7 @@ class GroupAddSharedViewModel(
                             profile = userInfo?.userProfile,
                             name = userInfo?.userName ?: "UserName",
                             location = userInfo?.userLocation ?: "UserLocation",
-                            comment = "모임 멤버"
+                            comment = "(방장)"
                         )
                     )
 
