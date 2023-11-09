@@ -57,7 +57,7 @@ class GroupDetailSharedViewModel(
      * 로그인 된 계정의 선택한 모임 가입 여부 확인
      */
     fun initIsJoinGroup() {
-            ?.firstOrNull()?.memberList}")
+
         _isJoinGroup.value = groupDetailItem.value?.filterIsInstance<GroupItem.GroupMember>()
             ?.firstOrNull()?.memberList?.any {
                 it.userId == prefGetUserItem().let { userInfo ->

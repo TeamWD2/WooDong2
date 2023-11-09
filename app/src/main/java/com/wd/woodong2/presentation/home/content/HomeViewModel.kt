@@ -36,6 +36,14 @@ class HomeViewModel(
 ) : ViewModel(
 ) {
 
+
+    val allItems = MutableLiveData<List<HomeItem>>()
+
+    // 필터링된 아이템을 저장하는 LiveData
+    private val _filteredItems = MutableLiveData<List<HomeItem>>()
+
+    val filteredItems: LiveData<List<HomeItem>> = _filteredItems
+
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
 
@@ -44,10 +52,11 @@ class HomeViewModel(
     val circumLocationList: LiveData<List<HomeMapSearchItem>> get() = _circumLocationList
 
     private val _searchResults = MutableLiveData<List<HomeItem>>()
+
     val searchResults: LiveData<List<HomeItem>> = _searchResults
+
     //주변 위치 값 받아오기
     private var circumLocation = mutableSetOf<String>()
-
     private var countOne : Int = 0
     private var countTwo : Int = 0
     private var countThree : Int = 0
@@ -56,8 +65,6 @@ class HomeViewModel(
     val _printList: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val printList: LiveData<List<HomeItem>> get() = _printList
 
-    private val _originalList: MutableLiveData<List<HomeItem>> = MutableLiveData()  // 원본 리스트 저장
-    val originalList: LiveData<List<HomeItem>> get() = _originalList
 
     //userItem
     val userId = "user1"
@@ -271,7 +278,7 @@ class HomeViewModel(
                     }
                 }
                 //최신게시물 가장 위로 오게
-                _originalList.value = dataList.reversed()
+                _printList.value = dataList.reversed()
                 _list.value = dataList.reversed()
 
             }
@@ -282,12 +289,16 @@ class HomeViewModel(
     }
 
     fun tagFilterList(tag: String) {
-        _list.value = if (tag == "All") {
-            _originalList.value  // 전체 리스트
+        val filteredList = if (tag.equals("All", ignoreCase = true)) {
+            // "전체" 태그가 선택된 경우 모든 아이템을 표시
+            list.value
         } else {
-            _originalList.value?.filter { it.tag == tag }  // 태그가 일치하는 리스트
+            // 선택한 태그를 기반으로 아이템 필터링
+            list.value?.filter { it.tag.equals(tag, ignoreCase = true) }
         }
+        _filteredItems.value = filteredList ?: emptyList()
     }
+
 
     fun searchItems(query: String) {
         val filteredList = list.value?.filter { item ->
@@ -335,7 +346,7 @@ class HomeViewModel(
         val itemId = item.id // 항목의 고유 ID 또는 키
         deleteItemFromFirebase(itemId)
 
-        _originalList.value = _originalList.value?.filter { it != item }
+        _printList.value = _printList.value?.filter { it != item }
     }
 
     private fun deleteItemFromFirebase(itemId: String) {

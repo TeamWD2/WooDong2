@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -130,22 +131,47 @@ class HomeFragment : Fragment() {
         homeTag8.setOnClickListener { viewModel.tagFilterList("분실/실종") }
         homeTag9.setOnClickListener { viewModel.tagFilterList("생활정보") }
 
-        toolbarImgSearch.setOnClickListener {
-            edtHomeSearch.visibility = View.VISIBLE
-            toolbarImgSearch.visibility = View.GONE
-            edtHomeSearch.requestFocus()
-            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(edtHomeSearch, InputMethodManager.SHOW_IMPLICIT)
-            edtHomeSearch.setOnKeyListener { v, keyCode, event ->
-                if ((event.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    viewModel.searchItems(edtHomeSearch.text.toString())
-                    edtHomeSearch.visibility = View.GONE
+        // 검색 필드 초기화
+        edtHomeSearch.apply {
+            // EditText가 줄바꿈 대신 검색을 수행하도록 설정
+            inputType = InputType.TYPE_CLASS_TEXT
+            setOnKeyListener { _, keyCode, event ->
+                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    // 검색 수행
+                    viewModel.searchItems(text.toString())
+                    visibility = View.GONE
                     toolbarImgSearch.visibility = View.VISIBLE
-                    imm.hideSoftInputFromWindow(edtHomeSearch.windowToken, 0)
-                    true
-                } else false
+                    // 키보드 숨기기
+                    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(windowToken, 0)
+                    true // 이벤트 처리 완료
+                } else {
+                    false // 기본 이벤트 처리를 계속 진행
+                }
             }
         }
+
+
+        toolbarImgSearch.setOnClickListener {
+            if (edtHomeSearch.visibility == View.GONE) {
+                // 검색 필드 보여주기
+                edtHomeSearch.visibility = View.VISIBLE
+                edtHomeSearch.requestFocus()
+                edtHomeSearch.text.clear() // 이전 검색어 지우기
+                // 키보드 보여주기
+                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(edtHomeSearch, InputMethodManager.SHOW_IMPLICIT)
+            } else {
+                // 검색 수행
+                viewModel.searchItems(edtHomeSearch.text.toString())
+                edtHomeSearch.visibility = View.GONE
+                // 키보드 숨기기
+                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(edtHomeSearch.windowToken, 0)
+                edtHomeSearch.text.clear() // 검색 후 검색어 지우기
+            }
+        }
+
     }
 
     private fun initViewModel() {
@@ -201,6 +227,10 @@ class HomeFragment : Fragment() {
 
             searchResults.observe(viewLifecycleOwner) { results ->
                 listAdapter.submitList(results)
+            }
+
+            filteredItems.observe(viewLifecycleOwner) { updatedList ->
+                listAdapter.submitList(updatedList)
             }
         }
     }
