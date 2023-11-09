@@ -221,33 +221,86 @@ class UserRepositoryImpl(
         userInfo.updateChildren(updateUserInfo)
     }
 
-    override suspend fun addUserIds(
+    override fun addUserIds(
         userId: String,
         writtenId: String?,
-        groupId: String?,
-        likedId: String?,
-    ): Flow<UserEntity?> =
-        callbackFlow {
-            val userIds = databaseReference.child(userId)
+        likedId: String?
+    ){
+        val userIds = databaseReference.child(userId)
 
-            if (!writtenId.isNullOrBlank()) {
-                val writtenIds = userIds.child("writtenIds")
-                writtenIds.push().setValue(writtenId)
-            }
-            if (!groupId.isNullOrBlank()) {
-                val groupIds = userIds.child("groupIds")
-                groupIds.push().setValue(groupId)
-            }
-            if (!likedId.isNullOrBlank()) {
-                val likedIds = userIds.child("likedIds")
-                likedIds.push().setValue(likedId)
-            }
-
-            awaitClose {
-
+        if (writtenId.isNullOrBlank().not()) {
+            val writtenIds = userIds.child("writtenIds")
+            writtenIds.push().setValue(writtenId){ databaseError, _ ->
+                if (databaseError != null) {
+                    Log.e(TAG, "Fail: ${databaseError.message}")
+                } else {
+                    Log.e(TAG, "Success")
+                }
             }
         }
+        if (likedId.isNullOrBlank().not()) {
+            val likedIds = userIds.child("likedIds")
+            likedIds.push().setValue(likedId){ databaseError, _ ->
+                if (databaseError != null) {
+                    Log.e(TAG, "Fail: ${databaseError.message}")
+                } else {
+                    Log.e(TAG, "Success")
+                }
+            }
+        }
+    }
 
+    override fun removeUserIds(
+        userId : String,
+        writtenId: String?,
+        likedId: String?,
+        groupId: String?,
+        chatId: String?
+    ){
+        val userIds = databaseReference.child(userId)
+
+        if (writtenId.isNullOrBlank().not()) {
+            val writtenIds = userIds.child("writtenIds")
+            writtenIds.child(writtenId.toString()).removeValue()
+                .addOnSuccessListener {
+                Log.d(TAG, "데이터 삭제 성공")
+            }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
+                }
+        }
+        if (likedId.isNullOrBlank().not()) {
+            val likedIds = userIds.child("likedIds")
+            likedIds.child(likedId.toString()).removeValue()
+                .addOnSuccessListener {
+
+                    Log.d(TAG, "데이터 삭제 성공")
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
+                }
+        }
+        if (groupId.isNullOrBlank().not()) {
+            val groupIds = userIds.child("groupIds")
+            groupIds.child(groupId.toString()).removeValue()
+                .addOnSuccessListener {
+                Log.d(TAG, "데이터 삭제 성공")
+            }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
+                }
+        }
+        if (chatId.isNullOrBlank().not()) {
+            val chatIds = userIds.child("chatIds")
+            chatIds.child(chatId.toString()).removeValue()
+                .addOnSuccessListener {
+                    Log.d(TAG, "데이터 삭제 성공")
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
+                }
+        }
+    }
     override suspend fun checkNicknameDup(nickname: String): Boolean {
         val query = databaseReference.orderByChild("name").equalTo(nickname)
         val dataSnapshot = query.get().await()

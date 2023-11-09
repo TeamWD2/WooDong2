@@ -23,13 +23,14 @@ class MyPageThumbFragment : Fragment() {
                 startActivity(
                     HomeDetailActivity.homeDetailActivityNewIntent(
                         requireContext(),
-                        item)
+                        item,
+                        )
                 )
             }
         )
     }
     private val viewModel : MyPageThumbViewModel by viewModels {
-        MyPageThumbViewModelFactory()
+        MyPageThumbViewModelFactory(requireContext())
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,26 +44,32 @@ class MyPageThumbFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initViewModel()
+
     }
     private fun initView() = with(binding){
         myPageThumbRecyclerView.apply {
             adapter = listAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+        viewModel.printListSet()
     }
     private fun initViewModel(){
         with(viewModel){
+            list.observe(viewLifecycleOwner){
+                printListSet()
+            }
             printList.observe(viewLifecycleOwner){
                 listAdapter.submitList(it)
             }
             loadingState.observe(viewLifecycleOwner) { loadingState ->
                 binding.progressBar.isVisible = loadingState
             }
-            isEmptyList.observe(viewLifecycleOwner){isEmptyList->
-                binding.txtEmptyThumbList.isVisible = isEmptyList
-            }
+//            isEmptyList.observe(viewLifecycleOwner){isEmptyList->
+//                binding.txtEmptyThumbList.isVisible = isEmptyList
+//            }
         }
     }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
