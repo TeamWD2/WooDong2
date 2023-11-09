@@ -68,9 +68,18 @@ class HomeDetailViewModel(
     fun toggleThumbCount(homeItem: HomeItem) {
     val newCount = if (homeItem.isLiked){
         homeItem.thumbCount - 1
-        userRemoveIdsUseCase(getUserInfo()?.id ?: "UserId",null,homeItem.id,null,null)} else{
+
+        }
+    else{
         homeItem.thumbCount + 1
-        userAddIdsUseCase(getUserInfo()?.id ?: "UserId",null,homeItem.id)}
+
+        }
+        if (homeItem.isLiked){
+            userRemoveIdsUseCase(getUserInfo()?.id ?: "UserId",null,homeItem.id,null,null)
+        }
+        else{
+            userAddIdsUseCase(getUserInfo()?.id ?: "UserId",null,homeItem.id)
+        }
     homeItem.isLiked = !homeItem.isLiked
     ///itemRef.setValue(homeItem)///
     homeItem.thumbCount = newCount
