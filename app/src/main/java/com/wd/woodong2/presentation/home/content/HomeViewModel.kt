@@ -36,15 +36,27 @@ class HomeViewModel(
 ) : ViewModel(
 ) {
 
+
+    val allItems = MutableLiveData<List<HomeItem>>()
+
+    // 필터링된 아이템을 저장하는 LiveData
+    private val _filteredItems = MutableLiveData<List<HomeItem>>()
+
+    val filteredItems: LiveData<List<HomeItem>> = _filteredItems
+
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
 
 
     private val _circumLocationList: MutableLiveData<List<HomeMapSearchItem>> = MutableLiveData()
     val circumLocationList: LiveData<List<HomeMapSearchItem>> get() = _circumLocationList
+
+    private val _searchResults = MutableLiveData<List<HomeItem>>()
+
+    val searchResults: LiveData<List<HomeItem>> = _searchResults
+
     //주변 위치 값 받아오기
     private var circumLocation = mutableSetOf<String>()
-
     private var countOne : Int = 0
     private var countTwo : Int = 0
     private var countThree : Int = 0
@@ -53,11 +65,13 @@ class HomeViewModel(
     val _printList: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val printList: LiveData<List<HomeItem>> get() = _printList
 
+
     //userItem
     val userId = "user1"
     val userInfo: MutableLiveData<UserItem> = MutableLiveData()
 
     init {
+        loadDataFromFirebase()
         getUserItem()
         loadDataFromFirebase()
     }
@@ -250,9 +264,10 @@ class HomeViewModel(
 
         return createMapSearchItems(Map)
     }
+
     private fun loadDataFromFirebase() {
         val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
-        databaseReference.addValueEventListener(object : ValueEventListener {
+        databaseReference.orderByChild("timestamp").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val dataList = ArrayList<HomeItem>()
 
@@ -262,13 +277,34 @@ class HomeViewModel(
                         dataList.add(firebaseData)
                     }
                 }
-                _list.value = dataList
+                //최신게시물 가장 위로 오게
+                _printList.value = dataList.reversed()
+                _list.value = dataList.reversed()
 
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
             }
         })
+    }
+
+    fun tagFilterList(tag: String) {
+        val filteredList = if (tag.equals("All", ignoreCase = true)) {
+            // "전체" 태그가 선택된 경우 모든 아이템을 표시
+            list.value
+        } else {
+            // 선택한 태그를 기반으로 아이템 필터링
+            list.value?.filter { it.tag.equals(tag, ignoreCase = true) }
+        }
+        _filteredItems.value = filteredList ?: emptyList()
+    }
+
+
+    fun searchItems(query: String) {
+        val filteredList = list.value?.filter { item ->
+            item.title.contains(query, ignoreCase = true)
+        } ?: emptyList()
+        _searchResults.value = filteredList
     }
 
     private fun getUserItem() = viewModelScope.launch {
@@ -305,7 +341,30 @@ class HomeViewModel(
             Log.e("locationhv", it.message.toString())
         }
     }
+    fun deleteItem(item: HomeItem) {
+        // Firebase에서 항목 삭제
+        val itemId = item.id // 항목의 고유 ID 또는 키
+        deleteItemFromFirebase(itemId)
 
+        _printList.value = _printList.value?.filter { it != item }
+    }
+
+    private fun deleteItemFromFirebase(itemId: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("home_list")
+        val itemReference = databaseReference.child(itemId)
+
+        itemReference.removeValue()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
+                } else {
+                    val exception = task.exception
+                    if (exception != null) {
+                        // 오류 처리 코드
+                    }
+                }
+            }
+    }
 }
 
 class HomeViewModelFactory : ViewModelProvider.Factory {
@@ -317,7 +376,7 @@ class HomeViewModelFactory : ViewModelProvider.Factory {
             FirebaseTokenProvider(FirebaseMessaging.getInstance())
         )
     }
-    private val circumLocationrepository : MapSearchRepository = MapSearchRepositoryImpl(
+    private val circumLocationrepository: MapSearchRepository = MapSearchRepositoryImpl(
         KAKAORetrofitClient.search
     )
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

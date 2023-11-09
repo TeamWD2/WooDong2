@@ -6,146 +6,184 @@
     android:id="@+id/home_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/home_map_search_list_item_shape"
+    android:background="@drawable/home_list_item_shape"
     android:elevation="12dp"
-    android:layout_margin="10dp">
+    android:layout_margin="8dp">
 
 
-    <androidx.appcompat.widget.AppCompatButton
+    <TextView
         android:id="@+id/home_list_item_btn_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/home_list_item_btn_tag_name"
-        android:textColor="@color/white"
-        android:background="@drawable/home_list_item_btn_tag_shape"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/public_border_btn"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="5dp"
+        android:textSize="@dimen/wd2_tiny_text"
+        android:layout_marginStart="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.014"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        tools:text="동네친구" />
 
     <TextView
         android:id="@+id/home_list_item_tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/home_list_item_tv_title"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/cardView3"
+        app:layout_constraintStart_toEndOf="@+id/home_list_item_btn_tag"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/home_list_item_tv_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/home_list_item_tv_title"
+        android:layout_marginTop="8dp"
+        android:text="@string/home_map_bottom_sheet_btn_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.275"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_list_item_btn_tag" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/home_list_item_tv_description"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="@string/home_list_item_tv_description"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/cardView3"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_list_item_tv_title" />
 
     <TextView
-        android:id="@+id/home_list_item_thumbnail_count"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="2dp"
-        android:background="@color/jet"
-        android:text="@string/home_list_item_thumbnail_count"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/home_list_item_thumbnail"
-        app:layout_constraintTop_toTopOf="@+id/home_list_item_thumbnail" />
+        android:layout_marginTop="8dp"
+        android:text="우동이"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.024"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/divider"
+        app:layout_constraintBottom_toTopOf="@+id/home_list_item_iv_chat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.347"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_list_item_tv_description"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView3"
+        android:layout_width="97dp"
+        android:layout_height="96dp"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.421">
 
     <ImageView
         android:id="@+id/home_list_item_thumbnail"
-        android:layout_width="95dp"
-        android:layout_height="95dp"
-        android:layout_margin="10dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/home_list_item_thumbnail_sample"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/wd2" />
+</androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/home_list_item_tv_time_stamp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/home_list_item_tv_time_stamp"
+        android:textColor="@color/light_gray_box"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/home_list_item_iv_thumb"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_list_item_tv_description">
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintVertical_bias="0.2" />
 
-        <TextView
-            android:id="@+id/home_list_item_tv_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/home_map_bottom_sheet_btn_location"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/home_list_item_iv_thumb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/home_list_item_ic_thumb"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/home_list_item_tv_thumb_count"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintVertical_bias="0.866" />
 
-        <TextView
-            android:id="@+id/home_list_item_tv_time_stamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/home_list_item_tv_time_stamp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/home_list_item_tv_location"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/home_list_item_tv_thumb_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/light_gray_box"
+        android:text="@string/home_list_item_tv_thumb"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/home_list_item_iv_chat"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintVertical_bias="0.4" />
 
-        <TextView
-            android:id="@+id/home_list_item_tv_views"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/home_list_item_tv_views"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/home_list_item_tv_time_stamp"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/home_list_item_iv_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/home_list_ic_chat"
+        app:layout_constraintEnd_toStartOf="@+id/home_list_item_tv_chat_count"
+        app:layout_constraintTop_toBottomOf="@+id/home_list_item_tv_description" />
 
-        <ImageView
-            android:id="@+id/home_list_item_iv_thumb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginBottom="10dp"
-            android:src="@drawable/home_list_item_ic_thumb"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/home_list_item_tv_thumb_count"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/home_list_item_tv_chat_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/light_gray_box"
+        android:text="@string/home_list_item_tv_chat"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintVertical_bias="0.4" />
 
-        <TextView
-            android:id="@+id/home_list_item_tv_thumb_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/home_list_item_tv_thumb"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/home_list_item_iv_chat"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/home_list_item_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="삭제하기"
+        android:textColor="@color/light_gray_box"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/home_list_item_iv_thumb"
+        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintStart_toEndOf="@+id/home_list_item_tv_time_stamp"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintVertical_bias="0.625" />
 
-        <ImageView
-            android:id="@+id/home_list_item_iv_chat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginBottom="10dp"
-            android:src="@drawable/main_bottom_menu_ic_chat"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/home_list_item_tv_chat_count"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/home_list_item_tv_chat_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/home_list_item_tv_chat"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,19 @@
     android:layout_margin="10sp"
     android:layout_marginEnd="50dp">
 
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraint_comment"
+        app:layout_constraintVertical_bias="0.017" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="50sp"
@@ -27,8 +40,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_comment"
-        android:layout_width="308dp"
-        android:layout_height="67dp"
+        android:layout_width="310dp"
+        android:layout_height="73dp"
         android:layout_marginStart="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,6 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="수정"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.843"
@@ -106,10 +120,10 @@
             android:text="삭제"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.982"
+            app:layout_constraintHorizontal_bias="0.985"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.978" />
+            app:layout_constraintVertical_bias="0.115" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

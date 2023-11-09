@@ -3,6 +3,8 @@ package com.wd.woodong2.presentation.home.detail
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.wd.woodong2.databinding.HomeDetailListItemBinding
 import com.wd.woodong2.presentation.home.content.HomeItem
@@ -13,13 +15,21 @@ import java.util.Locale
 
 class CommentListAdapter(
     private val homeItem: HomeItem,
-    private val comments: MutableList<CommentItem>,
     private val viewModel: HomeDetailViewModel
-) :
-    RecyclerView.Adapter<CommentListAdapter.CommentViewHolder>() {
+) : ListAdapter<CommentItem, CommentListAdapter.CommentViewHolder>(CommentDiffCallback()) {
 
     class CommentViewHolder(val binding: HomeDetailListItemBinding) :
         RecyclerView.ViewHolder(binding.root)
+
+    class CommentDiffCallback : DiffUtil.ItemCallback<CommentItem>() {
+        override fun areItemsTheSame(oldItem: CommentItem, newItem: CommentItem): Boolean {
+            return oldItem.timestamp == newItem.timestamp
+        }
+
+        override fun areContentsTheSame(oldItem: CommentItem, newItem: CommentItem): Boolean {
+            return oldItem == newItem
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val binding =
@@ -27,14 +37,11 @@ class CommentListAdapter(
         return CommentViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = comments.size
-
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        val comment = comments[position]
+        val comment = getItem(position)
         holder.binding.txtCommentName.text = comment.username
         holder.binding.txtCommentDescription.text = comment.content
         holder.binding.txtCommentLocation.text = comment.location
-
         holder.binding.txtCommentTimestamp.text = formatTimestamp(comment.timestamp)
 
         holder.binding.txtCommnetDelete.setOnClickListener {
@@ -50,9 +57,7 @@ class CommentListAdapter(
     }
 
     fun updateComments(newComments: List<CommentItem>) {
-        comments.clear()
-        comments.addAll(newComments)
-        notifyDataSetChanged()
+        submitList(newComments)
     }
 
 

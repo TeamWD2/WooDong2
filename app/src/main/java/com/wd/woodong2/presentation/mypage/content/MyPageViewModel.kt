@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.mypage.content
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,11 +11,17 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.wd.woodong2.R
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserUpdateInfoUseCase
 import com.wd.woodong2.domain.usecase.UserUpdatePasswordUseCase
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
+import com.wd.woodong2.domain.usecase.UserLogOutUseCase
+import com.wd.woodong2.domain.usecase.UserPrefDeleteItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.content.HomeItem
 import kotlinx.coroutines.launch
@@ -22,7 +29,9 @@ import kotlinx.coroutines.launch
 class MyPageViewModel(
     private val userItem: UserGetItemUseCase,
     private val userUpdateInfoUseCase: UserUpdateInfoUseCase,
-    private val userUpdatePasswordUseCase: UserUpdatePasswordUseCase
+    private val userUpdatePasswordUseCase: UserUpdatePasswordUseCase,
+    private val userPrefDeleteUseCase: UserPrefDeleteItemUseCase,
+    private val userLogOutUseCase: UserLogOutUseCase,
 ) : ViewModel(
 
 ) {
@@ -35,7 +44,6 @@ class MyPageViewModel(
     init {
         getUserItem()
     }
-
 
 
     private fun getUserItem() = viewModelScope.launch {
@@ -67,7 +75,8 @@ class MyPageViewModel(
         imgProfile: String,
     ) = viewModelScope.launch {
         runCatching {
-            userUpdateInfoUseCase(userId, imgProfile, name,
+            userUpdateInfoUseCase(
+                userId, imgProfile, name,
                 userInfo.value?.firstLocation.toString(), userInfo.value?.secondLocation.toString()
             )
         }
@@ -75,16 +84,28 @@ class MyPageViewModel(
 
     fun updatePasswordItem(
         currentPassword: String,
-        newPassword: String
+        newPassword: String,
     ) = viewModelScope.launch {
         runCatching {
-            userUpdatePasswordUseCase(userInfo.value?.email.toString(), currentPassword, newPassword)
+            userUpdatePasswordUseCase(
+                userInfo.value?.email.toString(),
+                currentPassword,
+                newPassword
+            )
         }
+    }
+
+    fun logout() {
+        userPrefDeleteUseCase()
+        userLogOutUseCase()
     }
 
 }
 
-class MyPageViewModelFactory : ViewModelProvider.Factory {
+class MyPageViewModelFactory(
+    private val context: Context,
+) : ViewModelProvider.Factory {
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
 
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
@@ -94,12 +115,25 @@ class MyPageViewModelFactory : ViewModelProvider.Factory {
         )
     }
 
+    private val userPreferencesRepository by lazy {
+        UserPreferencesRepositoryImpl(
+            SignInPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            ),
+            UserInfoPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            )
+        )
+    }
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MyPageViewModel::class.java)) {
             return MyPageViewModel(
                 UserGetItemUseCase(userRepositoryImpl),
                 UserUpdateInfoUseCase(userRepositoryImpl),
-                UserUpdatePasswordUseCase(userRepositoryImpl)
+                UserUpdatePasswordUseCase(userRepositoryImpl),
+                UserPrefDeleteItemUseCase(userPreferencesRepository),
+                UserLogOutUseCase(userRepositoryImpl)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
