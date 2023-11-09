@@ -46,6 +46,9 @@ class SignInViewModel(
     private val _loginResult: MutableLiveData<Boolean> = MutableLiveData()
     val loginResult: LiveData<Boolean> get() = _loginResult
 
+    private val _isSetUserInfo: MutableLiveData<Boolean> = MutableLiveData()
+    val isSetUserInfo: LiveData<Boolean> get() = _isSetUserInfo
+
 
     fun signIn(id: String, pw: String, isAutoLogIn: Boolean) {
         viewModelScope.launch {
@@ -96,10 +99,15 @@ class SignInViewModel(
     }
 
     fun setUserInfo(uid: String) = viewModelScope.launch {
-        getUserItem(uid).collect { user ->
-            if (user != null) {
-                prefSetUserItem(user)
+        runCatching {
+            getUserItem(uid).collect { user ->
+                if (user != null) {
+                    prefSetUserItem(user)
+                    _isSetUserInfo.value = true
+                }
             }
+        }.onFailure {
+            _isSetUserInfo.value = false
         }
     }
 }

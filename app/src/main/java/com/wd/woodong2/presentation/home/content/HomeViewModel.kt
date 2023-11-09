@@ -20,6 +20,7 @@ import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.MapSearchRepositoryImpl
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.MapSearchEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
@@ -38,7 +39,7 @@ class HomeViewModel(
     private val userItem: UserGetItemUseCase,
     private val userUpdateInfoUseCase: UserUpdateInfoUseCase,
     private val circumLocationItem: MapSearchCircumLocationGetItemsUseCase,
-    private val mapSearch: MapSearchGetItemsUseCase
+    private val mapSearch: MapSearchGetItemsUseCase,
 ) : ViewModel(
 ) {
 
@@ -89,7 +90,8 @@ class HomeViewModel(
 
             val set = "주민센터"
             if (circumLocation.isNotEmpty()) {
-                circumLocation.clear() }
+                circumLocation.clear()
+            }
 
             var circumLocationItems = createCircumLocationItems(
                 Map = circumLocationItem(
@@ -112,7 +114,10 @@ class HomeViewModel(
                     val address = item.address
                     if (address != null) {
                         HomeMapActivity.fullNameLocationInfo(address)
-                        if (HomeMapActivity.extractLocationInfo(userLocation) != HomeMapActivity.extractLocationInfo(address))  //사용자 현재위치는 설정 x
+                        if (HomeMapActivity.extractLocationInfo(userLocation) != HomeMapActivity.extractLocationInfo(
+                                address
+                            )
+                        )  //사용자 현재위치는 설정 x
                         {
                             circumLocation.add(HomeMapActivity.fullLocationName.toString())
                         }
@@ -248,6 +253,7 @@ class HomeViewModel(
             Log.e("Retrofit Error", "Request failed: ${e.message}")
         }
     }
+
     fun getUserInfo() =
         prefGetUserItem()?.let {
             UserItem(
@@ -265,10 +271,10 @@ class HomeViewModel(
         }
 
     private fun createCircumLocationItems(
-        Map: MapSearchEntity
+        Map: MapSearchEntity,
     ): List<HomeMapSearchItem> {
         fun createMapSearchItems(
-            Map: MapSearchEntity
+            Map: MapSearchEntity,
         ): List<HomeMapSearchItem.MapSearchItem> = Map.documents.map { document ->
             HomeMapSearchItem.MapSearchItem(
                 address = document.addressName,
@@ -282,23 +288,24 @@ class HomeViewModel(
 
     private fun loadDataFromFirebase() {
         val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
-        databaseReference.orderByChild("timestamp").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val dataList = ArrayList<HomeItem>()
+        databaseReference.orderByChild("timestamp")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val dataList = ArrayList<HomeItem>()
 
-                for (postSnapshot in dataSnapshot.children) {
-                    val firebaseData = postSnapshot.getValue(HomeItem::class.java)
-                    if (firebaseData != null) {
-                        dataList.add(firebaseData)
+                    for (postSnapshot in dataSnapshot.children) {
+                        val firebaseData = postSnapshot.getValue(HomeItem::class.java)
+                        if (firebaseData != null) {
+                            dataList.add(firebaseData)
+                        }
                     }
+                    _list.value = dataList.reversed()
+
                 }
-                _list.value = dataList.reversed()
 
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+            })
     }
 
     fun tagFilterList(tag: String) {
@@ -388,13 +395,15 @@ class HomeViewModel(
 }
 
 class HomeViewModelFactory(
-    val context: Context
+    val context: Context,
 ) : ViewModelProvider.Factory {
     private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
     private val databaseReference = FirebaseDatabase.getInstance()
 
     val userPrefRepository = UserPreferencesRepositoryImpl(
-        null,
+        SignInPreferenceImpl(
+            context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+        ),
         UserInfoPreferenceImpl(
             context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
         )

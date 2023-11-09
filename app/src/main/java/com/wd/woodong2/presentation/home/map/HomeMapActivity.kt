@@ -16,19 +16,14 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import coil.load
 import com.bumptech.glide.Glide
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
-import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.NaverMapSdk
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
@@ -42,8 +37,8 @@ import java.util.Locale
 class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
-        const val EXTRA_FIRSTLOCATION = "extra_firstlocation"
-        const val EXTRA_SECONDLOCATION = "extra_secondlocation"
+        const val EXTRA_FIRST_LOCATION = "extra_first_location"
+        const val EXTRA_SECOND_LOCATION = "extra_second_location"
 
         var firstLocation : String? ="Unknown Location"
         var secondLocation : String? ="Unknown Location"
@@ -54,15 +49,11 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         var fullLocationName : String? =""
 
-
-
-
         fun newIntent(context: Context,firstLoc: String, secondLoc:String)=
             Intent(context, HomeMapActivity::class.java).apply {
                 firstLocation = firstLoc
                 secondLocation = secondLoc
             }
-
 
         fun fullNameLocationInfo(address: String) {
             val parts = address.split(" ")
@@ -97,6 +88,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             return ""
         }
+
         // 구, 군 까지 추출하기
         fun extractDistrictInfo(address: String):String {
             val parts = address.split(" ")
@@ -113,6 +105,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             return ""
         }
+
         // 구 군 , 동 읍, 면만  추출하기      ->비교할때만 하면 되지 않나??
         fun extractLocationSetInfo(address: String): String {
             val parts = address.split(" ")
@@ -231,11 +224,11 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         override fun handleOnBackPressed() {
             val intent = Intent().apply{
                 putExtra(
-                    EXTRA_FIRSTLOCATION,
+                    EXTRA_FIRST_LOCATION,
                     firstLocation
                 )
                 putExtra(
-                    EXTRA_SECONDLOCATION,
+                    EXTRA_SECOND_LOCATION,
                     secondLocation
                 )
             }
@@ -412,11 +405,11 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.homeMapClose.setOnClickListener{
             val intent = Intent().apply{
                 putExtra(
-                    EXTRA_FIRSTLOCATION,
+                    EXTRA_FIRST_LOCATION,
                     firstLocation
                 )
                 putExtra(
-                    EXTRA_SECONDLOCATION,
+                    EXTRA_SECOND_LOCATION,
                     secondLocation
                 )
             }

@@ -17,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -25,8 +24,8 @@ import com.wd.woodong2.databinding.HomeFragmentBinding
 import com.wd.woodong2.presentation.home.add.HomeAddActivity
 import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
-import com.wd.woodong2.presentation.home.map.HomeMapActivity.Companion.EXTRA_FIRSTLOCATION
-import com.wd.woodong2.presentation.home.map.HomeMapActivity.Companion.EXTRA_SECONDLOCATION
+import com.wd.woodong2.presentation.home.map.HomeMapActivity.Companion.EXTRA_FIRST_LOCATION
+import com.wd.woodong2.presentation.home.map.HomeMapActivity.Companion.EXTRA_SECOND_LOCATION
 
 
 class HomeFragment : Fragment() {
@@ -70,9 +69,9 @@ class HomeFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val receivedDataFirstLocation =
-                        result.data!!.getStringExtra(EXTRA_FIRSTLOCATION)
+                        result.data!!.getStringExtra(EXTRA_FIRST_LOCATION)
                     val receivedDataSecondLocation =
-                        result.data!!.getStringExtra(EXTRA_SECONDLOCATION)
+                        result.data!!.getStringExtra(EXTRA_SECOND_LOCATION)
                     firstLocation = receivedDataFirstLocation
                     secondLocation = receivedDataSecondLocation
                     binding.toolbarTvLocation.text =

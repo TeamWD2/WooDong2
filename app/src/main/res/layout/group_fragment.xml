@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/ivory_yellow_background"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/ivory_yellow_background">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_group"
@@ -34,6 +34,7 @@
                 android:id="@+id/img_toolbar_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:src="@drawable/public_ic_down" />
         </LinearLayout>
 
@@ -43,7 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/public_ic_search" />
+            android:src="@drawable/public_ic_search"
+            android:visibility="gone" />
     </androidx.appcompat.widget.Toolbar>
 
     <EditText
