@@ -91,23 +91,32 @@ class SignInActivity : AppCompatActivity() {
 
     private fun initModel() = with(signInViewModel) {
         loginResult.observe(this@SignInActivity) { result ->
-
             val uid = getUserUIDFromAuth()
 
             if (result && uid != null) {
-                Toast.makeText(this@SignInActivity, R.string.login_success, Toast.LENGTH_SHORT)
-                    .show()
+                signInViewModel.setUserInfo(uid)
+            } else {
+                Toast.makeText(this@SignInActivity, R.string.login_fail, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        isSetUserInfo.observe(this@SignInActivity) { isSetUserInfo ->
+            if (isSetUserInfo) {
+                val uid = getUserUIDFromAuth()
+
+                // TODO
                 startActivity(
                     MainActivity.newIntentForLogin(
                         this@SignInActivity,
-                        uid
+                        uid ?: ""
                     )
                 )
-                signInViewModel.setUserInfo(uid)
 
-                finish()
+                Toast.makeText(this@SignInActivity, R.string.login_success, Toast.LENGTH_SHORT)
+                    .show()
             } else {
-                Toast.makeText(this@SignInActivity, R.string.login_fail, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SignInActivity, R.string.signin_login_retry, Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
