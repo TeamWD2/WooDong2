@@ -6,27 +6,10 @@ import com.wd.woodong2.domain.model.UserItemsEntity
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun updateUserPassword(
-        email: String,
-        currentPassword: String,
-        newPassword: String,
-    ): Flow<Boolean>
-
-    fun updateUserInfo(
-        userId: String,
-        imgProfile: String,
-        name: String,
-        firstLocation: String,
-        secondLocation: String,
-    )
-
-    suspend fun addUserIds(
-        userId: String,
-        writtenId: String?,
-        groupId: String?,
-        likedId: String?,
-    ): Flow<UserEntity?>
-
+    suspend fun updateUserPassword(email: String, currentPassword: String, newPassword: String): Flow<Boolean>
+    fun updateUserInfo(userId: String, imgProfile: String, name: String, firstLocation: String, secondLocation: String)
+    fun addUserIds(userId: String, writtenId: String?, likedId: String?)
+    fun removeUserIds(userId : String, writtenId: String?, likedId: String?, groupId: String?, chatId: String?)
     suspend fun updateUserToken(userId: String): Flow<Boolean>
     suspend fun getUserItems(): Flow<UserItemsEntity?>
     suspend fun getUser(userId: String): Flow<UserEntity?>

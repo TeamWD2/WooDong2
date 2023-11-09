@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -16,13 +17,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeDetailActivityBinding
+import com.wd.woodong2.presentation.home.add.HomeAddViewModel
+import com.wd.woodong2.presentation.home.add.HomeAddViewModelFactory
 import com.wd.woodong2.presentation.home.content.HomeItem
 import java.text.SimpleDateFormat
 import java.util.*
 
 class HomeDetailActivity : AppCompatActivity() {
     private lateinit var binding: HomeDetailActivityBinding
-    private lateinit var viewModel: HomeDetailViewModel
+    //private lateinit var viewModel: HomeDetailViewModel
     private lateinit var homeItem: HomeItem
     private lateinit var commentsAdapter: CommentListAdapter
 
@@ -33,14 +36,17 @@ class HomeDetailActivity : AppCompatActivity() {
                 putExtra(EXTRA_HOME_ITEM, homeItem)
             }
     }
-
+    private val viewModel: HomeDetailViewModel by viewModels{
+        HomeDetailViewModelFactory(this)
+    }
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = HomeDetailActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initViewModel()
+        //initViewModel()
+
         initView()
     }
 
@@ -89,9 +95,9 @@ class HomeDetailActivity : AppCompatActivity() {
 
     }
 
-    private fun initViewModel() {
-        viewModel = ViewModelProvider(this)[HomeDetailViewModel::class.java]
-    }
+//    private fun initViewModel() {
+//        viewModel = ViewModelProvider(this)[HomeDetailViewModel::class.java]
+//    }
 
     private fun updateCommentCount(count: Int) {
         binding.txtCommentCount.text = count.toString()

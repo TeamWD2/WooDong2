@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.home.content
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,24 +16,29 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.MapSearchRepositoryImpl
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.MapSearchEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.repository.MapSearchRepository
 import com.wd.woodong2.domain.usecase.MapSearchCircumLocationGetItemsUseCase
 import com.wd.woodong2.domain.usecase.MapSearchGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserUpdateInfoUseCase
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.home.map.HomeMapSearchItem
 import com.wd.woodong2.retrofit.KAKAORetrofitClient
 
 class HomeViewModel(
+    private val prefGetUserItem: UserPrefGetItemUseCase,
     private val userItem: UserGetItemUseCase,
     private val userUpdateInfoUseCase: UserUpdateInfoUseCase,
     private val circumLocationItem: MapSearchCircumLocationGetItemsUseCase,
-    private val mapSearch : MapSearchGetItemsUseCase
+    private val mapSearch: MapSearchGetItemsUseCase
 ) : ViewModel(
 ) {
 
@@ -52,14 +58,10 @@ class HomeViewModel(
     val circumLocationList: LiveData<List<HomeMapSearchItem>> get() = _circumLocationList
 
     private val _searchResults = MutableLiveData<List<HomeItem>>()
-
     val searchResults: LiveData<List<HomeItem>> = _searchResults
 
     //주변 위치 값 받아오기
-    private var circumLocation = mutableSetOf<String>()
-    private var countOne : Int = 0
-    private var countTwo : Int = 0
-    private var countThree : Int = 0
+    var circumLocation = mutableSetOf<String>()
 
     //Home에 출력할 list 설정하기
     val _printList: MutableLiveData<List<HomeItem>> = MutableLiveData()
@@ -67,11 +69,10 @@ class HomeViewModel(
 
 
     //userItem
-    val userId = "user1"
-    val userInfo: MutableLiveData<UserItem> = MutableLiveData()
+    var userId = getUserInfo()?.id ?: "UserId"
+    val userInfo: MutableLiveData<UserItem?> = MutableLiveData()
 
     init {
-        loadDataFromFirebase()
         getUserItem()
         loadDataFromFirebase()
     }
@@ -81,174 +82,186 @@ class HomeViewModel(
         x: Double,
         radius: Int,
         query: String,
-        //locationType: Int?,
         userLocation: String,
     ) = viewModelScope.launch {
         runCatching {
 
-            //Log.d("locationCheckci", locationType.toString())
-            Log.d("locationCheckcq", query)
             val set = "주민센터"
+            if (circumLocation.isNotEmpty()) {
+                circumLocation.clear() }
 
-                countOne = 0
-                countTwo = 0
-                countThree = 0
-
-                if(circumLocation.isNotEmpty()){
-                    circumLocation.clear()
-                }
-
-                var circumLocationItems = createCircumLocationItems(
-                    Map = circumLocationItem(
-                        y,
-                        x,
-                        radius,
-                        "$query $set")
+            var circumLocationItems = createCircumLocationItems(
+                Map = circumLocationItem(
+                    y,
+                    x,
+                    radius,
+                    "$query $set"
                 )
+            )
 
-                _circumLocationList.postValue(circumLocationItems)
-                circumLocationItems = createCircumLocationItems(
-                    Map = mapSearch(query)
-                )
-                _circumLocationList.postValue(circumLocationItems)
+            HomeMapActivity.fullNameLocationInfo(query)
+            circumLocation.add(HomeMapActivity.fullLocationName.toString())
 
-                Log.d("locationCheckci1", circumLocation.toString())
+            Log.d("locationCheckci1", circumLocationItems.toString())
 
-                //주변 위치 설정하기
-                for(item in circumLocationItems){
-                    if(item is HomeMapSearchItem.MapSearchItem){
-                        val address = item.address
-                        if (address != null) {
-                            HomeMapActivity.fullNameLocationInfo(address)
-                            if(HomeMapActivity.extractLocationInfo(userLocation.toString()) != HomeMapActivity.extractLocationInfo(address))  //사용자 현재위치는 설정 x
-                            {circumLocation.add(HomeMapActivity.fullLocationName.toString())}
+            _circumLocationList.postValue(circumLocationItems)
+
+            for (item in circumLocationItems) {
+                if (item is HomeMapSearchItem.MapSearchItem) {
+                    val address = item.address
+                    if (address != null) {
+                        HomeMapActivity.fullNameLocationInfo(address)
+                        if (HomeMapActivity.extractLocationInfo(userLocation) != HomeMapActivity.extractLocationInfo(address))  //사용자 현재위치는 설정 x
+                        {
+                            circumLocation.add(HomeMapActivity.fullLocationName.toString())
                         }
                     }
                 }
-                Log.d("locationCheckci1", circumLocation.toString())
+            }
 
-            if(circumLocation.isNotEmpty() && circumLocation.size >= countOne ){
-                    for(loc in circumLocation)
-                    {
-                        Log.d("locationCheckl1",loc)
-                        val existingList = _printList.value.orEmpty()
-                        //지역의 값이 일치할때
-                        val filteredList = list.value?.filter { it.location == loc }
-                        val combinedList = existingList.toMutableList().apply { addAll(filteredList!!) }
-                        _printList.value = combinedList
-                        countOne++
+            circumLocationItems = createCircumLocationItems(
+                Map = mapSearch(query)
+            )
+
+            Log.d("locationCheckci1", circumLocationItems.toString())
+
+            _circumLocationList.postValue(circumLocationItems)
+
+
+            //주변 위치 설정하기
+            for (item in circumLocationItems) {
+                if (item is HomeMapSearchItem.MapSearchItem) {
+                    val address = item.address
+                    if (address != null) {
+                        HomeMapActivity.fullNameLocationInfo(address)
+                        if (HomeMapActivity.extractLocationInfo(userLocation) != HomeMapActivity.extractLocationInfo(
+                                address
+                            )
+                        )  //사용자 현재위치는 설정 x
+                        {
+                            circumLocation.add(HomeMapActivity.fullLocationName.toString())
+                        }
                     }
                 }
-                Log.d("locationCheckci1", countOne.toString())
+            }
+            Log.d("locationCheckci1", circumLocation.toString())
 
+            if (circumLocation.isNotEmpty()) {
 
-            if(printList.value?.size!! < 10){
+                _printList.value = list.value?.filter { item ->
+                    circumLocation.contains(item.location)
+                }
+
+            }
+
+            if (printList.value?.size!! < 10) {
                 val circumLocationItems = createCircumLocationItems(
                     Map = circumLocationItem(
                         y,
                         x,
                         radius,
-                        "${HomeMapActivity.extractDistrictInfo(query)} $set")
+                        "${HomeMapActivity.extractDistrictInfo(query)} $set"
+                    )
                 )
 
                 _circumLocationList.postValue(circumLocationItems)
                 //주변 위치 설정하기
-                for(item in circumLocationItems){
-                    if(item is HomeMapSearchItem.MapSearchItem){
+                for (item in circumLocationItems) {
+                    if (item is HomeMapSearchItem.MapSearchItem) {
                         val address = item.address
                         if (address != null) {
                             HomeMapActivity.fullNameLocationInfo(address)
-                            if(HomeMapActivity.extractLocationInfo(userLocation.toString()) != HomeMapActivity.extractLocationInfo(address))  //사용자 현재위치는 설정 x
-                            {circumLocation.add(HomeMapActivity.fullLocationName.toString())}
+                            if (HomeMapActivity.extractLocationInfo(userLocation.toString()) != HomeMapActivity.extractLocationInfo(
+                                    address
+                                )
+                            )  //사용자 현재위치는 설정 x
+                            {
+                                circumLocation.add(HomeMapActivity.fullLocationName.toString())
+                            }
                         }
                     }
                 }
                 Log.d("locationCheckci2", circumLocation.toString())
 
-                if(circumLocation.isNotEmpty()&& circumLocation.size >= countTwo ){
-                    for(loc in circumLocation) {
-                        if(countOne <= countTwo){
-                            Log.d("locationCheckl2",loc)
-                            val existingList = _printList.value.orEmpty()
-                            //지역의 값이 일치할때
-                            val filteredList = list.value?.filter { it.location == loc }
-                            val combinedList = existingList.toMutableList().apply { addAll(filteredList!!) }
-                            _printList.value = combinedList
+                if (circumLocation.isNotEmpty()) {
 
-                        }
-                        countTwo++
+                    _printList.value = list.value?.filter { item ->
+                        circumLocation.contains(item.location)
                     }
-                }
-                Log.d("locationCheckci2", countTwo.toString())
-                if(printList.value?.size!! < 10){
 
+                }
+
+                if (printList.value?.size!! < 10) {
                     val circumLocationItems = createCircumLocationItems(
                         Map = circumLocationItem(
                             y,
                             x,
                             radius,
-                            "${HomeMapActivity.extractCityInfo(query)} $set")
+                            "${HomeMapActivity.extractCityInfo(query)} $set"
+                        )
                     )
 
                     _circumLocationList.postValue(circumLocationItems)
+
                     //주변 위치 설정하기
-                    for(item in circumLocationItems){
-                        if(item is HomeMapSearchItem.MapSearchItem){
+                    for (item in circumLocationItems) {
+                        if (item is HomeMapSearchItem.MapSearchItem) {
                             val address = item.address
                             if (address != null) {
                                 HomeMapActivity.fullNameLocationInfo(address)
-                                if(HomeMapActivity.extractLocationInfo(userLocation.toString()) != HomeMapActivity.extractLocationInfo(address))  //사용자 현재위치는 설정 x
-                                {circumLocation.add(HomeMapActivity.fullLocationName.toString())}
+                                if (HomeMapActivity.extractLocationInfo(userLocation) != HomeMapActivity.extractLocationInfo(
+                                        address
+                                    )
+                                ) {
+                                    circumLocation.add(HomeMapActivity.fullLocationName.toString())
+                                }
                             }
                         }
                     }
                     Log.d("locationCheckci3", circumLocation.toString())
 
-                    if(circumLocation.isNotEmpty() && circumLocation.size >= countThree){
-                        for(loc in circumLocation) {
-                            if(countTwo <= countThree){
-                                Log.d("locationCheckl3",loc)
-                                val existingList = _printList.value.orEmpty()
-                                //지역의 값이 일치할때
-                                val filteredList = list.value?.filter { it.location == loc }
-                                val combinedList = existingList.toMutableList().apply { addAll(filteredList!!) }
-                                _printList.value = combinedList
-
+                    if (circumLocation.isNotEmpty()) {
+                        for (loc in circumLocation) {
+                            _printList.value = list.value?.filter { item ->
+                                circumLocation.contains(item.location)
                             }
-                            countThree++
-
-                            if(countThree == circumLocation.size)
-                            {
-                                countOne = 0
-                                countTwo = 0
-                                countThree = 0
-                                break
-                            }
-
                         }
 
-                        if(printList.value?.size!! < 10){
-                            var checkCount = 0
-                            for(loc in circumLocation) {
-                                val existingList = _printList.value.orEmpty()
-                                val filteredList = list.value?.filter { it.location != loc }
-                                checkCount++
-                                if(checkCount == circumLocation.size){
-                                    val combinedList = existingList.toMutableList().apply { addAll(filteredList!!) }
-                                    _printList.value = combinedList
-                                }
+                        if (printList.value?.size!! < 10) {
+                            val existingList = _printList.value.orEmpty()
+                            val filteredList = list.value?.filter { item ->
+                                !circumLocation.contains(item.location)
                             }
+
+                            val combinedList = existingList.toMutableList()
+                                .apply { addAll(filteredList.orEmpty()) }
+                            _printList.value = combinedList
 
                         }
                     }
 
                 }
             }
-        }.onFailure { e->
+
+        }.onFailure { e ->
             Log.e("Retrofit Error", "Request failed: ${e.message}")
         }
     }
-
+    fun getUserInfo() =
+        prefGetUserItem()?.let {
+            UserItem(
+                id = it.id ?: "unknown",
+                name = it.name ?: "unknown",
+                imgProfile = it.imgProfile,
+                email = it.email ?: "unknown",
+                chatIds = it.chatIds,
+                groupIds = it.groupIds,
+                likedIds = it.likedIds,
+                writtenIds = it.writtenIds,
+                firstLocation = it.firstLocation ?: "unknown",
+                secondLocation = it.secondLocation ?: "unknown"
+            )
+        }
     private fun createCircumLocationItems(
         Map: MapSearchEntity
     ): List<HomeMapSearchItem> {
@@ -277,8 +290,6 @@ class HomeViewModel(
                         dataList.add(firebaseData)
                     }
                 }
-                //최신게시물 가장 위로 오게
-                _printList.value = dataList.reversed()
                 _list.value = dataList.reversed()
 
             }
@@ -336,7 +347,13 @@ class HomeViewModel(
         secondLocation: String,
     ) = viewModelScope.launch {
         runCatching {
-            userUpdateInfoUseCase(userId, userInfo.value?.imgProfile.toString(),userInfo.value?.name.toString() ,firstLocation, secondLocation)
+            userUpdateInfoUseCase(
+                userId,
+                userInfo.value?.imgProfile.toString(),
+                userInfo.value?.name.toString(),
+                firstLocation,
+                secondLocation
+            )
         }.onFailure {
             Log.e("locationhv", it.message.toString())
         }
@@ -367,7 +384,18 @@ class HomeViewModel(
     }
 }
 
-class HomeViewModelFactory : ViewModelProvider.Factory {
+class HomeViewModelFactory(
+    val context: Context
+) : ViewModelProvider.Factory {
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
+    private val databaseReference = FirebaseDatabase.getInstance()
+
+    val userPrefRepository = UserPreferencesRepositoryImpl(
+        null,
+        UserInfoPreferenceImpl(
+            context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+        )
+    )
 
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
@@ -379,9 +407,11 @@ class HomeViewModelFactory : ViewModelProvider.Factory {
     private val circumLocationrepository: MapSearchRepository = MapSearchRepositoryImpl(
         KAKAORetrofitClient.search
     )
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(
+                UserPrefGetItemUseCase(userPrefRepository),
                 UserGetItemUseCase(userRepositoryImpl),
                 UserUpdateInfoUseCase(userRepositoryImpl),
                 MapSearchCircumLocationGetItemsUseCase(circumLocationrepository),

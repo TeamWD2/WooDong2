@@ -21,13 +21,14 @@ class MyPageWrittenFragment : Fragment() {
                 startActivity(
                     HomeDetailActivity.homeDetailActivityNewIntent(
                         requireContext(),
-                        item)
+                        item,
+                    )
                 )
             }
         )
     }
     private val viewModel : MyPageWrittenViewModel by viewModels {
-        MyPageWrittenViewModelFactory()
+        MyPageWrittenViewModelFactory(requireContext())
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,18 +48,22 @@ class MyPageWrittenFragment : Fragment() {
             adapter = listAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+        viewModel.printListSet()
     }
     private fun initViewModel(){
         with(viewModel){
             list.observe(viewLifecycleOwner){
+                printListSet()
+            }
+            printList.observe(viewLifecycleOwner){
                 listAdapter.submitList(it)
             }
             loadingState.observe(viewLifecycleOwner) { loadingState ->
                 binding.progressBar.isVisible = loadingState
             }
-            isEmptyList.observe(viewLifecycleOwner){isEmptyList->
-                binding.txtEmptyWrittenList.isVisible = isEmptyList
-            }
+//            isEmptyList.observe(viewLifecycleOwner){isEmptyList->
+//                binding.txtEmptyWrittenList.isVisible = isEmptyList
+//            }
         }
     }
     override fun onDestroyView() {

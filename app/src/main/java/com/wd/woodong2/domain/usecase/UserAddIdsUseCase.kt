@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class UserAddIdsUseCase(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(userId: String,writtenId: String?, groupId: String?, likedId: String?): Flow<UserEntity?> {
-        return repository.addUserIds(userId, writtenId, groupId, likedId)
+    operator fun invoke(userId: String,writtenId: String?, likedId: String?){
+        return repository.addUserIds(userId, writtenId, likedId)
     }
 }

@@ -30,7 +30,7 @@ class MyPageGroupFragment : Fragment() {
     }
 
     private val viewModel : MyPageGroupViewModel by viewModels {
-        MyPageGroupViewModelFactory()
+        MyPageGroupViewModelFactory(requireContext())
     }
 
     override fun onCreateView(
@@ -53,8 +53,10 @@ class MyPageGroupFragment : Fragment() {
     }
     private fun initViewModel(){
         with(viewModel){
-
             groupList.observe(viewLifecycleOwner) {
+                printListSet()
+            }
+            printList.observe(viewLifecycleOwner){
                 myGroupListAdapter.submitList(it?.filterIsInstance<GroupItem.GroupMain>())
             }
             loadingState.observe(viewLifecycleOwner) { loadingState ->
