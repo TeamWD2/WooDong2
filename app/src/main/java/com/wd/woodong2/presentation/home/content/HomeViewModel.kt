@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.home.content
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,20 +16,25 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.MapSearchRepositoryImpl
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.MapSearchEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.repository.MapSearchRepository
 import com.wd.woodong2.domain.usecase.MapSearchCircumLocationGetItemsUseCase
 import com.wd.woodong2.domain.usecase.MapSearchGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserUpdateInfoUseCase
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.home.map.HomeMapSearchItem
 import com.wd.woodong2.retrofit.KAKAORetrofitClient
 
 class HomeViewModel(
+    private val prefGetUserItem: UserPrefGetItemUseCase,
     private val userItem: UserGetItemUseCase,
     private val userUpdateInfoUseCase: UserUpdateInfoUseCase,
     private val circumLocationItem: MapSearchCircumLocationGetItemsUseCase,
@@ -57,8 +63,8 @@ class HomeViewModel(
     val printList: LiveData<List<HomeItem>> get() = _printList
 
     //userItem
-    val userId = "user1"
-    val userInfo: MutableLiveData<UserItem> = MutableLiveData()
+    var userId = getUserInfo()?.id ?: "UserId"
+    val userInfo: MutableLiveData<UserItem?> = MutableLiveData()
 
     init {
         getUserItem()
@@ -76,8 +82,7 @@ class HomeViewModel(
 
             val set = "주민센터"
             if (circumLocation.isNotEmpty()) {
-                circumLocation.clear()
-            }
+                circumLocation.clear() }
 
             var circumLocationItems = createCircumLocationItems(
                 Map = circumLocationItem(
@@ -88,13 +93,34 @@ class HomeViewModel(
                 )
             )
 
+            HomeMapActivity.fullNameLocationInfo(query)
+            circumLocation.add(HomeMapActivity.fullLocationName.toString())
+
+            Log.d("locationCheckci1", circumLocationItems.toString())
+
             _circumLocationList.postValue(circumLocationItems)
+
+            for (item in circumLocationItems) {
+                if (item is HomeMapSearchItem.MapSearchItem) {
+                    val address = item.address
+                    if (address != null) {
+                        HomeMapActivity.fullNameLocationInfo(address)
+                        if (HomeMapActivity.extractLocationInfo(userLocation) != HomeMapActivity.extractLocationInfo(address))  //사용자 현재위치는 설정 x
+                        {
+                            circumLocation.add(HomeMapActivity.fullLocationName.toString())
+                        }
+                    }
+                }
+            }
+
             circumLocationItems = createCircumLocationItems(
                 Map = mapSearch(query)
             )
+
+            Log.d("locationCheckci1", circumLocationItems.toString())
+
             _circumLocationList.postValue(circumLocationItems)
 
-            Log.d("locationCheckci1", circumLocation.toString())
 
             //주변 위치 설정하기
             for (item in circumLocationItems) {
@@ -112,6 +138,7 @@ class HomeViewModel(
                     }
                 }
             }
+            Log.d("locationCheckci1", circumLocation.toString())
 
             if (circumLocation.isNotEmpty()) {
 
@@ -214,7 +241,21 @@ class HomeViewModel(
             Log.e("Retrofit Error", "Request failed: ${e.message}")
         }
     }
-
+    fun getUserInfo() =
+        prefGetUserItem()?.let {
+            UserItem(
+                id = it.id ?: "unknown",
+                name = it.name ?: "unknown",
+                imgProfile = it.imgProfile,
+                email = it.email ?: "unknown",
+                chatIds = it.chatIds,
+                groupIds = it.groupIds,
+                likedIds = it.likedIds,
+                writtenIds = it.writtenIds,
+                firstLocation = it.firstLocation ?: "unknown",
+                secondLocation = it.secondLocation ?: "unknown"
+            )
+        }
     private fun createCircumLocationItems(
         Map: MapSearchEntity
     ): List<HomeMapSearchItem> {
@@ -297,7 +338,18 @@ class HomeViewModel(
 
 }
 
-class HomeViewModelFactory : ViewModelProvider.Factory {
+class HomeViewModelFactory(
+    val context: Context
+) : ViewModelProvider.Factory {
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
+    private val databaseReference = FirebaseDatabase.getInstance()
+
+    val userPrefRepository = UserPreferencesRepositoryImpl(
+        null,
+        UserInfoPreferenceImpl(
+            context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+        )
+    )
 
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
@@ -313,6 +365,7 @@ class HomeViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(
+                UserPrefGetItemUseCase(userPrefRepository),
                 UserGetItemUseCase(userRepositoryImpl),
                 UserUpdateInfoUseCase(userRepositoryImpl),
                 MapSearchCircumLocationGetItemsUseCase(circumLocationrepository),

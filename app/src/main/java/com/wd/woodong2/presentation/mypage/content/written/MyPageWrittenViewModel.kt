@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.mypage.content.written
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,9 +14,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.wd.woodong2.R
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
+import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.content.HomeItem
 import com.wd.woodong2.presentation.mypage.content.thumb.MyPageThumbViewModel
@@ -23,6 +28,7 @@ import com.wd.woodong2.presentation.mypage.content.thumb.MyPageThumbViewModelFac
 import kotlinx.coroutines.launch
 
 class MyPageWrittenViewModel (
+    private val prefGetUserItem: UserPrefGetItemUseCase,
     private val userItem: UserGetItemsUseCase,
 ) : ViewModel(){
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
@@ -36,7 +42,7 @@ class MyPageWrittenViewModel (
     private val _isEmptyList: MutableLiveData<Boolean> = MutableLiveData()
     val isEmptyList: LiveData<Boolean> get() = _isEmptyList
 
-    val userId= "user1"
+    val userId= getUserInfo()?.id ?: "UserId"
     private var userInfo: MutableLiveData<UserItem> = MutableLiveData()
 
     init {
@@ -46,10 +52,10 @@ class MyPageWrittenViewModel (
     fun printListSet()= viewModelScope.launch{
         _loadingState.value = true
         runCatching {
+            _isEmptyList.value = _printList.value?.isEmpty()
             _printList.value = list.value?.filter { item ->
                 userInfo.value?.writtenIds!!.contains(item.id)
             }
-            _isEmptyList.value = _printList.value?.isEmpty()
             _loadingState.value = false
         }.onFailure {
             _loadingState.value = false
@@ -81,7 +87,8 @@ class MyPageWrittenViewModel (
     }
 
     private fun loadDataFromFirebase() {
-        MyPageWrittenViewModelFactory().databaseReference.addValueEventListener(object : ValueEventListener {
+        val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
+            databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val dataList = ArrayList<HomeItem>()
 
@@ -98,8 +105,36 @@ class MyPageWrittenViewModel (
             }
         })
     }
+    fun getUserInfo() =
+        prefGetUserItem()?.let {
+            UserItem(
+                id = it.id ?: "unknown",
+                name = it.name ?: "unknown",
+                imgProfile = it.imgProfile,
+                email = it.email ?: "unknown",
+                chatIds = it.chatIds,
+                groupIds = it.groupIds,
+                likedIds = it.likedIds,
+                writtenIds = it.writtenIds,
+                firstLocation = it.firstLocation ?: "unknown",
+                secondLocation = it.secondLocation ?: "unknown"
+            )
+        }
 }
-class MyPageWrittenViewModelFactory : ViewModelProvider.Factory {
+class MyPageWrittenViewModelFactory(
+    val context: Context
+) : ViewModelProvider.Factory {
+
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
+    //private val databaseReference = FirebaseDatabase.getInstance()
+
+    val userPrefRepository = UserPreferencesRepositoryImpl(
+        null,
+        UserInfoPreferenceImpl(
+            context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+        )
+    )
+
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
             FirebaseDatabase.getInstance().getReference("users"),
@@ -114,6 +149,7 @@ class MyPageWrittenViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MyPageWrittenViewModel::class.java)) {
             return MyPageWrittenViewModel(
+                UserPrefGetItemUseCase(userPrefRepository),
                 UserGetItemsUseCase(userRepositoryImpl),
             ) as T
         } else {

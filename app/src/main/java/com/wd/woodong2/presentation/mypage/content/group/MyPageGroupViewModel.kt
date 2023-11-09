@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.mypage.content.group
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,8 +11,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.GroupAlbumEntity
 import com.wd.woodong2.domain.model.GroupBoardEntity
 import com.wd.woodong2.domain.model.GroupIntroduceEntity
@@ -21,6 +25,7 @@ import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
+import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.group.content.GroupItem
 import com.wd.woodong2.presentation.group.content.GroupViewModel
@@ -29,6 +34,7 @@ import com.wd.woodong2.presentation.mypage.content.thumb.MyPageThumbViewModel
 import kotlinx.coroutines.launch
 
 class MyPageGroupViewModel(
+    private val prefGetUserItem: UserPrefGetItemUseCase,
     private val groupGetItems: GroupGetItemsUseCase,
     private val userItem: UserGetItemsUseCase,
 ) : ViewModel(){
@@ -47,7 +53,7 @@ class MyPageGroupViewModel(
     private val _isEmptyList: MutableLiveData<Boolean> = MutableLiveData()
     val isEmptyList: LiveData<Boolean> get() = _isEmptyList
 
-    val userId= "user1"
+    val userId= getUserInfo()?.id ?: "UserId"
     private var userInfo: MutableLiveData<UserItem> = MutableLiveData()
 
     init {
@@ -217,9 +223,37 @@ class MyPageGroupViewModel(
             Log.e("homeItem", it.message.toString())
         }
     }
+
+    fun getUserInfo() =
+        prefGetUserItem()?.let {
+            UserItem(
+                id = it.id ?: "unknown",
+                name = it.name ?: "unknown",
+                imgProfile = it.imgProfile,
+                email = it.email ?: "unknown",
+                chatIds = it.chatIds,
+                groupIds = it.groupIds,
+                likedIds = it.likedIds,
+                writtenIds = it.writtenIds,
+                firstLocation = it.firstLocation ?: "unknown",
+                secondLocation = it.secondLocation ?: "unknown"
+            )
+        }
 }
 
-class MyPageGroupViewModelFactory : ViewModelProvider.Factory {
+class MyPageGroupViewModelFactory(
+    val context: Context
+) : ViewModelProvider.Factory {
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
+    private val databaseReference = FirebaseDatabase.getInstance()
+
+    val userPrefRepository = UserPreferencesRepositoryImpl(
+        null,
+        UserInfoPreferenceImpl(
+            context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+        )
+    )
+
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
             FirebaseDatabase.getInstance().getReference("users"),
@@ -232,6 +266,7 @@ class MyPageGroupViewModelFactory : ViewModelProvider.Factory {
         val repository = GroupRepositoryImpl(databaseReference)
         if (modelClass.isAssignableFrom(MyPageGroupViewModel::class.java)) {
             return MyPageGroupViewModel(
+                UserPrefGetItemUseCase(userPrefRepository),
                 GroupGetItemsUseCase(repository),
                 UserGetItemsUseCase(userRepositoryImpl),
             ) as T

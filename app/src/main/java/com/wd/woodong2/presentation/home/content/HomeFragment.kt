@@ -28,12 +28,13 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: HomeViewModel
             by viewModels {
-                HomeViewModelFactory()
+                HomeViewModelFactory(requireContext())
             }
 
     private var firstLocation: String? = null
     private var secondLocation: String? = null
     private var userName: String? = null
+    private var userId: String? = null
     private lateinit var homeMapLauncher: ActivityResultLauncher<Intent>
 
     private val listAdapter by lazy {
@@ -42,7 +43,7 @@ class HomeFragment : Fragment() {
                 startActivity(
                     HomeDetailActivity.homeDetailActivityNewIntent(
                         requireContext(),
-                        item
+                        item,
                     )
                 )
             }
@@ -111,7 +112,8 @@ class HomeFragment : Fragment() {
         fabHomeadd.setOnClickListener {
             val intent = HomeAddActivity.homeAddActivityNewIntent(
                 requireContext(),
-                firstLocation.toString(), userName
+                firstLocation.toString(), userName,
+                userId.toString()
             )
             startActivity(intent)
         }
@@ -119,40 +121,45 @@ class HomeFragment : Fragment() {
 
     private fun initViewModel() {
         with(viewModel) {
-            list.observe(viewLifecycleOwner) {
-                _printList.value = list.value?.filter { item ->
+
+            list.observe(viewLifecycleOwner) {newList ->
+                _printList.value = newList.filter { item ->
                     circumLocation.contains(item.location)
                 }
-                listAdapter.submitList(printList.value)
+            }
+
+            printList.observe(viewLifecycleOwner){
+                listAdapter.submitList(it)
             }
 
             userInfo.observe(viewLifecycleOwner) { userInfo ->
                 val filteredList =
-                    list.value?.filter { it.location == userInfo.firstLocation } ?: emptyList()
+                    list.value?.filter { it.location == userInfo?.firstLocation } ?: emptyList()
                 _printList.value = filteredList
 
                 // 구, 군
                 if (printList.value?.size!! < 10) {
                     HomeMapActivity.getLocationFromAddress(
                         requireContext(),
-                        userInfo.firstLocation.toString()
+                        userInfo?.firstLocation.toString()
                     )
                     circumLocationItemSearch(
                         HomeMapActivity.latitude,
                         HomeMapActivity.longitude,
                         20000,
-                        userInfo.firstLocation.toString(),
-                        userInfo.firstLocation.toString()
+                        userInfo?.firstLocation.toString(),
+                        userInfo?.firstLocation.toString()
                     )
                 }
 
 
-                firstLocation = userInfo.firstLocation
-                secondLocation = userInfo.secondLocation
-                userName = userInfo.name
+                firstLocation = userInfo?.firstLocation
+                secondLocation = userInfo?.secondLocation
+                userName = userInfo?.name
+                userId = userInfo?.id.toString()
                 binding.toolbarTvLocation.text =
                     HomeMapActivity.extractLocationInfo(firstLocation.toString())
-                if (userInfo.firstLocation == "") {
+                if (userInfo?.firstLocation == "") {
 
                     Toast.makeText(requireContext(), "위치 설정이 필요합니다", Toast.LENGTH_SHORT).show()
 

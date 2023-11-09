@@ -30,7 +30,7 @@ class MyPageGroupFragment : Fragment() {
     }
 
     private val viewModel : MyPageGroupViewModel by viewModels {
-        MyPageGroupViewModelFactory()
+        MyPageGroupViewModelFactory(requireContext())
     }
 
     override fun onCreateView(
@@ -55,7 +55,9 @@ class MyPageGroupFragment : Fragment() {
         with(viewModel){
             groupList.observe(viewLifecycleOwner) {
                 printListSet()
-                myGroupListAdapter.submitList(printList.value?.filterIsInstance<GroupItem.GroupMain>())
+            }
+            printList.observe(viewLifecycleOwner){
+                myGroupListAdapter.submitList(it?.filterIsInstance<GroupItem.GroupMain>())
             }
             loadingState.observe(viewLifecycleOwner) { loadingState ->
                 binding.progressBar.isVisible = loadingState

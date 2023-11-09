@@ -57,7 +57,7 @@ class GroupDetailSharedViewModel(
      * 로그인 된 계정의 선택한 모임 가입 여부 확인
      */
     fun initIsJoinGroup() {
-            ?.firstOrNull()?.memberList}")
+ //           ?.firstOrNull()?.memberList}")
         _isJoinGroup.value = groupDetailItem.value?.filterIsInstance<GroupItem.GroupMember>()
             ?.firstOrNull()?.memberList?.any {
                 it.userId == prefGetUserItem().let { userInfo ->
@@ -235,13 +235,16 @@ class GroupDetailSharedViewModelFactory(
 ) : ViewModelProvider.Factory {
     private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
     private val databaseReference = FirebaseDatabase.getInstance()
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val userPrefRepository = UserPreferencesRepositoryImpl(
-            null,
-            UserInfoPreferenceImpl(
-                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
-            )
+
+    val userPrefRepository = UserPreferencesRepositoryImpl(
+        null,
+        UserInfoPreferenceImpl(
+            context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
         )
+    )
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+
         val groupRepository =
             GroupRepositoryImpl(databaseReference.getReference("group_list"))
         val chatGetRepository =

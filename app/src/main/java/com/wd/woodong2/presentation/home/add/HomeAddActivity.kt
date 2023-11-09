@@ -16,10 +16,12 @@ class HomeAddActivity : AppCompatActivity() {
     companion object {
         private var firstLocation : String? ="Unknown Location"
         private var username : String? = "Who"
-        fun homeAddActivityNewIntent(context: Context?,firstLoc: String, name: String?) =
+        private var userId : String? = ""
+        fun homeAddActivityNewIntent(context: Context?,firstLoc: String, name: String?, id: String) =
             Intent(context, HomeAddActivity::class.java).apply {
                 firstLocation = firstLoc
                 username = name
+                userId = id
             }
     }
 
@@ -29,7 +31,9 @@ class HomeAddActivity : AppCompatActivity() {
     private var selectedImageUri: Uri? = null
 
 
-    private val viewModel: HomeAddViewModel by viewModels()
+    private val viewModel: HomeAddViewModel by viewModels{
+        HomeAddViewModelFactory(this)
+    }
 
     private val imagePicker =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -57,6 +61,7 @@ class HomeAddActivity : AppCompatActivity() {
             val description = homeAddContent.text.toString()
 
             viewModel.uploadData(
+                userId,
                 username,
                 selectedTag,
                 "",
