@@ -210,6 +210,7 @@ class UserRepositoryImpl(
         Log.d("locationcf", secondLocation)
         Log.d("mypagename", name)
         val userInfo = databaseReference.child(userId)
+
         val updateUserInfo = mapOf(
             "name" to name,
             "imgProfile" to imgProfile,

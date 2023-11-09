@@ -70,6 +70,7 @@ class HomeViewModel(
 
     //userItem
     var userId = getUserInfo()?.id ?: "UserId"
+
     val userInfo: MutableLiveData<UserItem?> = MutableLiveData()
 
     init {
@@ -262,6 +263,7 @@ class HomeViewModel(
                 secondLocation = it.secondLocation ?: "unknown"
             )
         }
+
     private fun createCircumLocationItems(
         Map: MapSearchEntity
     ): List<HomeMapSearchItem> {
@@ -358,6 +360,7 @@ class HomeViewModel(
             Log.e("locationhv", it.message.toString())
         }
     }
+
     fun deleteItem(item: HomeItem) {
         // Firebase에서 항목 삭제
         val itemId = item.id // 항목의 고유 ID 또는 키

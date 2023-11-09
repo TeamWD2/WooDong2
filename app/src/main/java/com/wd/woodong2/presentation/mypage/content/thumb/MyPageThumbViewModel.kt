@@ -40,7 +40,7 @@ class MyPageThumbViewModel(
     private val _isEmptyList: MutableLiveData<Boolean> = MutableLiveData()
     val isEmptyList: LiveData<Boolean> get() = _isEmptyList
 
-    val userId= getUserInfo()?.id ?: "UserId"
+    val userId = getUserInfo()?.id ?: "UserId"
     private var userInfo: MutableLiveData<UserItem> = MutableLiveData()
 
     init {

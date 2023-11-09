@@ -22,11 +22,13 @@ import com.wd.woodong2.domain.usecase.UserUpdatePasswordUseCase
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.UserLogOutUseCase
 import com.wd.woodong2.domain.usecase.UserPrefDeleteItemUseCase
+import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.content.HomeItem
 import kotlinx.coroutines.launch
 
 class MyPageViewModel(
+    private val prefGetUserItem: UserPrefGetItemUseCase,
     private val userItem: UserGetItemUseCase,
     private val userUpdateInfoUseCase: UserUpdateInfoUseCase,
     private val userUpdatePasswordUseCase: UserUpdatePasswordUseCase,
@@ -38,7 +40,7 @@ class MyPageViewModel(
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
 
-    val userId = "user1"
+    val userId = getUserInfo()?.id ?: "UserId"
     var userInfo: MutableLiveData<UserItem> = MutableLiveData()
 
     init {
@@ -99,13 +101,34 @@ class MyPageViewModel(
         userPrefDeleteUseCase()
         userLogOutUseCase()
     }
-
+    fun getUserInfo() =
+        prefGetUserItem()?.let {
+            UserItem(
+                id = it.id ?: "unknown",
+                name = it.name ?: "unknown",
+                imgProfile = it.imgProfile,
+                email = it.email ?: "unknown",
+                chatIds = it.chatIds,
+                groupIds = it.groupIds,
+                likedIds = it.likedIds,
+                writtenIds = it.writtenIds,
+                firstLocation = it.firstLocation ?: "unknown",
+                secondLocation = it.secondLocation ?: "unknown"
+            )
+        }
 }
 
 class MyPageViewModelFactory(
     private val context: Context,
 ) : ViewModelProvider.Factory {
     private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
+
+    val userPrefRepository = UserPreferencesRepositoryImpl(
+        null,
+        UserInfoPreferenceImpl(
+            context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+        )
+    )
 
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
@@ -129,6 +152,7 @@ class MyPageViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MyPageViewModel::class.java)) {
             return MyPageViewModel(
+                UserPrefGetItemUseCase(userPrefRepository),
                 UserGetItemUseCase(userRepositoryImpl),
                 UserUpdateInfoUseCase(userRepositoryImpl),
                 UserUpdatePasswordUseCase(userRepositoryImpl),

@@ -36,6 +36,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeMapActivityBinding
 import com.wd.woodong2.presentation.home.map.HomeMapSearchActivity.Companion.EXTRA_ADDRESS
+import java.io.IOException
 import java.util.Locale
 
 class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -141,50 +142,73 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         // 좌표 -> 주소 변환
-        fun getAddressFromLocation(context: Context,lat: Double, lng: Double){
+        fun getAddressFromLocation(context: Context, lat: Double, lng: Double) {
             val geocoder = Geocoder(context, Locale.KOREAN)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                geocoder.getFromLocation(
-                    lat, lng, 2
-                ) { addresses ->
-                    if (addresses.size != 0) {
-                        Log.d("Address",(addresses[1].getAddressLine(0)))
-                        firstLocation = addresses[1].getAddressLine(0)
+
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    geocoder.getFromLocation(lat, lng, 2) { addresses ->
+                        firstLocation = if (addresses.isNotEmpty()) {
+                            val addressLine = addresses[1].getAddressLine(0)
+                            Log.d("Address", addressLine)
+                            addressLine
+                        } else {
+                            ""
+                        }
+                    }
+                } else {
+                    val addresses = geocoder.getFromLocation(lat, lng, 2)
+                    firstLocation = if (!addresses.isNullOrEmpty()) {
+                        val addressLine = addresses[1].getAddressLine(0)
+                        Log.d("Address", addressLine)
+                        addressLine
+                    } else {
+                        ""
                     }
                 }
-            } else {
-                val addresses = geocoder.getFromLocation(
-                    lat, lng, 2
-                )
-                if (addresses != null) {
-                    Log.d("Address",(addresses[1].getAddressLine(0)))
-                    firstLocation = addresses[1].getAddressLine(0)
-                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: IndexOutOfBoundsException) {
+                e.printStackTrace()
             }
-            return
         }
 
         //주소 -> 좌표 변환
-        fun getLocationFromAddress(context: Context, address: String){
+        fun getLocationFromAddress(context: Context, address: String) {
             val geocoder = Geocoder(context, Locale.KOREAN)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                geocoder.getFromLocationName(
-                    address, 1,
-                ) { addresses ->
-                    if(addresses.isNotEmpty()){
+
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    geocoder.getFromLocationName(address, 1) { addresses ->
+                        if (addresses.isNotEmpty()) {
+                            latitude = addresses[0].latitude
+                            longitude = addresses[0].longitude
+                        } else {
+                            latitude = 35.9078
+                            longitude = 127.7669
+                        }
+                    }
+                } else {
+                    val addresses = geocoder.getFromLocationName(address, 1)
+                    if (addresses?.isNotEmpty() == true) {
                         latitude = addresses[0].latitude
                         longitude = addresses[0].longitude
+                    } else {
+                        latitude = 35.9078
+                        longitude = 127.7669
                     }
                 }
-            } else {
-                val addresses = geocoder.getFromLocationName(address, 1)
-                if (addresses!!.isNotEmpty()) {
-                    latitude = addresses[0].latitude
-                    longitude = addresses[0].longitude
-                }
+            } catch (e: IOException) {
+
+                e.printStackTrace()
+
+            } catch (e: IndexOutOfBoundsException) {
+
+                e.printStackTrace()
+
             }
-            return
         }
+
         private const val LOCATION_PERMISSION_REQUEST_CODE = 5000
     }
 
