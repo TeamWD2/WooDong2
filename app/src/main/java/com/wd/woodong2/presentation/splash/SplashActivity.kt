@@ -1,4 +1,4 @@
-package com.wd.woodong2.presentation.splash
+package com.wd.woodong2.presentation.start
 
 import android.content.Intent
 import android.os.Build
