@@ -1,6 +1,8 @@
 package com.wd.woodong2.presentation.home.detail
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.ktx.auth
@@ -28,6 +30,13 @@ class HomeDetailViewModel(
     private val database = FirebaseDatabase.getInstance()
     private lateinit var itemRef: DatabaseReference
 
+    private val _commentsLiveData = MutableLiveData<List<CommentItem>>()
+    val commentsLiveData: LiveData<List<CommentItem>> = _commentsLiveData
+
+    private val _thumbCountLiveData = MutableLiveData<Int>()
+    val thumbCountLiveData: LiveData<Int> = _thumbCountLiveData
+
+
     fun fetchComments(homeItem: HomeItem, onDataChangeCallback: (List<CommentItem>) -> Unit) {
         itemRef = database.getReference("home_list").child(homeItem.id)
         itemRef.child("comments").addValueEventListener(object : ValueEventListener {
@@ -43,10 +52,12 @@ class HomeDetailViewModel(
         })
     }
 
-    fun postComment(homeItem: HomeItem, commentContent: String) {
+    fun postComment(homeItem: HomeItem, commentContent: String): HomeItem {
         val comment = CommentItem(username = "익명의 우동이", content = commentContent, location = "화정동")
         homeItem.comments.add(comment)
         itemRef.setValue(homeItem)
+        _commentsLiveData.value = homeItem.comments
+        return homeItem
     }
 
     fun updateChatCount(homeItem: HomeItem) {
@@ -55,21 +66,32 @@ class HomeDetailViewModel(
     }
 
     fun toggleThumbCount(homeItem: HomeItem) {
-        if (!homeItem.isLiked) {
-            homeItem.thumbCount += 1
-            userAddIdsUseCase(getUserInfo()?.id ?: "UserId",null,homeItem.id)
-        } else {
-            homeItem.thumbCount -= 1
-            userRemoveIdsUseCase(getUserInfo()?.id ?: "UserId",null,homeItem.id,null,null)
-        }
-        homeItem.isLiked = !homeItem.isLiked
-        itemRef.setValue(homeItem)
-
+    val newCount = if (homeItem.isLiked){
+        homeItem.thumbCount - 1
+        userRemoveIdsUseCase(getUserInfo()?.id ?: "UserId",null,homeItem.id,null,null)} else{
+        homeItem.thumbCount + 1
+        userAddIdsUseCase(getUserInfo()?.id ?: "UserId",null,homeItem.id)}
+    homeItem.isLiked = !homeItem.isLiked
+    ///itemRef.setValue(homeItem)///
+    homeItem.thumbCount = newCount
+    itemRef.setValue(homeItem).addOnSuccessListener {
+        _thumbCountLiveData.value = homeItem.thumbCount
+        _commentsLiveData.value = homeItem.comments
+    }.addOnFailureListener {
     }
+}
+
     fun deleteComment(homeItem: HomeItem, commentToDelete: CommentItem) {
-        itemRef.child("comments").child(commentToDelete.timestamp.toString()).removeValue()
-        homeItem.comments.remove(commentToDelete)
-        updateChatCount(homeItem)
+        itemRef.child("comments").child(commentToDelete.timestamp.toString()).removeValue().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                homeItem.comments.remove(commentToDelete)
+                _commentsLiveData.value = homeItem.comments
+                updateChatCount(homeItem)
+            } else {
+                task.exception?.let {
+                }
+            }
+        }
     }
 
     fun getUserInfo() =
@@ -121,3 +143,4 @@ class HomeDetailViewModelFactory(
 
     }
 }
+

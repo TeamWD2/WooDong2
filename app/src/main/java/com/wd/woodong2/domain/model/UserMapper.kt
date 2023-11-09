@@ -1,6 +1,5 @@
 package com.wd.woodong2.domain.model
 
-import com.google.gson.annotations.SerializedName
 import com.wd.woodong2.data.model.UserItemsResponse
 import com.wd.woodong2.data.model.UserResponse
 

@@ -2,6 +2,7 @@ package com.wd.woodong2.presentation.home.content
 
 
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,7 +19,8 @@ import java.util.Locale
 
 class HomeListAdapter(
     context: Context,
-    private val onClickItem: (HomeItem) -> Unit
+    private val onClickItem: (HomeItem) -> Unit,
+    private val onDeleteItem: (HomeItem) -> Unit
 ) : ListAdapter<HomeItem, HomeListAdapter.ViewHolder> (
     object : DiffUtil.ItemCallback<HomeItem>(){
         override fun areContentsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
@@ -32,19 +34,18 @@ class HomeListAdapter(
 ){
     class ViewHolder(
         private val binding: HomeListItemBinding,
-        private val onClickItem: (HomeItem) -> Unit
+        private val onClickItem: (HomeItem) -> Unit,
+        private val onDeleteItem: (HomeItem) -> Unit
     ):RecyclerView.ViewHolder(binding.root){
         fun bind(item: HomeItem) = with(binding){
             homeListItemBtnTag.text = item.tag
             homeListItemThumbnail.load(item.thumbnail)
-            homeListItemThumbnailCount.text = item.thumbnailCount.toString()
             homeListItemTvTitle.text = item.title
             homeListItemTvDescription.text = item.description
 
             homeListItemTvLocation.text = HomeMapActivity.extractLocationInfo(item.location)
             homeListItemTvTimeStamp.text = formatTimestamp(item.timeStamp)
 
-            homeListItemTvViews.text = item.view
             homeListItemTvThumbCount.text = item.thumbCount.toString()
             homeListItemTvChatCount.text = item.chatCount.toString()
 
@@ -53,7 +54,9 @@ class HomeListAdapter(
                     item
                 )
             }
-
+            homeListItemDelete.setOnClickListener {
+                showDeleteConfirmationDialog(item)
+            }
         }
 
         private fun formatTimestamp(timestamp: Long?): String {
@@ -89,6 +92,21 @@ class HomeListAdapter(
                 else -> SimpleDateFormat("yyyy.MM.dd", Locale.KOREA).format(messageTime)
             }
         }
+
+        private fun showDeleteConfirmationDialog(item: HomeItem) {
+            val builder = AlertDialog.Builder(binding.root.context)
+            builder.setTitle("삭제 확인")
+            builder.setMessage("정말로 이 항목을 삭제하시겠습니까?")
+            builder.setPositiveButton("예") { _, _ ->
+                // 사용자가 "예"를 클릭한 경우 항목을 삭제합니다.
+                onDeleteItem(item)
+            }
+            builder.setNegativeButton("아니오") { _, _ ->
+                // 사용자가 "아니오"를 클릭한 경우 아무 작업도 수행하지 않습니다.
+            }
+            val dialog = builder.create()
+            dialog.show()
+        }
     }
 
 
@@ -96,7 +114,9 @@ class HomeListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             HomeListItemBinding.inflate(LayoutInflater.from(parent.context), parent,false),
-            onClickItem
+            onClickItem,
+            onDeleteItem
+
         )
     }
 

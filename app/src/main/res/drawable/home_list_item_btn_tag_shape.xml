@@ -5,7 +5,8 @@
     android:padding="10dp">
 
     <solid
-        android:color="@color/jet"/>
+        android:color="@color/mustard"/>
+
 
     <corners
         android:topLeftRadius="10dp"

@@ -5,10 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
@@ -49,6 +52,25 @@ class HomeDetailActivity : AppCompatActivity() {
 
 
     private fun initView() {
+
+        viewModel.commentsLiveData.observe(this) { comments ->
+            commentsAdapter.updateComments(comments)
+            updateCommentCount(comments.size) // 댓글 수를 업데이트하는 메소드
+            binding.textViewNoComments.visibility = if (comments.isEmpty()) View.VISIBLE else View.GONE
+            binding.recyclerviewComment.visibility = if (comments.isEmpty()) View.GONE else View.VISIBLE
+        }
+        //상태바 & 아이콘 색상 변경
+        window.statusBarColor = ContextCompat.getColor(this@HomeDetailActivity, R.color.yellow)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
+            window.insetsController?.setSystemBarsAppearance(
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 안드로이드 6.0 이상에서만 동작
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
+
         homeItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(EXTRA_HOME_ITEM, HomeItem::class.java)
         } else {
@@ -63,27 +85,42 @@ class HomeDetailActivity : AppCompatActivity() {
 
         viewModel.fetchComments(homeItem) { updatedComments ->
             commentsAdapter.updateComments(updatedComments)
+            updateCommentCount(updatedComments.size)
         }
+
+        viewModel.thumbCountLiveData.observe(this) { thumbCount ->
+            updateLikeCountUI(thumbCount)
+        }
+        initLikeButton(homeItem)
+
     }
 
 //    private fun initViewModel() {
 //        viewModel = ViewModelProvider(this)[HomeDetailViewModel::class.java]
 //    }
 
+    private fun updateCommentCount(count: Int) {
+        binding.txtCommentCount.text = count.toString()
+        binding.textViewNoComments.visibility = if (count == 0) View.VISIBLE else View.GONE
+        binding.recyclerviewComment.visibility = if (count == 0) View.GONE else View.VISIBLE
+    }
+
+    private fun updateLikeCountUI(thumbCount: Int) {
+        binding.txtDetailThumbCount.text = thumbCount.toString()
+    }
     private fun setupCommentsRecyclerView() {
-        commentsAdapter = CommentListAdapter(homeItem, homeItem.comments, viewModel)
-        binding.recyclerviewComment.layoutManager = LinearLayoutManager(this)
+        commentsAdapter = CommentListAdapter(homeItem, viewModel)
+        binding.recyclerviewComment.layoutManager = NoScrollLinearLayoutManager(this)
         binding.recyclerviewComment.adapter = commentsAdapter
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+
     private fun initCommentButton(homeItem: HomeItem) {
         binding.btnSave.setOnClickListener {
             val commentContent = binding.editComment.text.toString()
             if (commentContent.isNotBlank()) {
                 viewModel.postComment(homeItem, commentContent)
                 binding.editComment.text.clear()
-                commentsAdapter.notifyDataSetChanged()
                 viewModel.updateChatCount(homeItem)
             } else {
                 Toast.makeText(this, "댓글을 입력하세요", Toast.LENGTH_SHORT).show()
@@ -114,6 +151,13 @@ class HomeDetailActivity : AppCompatActivity() {
             crossfade(true)
         }
         txtHomeTimestamp.text = formatTimestamp(homeItem.timeStamp)
+        txtCommentCount.text = homeItem.chatCount.toString()
+        txtDetailThumbCount.text = homeItem.thumbCount.toString()
+
+
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
     }
 
     private fun formatTimestamp(timestamp: Long?): String {

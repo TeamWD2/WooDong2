@@ -1,7 +1,5 @@
 package com.wd.woodong2.presentation.home.add
 
-import com.wd.woodong2.presentation.home.detail.CommentItem
-
 data class HomeAddItem(
     val id: String? = null,
     val name: String = "",

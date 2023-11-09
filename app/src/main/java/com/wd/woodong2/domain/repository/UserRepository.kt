@@ -19,4 +19,5 @@ interface UserRepository {
     fun getUid(): String?
     suspend fun checkNicknameDup(nickname: String): Boolean
     suspend fun updateGroupInfo(userId: String, groupId: String?, chatId: String?)
+    fun logout()
 }
