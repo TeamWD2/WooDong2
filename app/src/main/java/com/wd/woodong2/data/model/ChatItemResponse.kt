@@ -27,4 +27,5 @@ data class MessageResponse(
     @SerializedName("senderId") val senderId: String?,
     @SerializedName("timestamp") val timestamp: Long?,
     @SerializedName("nickname") val nickname: String?,
+    @SerializedName("profileImg") val profileImg: String?,
 )
