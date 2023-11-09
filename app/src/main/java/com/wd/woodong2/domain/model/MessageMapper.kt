@@ -15,11 +15,5 @@ fun MessageResponse.toEntity() = MessageEntity(
     timestamp = timestamp,
     content = content,
     nickname = nickname,
-)
-
-fun MessageResponse.toMessage() = Message(
-    senderId = senderId,
-    timestamp = timestamp,
-    content = content,
-    nickname = nickname
+    profileImg = profileImg
 )
