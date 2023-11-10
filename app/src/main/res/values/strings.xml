@@ -80,6 +80,7 @@
     <string name="group_add_toast_create_group">모임이 생성되었습니다.</string>
     <string name="group_add_toast_no_info">입력되지 않은 정보가 있습니다.</string>
     <string name="group_add_board_add_toast_no_content">내용을 입력해주세요.</string>
+    <string name="group_add_board_add_toast_create_board_loading">게시글을 작성중입니다.</string>
     <string name="group_add_board_add_toast_create_board_success">게시글이 작성되었습니다.</string>
     <string name="group_add_board_add_toast_create_board_fail">게시글 작성에 실패하였습니다.</string>
     <string name="group_add_board_detail_hint_write_comment">댓글을 입력하세요.</string>

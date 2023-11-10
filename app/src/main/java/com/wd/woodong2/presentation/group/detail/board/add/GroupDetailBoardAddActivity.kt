@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailBoardAddActivityBinding
 import com.wd.woodong2.presentation.group.GroupUserInfoItem
@@ -116,6 +117,7 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
             if(edtContent.text.isNullOrBlank()) {
                 Toast.makeText(this@GroupDetailBoardAddActivity, R.string.group_add_board_add_toast_no_content, Toast.LENGTH_SHORT).show()
             } else {
+                btnAddBoard.isClickable = false //같은 게시글 중복 생성 방지
                 viewModel.setGroupBoardAlbumItem(
                     itemId,
                     userInfo,
@@ -129,6 +131,18 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         imageList.observe(this@GroupDetailBoardAddActivity) {
             boardAddListAdapter.submitList(it)
         }
+
+        isLoadingState.observe(this@GroupDetailBoardAddActivity) { isLoadingState ->
+            binding.progressBar.isVisible = isLoadingState
+            if(isLoadingState) {
+                Toast.makeText(
+                    this@GroupDetailBoardAddActivity,
+                    R.string.group_add_board_add_toast_create_board_loading,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
         isCreateSuccess.observe(this@GroupDetailBoardAddActivity) { isSuccess ->
             Toast.makeText(
                 this@GroupDetailBoardAddActivity,
