@@ -27,4 +27,5 @@ interface GroupRepository {
     )
 
     suspend fun setGroupMemberItem(itemId: String, groupMemberItem: GroupDetailMemberAddItem)
+    suspend fun getGroupItem(groupId: String): Flow<GroupItemsEntity?>
 }
