@@ -25,6 +25,9 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
         const val TAG = "GroupRepositoryImpl"
     }
 
+    /**
+     * 모임 전체 데이터 가져오기
+     * */
     override suspend fun getGroupItems(): Flow<GroupItemsEntity> = callbackFlow {
         val listener = databaseReference.addValueEventListener(object : ValueEventListener {
 
@@ -57,6 +60,49 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
         }
     }
 
+
+    /**
+     * groupId에 해당하는 그룹 MainEntity 반환
+     * */
+    override suspend fun getGroupItem(groupId: String): Flow<GroupItemsEntity?> = callbackFlow {
+        val listener =
+            databaseReference.child(groupId).addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val gson = GsonBuilder()
+                            .registerTypeAdapter(
+                                GroupItemsResponse::class.java,
+                                GroupItemsResponseJsonDeserializer()
+                            ).create()
+
+                        // TODO 임시
+                        val jsonString = "{\"$groupId\":" + gson.toJson(snapshot.value) + "}"
+
+                        val groupItemsResponse = gson.fromJson(
+                            jsonString,
+                            GroupItemsResponse::class.java
+                        )
+
+                        val entity = groupItemsResponse?.toEntity()
+
+                        trySend(entity)
+                    } else {
+                        //snapshot 이 존재하지 않는 경우
+                        trySend(null)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    throw error.toException()
+                }
+            })
+
+        awaitClose {
+            databaseReference.removeEventListener(listener)
+        }
+    }
+
+
     override suspend fun setGroupItem(groupAddSetItem: List<GroupAddSetItem>): String {
         val groupRef = databaseReference.push()
         val groupKey = groupRef.key
@@ -72,7 +118,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
 
     override suspend fun setGroupBoardItem(
         itemId: String,
-        groupBoardItem: GroupDetailBoardAddItem
+        groupBoardItem: GroupDetailBoardAddItem,
     ) {
         databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -92,7 +138,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
 
     override suspend fun setGroupAlbumItem(
         itemId: String,
-        groupAlbumItems: List<String>
+        groupAlbumItems: List<String>,
     ) {
         databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -117,7 +163,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
     override suspend fun addGroupBoardComment(
         itemId: String,
         groupId: String,
-        boardComment: GroupDetailBoardDetailItem.BoardComment
+        boardComment: GroupDetailBoardDetailItem.BoardComment,
     ) {
         databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -139,7 +185,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
     override suspend fun deleteGroupBoardComment(
         itemId: String,
         groupId: String,
-        commentId: String
+        commentId: String,
     ) {
         databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -160,7 +206,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
 
     override suspend fun setGroupMemberItem(
         itemId: String,
-        groupMemberItem: GroupDetailMemberAddItem
+        groupMemberItem: GroupDetailMemberAddItem,
     ) {
         databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
