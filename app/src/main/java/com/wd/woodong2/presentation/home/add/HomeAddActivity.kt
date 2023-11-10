@@ -3,6 +3,7 @@ package com.wd.woodong2.presentation.home.add
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -10,9 +11,11 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.view.WindowInsetsController
+import android.widget.Toast
 import android.widget.Toolbar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.chip.Chip
@@ -47,6 +50,40 @@ class HomeAddActivity : AppCompatActivity() {
     private val viewModel: HomeAddViewModel by viewModels {
         HomeAddViewModelFactory(this)
     }
+
+    private val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(
+            android.Manifest.permission.READ_MEDIA_IMAGES,
+            android.Manifest.permission.READ_MEDIA_VIDEO
+        )
+    } else {
+        arrayOf(
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    }
+
+    private val galleryPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (permissions.values.all { it }) {
+                Toast.makeText(
+                    this,
+                    R.string.public_toast_permission_grant,
+                    Toast.LENGTH_SHORT
+                ).show()
+                imagePicker.launch(
+                    Intent(Intent.ACTION_PICK).setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        "image/*"
+                    )
+                )
+            } else {
+                Toast.makeText(
+                    this,
+                    R.string.public_toast_permission_deny,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
     private val imagePicker =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -112,8 +149,7 @@ class HomeAddActivity : AppCompatActivity() {
         }
 
         homeAddPicture.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            imagePicker.launch(intent)
+            checkPermissions()
         }
 
         toolBar.setNavigationOnClickListener {
@@ -152,6 +188,43 @@ class HomeAddActivity : AppCompatActivity() {
             selectTag(homeAddTag8, "생활정보")
         }
 
+    }
+
+    private fun checkPermissions() {
+        when {
+            permissions.all {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            } -> {
+                imagePicker.launch(
+                    Intent(Intent.ACTION_PICK).setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        "image/*"
+                    )
+                )
+            }
+
+            permissions.any {
+                shouldShowRequestPermissionRationale(it)
+            } -> { //이전에 권한 요청을 거부한 적이 있는 경우
+                showRationalDialog()
+            }
+
+            else -> galleryPermissionLauncher.launch(permissions)
+        }
+    }
+
+    private fun showRationalDialog() {
+        AlertDialog.Builder(this@HomeAddActivity).apply {
+            setTitle(R.string.public_dialog_rational_title)
+            setMessage(R.string.public_dialog_rational_message)
+            setPositiveButton(R.string.public_dialog_rational_ok) { _, _ ->
+                galleryPermissionLauncher.launch(permissions)
+            }
+            show()
+        }
     }
 
     private fun selectTag(selectedChip: Chip, tag: String) = with(binding) {

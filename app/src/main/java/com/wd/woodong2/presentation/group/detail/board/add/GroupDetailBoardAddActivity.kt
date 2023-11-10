@@ -3,6 +3,7 @@ package com.wd.woodong2.presentation.group.detail.board.add
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -56,6 +58,40 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
 
     private val idGenerate = AtomicLong(1L)
 
+    private val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(
+            android.Manifest.permission.READ_MEDIA_IMAGES,
+            android.Manifest.permission.READ_MEDIA_VIDEO
+        )
+    } else {
+        arrayOf(
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    }
+
+    private val galleryPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (permissions.values.all { it }) {
+                Toast.makeText(
+                    this,
+                    R.string.public_toast_permission_grant,
+                    Toast.LENGTH_SHORT
+                ).show()
+                galleryLauncher.launch(
+                    Intent(Intent.ACTION_PICK).setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        "image/*"
+                    )
+                )
+            } else {
+                Toast.makeText(
+                    this,
+                    R.string.public_toast_permission_deny,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
     private var currentItem: GroupDetailBoardAddImageItem? = null
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -71,12 +107,7 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         GroupDetailBoardAddListAdapter(
             onClickPlusImage = { item ->
                 currentItem = item
-                galleryLauncher.launch(
-                    Intent(Intent.ACTION_PICK).setDataAndType(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        "image/*"
-                    )
-                )
+                checkPermissions()
             },
             onClickRemoveImage = { position ->
                 viewModel.removeBoardImageItem(position)
@@ -95,7 +126,8 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
 
     private fun initView() = with(binding) {
         //상태바 & 아이콘 색상 변경
-        window.statusBarColor = ContextCompat.getColor(this@GroupDetailBoardAddActivity, R.color.white)
+        window.statusBarColor =
+            ContextCompat.getColor(this@GroupDetailBoardAddActivity, R.color.white)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
             window.insetsController?.setSystemBarsAppearance(
@@ -114,8 +146,12 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         addImageItem() //초기 데이터 세팅
 
         btnAddBoard.setOnClickListener {
-            if(edtContent.text.isNullOrBlank()) {
-                Toast.makeText(this@GroupDetailBoardAddActivity, R.string.group_add_board_add_toast_no_content, Toast.LENGTH_SHORT).show()
+            if (edtContent.text.isNullOrBlank()) {
+                Toast.makeText(
+                    this@GroupDetailBoardAddActivity,
+                    R.string.group_add_board_add_toast_no_content,
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 btnAddBoard.isClickable = false //같은 게시글 중복 생성 방지
                 viewModel.setGroupBoardAlbumItem(
@@ -134,7 +170,7 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
 
         isLoadingState.observe(this@GroupDetailBoardAddActivity) { isLoadingState ->
             binding.progressBar.isVisible = isLoadingState
-            if(isLoadingState) {
+            if (isLoadingState) {
                 Toast.makeText(
                     this@GroupDetailBoardAddActivity,
                     R.string.group_add_board_add_toast_create_board_loading,
@@ -146,10 +182,47 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         isCreateSuccess.observe(this@GroupDetailBoardAddActivity) { isSuccess ->
             Toast.makeText(
                 this@GroupDetailBoardAddActivity,
-                if(isSuccess) R.string.group_add_board_add_toast_create_board_success else R.string.group_add_board_add_toast_create_board_fail,
+                if (isSuccess) R.string.group_add_board_add_toast_create_board_success else R.string.group_add_board_add_toast_create_board_fail,
                 Toast.LENGTH_SHORT
             ).show()
             finish()
+        }
+    }
+
+    private fun checkPermissions() {
+        when {
+            permissions.all {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            } -> {
+                galleryLauncher.launch(
+                    Intent(Intent.ACTION_PICK).setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        "image/*"
+                    )
+                )
+            }
+
+            permissions.any {
+                shouldShowRequestPermissionRationale(it)
+            } -> { //이전에 권한 요청을 거부한 적이 있는 경우
+                showRationalDialog()
+            }
+
+            else -> galleryPermissionLauncher.launch(permissions)
+        }
+    }
+
+    private fun showRationalDialog() {
+        AlertDialog.Builder(this@GroupDetailBoardAddActivity).apply {
+            setTitle(R.string.public_dialog_rational_title)
+            setMessage(R.string.public_dialog_rational_message)
+            setPositiveButton(R.string.public_dialog_rational_ok) { _, _ ->
+                galleryPermissionLauncher.launch(permissions)
+            }
+            show()
         }
     }
 

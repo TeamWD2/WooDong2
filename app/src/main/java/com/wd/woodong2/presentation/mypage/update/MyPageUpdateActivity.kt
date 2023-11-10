@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -29,12 +30,12 @@ import com.wd.woodong2.presentation.mypage.content.MyPageFragment
 import kotlinx.coroutines.launch
 
 
-class MyPageUpdateActivity : AppCompatActivity(){
+class MyPageUpdateActivity : AppCompatActivity() {
 
     companion object {
         lateinit var userInfo: UserItem
 
-        fun newIntent(context: Context, userItem: UserItem)=//MutableLiveData<UserItem>)=
+        fun newIntent(context: Context, userItem: UserItem) =//MutableLiveData<UserItem>)=
             Intent(context, MyPageUpdateActivity::class.java).apply {
                 userInfo = userItem
             }
@@ -46,7 +47,7 @@ class MyPageUpdateActivity : AppCompatActivity(){
     private var passwordJudge = false
     private var currentPassword = ""
     private var changePassword = ""
-    private lateinit var binding : MyPageUpdateActivityBinding
+    private lateinit var binding: MyPageUpdateActivityBinding
 
     private val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(
@@ -58,7 +59,7 @@ class MyPageUpdateActivity : AppCompatActivity(){
             android.Manifest.permission.READ_EXTERNAL_STORAGE
         )
     }
-    private val onBackPressedCallback = object: OnBackPressedCallback(true) {
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             finish()
         }
@@ -71,10 +72,23 @@ class MyPageUpdateActivity : AppCompatActivity(){
     private val galleryPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             if (permissions.values.all { it }) {
-                initView()
+                Toast.makeText(
+                    this,
+                    R.string.public_toast_permission_grant,
+                    Toast.LENGTH_SHORT
+                ).show()
+                galleryLauncher.launch(
+                    Intent(Intent.ACTION_PICK).setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        "image/*"
+                    )
+                )
             } else {
-                Toast.makeText(this, getString(R.string.main_toast_permission), Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    this,
+                    R.string.public_toast_permission_deny,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -89,7 +103,6 @@ class MyPageUpdateActivity : AppCompatActivity(){
                     .error(R.drawable.group_ic_no_image)
                     .fitCenter()
                     .into(binding.myPageUpdateUserImgProfile)
-
             }
         }
 
@@ -110,17 +123,12 @@ class MyPageUpdateActivity : AppCompatActivity(){
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
         initView()
         initViewModel()
-
-
     }
 
-
-
     private fun initView() = with(binding) {
-
         onBackPressedDispatcher.addCallback(this@MyPageUpdateActivity, onBackPressedCallback)
 
-        myPageUpdateClose.setOnClickListener{
+        myPageUpdateClose.setOnClickListener {
             finish()
         }
 
@@ -137,29 +145,27 @@ class MyPageUpdateActivity : AppCompatActivity(){
         editUpdateUserCurrentPassword.isEnabled = false
         editUpdateUserPassword.isEnabled = false
         editUpdateUserPasswordCheck.isEnabled = false
-        if(passwordJudge){
+        if (passwordJudge) {
             editUpdateUserCurrentPassword.setBackgroundResource(R.drawable.my_page_update_et_shape)
             editUpdateUserPassword.setBackgroundResource(R.drawable.my_page_update_et_shape)
             editUpdateUserPasswordCheck.setBackgroundResource(R.drawable.my_page_update_et_shape)
-        }
-        else{
+        } else {
             editUpdateUserCurrentPassword.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
             editUpdateUserPassword.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
             editUpdateUserPasswordCheck.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
 
         }
         editPassword.setOnClickListener {
-            if(passwordJudge){
+            if (passwordJudge) {
                 editUpdateUserCurrentPassword.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
                 editUpdateUserPassword.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
                 editUpdateUserPasswordCheck.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
 
-            editUpdateUserCurrentPassword.isEnabled = false
-            editUpdateUserPassword.isEnabled = false
-            editUpdateUserPasswordCheck.isEnabled = false
-            passwordJudge = false
-            }
-            else{
+                editUpdateUserCurrentPassword.isEnabled = false
+                editUpdateUserPassword.isEnabled = false
+                editUpdateUserPasswordCheck.isEnabled = false
+                passwordJudge = false
+            } else {
                 editUpdateUserCurrentPassword.setBackgroundResource(R.drawable.my_page_update_et_shape)
                 editUpdateUserPassword.setBackgroundResource(R.drawable.my_page_update_et_shape)
                 editUpdateUserPasswordCheck.setBackgroundResource(R.drawable.my_page_update_et_shape)
@@ -172,11 +178,11 @@ class MyPageUpdateActivity : AppCompatActivity(){
             }
         }
 
-        myPageUpdateUserImgProfile.setOnClickListener{
+        myPageUpdateUserImgProfile.setOnClickListener {
             checkPermissions()
         }
 
-        editUpdateUserName.apply{
+        editUpdateUserName.apply {
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -191,7 +197,9 @@ class MyPageUpdateActivity : AppCompatActivity(){
         }
 
         nameDupCheck.setOnClickListener {
-            myPageUpdateViewModel.checkNicknameDuplication(editUpdateUserName.text.toString().trim())
+            myPageUpdateViewModel.checkNicknameDuplication(
+                editUpdateUserName.text.toString().trim()
+            )
         }
 
         // 비밀번호 형식 확인
@@ -202,7 +210,8 @@ class MyPageUpdateActivity : AppCompatActivity(){
                 override fun afterTextChanged(p0: Editable?) {
                     myPageUpdateViewModel.checkValidPassword(
                         editUpdateUserCurrentPassword.text.toString(),
-                        text.toString().trim())
+                        text.toString().trim()
+                    )
                 }
             })
         }
@@ -219,8 +228,8 @@ class MyPageUpdateActivity : AppCompatActivity(){
                 }
             })
         }
-        myPageUpdateBtn.setOnClickListener{
-            if(myPageUpdateViewModel.checkAllConditions()){
+        myPageUpdateBtn.setOnClickListener {
+            if (myPageUpdateViewModel.checkAllConditions()) {
                 lifecycleScope.launch {
 
                     name = editUpdateUserName.text.toString().trim()
@@ -239,8 +248,7 @@ class MyPageUpdateActivity : AppCompatActivity(){
                         passwordJudge
                     )
                 }
-
-            }else {
+            } else {
                 Toast.makeText(
                     applicationContext,
                     "입력 사항을 다시 한 번 확인해주세요",
@@ -248,19 +256,17 @@ class MyPageUpdateActivity : AppCompatActivity(){
                 ).show()
             }
         }
-
-
-
-
     }
+
     private fun initViewModel() = with(binding) {
-        myPageUpdateViewModel.isValidNickname.observe(this@MyPageUpdateActivity){isValid ->
+        myPageUpdateViewModel.isValidNickname.observe(this@MyPageUpdateActivity) { isValid ->
             if (isValid) {
                 tilUpdateUserName.boxStrokeColor =
                     ContextCompat.getColor(this@MyPageUpdateActivity, R.color.dodger_blue)
                 nameDupCheck.isEnabled = true
             } else {
-                tilUpdateUserName.boxStrokeColor = ContextCompat.getColor(this@MyPageUpdateActivity, R.color.red)
+                tilUpdateUserName.boxStrokeColor =
+                    ContextCompat.getColor(this@MyPageUpdateActivity, R.color.red)
                 nameDupCheck.isEnabled = false
             }
         }
@@ -293,7 +299,6 @@ class MyPageUpdateActivity : AppCompatActivity(){
             }
         }
 
-
         myPageUpdateViewModel.isValidPassword.observe(this@MyPageUpdateActivity) { isValid ->
             if (isValid && myPageUpdateViewModel.isValidCurrentPassword.value == true) {
                 tilUpdateUserPassword.boxStrokeColor =
@@ -303,17 +308,17 @@ class MyPageUpdateActivity : AppCompatActivity(){
                     setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.0f)
                 }
-            }
-            else if(myPageUpdateViewModel.isValidCurrentPassword.value == false){
-                tilUpdateUserPassword.boxStrokeColor = ContextCompat.getColor(this@MyPageUpdateActivity, R.color.red)
+            } else if (myPageUpdateViewModel.isValidCurrentPassword.value == false) {
+                tilUpdateUserPassword.boxStrokeColor =
+                    ContextCompat.getColor(this@MyPageUpdateActivity, R.color.red)
                 updateUserPasswordJudge.apply {
                     setText(R.string.group_add_txt_current_password_invalid)
                     setTextColor(ContextCompat.getColor(context, R.color.red))
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 10.0f)
                 }
-            }
-            else {
-                tilUpdateUserPassword.boxStrokeColor = ContextCompat.getColor(this@MyPageUpdateActivity, R.color.red)
+            } else {
+                tilUpdateUserPassword.boxStrokeColor =
+                    ContextCompat.getColor(this@MyPageUpdateActivity, R.color.red)
                 updateUserPasswordJudge.apply {
                     setText(R.string.group_add_txt_password_invalid)
                     setTextColor(ContextCompat.getColor(context, R.color.red))
@@ -321,7 +326,6 @@ class MyPageUpdateActivity : AppCompatActivity(){
                 }
             }
         }
-
 
         myPageUpdateViewModel.isValidSamePassword.observe(this@MyPageUpdateActivity) { isValid ->
             updateUserPasswordCheckJudge.visibility = View.VISIBLE
@@ -333,7 +337,8 @@ class MyPageUpdateActivity : AppCompatActivity(){
                     setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
                 }
             } else {
-                tilUpdateUserPasswordCheck.boxStrokeColor = ContextCompat.getColor(this@MyPageUpdateActivity, R.color.red)
+                tilUpdateUserPasswordCheck.boxStrokeColor =
+                    ContextCompat.getColor(this@MyPageUpdateActivity, R.color.red)
                 updateUserPasswordCheckJudge.apply {
                     setText(R.string.signup_pw_not_match)
                     setTextColor(ContextCompat.getColor(context, R.color.red))
@@ -341,7 +346,7 @@ class MyPageUpdateActivity : AppCompatActivity(){
             }
         }
 
-        myPageUpdateViewModel.setResult.observe(this@MyPageUpdateActivity){result ->
+        myPageUpdateViewModel.setResult.observe(this@MyPageUpdateActivity) { result ->
             when (result) {
                 true -> {
                     Log.d("mypage3", name!!)
@@ -354,7 +359,7 @@ class MyPageUpdateActivity : AppCompatActivity(){
                             MyPageFragment.EXTRA_USER_PROFILE,
                             profile
                         )
-                        if(passwordJudge){
+                        if (passwordJudge) {
                             putExtra(
                                 MyPageFragment.EXTRA_USER_CURRENT_PASSWORD,
                                 currentPassword
@@ -375,26 +380,45 @@ class MyPageUpdateActivity : AppCompatActivity(){
                     ).show()
 
                     finish()
-               }
+                }
             }
         }
     }
+
     private fun checkPermissions() {
-        if (permissions.all {
+        when {
+            permissions.all {
                 ContextCompat.checkSelfPermission(
                     this,
                     it
                 ) == PackageManager.PERMISSION_GRANTED
-            }
-        ) {
-            galleryLauncher.launch(
-                Intent(Intent.ACTION_PICK).setDataAndType(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    "image/*"
+            } -> {
+                galleryLauncher.launch(
+                    Intent(Intent.ACTION_PICK).setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        "image/*"
+                    )
                 )
-            )
-        } else {
-            galleryPermissionLauncher.launch(permissions)
+            }
+
+            permissions.any {
+                shouldShowRequestPermissionRationale(it)
+            } -> { //이전에 권한 요청을 거부한 적이 있는 경우
+                showRationalDialog()
+            }
+
+            else -> galleryPermissionLauncher.launch(permissions)
+        }
+    }
+
+    private fun showRationalDialog() {
+        AlertDialog.Builder(this@MyPageUpdateActivity).apply {
+            setTitle(R.string.public_dialog_rational_title)
+            setMessage(R.string.public_dialog_rational_message)
+            setPositiveButton(R.string.public_dialog_rational_ok) { _, _ ->
+                galleryPermissionLauncher.launch(permissions)
+            }
+            show()
         }
     }
 }
