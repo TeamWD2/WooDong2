@@ -147,7 +147,7 @@ class GroupDetailHomeListAdapter(
                                 error(R.drawable.group_ic_no_profile)
                             }
                             memberNames[i].text = member[i].name
-                            memberLocations[i].text = member[i].location
+                            memberLocations[i].text = member[i].location?.split(" ")?.last()
                             memberComments[i].text = member[i].comment
                         }
                     }

@@ -126,7 +126,7 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
 
         imgProfile.load(groupBoardItem?.profile)
         txtName.text = groupBoardItem?.name
-        txtLocation.text = groupBoardItem?.location
+        txtLocation.text = groupBoardItem?.location?.split(" ")?.last()
         txtDate.text = groupBoardItem?.timestamp?.let { Date(it) }
             ?.let { SimpleDateFormat("yyyy년 MM월 dd일").format(it) }
 

@@ -153,7 +153,7 @@ class GroupAddSharedViewModel(
                     )
 
                     //사용자 정보 업데이트 (방장 자격)
-                    updateGroupInfo(getUserInfo()?.userId ?: "UserId", groupId, chatId)
+                    updateGroupInfo(userInfo?.userId ?: "UserId", groupId, chatId)
 
                     _isLoadingState.value = false
                     _isCreateSuccess.value = true

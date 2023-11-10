@@ -132,7 +132,7 @@ class GroupDetailBoardDetailViewModel(
                     userId = userInfo.userId,
                     userProfile = userInfo.userProfile,
                     userName = userInfo.userName,
-                    userLocation = userInfo.userLocation,
+                    userLocation = userInfo.userLocation.split(" ").last(),
                     timestamp = System.currentTimeMillis(),
                     isWriteOwner = true,
                     comment = comment
