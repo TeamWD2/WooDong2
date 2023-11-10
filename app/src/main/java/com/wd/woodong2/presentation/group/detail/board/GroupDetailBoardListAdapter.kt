@@ -22,7 +22,7 @@ class GroupDetailBoardListAdapter(
                 oldItem: GroupItem.Board,
                 newItem: GroupItem.Board
             ): Boolean =
-                oldItem.userId == newItem.userId
+                oldItem.boardId == newItem.boardId
 
             override fun areContentsTheSame(
                 oldItem: GroupItem.Board,
