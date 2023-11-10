@@ -26,7 +26,7 @@ import java.util.Date
 class GroupDetailBoardDetailActivity : AppCompatActivity() {
     companion object {
         private const val USER_INFO = "user_info"
-        private const val ITEM_PK_ID= "item_pk_id"
+        private const val ITEM_PK_ID = "item_pk_id"
         private const val GROUP_BOARD_ITEM = "group_board_item"
         private const val IS_JOIN_GROUP = "is_join_group"
 
@@ -61,7 +61,7 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
                         viewModel.deleteComment(
                             itemPkId,
                             groupBoardItem?.boardId,
-                            groupBoardItem?.commentList?.firstOrNull()?.commentId,
+                            groupBoardItem?.commentList?.get((position - 2) / 2)?.commentId,
                             position
                         )
                     }
@@ -106,7 +106,8 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
 
     private fun initView() = with(binding) {
         //상태바 & 아이콘 색상 변경
-        window.statusBarColor = ContextCompat.getColor(this@GroupDetailBoardDetailActivity, R.color.egg_yellow_toolbar)
+        window.statusBarColor =
+            ContextCompat.getColor(this@GroupDetailBoardDetailActivity, R.color.egg_yellow_toolbar)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
             window.insetsController?.setSystemBarsAppearance(
@@ -133,7 +134,7 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
 
         constraintCommentWrite.isVisible = isJoinGroup
         btnWriteComment.setOnClickListener {
-            if(edtWriteComment.text.isNullOrBlank()) {
+            if (edtWriteComment.text.isNullOrBlank()) {
                 Toast.makeText(
                     this@GroupDetailBoardDetailActivity,
                     R.string.group_detail_board_detail_no_comment,
@@ -147,7 +148,6 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
                     edtWriteComment.text.toString()
                 )
                 edtWriteComment.setText("")
-//                binding.recyclerViewBoardDetail.scrollToPosition()
             }
         }
     }
@@ -155,10 +155,11 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
     private fun initViewModel() = with(viewModel) {
         groupBoardItem.observe(this@GroupDetailBoardDetailActivity) {
             boardDetailListAdapter.submitList(it)
+            binding.recyclerViewBoardDetail.smoothScrollToPosition(it.size-1)
         }
 
         isSuccessAddComment.observe(this@GroupDetailBoardDetailActivity) { isSuccess ->
-            if(isSuccess) {
+            if (isSuccess) {
                 Toast.makeText(
                     this@GroupDetailBoardDetailActivity,
                     R.string.group_detail_board_detail_toast_create_comment_success,

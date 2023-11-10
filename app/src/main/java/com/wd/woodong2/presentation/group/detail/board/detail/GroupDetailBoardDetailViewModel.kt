@@ -120,6 +120,10 @@ class GroupDetailBoardDetailViewModel(
 
         //현재 화면에 댓글 추가
         val currentItem = groupBoardItem.value.orEmpty().toMutableList()
+        val currentTitleItem = currentItem.filterIsInstance<GroupDetailBoardDetailItem.BoardTitle>().firstOrNull()
+        currentTitleItem?.let{
+            currentItem[1] = it.copy(boardCount = (it.boardCount?.toInt()?.plus(1)).toString())
+        }
         _groupBoardItem.value = currentItem.apply {
             add(
                 GroupDetailBoardDetailItem.BoardComment(
@@ -147,11 +151,11 @@ class GroupDetailBoardDetailViewModel(
      */
     fun deleteComment(
         itemPkId: String?,
-        groupId: String?,
+        boardId: String?,
         commentId: String?,
         position: Int
     ) {
-        if (itemPkId == null || groupId == null || commentId == null) {
+        if (itemPkId == null || boardId == null || commentId == null) {
             return
         }
 
@@ -160,7 +164,7 @@ class GroupDetailBoardDetailViewModel(
             runCatching {
                 groupDeleteBoardCommentItem(
                     itemPkId,
-                    groupId,
+                    boardId,
                     commentId
                 )
             }.onFailure {
@@ -170,6 +174,10 @@ class GroupDetailBoardDetailViewModel(
 
         //현재 화면에 댓글 삭제
         val currentItem = groupBoardItem.value.orEmpty().toMutableList()
+        val currentTitleItem = currentItem.filterIsInstance<GroupDetailBoardDetailItem.BoardTitle>().firstOrNull()
+        currentTitleItem?.let{
+            currentItem[1] = it.copy(boardCount = (it.boardCount?.toInt()?.minus(1)).toString())
+        }
         currentItem.removeAt(position)
         currentItem.removeAt(position) //Divider 도 같이 삭제
         _groupBoardItem.value = currentItem
