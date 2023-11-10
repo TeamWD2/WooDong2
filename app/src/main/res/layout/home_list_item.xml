@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.014"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/home_list_item_user"
         tools:text="동네친구" />
 
     <TextView
@@ -69,12 +69,11 @@
         app:layout_constraintTop_toBottomOf="@+id/home_list_item_tv_title" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/home_list_item_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="우동이"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.024"
         app:layout_constraintStart_toStartOf="parent"

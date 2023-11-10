@@ -4,7 +4,9 @@ package com.wd.woodong2.presentation.home.content
 
 import android.app.AlertDialog
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -32,6 +34,7 @@ class HomeListAdapter(
         }
     }
 ){
+
     class ViewHolder(
         private val binding: HomeListItemBinding,
         private val onClickItem: (HomeItem) -> Unit,
@@ -42,6 +45,7 @@ class HomeListAdapter(
             homeListItemThumbnail.load(item.thumbnail)
             homeListItemTvTitle.text = item.title
             homeListItemTvDescription.text = item.description
+            homeListItemUser.text = item.name
 
             homeListItemTvLocation.text = HomeMapActivity.extractLocationInfo(item.location)
             homeListItemTvTimeStamp.text = formatTimestamp(item.timeStamp)
@@ -54,9 +58,10 @@ class HomeListAdapter(
                     item
                 )
             }
-            homeListItemDelete.setOnClickListener {
-                showDeleteConfirmationDialog(item)
-            }
+
+                homeListItemDelete.setOnClickListener {
+                    showDeleteConfirmationDialog(item)
+                }
         }
 
         private fun formatTimestamp(timestamp: Long?): String {
@@ -124,7 +129,4 @@ class HomeListAdapter(
         val item = getItem(position)
         holder.bind(item)
     }
-
-
-
 }
