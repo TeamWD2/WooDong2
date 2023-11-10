@@ -10,17 +10,20 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.FirebaseDatabase
 import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.ChatRepositoryImpl
+import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.ChatItemsEntity
 import com.wd.woodong2.domain.usecase.ChatGetItemsUseCase
+import com.wd.woodong2.domain.usecase.GroupGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
-    private val chatItem: ChatGetItemsUseCase,
-    private val prefGetUserItem: UserPrefGetItemUseCase,
+    private val getChatItemUseCase: ChatGetItemsUseCase,
+    private val prefGetUserItemUseCase: UserPrefGetItemUseCase,
+    private val getGroupMainItemUseCase: GroupGetItemUseCase,
 ) : ViewModel(
 ) {
     private val _chatList = MutableLiveData<MutableList<ChatItem>>()
@@ -34,7 +37,7 @@ class ChatViewModel(
     var user: UserItem
 
     init {
-        val getUser = prefGetUserItem()
+        val getUser = prefGetUserItemUseCase()
         if (getUser != null) {
             user = UserItem(
                 id = getUser.id,
@@ -69,7 +72,7 @@ class ChatViewModel(
     private fun getChatItems() = viewModelScope.launch {
         _isLoading.value = true
         runCatching {
-            chatItem(user.chatIds.orEmpty()).collect { items ->
+            getChatItemUseCase(user.chatIds.orEmpty()).collect { items ->
                 _chatList.postValue(readChatItems(items).toMutableList())
                 _isLoading.value = false
             }
@@ -81,12 +84,15 @@ class ChatViewModel(
 
     fun reloadChatItems() = viewModelScope.launch {
         _chatList.value?.clear()
+        _isLoading.value = true
         runCatching {
-            chatItem(user.chatIds.orEmpty()).collect { items ->
+            getChatItemUseCase(user.chatIds.orEmpty()).collect { items ->
                 _chatList.postValue(readChatItems(items).toMutableList())
+                _isLoading.value = false
             }
         }.onFailure {
             Log.e("danny", it.message.toString())
+            _isLoading.value = false
         }
     }
 
@@ -132,11 +138,18 @@ class ChatViewModelFactory(
         )
     }
 
+    private val groupRepositoryImpl by lazy {
+        GroupRepositoryImpl(
+            FirebaseDatabase.getInstance().getReference("group_list"),
+        )
+    }
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
             return ChatViewModel(
                 ChatGetItemsUseCase(chatRepositoryImpl),
                 UserPrefGetItemUseCase(userPreferencesRepository),
+                GroupGetItemUseCase(groupRepositoryImpl),
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

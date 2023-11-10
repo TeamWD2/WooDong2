@@ -29,15 +29,24 @@
             app:layout_constraintTop_toTopOf="@id/constraint_product" />
 
 
-        <ImageView
-            android:id="@+id/img_product"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/wd2"
+            app:cardCornerRadius="100dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/txt_chat_type"
             app:layout_constraintStart_toEndOf="@id/btn_back"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_product"
+                android:layout_width="50dp"
+                android:scaleType="centerCrop"
+                android:layout_height="50dp"
+                android:src="@drawable/wd2" />
+        </androidx.cardview.widget.CardView>
+
 
         <TextView
             android:id="@+id/txt_chat_type"
@@ -46,7 +55,7 @@
             android:layout_marginStart="10sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/txt_member_num"
-            app:layout_constraintStart_toEndOf="@id/img_product"
+            app:layout_constraintStart_toEndOf="@id/cardView"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="모임명: or 닉네임" />
 
@@ -56,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/img_product"
+            app:layout_constraintStart_toEndOf="@id/cardView"
             app:layout_constraintTop_toBottomOf="@id/txt_chat_type"
             tools:text="## / ##" />
     </androidx.constraintlayout.widget.ConstraintLayout>
