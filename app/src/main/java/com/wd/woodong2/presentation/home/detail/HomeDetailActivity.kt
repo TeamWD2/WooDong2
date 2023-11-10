@@ -20,6 +20,7 @@ import com.wd.woodong2.databinding.HomeDetailActivityBinding
 import com.wd.woodong2.presentation.home.add.HomeAddViewModel
 import com.wd.woodong2.presentation.home.add.HomeAddViewModelFactory
 import com.wd.woodong2.presentation.home.content.HomeItem
+import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -153,6 +154,8 @@ class HomeDetailActivity : AppCompatActivity() {
         txtHomeTimestamp.text = formatTimestamp(homeItem.timeStamp)
         txtCommentCount.text = homeItem.chatCount.toString()
         txtDetailThumbCount.text = homeItem.thumbCount.toString()
+        txtDetailUser.text = homeItem.name
+        txtDetailLocation.text = HomeMapActivity.extractLocationInfo(homeItem.location)
 
 
         toolbar.setNavigationOnClickListener {

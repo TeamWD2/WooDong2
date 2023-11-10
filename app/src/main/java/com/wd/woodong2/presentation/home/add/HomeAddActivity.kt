@@ -18,13 +18,19 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.chip.Chip
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeAddActivityBinding
+
 class HomeAddActivity : AppCompatActivity() {
 
     companion object {
-        private var firstLocation : String? ="Unknown Location"
-        private var username : String? = "Who"
-        private var userId : String? = ""
-        fun homeAddActivityNewIntent(context: Context?,firstLoc: String, name: String?, id: String) =
+        private var firstLocation: String? = "Unknown Location"
+        private var username: String? = "Who"
+        private var userId: String? = ""
+        fun homeAddActivityNewIntent(
+            context: Context?,
+            firstLoc: String,
+            name: String?,
+            id: String
+        ) =
             Intent(context, HomeAddActivity::class.java).apply {
                 firstLocation = firstLoc
                 username = name
@@ -38,7 +44,7 @@ class HomeAddActivity : AppCompatActivity() {
     private var selectedImageUri: Uri? = null
 
 
-    private val viewModel: HomeAddViewModel by viewModels{
+    private val viewModel: HomeAddViewModel by viewModels {
         HomeAddViewModelFactory(this)
     }
 
@@ -46,22 +52,22 @@ class HomeAddActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 selectedImageUri = result.data?.data
-                    selectedImageUri?.let { uri ->
-                        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                        val resizedBitmap = Bitmap.createScaledBitmap(
-                            bitmap,
-                            binding.homeThumbnail.width,
-                            binding.homeThumbnail.height,
-                            false
-                        )
-                        binding.homeThumbnail.setImageBitmap(resizedBitmap)
-                        //사진 갯수 추가
-                        if (selectedImageUri != null && selectedImageUri.toString().isNotEmpty()) {
-                            selectedThumbnailCount = selectedThumbnailCount?.plus(1)
-                        }
+                selectedImageUri?.let { uri ->
+                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                    val resizedBitmap = Bitmap.createScaledBitmap(
+                        bitmap,
+                        binding.homeThumbnail.width,
+                        binding.homeThumbnail.height,
+                        false
+                    )
+                    binding.homeThumbnail.setImageBitmap(resizedBitmap)
+                    //사진 갯수 추가
+                    if (selectedImageUri != null && selectedImageUri.toString().isNotEmpty()) {
+                        selectedThumbnailCount = selectedThumbnailCount?.plus(1)
                     }
                 }
             }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,7 +120,7 @@ class HomeAddActivity : AppCompatActivity() {
             finish()
         }
 
-         homeAddTag1.setOnClickListener {
+        homeAddTag1.setOnClickListener {
             selectTag(homeAddTag1, "동네질문")
         }
 
