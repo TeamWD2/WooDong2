@@ -97,7 +97,7 @@ class ChatDetailActivity : AppCompatActivity() {
         when (val item = receiveItem) {
             is ChatItem.GroupChatItem -> {
                 txtChatType.text = item.title
-                txtMemberNum.text = "## / ${item.memberLimit}명"
+                txtMemberNum.text = "## / ${item.memberLimit}"
             }
 
             is ChatItem.PrivateChatItem -> {

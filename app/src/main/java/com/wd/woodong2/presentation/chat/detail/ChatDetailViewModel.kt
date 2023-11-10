@@ -19,6 +19,7 @@ import com.wd.woodong2.domain.usecase.ChatSendMessageUseCase
 import com.wd.woodong2.domain.usecase.SignInGetUserUIDUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.ChatItem
+import com.wd.woodong2.presentation.chat.content.UserItem
 import kotlinx.coroutines.launch
 
 class ChatDetailViewModel(
@@ -42,7 +43,7 @@ class ChatDetailViewModel(
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     private lateinit var uid: String
-    private lateinit var name: String
+    private var curUser: UserItem? = null
 
     init {
         getMessageItem()
@@ -54,7 +55,20 @@ class ChatDetailViewModel(
         runCatching {
             _isLoading.value = true
             getUser(uid).collect { user ->
-                name = user?.name ?: "(알 수 없음)"
+                if (user != null) {
+                    curUser = UserItem(
+                        id = user.id,
+                        name = user.name,
+                        imgProfile = user.imgProfile,
+                        email = user.email,
+                        chatIds = user.chatIds,
+                        groupIds = user.groupIds,
+                        likedIds = user.likedIds,
+                        writtenIds = user.writtenIds,
+                        firstLocation = user.firstLocation,
+                        secondLocation = user.secondLocation,
+                    )
+                }
                 _isLoading.value = false
             }
         }.onFailure {
@@ -75,7 +89,8 @@ class ChatDetailViewModel(
                         senderId = messageResponse.senderId,
                         timestamp = messageResponse.timestamp,
                         isMyMessage = messageResponse.senderId == uid,
-                        nickname = messageResponse.nickname
+                        nickname = messageResponse.nickname,
+                        profileImg = messageResponse.profileImg
                     )
                 } ?: emptyList()
 
@@ -99,7 +114,7 @@ class ChatDetailViewModel(
     fun sendMessage(message: String) = viewModelScope.launch {
         runCatching {
             // Test
-            sendMessageItem(uid, message, name)
+            sendMessageItem(uid, message, curUser?.name ?: "(알 수 없음)", curUser?.imgProfile ?: "")
         }.onFailure {
             Log.e("danny", it.message.toString())
         }
