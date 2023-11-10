@@ -7,4 +7,5 @@ data class MessageItem(
     val nickname: String?,
     val timestamp: Long?,
     val isMyMessage: Boolean,
+    val profileImg: String?,
 )

@@ -114,7 +114,7 @@ class UserRepositoryImpl(
                             groupIds = listOf(),        //모임
                             likedIds = listOf(),        //좋아요 게시물
                             writtenIds = listOf(),        //작성한 게시물
-                            imgProfile = "",
+                            imgProfile = imgProfile.toString(),
                             firstLocation = "",
                             secondLocation = "",
                             token = tokenProvider.getToken()
@@ -224,13 +224,13 @@ class UserRepositoryImpl(
     override fun addUserIds(
         userId: String,
         writtenId: String?,
-        likedId: String?
-    ){
+        likedId: String?,
+    ) {
         val userIds = databaseReference.child(userId)
 
         if (writtenId.isNullOrBlank().not()) {
             val writtenIds = userIds.child("writtenIds")
-            writtenIds.push().setValue(writtenId){ databaseError, _ ->
+            writtenIds.push().setValue(writtenId) { databaseError, _ ->
                 if (databaseError != null) {
                     Log.e(TAG, "Fail: ${databaseError.message}")
                 } else {
@@ -240,7 +240,7 @@ class UserRepositoryImpl(
         }
         if (likedId.isNullOrBlank().not()) {
             val likedIds = userIds.child("likedIds")
-            likedIds.push().setValue(likedId){ databaseError, _ ->
+            likedIds.push().setValue(likedId) { databaseError, _ ->
                 if (databaseError != null) {
                     Log.e(TAG, "Fail: ${databaseError.message}")
                 } else {
@@ -251,20 +251,20 @@ class UserRepositoryImpl(
     }
 
     override fun removeUserIds(
-        userId : String,
+        userId: String,
         writtenId: String?,
         likedId: String?,
         groupId: String?,
-        chatId: String?
-    ){
+        chatId: String?,
+    ) {
         val userIds = databaseReference.child(userId)
 
         if (writtenId.isNullOrBlank().not()) {
             val writtenIds = userIds.child("writtenIds")
             writtenIds.child(writtenId.toString()).removeValue()
                 .addOnSuccessListener {
-                Log.d(TAG, "데이터 삭제 성공")
-            }
+                    Log.d(TAG, "데이터 삭제 성공")
+                }
                 .addOnFailureListener { e ->
                     Log.e(TAG, "데이터 삭제 실패: ${e.message}")
                 }
@@ -284,8 +284,8 @@ class UserRepositoryImpl(
             val groupIds = userIds.child("groupIds")
             groupIds.child(groupId.toString()).removeValue()
                 .addOnSuccessListener {
-                Log.d(TAG, "데이터 삭제 성공")
-            }
+                    Log.d(TAG, "데이터 삭제 성공")
+                }
                 .addOnFailureListener { e ->
                     Log.e(TAG, "데이터 삭제 실패: ${e.message}")
                 }
@@ -301,6 +301,7 @@ class UserRepositoryImpl(
                 }
         }
     }
+
     override suspend fun checkNicknameDup(nickname: String): Boolean {
         val query = databaseReference.orderByChild("name").equalTo(nickname)
         val dataSnapshot = query.get().await()

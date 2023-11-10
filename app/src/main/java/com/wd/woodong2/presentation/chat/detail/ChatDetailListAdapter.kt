@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.wd.woodong2.databinding.ChatDetailMyItemBinding
 import com.wd.woodong2.databinding.ChatDetailOpponentItemBinding
 
@@ -102,7 +103,10 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
             } else {
                 // 초기 메시지
                 cardView.visibility = View.VISIBLE
+                imgProfile.visibility = View.VISIBLE
                 txtName.visibility = View.VISIBLE
+
+                imgProfile.load(currentItem.profileImg)
 
                 params.setMargins(0, 0, 0, 0) // 마진을 원래대로 설정
             }
