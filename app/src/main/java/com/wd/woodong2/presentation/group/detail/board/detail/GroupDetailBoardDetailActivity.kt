@@ -156,5 +156,15 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
         groupBoardItem.observe(this@GroupDetailBoardDetailActivity) {
             boardDetailListAdapter.submitList(it)
         }
+
+        isSuccessAddComment.observe(this@GroupDetailBoardDetailActivity) { isSuccess ->
+            if(isSuccess) {
+                Toast.makeText(
+                    this@GroupDetailBoardDetailActivity,
+                    R.string.group_detail_board_detail_toast_create_comment_success,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -171,6 +172,14 @@ class GroupDetailActivity : AppCompatActivity() {
                     else -> Unit
                 }
             }
+        }
+
+        isSuccessJoinGroup.observe(this@GroupDetailActivity) { isSuccessJoinGroup ->
+            Toast.makeText(
+                this@GroupDetailActivity,
+                if(isSuccessJoinGroup) R.string.group_detail_toast_join_group_success else R.string.group_detail_toast_join_group_fail,
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

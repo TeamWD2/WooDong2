@@ -32,6 +32,9 @@ class GroupDetailBoardDetailViewModel(
         MutableLiveData()
     val groupBoardItem: LiveData<List<GroupDetailBoardDetailItem>> get() = _groupBoardItem
 
+    private val _isSuccessAddComment: MutableLiveData<Boolean> = MutableLiveData()
+    val isSuccessAddComment: LiveData<Boolean> get() = _isSuccessAddComment
+
     /**
      * 넘겨받아온 데이터 화면에 출력하기 위해 ViewType 별로 가공
      */
@@ -108,8 +111,10 @@ class GroupDetailBoardDetailViewModel(
                         comment = comment
                     )
                 )
+                _isSuccessAddComment.value = true
             }.onFailure {
                 Log.e(TAG, it.message.toString())
+                _isSuccessAddComment.value = false
             }
         }
 

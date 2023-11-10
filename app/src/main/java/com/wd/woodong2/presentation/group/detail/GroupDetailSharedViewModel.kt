@@ -53,6 +53,9 @@ class GroupDetailSharedViewModel(
     private val _groupDetailItem: MutableLiveData<List<GroupItem>> = MutableLiveData()
     val groupDetailItem: LiveData<List<GroupItem>> get() = _groupDetailItem
 
+    private val _isSuccessJoinGroup: MutableLiveData<Boolean> = MutableLiveData()
+    val isSuccessJoinGroup: LiveData<Boolean> get() = _isSuccessJoinGroup
+
     /**
      * 로그인 된 계정의 선택한 모임 가입 여부 확인
      */
@@ -219,11 +222,14 @@ class GroupDetailSharedViewModel(
                             comment = "모임 멤버"
                         )
                     )
+                    _isSuccessJoinGroup.value = true
                 } else {
                     Log.d(TAG, "groupMainItem is null")
+                    _isSuccessJoinGroup.value = false
                 }
             }.onFailure {
                 Log.e(TAG, it.message.toString())
+                _isSuccessJoinGroup.value = false
             }
         }
     }

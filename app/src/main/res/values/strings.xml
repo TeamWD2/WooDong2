@@ -102,6 +102,8 @@
     <string name="group_detail_dialog_message">모임에 가입하시겠습니까?</string>
     <string name="group_detail_dialog_ok">확인</string>
     <string name="group_detail_dialog_cancel">취소</string>
+    <string name="group_detail_toast_join_group_success">모임에 가입되었습니다.</string>
+    <string name="group_detail_toast_join_group_fail">다시 시도해주세요.</string>
     <string name="group_detail_board_add_hint_board_title">제목을 입력하세요.</string>
     <string name="group_detail_board_add_hint_board_content">내용을 입력하세요.</string>
     <string name="group_detail_board_add_txt_add_image">사진 첨부</string>
@@ -110,6 +112,7 @@
     <string name="group_detail_board_detail_dialog_message">삭제하시겠습니까?</string>
     <string name="group_detail_board_detail_dialog_delete">삭제</string>
     <string name="group_detail_board_detail_dialog_cancel">취소</string>
+    <string name="group_detail_board_detail_toast_create_comment_success">댓글이 작성되었습니다.</string>
 
     <string name="chat_txt_title">채팅</string>
 
