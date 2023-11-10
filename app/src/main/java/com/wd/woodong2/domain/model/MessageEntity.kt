@@ -11,4 +11,5 @@ data class MessageEntity(
     val timestamp: Long?,
     val content: String?,
     val nickname: String?,
+    val profileImg: String?,
 )

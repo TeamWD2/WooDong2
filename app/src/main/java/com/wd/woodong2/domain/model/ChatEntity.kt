@@ -8,17 +8,10 @@ data class ChatItemsEntity(
 data class ChatEntity(
     val id: String?,
     val groupId: String?,
-    val last: Message?,
+    val last: MessageEntity?,
     val mainImage: String?,
     val memberLimit: String?,
-    val message: List<Message>?,
+    val message: List<MessageEntity>?,
     val title: String?,
     val lastSeemTime: Map<String, Long>?,
-)
-
-data class Message(
-    val content: String?,
-    val timestamp: Long?,
-    val nickname: String?,
-    val senderId: String?,
 )

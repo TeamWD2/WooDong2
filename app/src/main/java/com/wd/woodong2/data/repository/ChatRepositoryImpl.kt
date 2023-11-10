@@ -13,14 +13,11 @@ import com.wd.woodong2.data.model.ChatResponse
 import com.wd.woodong2.data.model.MessageItemsResponse
 import com.wd.woodong2.data.model.MessageResponse
 import com.wd.woodong2.domain.model.ChatItemsEntity
-import com.wd.woodong2.domain.model.Message
 import com.wd.woodong2.domain.model.MessageItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.ChatRepository
 import com.wd.woodong2.data.model.GCMRequest
-import com.wd.woodong2.data.model.GroupItemsResponse
-import com.wd.woodong2.data.model.GroupItemsResponseJsonDeserializer
-import com.wd.woodong2.domain.model.GroupItemsEntity
+import com.wd.woodong2.domain.model.MessageEntity
 import com.wd.woodong2.presentation.group.detail.GroupDetailChatItem
 import com.wd.woodong2.retrofit.GCMRetrofitClient
 import kotlinx.coroutines.CoroutineScope
@@ -69,7 +66,7 @@ class ChatRepositoryImpl(
 
                         val filteredChatResponses = groupChatResponses.filter {
                             it.id in chatIds
-                        }
+                        }.sortedBy { it.last?.timestamp ?: 0 }
 
                         val entity = ChatItemsResponse(filteredChatResponses).toEntity()
                         trySend(entity)
@@ -102,6 +99,8 @@ class ChatRepositoryImpl(
 
     override suspend fun loadMessageItems(chatId: String): Flow<MessageItemsEntity?> =
         callbackFlow {
+
+            // TODO 변수 명 변경 : 초기화 인지 아닌지
             var flag = true
 
             val sortedDatabaseRef = chatDatabaseReference.child("message").orderByChild("timestamp")
@@ -152,7 +151,12 @@ class ChatRepositoryImpl(
         }
 
 
-    override suspend fun addChatMessageItem(userId: String, message: String, nickname: String) {
+    override suspend fun addChatMessageItem(
+        userId: String,
+        message: String,
+        nickname: String,
+        profileImg: String,
+    ) {
         timeDatabaseReference?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val offset = snapshot.value as Long
@@ -160,11 +164,13 @@ class ChatRepositoryImpl(
 
                 val messageRef = chatDatabaseReference.child("message").push()
 
-                val messageData = Message(
+                val messageData = MessageEntity(
+                    id = messageRef.key,
                     content = message,
                     timestamp = estimatedServerTimeMs,
                     senderId = userId,
                     nickname = nickname,
+                    profileImg = profileImg,
                 )
 
                 // message 추가
