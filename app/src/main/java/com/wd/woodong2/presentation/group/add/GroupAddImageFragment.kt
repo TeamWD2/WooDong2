@@ -85,11 +85,19 @@ class GroupAddImageFragment: Fragment() {
         }
 
         btnAddGroup.setOnClickListener {
+            btnAddGroup.isClickable = false //같은 모임 중복 생성 방지
             sharedViewModel.setGroupAddItem()
         }
     }
 
     private fun initViewModel() = with(sharedViewModel) {
+        isLoadingState.observe(viewLifecycleOwner) { isLoadingState ->
+            binding.progressBar.isVisible = isLoadingState
+            if(isLoadingState) {
+                Toast.makeText(requireContext(), R.string.group_add_toast_create_group_loading, Toast.LENGTH_SHORT).show()
+            }
+        }
+
         isCreateSuccess.observe(viewLifecycleOwner) { isCreateSuccess ->
             if(isCreateSuccess) {
                 Toast.makeText(requireContext(), R.string.group_add_toast_create_group, Toast.LENGTH_SHORT).show()

@@ -76,6 +76,7 @@
     <string name="group_add_txt_background_image">배경 사진</string>
     <string name="group_add_btn_next">다음</string>
     <string name="group_add_btn_add_group">모임 만들기</string>
+    <string name="group_add_toast_create_group_loading">모임을 생성중입니다.</string>
     <string name="group_add_toast_create_group">모임이 생성되었습니다.</string>
     <string name="group_add_toast_no_info">입력되지 않은 정보가 있습니다.</string>
     <string name="group_add_board_add_toast_no_content">내용을 입력해주세요.</string>
