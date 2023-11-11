@@ -53,7 +53,6 @@ class UserRepositoryImpl(
                                 val response = gson.fromJson(jsonString, UserResponse::class.java)
                                 response.copy(id = childSnapshot.key)
                             }
-
                         val userResponse = userListResponses.find {
                             it.id == userId
                         }
@@ -165,23 +164,17 @@ class UserRepositoryImpl(
         email: String,
         currentPassword: String,
         newPassword: String,
-    ): Flow<Boolean> =
-        callbackFlow {
-            //패스워드 재설정
-            try {
-                val credential = EmailAuthProvider.getCredential(email, currentPassword)
-                auth?.currentUser?.reauthenticate(credential)?.await()
-                auth?.currentUser?.updatePassword(newPassword)?.await()
-                Log.d(TAG, "비밀번호 변경 성공")
-                trySend(true)
-            } catch (e: Exception) {
-                Log.d(TAG, "비밀번호 변경 실패")
-                trySend(false)
-            }
-            awaitClose {
-
-            }
+    ){
+        //패스워드 재설정
+        try {
+            val credential = EmailAuthProvider.getCredential(email, currentPassword)
+            auth?.currentUser?.reauthenticate(credential)?.await()
+            auth?.currentUser?.updatePassword(newPassword)?.await()
+            Log.d(TAG, "비밀번호 변경 성공")
+        } catch (e: Exception) {
+            Log.d(TAG, "비밀번호 변경 실패")
         }
+    }
 
     /*
     UID 가져오는 메소드
@@ -224,13 +217,13 @@ class UserRepositoryImpl(
     override fun addUserIds(
         userId: String,
         writtenId: String?,
-        likedId: String?,
-    ) {
+        likedId: String?
+    ){
         val userIds = databaseReference.child(userId)
 
         if (writtenId.isNullOrBlank().not()) {
             val writtenIds = userIds.child("writtenIds")
-            writtenIds.push().setValue(writtenId) { databaseError, _ ->
+            writtenIds.push().setValue(writtenId){ databaseError, _ ->
                 if (databaseError != null) {
                     Log.e(TAG, "Fail: ${databaseError.message}")
                 } else {
@@ -240,7 +233,7 @@ class UserRepositoryImpl(
         }
         if (likedId.isNullOrBlank().not()) {
             val likedIds = userIds.child("likedIds")
-            likedIds.push().setValue(likedId) { databaseError, _ ->
+            likedIds.push().setValue(likedId){ databaseError, _ ->
                 if (databaseError != null) {
                     Log.e(TAG, "Fail: ${databaseError.message}")
                 } else {
@@ -259,47 +252,38 @@ class UserRepositoryImpl(
     ) {
         val userIds = databaseReference.child(userId)
 
-        if (writtenId.isNullOrBlank().not()) {
-            val writtenIds = userIds.child("writtenIds")
-            writtenIds.child(writtenId.toString()).removeValue()
-                .addOnSuccessListener {
-                    Log.d(TAG, "데이터 삭제 성공")
-                }
-                .addOnFailureListener { e ->
-                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
-                }
-        }
-        if (likedId.isNullOrBlank().not()) {
-            val likedIds = userIds.child("likedIds")
-            likedIds.child(likedId.toString()).removeValue()
-                .addOnSuccessListener {
 
-                    Log.d(TAG, "데이터 삭제 성공")
-                }
-                .addOnFailureListener { e ->
-                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
-                }
+        fun removeData(childPath: String, value: String?, onSuccess: () -> Unit) {
+            if (value.isNullOrBlank().not()) {
+                userIds.child(childPath).orderByValue().equalTo(value).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (childSnapshot in snapshot.children) {
+                            childSnapshot.ref.removeValue()
+                                .addOnSuccessListener {
+                                    onSuccess()
+                                    Log.d(TAG, "데이터 삭제 성공")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
+                                }
+                            return
+                        }
+                        Log.w(TAG, "해당 값을 찾지 못했습니다.")
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e(TAG, "데이터 읽기 취소: ${error.message}")
+                    }
+                })
+            }
         }
-        if (groupId.isNullOrBlank().not()) {
-            val groupIds = userIds.child("groupIds")
-            groupIds.child(groupId.toString()).removeValue()
-                .addOnSuccessListener {
-                    Log.d(TAG, "데이터 삭제 성공")
-                }
-                .addOnFailureListener { e ->
-                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
-                }
-        }
-        if (chatId.isNullOrBlank().not()) {
-            val chatIds = userIds.child("chatIds")
-            chatIds.child(chatId.toString()).removeValue()
-                .addOnSuccessListener {
-                    Log.d(TAG, "데이터 삭제 성공")
-                }
-                .addOnFailureListener { e ->
-                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
-                }
-        }
+
+        removeData("writtenIds", writtenId) {}
+
+        removeData("likedIds", likedId) {}
+
+        removeData("groupIds", groupId) {}
+
+        removeData("chatIds", chatId) {}
     }
 
     override suspend fun checkNicknameDup(nickname: String): Boolean {

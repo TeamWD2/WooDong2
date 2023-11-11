@@ -22,6 +22,7 @@ import com.wd.woodong2.domain.usecase.UserUpdatePasswordUseCase
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.UserLogOutUseCase
 import com.wd.woodong2.domain.usecase.UserPrefDeleteItemUseCase
+import com.wd.woodong2.domain.usecase.UserPrefEditItemUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.content.HomeItem
@@ -31,9 +32,9 @@ class MyPageViewModel(
     private val prefGetUserItem: UserPrefGetItemUseCase,
     private val userItem: UserGetItemUseCase,
     private val userUpdateInfoUseCase: UserUpdateInfoUseCase,
-    private val userUpdatePasswordUseCase: UserUpdatePasswordUseCase,
     private val userPrefDeleteUseCase: UserPrefDeleteItemUseCase,
     private val userLogOutUseCase: UserLogOutUseCase,
+    private val userPrefEditItemUseCase: UserPrefEditItemUseCase,
 ) : ViewModel(
 
 ) {
@@ -66,6 +67,7 @@ class MyPageViewModel(
                     )
 
                 userInfo.postValue(userItem)
+                Log.d("homeItem", userItem.toString())
             }
         }.onFailure {
             Log.e("homeItem", it.message.toString())
@@ -84,17 +86,24 @@ class MyPageViewModel(
         }
     }
 
-    fun updatePasswordItem(
-        currentPassword: String,
-        newPassword: String,
-    ) = viewModelScope.launch {
-        runCatching {
-            userUpdatePasswordUseCase(
-                userInfo.value?.email.toString(),
-                currentPassword,
-                newPassword
-            )
-        }
+    fun editPrefUserInfo(
+        name :String?,
+        imgProfile : String?,
+        firstLocation : String?,
+        secondLocation: String?
+    ) = userPrefEditItemUseCase(name,imgProfile,firstLocation,secondLocation)?.let{
+        UserItem(
+            id = it.id ?: "unknown",
+            name = it.name ?: "unknown",
+            imgProfile = it.imgProfile,
+            email = it.email ?: "unknown",
+            chatIds = it.chatIds,
+            groupIds = it.groupIds,
+            likedIds = it.likedIds,
+            writtenIds = it.writtenIds,
+            firstLocation = it.firstLocation ?: "unknown",
+            secondLocation = it.secondLocation ?: "unknown"
+        )
     }
 
     fun logout() {
@@ -155,9 +164,9 @@ class MyPageViewModelFactory(
                 UserPrefGetItemUseCase(userPrefRepository),
                 UserGetItemUseCase(userRepositoryImpl),
                 UserUpdateInfoUseCase(userRepositoryImpl),
-                UserUpdatePasswordUseCase(userRepositoryImpl),
                 UserPrefDeleteItemUseCase(userPreferencesRepository),
-                UserLogOutUseCase(userRepositoryImpl)
+                UserLogOutUseCase(userRepositoryImpl),
+                UserPrefEditItemUseCase(userPrefRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

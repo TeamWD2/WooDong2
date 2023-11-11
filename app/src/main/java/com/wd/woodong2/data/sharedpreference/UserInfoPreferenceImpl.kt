@@ -29,6 +29,21 @@ class UserInfoPreferenceImpl(
             remove(USER_INFO)
             apply()
         }
+    }
+    override fun editUserInfo(name: String?, profile: String?,firstLocation: String?, secondLocation: String?): UserEntity{
+        val gson = Gson()
+        val userJson = sharedPreferences.getString(USER_INFO, "")
+        val userInfo = gson.fromJson(userJson, UserEntity::class.java)
 
+        val newUserInfo = userInfo.copy(
+            name = name,
+            imgProfile = profile,
+            firstLocation = firstLocation,
+            secondLocation = secondLocation
+        )
+        val editor = sharedPreferences.edit()
+        editor.putString(USER_INFO, gson.toJson(newUserInfo))
+        editor.apply()
+        return newUserInfo
     }
 }

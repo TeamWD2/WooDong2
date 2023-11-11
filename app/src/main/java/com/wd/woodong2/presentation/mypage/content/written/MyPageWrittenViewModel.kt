@@ -2,6 +2,7 @@ package com.wd.woodong2.presentation.mypage.content.written
 
 import android.content.Context
 import android.util.Log
+import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,24 +18,24 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
+import com.wd.woodong2.domain.usecase.UserGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
+import com.wd.woodong2.presentation.chat.detail.ChatDetailViewModel
 import com.wd.woodong2.presentation.home.content.HomeItem
-import com.wd.woodong2.presentation.mypage.content.thumb.MyPageThumbViewModel
-import com.wd.woodong2.presentation.mypage.content.thumb.MyPageThumbViewModelFactory
 import kotlinx.coroutines.launch
 
 class MyPageWrittenViewModel (
     private val prefGetUserItem: UserPrefGetItemUseCase,
-    private val userItem: UserGetItemsUseCase,
+    private val userItem: UserGetItemUseCase,
 ) : ViewModel(){
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
 
-    private val _printList: MutableLiveData<List<HomeItem>> = MutableLiveData()
+    val _printList: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val printList: LiveData<List<HomeItem>> get() = _printList
 
     private val _loadingState: MutableLiveData<Boolean> = MutableLiveData()
@@ -43,68 +44,52 @@ class MyPageWrittenViewModel (
     val isEmptyList: LiveData<Boolean> get() = _isEmptyList
 
     val userId= getUserInfo()?.id ?: "UserId"
-    private var userInfo: MutableLiveData<UserItem> = MutableLiveData()
+    var userInfo: MutableLiveData<UserItem> = MutableLiveData()
 
     init {
-        getUserItem()
         loadDataFromFirebase()
+        getUser()
     }
-    fun printListSet()= viewModelScope.launch{
+
+    private fun getUser() = viewModelScope.launch {
         _loadingState.value = true
         runCatching {
-            _isEmptyList.value = _printList.value?.isEmpty()
-            _printList.value = list.value?.filter { item ->
-                userInfo.value?.writtenIds!!.contains(item.id)
-            }
-            _loadingState.value = false
-        }.onFailure {
-            _loadingState.value = false
-            Log.e("Item", "비어있음")
-        }
-    }
-    private fun getUserItem() = viewModelScope.launch {
-        runCatching {
             userItem(userId).collect { user ->
-                val userItem =
-                    UserItem(
-                        id = user?.id ?: "",
-                        name = user?.name ?: "",
-                        imgProfile = user?.imgProfile ?: "",
-                        email = user?.email ?: "",
-                        chatIds = user?.chatIds.orEmpty(),
-                        groupIds = user?.groupIds.orEmpty(),        //모임
-                        likedIds = user?.likedIds.orEmpty(),        //좋아요 게시물
-                        writtenIds = user?.writtenIds.orEmpty(),        //작성한 게시물
-                        firstLocation = user?.firstLocation ?: "",
-                        secondLocation = user?.secondLocation ?: ""
-                    )
-
-                userInfo.postValue(userItem)
+                _isEmptyList.value = _printList.value?.isEmpty()
+                _printList.value = list.value?.filter { item ->
+                    user?.writtenIds?.contains(item.id) == true
+                }
+                _loadingState.value = false
             }
         }.onFailure {
-            Log.e("homeItem", it.message.toString())
+            Log.e(ChatDetailViewModel.TAG, it.message.toString())
+            _loadingState.value = false
         }
     }
 
     private fun loadDataFromFirebase() {
         val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
-            databaseReference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val dataList = ArrayList<HomeItem>()
+        databaseReference.orderByChild("timestamp")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val dataList = ArrayList<HomeItem>()
 
-                for (postSnapshot in dataSnapshot.children) {
-                    val firebaseData = postSnapshot.getValue(HomeItem::class.java)
-                    if (firebaseData != null) {
-                        dataList.add(firebaseData)
+                    for (postSnapshot in dataSnapshot.children) {
+                        val firebaseData = postSnapshot.getValue(HomeItem::class.java)
+                        if (firebaseData != null) {
+                            dataList.add(firebaseData)
+                        }
                     }
-                }
-                _list.value = dataList.reversed()
-            }
+                    _list.value = dataList.reversed()
 
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+            })
     }
+
+
     fun getUserInfo() =
         prefGetUserItem()?.let {
             UserItem(
@@ -129,7 +114,9 @@ class MyPageWrittenViewModelFactory(
     //private val databaseReference = FirebaseDatabase.getInstance()
 
     val userPrefRepository = UserPreferencesRepositoryImpl(
-        null,
+        SignInPreferenceImpl(
+            context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+        ),
         UserInfoPreferenceImpl(
             context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
         )
@@ -142,15 +129,12 @@ class MyPageWrittenViewModelFactory(
             FirebaseTokenProvider(FirebaseMessaging.getInstance())
         )
     }
-    val databaseReference by lazy {
-        FirebaseDatabase.getInstance().reference.child("home_list")
-    }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MyPageWrittenViewModel::class.java)) {
             return MyPageWrittenViewModel(
                 UserPrefGetItemUseCase(userPrefRepository),
-                UserGetItemsUseCase(userRepositoryImpl),
+                UserGetItemUseCase(userRepositoryImpl),
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

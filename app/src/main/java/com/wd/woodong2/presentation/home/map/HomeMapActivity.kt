@@ -192,9 +192,13 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
             } catch (e: IOException) {
+
                 e.printStackTrace()
+
             } catch (e: IndexOutOfBoundsException) {
+
                 e.printStackTrace()
+
             }
         }
 
