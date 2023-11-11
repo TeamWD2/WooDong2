@@ -192,6 +192,35 @@ class GroupDetailSharedViewModel(
     }
 
     /**
+     * 모임 가입 여부 확인 (1. 가입 제한 멤버 수 확인)
+     */
+    fun isJoinPossibleMemberLimit(): Boolean {
+        val groupMainItem =
+            groupDetailItem.value?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()
+        return if (groupMainItem?.memberLimit.equals("제한 없음")) {
+            true
+        } else {
+            val groupMemberItem = groupDetailItem.value?.filterIsInstance<GroupItem.GroupMember>()?.firstOrNull()
+            ((groupMainItem?.memberLimit?.filter { it.isDigit() }?.toInt() ?: 0) > (groupMemberItem?.memberList?.size ?: 0))
+        }
+    }
+
+    /**
+     * 모임 가입 여부 확인 (2. 비밀번호 존재 유무 확인 및 비밀번호 일치 여부 확인)
+     */
+    fun isExistPassword(): Boolean {
+        val groupMainItem =
+            groupDetailItem.value?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()
+        return !(groupMainItem?.password.equals("[WD2] No Password"))
+    }
+
+    fun checkPassword(password: String): Boolean {
+        val groupMainItem =
+            groupDetailItem.value?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()
+        return (groupMainItem?.password.equals(password))
+    }
+
+    /**
      * 모임 가입 시, User 정보 업데이트 및 멤버 추가
      */
     fun updateUserInfo(groupId: String?) {
