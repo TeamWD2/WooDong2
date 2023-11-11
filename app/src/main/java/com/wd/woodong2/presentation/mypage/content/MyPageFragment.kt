@@ -26,8 +26,6 @@ class MyPageFragment : Fragment() {
     companion object {
         const val EXTRA_USER_NAME = "extra_user_name"
         const val EXTRA_USER_PROFILE = "extra_user_profile"
-        const val EXTRA_USER_CURRENT_PASSWORD = "extra_user_current_password"
-        const val EXTRA_USER_PASSWORD = "extra_user_password"
 
         lateinit var UserInfo: UserItem
         fun newInstance() = MyPageFragment()
@@ -68,18 +66,18 @@ class MyPageFragment : Fragment() {
                 if (result.resultCode == Activity.RESULT_OK) {
                     val receivedNameData = result.data?.getStringExtra(EXTRA_USER_NAME)
                     val receivedProfileData = result.data?.getStringExtra(EXTRA_USER_PROFILE)
-                    val receivedPasswordData = result.data?.getStringExtra(EXTRA_USER_PASSWORD)
-                    val receivedCurrentPasswordData =
-                        result.data?.getStringExtra(EXTRA_USER_CURRENT_PASSWORD)
+//                    val receivedPasswordData = result.data?.getStringExtra(EXTRA_USER_PASSWORD)
+//                    val receivedCurrentPasswordData =
+//                        result.data?.getStringExtra(EXTRA_USER_CURRENT_PASSWORD)
                     Log.d("mypage2", receivedNameData.toString())
-                    viewModel.updateUserItem(
-                        receivedNameData.toString(),
-                        receivedProfileData.toString()
-                    )
-                    viewModel.updatePasswordItem(
-                        receivedCurrentPasswordData.toString(),
-                        receivedPasswordData.toString()
-                    )
+//                    viewModel.updateUserItem(
+//                        receivedNameData.toString(),
+//                        receivedProfileData.toString()
+//                    )
+//                    viewModel.updatePasswordItem(
+//                        receivedCurrentPasswordData.toString(),
+//                        receivedPasswordData.toString()
+//                    )
 
                     Glide.with(requireContext())
                         .load(Uri.parse(receivedProfileData))
@@ -156,33 +154,33 @@ class MyPageFragment : Fragment() {
                 )
             }
         }
-        if (imgCheck) {
-            ivProfile.setOnClickListener {
-                val builder = AlertDialog.Builder(requireContext())
-                builder.setTitle("기본 이미지 변경 여부")
-                    .setMessage("기본 이미지로 변경 하시겠습니까?.")
-                    .setPositiveButton(
-                        "확인"
-                    ) { _, _ ->
-                        viewModel.updateUserItem(
-                            UserInfo.name.toString(),
-                            R.drawable.group_ic_no_profile.toString()
-                        )
-                        Glide.with(requireContext())
-                            .load(R.drawable.group_ic_no_profile)
-                            .error(R.drawable.group_ic_no_profile)
-                            .fitCenter()
-                            .into(binding.ivProfile)
-                        imgCheck = false
-                    }
-                    .setNegativeButton(
-                        "취소"
-                    ) { _, _ ->
-                    }
-                // 다이얼로그를 띄워주기
-                builder.show()
-            }
-        }
+//        if (imgCheck) {
+//            ivProfile.setOnClickListener {
+//                val builder = AlertDialog.Builder(requireContext())
+//                builder.setTitle("기본 이미지 변경 여부")
+//                    .setMessage("기본 이미지로 변경 하시겠습니까?.")
+//                    .setPositiveButton(
+//                        "확인"
+//                    ) { _, _ ->
+//                        viewModel.updateUserItem(
+//                            UserInfo.name.toString(),
+//                            R.drawable.group_ic_no_profile.toString()
+//                        )
+//                        Glide.with(requireContext())
+//                            .load(R.drawable.group_ic_no_profile)
+//                            .error(R.drawable.group_ic_no_profile)
+//                            .fitCenter()
+//                            .into(binding.ivProfile)
+//                        imgCheck = false
+//                    }
+//                    .setNegativeButton(
+//                        "취소"
+//                    ) { _, _ ->
+//                    }
+//                // 다이얼로그를 띄워주기
+//                builder.show()
+//            }
+//        }
     }
 
     private fun initViewModel() {

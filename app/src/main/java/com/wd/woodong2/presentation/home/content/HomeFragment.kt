@@ -81,6 +81,7 @@ class HomeFragment : Fragment() {
                         receivedDataFirstLocation.toString(),
                         receivedDataSecondLocation.toString()
                     )
+
                 } else {
 
                 }

@@ -44,6 +44,7 @@ class MyPageUpdateActivity : AppCompatActivity(){
     private var profile = userInfo.imgProfile
     private var name = userInfo.name
     private var passwordJudge = false
+    private var nameJudge = false
     private var currentPassword = ""
     private var changePassword = ""
     private lateinit var binding : MyPageUpdateActivityBinding
@@ -172,6 +173,8 @@ class MyPageUpdateActivity : AppCompatActivity(){
             }
         }
 
+        //이름 변경
+
         myPageUpdateUserImgProfile.setOnClickListener{
             checkPermissions()
         }
@@ -223,21 +226,31 @@ class MyPageUpdateActivity : AppCompatActivity(){
             if(myPageUpdateViewModel.checkAllConditions()){
                 lifecycleScope.launch {
 
-                    name = editUpdateUserName.text.toString().trim()
-                    changePassword = editUpdateUserPassword.text.toString().trim()
-                    currentPassword = editUpdateUserCurrentPassword.text.toString().trim()
-
-                    myPageUpdateViewModel.editInfo(
-                        userInfo.id.toString(),
-                        userInfo.email.toString(),
-                        editUpdateUserCurrentPassword.text.toString().trim(),
-                        editUpdateUserPassword.text.toString().trim(),
-                        profile.toString(),
-                        editUpdateUserName.text.toString().trim(),
-                        userInfo.firstLocation.toString(),
-                        userInfo.secondLocation.toString(),
-                        passwordJudge
-                    )
+                    if(myPageUpdateViewModel.isValidNickname.value == true && passwordJudge){
+                        name = editUpdateUserName.text.toString().trim()
+//                        changePassword = editUpdateUserPassword.text.toString().trim()
+//                        currentPassword = editUpdateUserCurrentPassword.text.toString().trim()
+                        // 값이 안들어온다
+                        Log.d("mypage4", name!!)
+                        myPageUpdateViewModel.editInfo(
+                            userInfo.id.toString(),
+                            profile.toString(),
+                            editUpdateUserName.text.toString().trim(),
+                            userInfo.firstLocation.toString(),
+                            userInfo.secondLocation.toString(),
+                            passwordJudge
+                        )
+                    }
+                    else{
+                        myPageUpdateViewModel.editInfo(
+                            userInfo.id.toString(),
+                            profile.toString(),
+                            userInfo.name,
+                            userInfo.firstLocation.toString(),
+                            userInfo.secondLocation.toString(),
+                            passwordJudge
+                        )
+                    }
                 }
 
             }else {
@@ -354,16 +367,6 @@ class MyPageUpdateActivity : AppCompatActivity(){
                             MyPageFragment.EXTRA_USER_PROFILE,
                             profile
                         )
-                        if(passwordJudge){
-                            putExtra(
-                                MyPageFragment.EXTRA_USER_CURRENT_PASSWORD,
-                                currentPassword
-                            )
-                            putExtra(
-                                MyPageFragment.EXTRA_USER_PASSWORD,
-                                changePassword
-                            )
-                        }
                     }
 
                     setResult(Activity.RESULT_OK, intent)

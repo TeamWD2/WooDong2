@@ -31,7 +31,6 @@ class MyPageViewModel(
     private val prefGetUserItem: UserPrefGetItemUseCase,
     private val userItem: UserGetItemUseCase,
     private val userUpdateInfoUseCase: UserUpdateInfoUseCase,
-    private val userUpdatePasswordUseCase: UserUpdatePasswordUseCase,
     private val userPrefDeleteUseCase: UserPrefDeleteItemUseCase,
     private val userLogOutUseCase: UserLogOutUseCase,
 ) : ViewModel(
@@ -72,30 +71,18 @@ class MyPageViewModel(
         }
     }
 
-    fun updateUserItem(
-        name: String,
-        imgProfile: String,
-    ) = viewModelScope.launch {
-        runCatching {
-            userUpdateInfoUseCase(
-                userId, imgProfile, name,
-                userInfo.value?.firstLocation.toString(), userInfo.value?.secondLocation.toString()
-            )
-        }
-    }
+//    fun updateUserItem(
+//        name: String,
+//        imgProfile: String,
+//    ) = viewModelScope.launch {
+//        runCatching {
+//            userUpdateInfoUseCase(
+//                userId, imgProfile, name,
+//                userInfo.value?.firstLocation.toString(), userInfo.value?.secondLocation.toString()
+//            )
+//        }
+//    }
 
-    fun updatePasswordItem(
-        currentPassword: String,
-        newPassword: String,
-    ) = viewModelScope.launch {
-        runCatching {
-            userUpdatePasswordUseCase(
-                userInfo.value?.email.toString(),
-                currentPassword,
-                newPassword
-            )
-        }
-    }
 
     fun logout() {
         userPrefDeleteUseCase()
@@ -155,7 +142,6 @@ class MyPageViewModelFactory(
                 UserPrefGetItemUseCase(userPrefRepository),
                 UserGetItemUseCase(userRepositoryImpl),
                 UserUpdateInfoUseCase(userRepositoryImpl),
-                UserUpdatePasswordUseCase(userRepositoryImpl),
                 UserPrefDeleteItemUseCase(userPreferencesRepository),
                 UserLogOutUseCase(userRepositoryImpl)
             ) as T

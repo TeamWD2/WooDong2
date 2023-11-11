@@ -28,6 +28,7 @@ class MyPageUpdateViewModel(
     private val userUpdateInfoUseCase: UserUpdateInfoUseCase,
     private val checkNicknameDup: SignUpCheckNickNameDupUseCase,
     private val imageStorageSetItem: ImageStorageSetItemUseCase,
+    private val userUpdatePasswordUseCase: UserUpdatePasswordUseCase,
 ): ViewModel(
 )  {
     companion object {
@@ -102,18 +103,18 @@ class MyPageUpdateViewModel(
                     && isValidSamePassword.value == true
                     && isValidNickname.value == true
                     && isNicknameDuplication.value == false)
-        } else{
+        } else {
+
             (isValidNickname.value == true
                     && isNicknameDuplication.value == false)
+                    ||(isValidNickname.value == false)
         }
+
     }
 
     //작성완료 메소드
     fun editInfo(
         userId: String,
-        email: String,
-        currentPassword: String?,
-        newPassword: String?,
         imgProfile: String?,
         name: String?,
         firstLocation: String,
@@ -128,6 +129,8 @@ class MyPageUpdateViewModel(
 
                 userUpdateInfoUseCase(userId,
                     imgProfile.toString(), name.toString(), firstLocation, secondLocation)
+
+                //password 설정해야함
 
                     _setResult.value = true
             } catch (e: Exception) {
@@ -154,7 +157,8 @@ class MyPageUpdateViewModelFactory : ViewModelProvider.Factory {
             return MyPageUpdateViewModel(
                 UserUpdateInfoUseCase(userRepositoryImpl),
                 SignUpCheckNickNameDupUseCase(userRepositoryImpl),
-                ImageStorageSetItemUseCase(imageStorageRepository)
+                ImageStorageSetItemUseCase(imageStorageRepository),
+                UserUpdatePasswordUseCase(userRepositoryImpl)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

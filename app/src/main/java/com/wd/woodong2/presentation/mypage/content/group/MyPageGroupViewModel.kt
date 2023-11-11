@@ -15,6 +15,7 @@ import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.GroupAlbumEntity
 import com.wd.woodong2.domain.model.GroupBoardEntity
@@ -248,7 +249,9 @@ class MyPageGroupViewModelFactory(
     private val databaseReference = FirebaseDatabase.getInstance()
 
     val userPrefRepository = UserPreferencesRepositoryImpl(
-        null,
+        SignInPreferenceImpl(
+            context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+        ),
         UserInfoPreferenceImpl(
             context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
         )

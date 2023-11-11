@@ -42,6 +42,7 @@ class UserRepositoryImpl(
 
     override suspend fun getUser(userId: String): Flow<UserEntity?> =
         callbackFlow {
+            //오래 걸리는 작업??
             val listener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
@@ -53,13 +54,14 @@ class UserRepositoryImpl(
                                 val response = gson.fromJson(jsonString, UserResponse::class.java)
                                 response.copy(id = childSnapshot.key)
                             }
-
                         val userResponse = userListResponses.find {
+
                             it.id == userId
                         }
 
                         val entity: UserEntity? = userResponse?.toEntity()
                         trySend(entity)
+                        Log.d("homeItem2",userId)
                     } else {
                         throw RuntimeException("snapshot is not exists")
                     }
@@ -258,50 +260,44 @@ class UserRepositoryImpl(
         groupId: String?,
         chatId: String?
     ){
+
+
         val userIds = databaseReference.child(userId)
 
-        if (writtenId.isNullOrBlank().not()) {
-            val writtenIds = userIds.child("writtenIds")
-            writtenIds.child(writtenId.toString()).removeValue()
-                .addOnSuccessListener {
-                Log.d(TAG, "데이터 삭제 성공")
-            }
-                .addOnFailureListener { e ->
-                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
-                }
-        }
-        if (likedId.isNullOrBlank().not()) {
-            val likedIds = userIds.child("likedIds")
-            likedIds.child(likedId.toString()).removeValue()
-                .addOnSuccessListener {
 
-                    Log.d(TAG, "데이터 삭제 성공")
-                }
-                .addOnFailureListener { e ->
-                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
-                }
-        }
-        if (groupId.isNullOrBlank().not()) {
-            val groupIds = userIds.child("groupIds")
-            groupIds.child(groupId.toString()).removeValue()
-                .addOnSuccessListener {
-                Log.d(TAG, "데이터 삭제 성공")
+        fun removeData(childPath: String, value: String?, onSuccess: () -> Unit) {
+            if (value.isNullOrBlank().not()) {
+                userIds.child(childPath).orderByValue().equalTo(value).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (childSnapshot in snapshot.children) {
+                            childSnapshot.ref.removeValue()
+                                .addOnSuccessListener {
+                                    onSuccess()
+                                    Log.d(TAG, "데이터 삭제 성공")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
+                                }
+                            return
+                        }
+                        Log.w(TAG, "해당 값을 찾지 못했습니다.")
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e(TAG, "데이터 읽기 취소: ${error.message}")
+                    }
+                })
             }
-                .addOnFailureListener { e ->
-                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
-                }
         }
-        if (chatId.isNullOrBlank().not()) {
-            val chatIds = userIds.child("chatIds")
-            chatIds.child(chatId.toString()).removeValue()
-                .addOnSuccessListener {
-                    Log.d(TAG, "데이터 삭제 성공")
-                }
-                .addOnFailureListener { e ->
-                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
-                }
-        }
+
+        removeData("writtenIds", writtenId) {}
+
+        removeData("likedIds", likedId) {}
+
+        removeData("groupIds", groupId) {}
+
+        removeData("chatIds", chatId) {}
     }
+
     override suspend fun checkNicknameDup(nickname: String): Boolean {
         val query = databaseReference.orderByChild("name").equalTo(nickname)
         val dataSnapshot = query.get().await()

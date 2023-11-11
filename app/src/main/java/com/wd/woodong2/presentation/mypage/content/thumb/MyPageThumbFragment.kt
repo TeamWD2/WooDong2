@@ -51,22 +51,18 @@ class MyPageThumbFragment : Fragment() {
             adapter = listAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
-        viewModel.printListSet()
     }
     private fun initViewModel(){
         with(viewModel){
-            list.observe(viewLifecycleOwner){
-                printListSet()
-            }
             printList.observe(viewLifecycleOwner){
                 listAdapter.submitList(it)
             }
             loadingState.observe(viewLifecycleOwner) { loadingState ->
                 binding.progressBar.isVisible = loadingState
             }
-//            isEmptyList.observe(viewLifecycleOwner){isEmptyList->
-//                binding.txtEmptyThumbList.isVisible = isEmptyList
-//            }
+            isEmptyList.observe(viewLifecycleOwner){isEmptyList->
+                binding.txtEmptyThumbList.isVisible = isEmptyList ?: false
+            }
         }
     }
 

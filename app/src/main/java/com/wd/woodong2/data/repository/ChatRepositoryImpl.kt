@@ -238,7 +238,12 @@ class ChatRepositoryImpl(
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 dataSnapshot.children.forEach { snapshot ->
                     if (snapshot.child("groupId").getValue(String::class.java) == groupId) {
-                        trySend(snapshot.key.toString())
+                        val isGetKey = trySend(snapshot.key.toString())
+                        if(isGetKey.isFailure) {
+                            Log.e(TAG, "trySend failed with exception: ${isGetKey.exceptionOrNull()}")
+                        }
+                        close()
+                        return
                     }
                 }
             }
@@ -247,5 +252,9 @@ class ChatRepositoryImpl(
                 throw error.toException()
             }
         })
+
+        awaitClose {
+            Log.e(TAG, "awaitClose")
+        }
     }
 }

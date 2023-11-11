@@ -23,6 +23,7 @@ import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.MapSearchEntity
+import com.wd.woodong2.domain.model.UserEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.repository.MapSearchRepository
 import com.wd.woodong2.domain.usecase.MapSearchCircumLocationGetItemsUseCase
@@ -270,6 +271,13 @@ class HomeViewModel(
             )
         }
 
+//    fun changePrefUserInfo(
+//        newName: String? = null,
+//        newImgProfile: String? = null,
+//        newFirstLocation: String? = null,
+//        newSecondLocation: String? = null
+//    ) = prefGetUserItem()?.copy()
+
     private fun createCircumLocationItems(
         Map: MapSearchEntity,
     ): List<HomeMapSearchItem> {
@@ -327,6 +335,7 @@ class HomeViewModel(
         _searchResults.value = filteredList
     }
 
+    // 작동이 안되는 거였네..
     private fun getUserItem() = viewModelScope.launch {
         runCatching {
             userItem(userId).collect { user ->
