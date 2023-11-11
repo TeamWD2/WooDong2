@@ -164,23 +164,17 @@ class UserRepositoryImpl(
         email: String,
         currentPassword: String,
         newPassword: String,
-    ): Flow<Boolean> =
-        callbackFlow {
-            //패스워드 재설정
-            try {
-                val credential = EmailAuthProvider.getCredential(email, currentPassword)
-                auth?.currentUser?.reauthenticate(credential)?.await()
-                auth?.currentUser?.updatePassword(newPassword)?.await()
-                Log.d(TAG, "비밀번호 변경 성공")
-                trySend(true)
-            } catch (e: Exception) {
-                Log.d(TAG, "비밀번호 변경 실패")
-                trySend(false)
-            }
-            awaitClose {
-
-            }
+    ){
+        //패스워드 재설정
+        try {
+            val credential = EmailAuthProvider.getCredential(email, currentPassword)
+            auth?.currentUser?.reauthenticate(credential)?.await()
+            auth?.currentUser?.updatePassword(newPassword)?.await()
+            Log.d(TAG, "비밀번호 변경 성공")
+        } catch (e: Exception) {
+            Log.d(TAG, "비밀번호 변경 실패")
         }
+    }
 
     /*
     UID 가져오는 메소드

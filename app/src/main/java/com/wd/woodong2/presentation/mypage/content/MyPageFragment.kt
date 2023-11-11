@@ -66,27 +66,59 @@ class MyPageFragment : Fragment() {
                 if (result.resultCode == Activity.RESULT_OK) {
                     val receivedNameData = result.data?.getStringExtra(EXTRA_USER_NAME)
                     val receivedProfileData = result.data?.getStringExtra(EXTRA_USER_PROFILE)
-//                    val receivedPasswordData = result.data?.getStringExtra(EXTRA_USER_PASSWORD)
-//                    val receivedCurrentPasswordData =
-//                        result.data?.getStringExtra(EXTRA_USER_CURRENT_PASSWORD)
-                    Log.d("mypage2", receivedNameData.toString())
-//                    viewModel.updateUserItem(
-//                        receivedNameData.toString(),
-//                        receivedProfileData.toString()
-//                    )
-//                    viewModel.updatePasswordItem(
-//                        receivedCurrentPasswordData.toString(),
-//                        receivedPasswordData.toString()
-//                    )
 
-                    Glide.with(requireContext())
-                        .load(Uri.parse(receivedProfileData))
-                        .error(R.drawable.group_ic_no_image)
-                        .fitCenter()
-                        .into(binding.ivProfile)
-                    binding.tvName.text = receivedNameData
+                    if(receivedNameData.isNullOrEmpty().not()&&receivedProfileData.isNullOrEmpty().not()){
+                        viewModel.updateUserItem(
+                            receivedNameData.toString(),
+                            receivedProfileData.toString()
+                        )
+                        Log.d("mypage2", receivedNameData.toString())
+                        viewModel.userInfo.value = viewModel.editPrefUserInfo(
+                            receivedNameData.toString(),
+                            receivedProfileData.toString(),
+                            viewModel.userInfo.value?.firstLocation,
+                            viewModel.userInfo.value?.secondLocation)
+                        Log.d("check",viewModel.userInfo.value?.name.toString())
+                        Glide.with(requireContext())
+                            .load(Uri.parse(receivedProfileData))
+                            .error(R.drawable.group_ic_no_image)
+                            .fitCenter()
+                            .into(binding.ivProfile)
+                    }
 
-                    imgCheck = true
+                    else if(receivedNameData.isNullOrEmpty().not()){
+                        viewModel.updateUserItem(
+                            receivedNameData.toString(),
+                            viewModel.userInfo.value?.imgProfile.toString()
+                        )
+                        Log.d("mypage2", receivedNameData.toString())
+                        viewModel.userInfo.value = viewModel.editPrefUserInfo(
+                            receivedNameData.toString(),
+                            viewModel.userInfo.value?.imgProfile.toString(),
+                            viewModel.userInfo.value?.firstLocation,
+                            viewModel.userInfo.value?.secondLocation)
+                        Log.d("check",viewModel.userInfo.value?.name.toString())
+                    }
+
+                    else if(receivedProfileData.isNullOrEmpty().not()){
+                        viewModel.updateUserItem(
+                            viewModel.userInfo.value?.name.toString(),
+                            receivedProfileData.toString()
+                        )
+                        Log.d("mypage2", receivedNameData.toString())
+                        viewModel.userInfo.value = viewModel.editPrefUserInfo(
+                            viewModel.userInfo.value?.name.toString(),
+                            receivedProfileData.toString(),
+                            viewModel.userInfo.value?.firstLocation,
+                            viewModel.userInfo.value?.secondLocation)
+                        Log.d("check",viewModel.userInfo.value?.name.toString())
+                        Glide.with(requireContext())
+                            .load(Uri.parse(receivedProfileData))
+                            .error(R.drawable.group_ic_no_image)
+                            .fitCenter()
+                            .into(binding.ivProfile)
+                    }
+                    //imgCheck = true
                 } else {
 
                 }

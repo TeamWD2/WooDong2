@@ -29,7 +29,9 @@ import com.wd.woodong2.domain.repository.MapSearchRepository
 import com.wd.woodong2.domain.usecase.MapSearchCircumLocationGetItemsUseCase
 import com.wd.woodong2.domain.usecase.MapSearchGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.UserPrefEditItemUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.UserRemoveIdsUseCase
 import com.wd.woodong2.domain.usecase.UserUpdateInfoUseCase
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.home.map.HomeMapSearchItem
@@ -41,6 +43,8 @@ class HomeViewModel(
     private val userUpdateInfoUseCase: UserUpdateInfoUseCase,
     private val circumLocationItem: MapSearchCircumLocationGetItemsUseCase,
     private val mapSearch: MapSearchGetItemsUseCase,
+    private val userRemoveIdsUseCase: UserRemoveIdsUseCase,
+    private val userPrefEditItemUseCase: UserPrefEditItemUseCase,
 ) : ViewModel(
 ) {
 
@@ -76,7 +80,7 @@ class HomeViewModel(
     //userItem
     var userId = getUserInfo()?.id ?: "UserId"
 
-    val userInfo: MutableLiveData<UserItem?> = MutableLiveData()
+    var userInfo: MutableLiveData<UserItem?> = MutableLiveData()
 
     init {
         loadDataFromFirebase()
@@ -108,9 +112,6 @@ class HomeViewModel(
 
             HomeMapActivity.fullNameLocationInfo(query)
             circumLocation.add(HomeMapActivity.fullLocationName.toString())
-
-            Log.d("locationCheckci1", circumLocationItems.toString())
-
             _circumLocationList.postValue(circumLocationItems)
 
             for (item in circumLocationItems) {
@@ -132,9 +133,6 @@ class HomeViewModel(
             circumLocationItems = createCircumLocationItems(
                 Map = mapSearch(query)
             )
-
-            Log.d("locationCheckci1", circumLocationItems.toString())
-
             _circumLocationList.postValue(circumLocationItems)
 
 
@@ -154,8 +152,6 @@ class HomeViewModel(
                     }
                 }
             }
-            Log.d("locationCheckci1", circumLocation.toString())
-
             if (circumLocation.isNotEmpty()) {
 
                 _printList.value = list.value?.filter { item ->
@@ -191,8 +187,6 @@ class HomeViewModel(
                         }
                     }
                 }
-                Log.d("locationCheckci2", circumLocation.toString())
-
                 if (circumLocation.isNotEmpty()) {
 
                     _printList.value = list.value?.filter { item ->
@@ -228,8 +222,6 @@ class HomeViewModel(
                             }
                         }
                     }
-                    Log.d("locationCheckci3", circumLocation.toString())
-
                     if (circumLocation.isNotEmpty()) {
                         for (loc in circumLocation) {
                             _printList.value = list.value?.filter { item ->
@@ -258,28 +250,9 @@ class HomeViewModel(
         }
     }
 
-    fun getUserInfo() =
-        prefGetUserItem()?.let {
-            UserItem(
-                id = it.id ?: "unknown",
-                name = it.name ?: "unknown",
-                imgProfile = it.imgProfile,
-                email = it.email ?: "unknown",
-                chatIds = it.chatIds,
-                groupIds = it.groupIds,
-                likedIds = it.likedIds,
-                writtenIds = it.writtenIds,
-                firstLocation = it.firstLocation ?: "unknown",
-                secondLocation = it.secondLocation ?: "unknown"
-            )
-        }
 
-//    fun changePrefUserInfo(
-//        newName: String? = null,
-//        newImgProfile: String? = null,
-//        newFirstLocation: String? = null,
-//        newSecondLocation: String? = null
-//    ) = prefGetUserItem()?.copy()
+
+
 
     private fun createCircumLocationItems(
         Map: MapSearchEntity,
@@ -356,12 +329,45 @@ class HomeViewModel(
                         firstLocation = user?.firstLocation ?: "",
                         secondLocation = user?.secondLocation ?: ""
                     )
-
                 userInfo.postValue(userItem)
             }
         }.onFailure {
             Log.e("homeItem", it.message.toString())
         }
+    }
+    fun getUserInfo() =
+        prefGetUserItem()?.let {
+            UserItem(
+                id = it.id ?: "unknown",
+                name = it.name ?: "unknown",
+                imgProfile = it.imgProfile,
+                email = it.email ?: "unknown",
+                chatIds = it.chatIds,
+                groupIds = it.groupIds,
+                likedIds = it.likedIds,
+                writtenIds = it.writtenIds,
+                firstLocation = it.firstLocation ?: "unknown",
+                secondLocation = it.secondLocation ?: "unknown"
+            )
+        }
+    fun editPrefUserInfo(
+        name :String?,
+        imgProfile : String?,
+        firstLocation : String?,
+        secondLocation: String?
+    ) = userPrefEditItemUseCase(name,imgProfile,firstLocation,secondLocation)?.let{
+        UserItem(
+            id = it.id ?: "unknown",
+            name = it.name ?: "unknown",
+            imgProfile = it.imgProfile,
+            email = it.email ?: "unknown",
+            chatIds = it.chatIds,
+            groupIds = it.groupIds,
+            likedIds = it.likedIds,
+            writtenIds = it.writtenIds,
+            firstLocation = it.firstLocation ?: "unknown",
+            secondLocation = it.secondLocation ?: "unknown"
+        )
     }
 
     fun updateUserLocation(
@@ -380,12 +386,11 @@ class HomeViewModel(
             Log.e("locationhv", it.message.toString())
         }
     }
-
     fun deleteItem(item: HomeItem) {
         // Firebase에서 항목 삭제
         val itemId = item.id // 항목의 고유 ID 또는 키
         deleteItemFromFirebase(itemId)
-
+        userRemoveIdsUseCase(getUserInfo()?.id ?: "UserId",itemId,null,null,null)
         val updatedList = _list.value?.toMutableList() ?: mutableListOf()
         updatedList.remove(item)
         _list.value = updatedList
@@ -441,6 +446,7 @@ class HomeViewModelFactory(
         KAKAORetrofitClient.search
     )
 
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(
@@ -448,7 +454,9 @@ class HomeViewModelFactory(
                 UserGetItemUseCase(userRepositoryImpl),
                 UserUpdateInfoUseCase(userRepositoryImpl),
                 MapSearchCircumLocationGetItemsUseCase(circumLocationrepository),
-                MapSearchGetItemsUseCase(circumLocationrepository)
+                MapSearchGetItemsUseCase(circumLocationrepository),
+                UserRemoveIdsUseCase(userRepositoryImpl),
+                UserPrefEditItemUseCase(userPrefRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

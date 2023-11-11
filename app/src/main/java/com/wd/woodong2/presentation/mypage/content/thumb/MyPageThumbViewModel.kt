@@ -56,7 +56,7 @@ class MyPageThumbViewModel(
             userItem(userId).collect { user ->
                 _isEmptyList.value = _printList.value?.isEmpty()
                 _printList.value = list.value?.filter { item ->
-                    user?.writtenIds?.contains(item.id) == true
+                    user?.likedIds?.contains(item.id) == true
                 }
                 _loadingState.value = false
             }

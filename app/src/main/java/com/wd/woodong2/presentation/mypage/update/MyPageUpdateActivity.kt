@@ -44,7 +44,6 @@ class MyPageUpdateActivity : AppCompatActivity(){
     private var profile = userInfo.imgProfile
     private var name = userInfo.name
     private var passwordJudge = false
-    private var nameJudge = false
     private var currentPassword = ""
     private var changePassword = ""
     private lateinit var binding : MyPageUpdateActivityBinding
@@ -82,15 +81,18 @@ class MyPageUpdateActivity : AppCompatActivity(){
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-
-                profile = result.data?.data.toString()
-
-                Glide.with(this)
-                    .load(Uri.parse(profile))
-                    .error(R.drawable.group_ic_no_image)
-                    .fitCenter()
-                    .into(binding.myPageUpdateUserImgProfile)
-
+                result.data?.data?.let { uri ->
+                    profile = uri.toString()
+                    Glide.with(this)
+                        .load(Uri.parse(profile))
+                        .error(R.drawable.group_ic_no_image)
+                        .fitCenter()
+                        .into(binding.myPageUpdateUserImgProfile)
+                    myPageUpdateViewModel.setProfileImage(uri)
+                    if(profile.isNullOrEmpty().not()){
+                        myPageUpdateViewModel._isValidImg.value = true
+                    }
+                }
             }
         }
 
@@ -173,12 +175,11 @@ class MyPageUpdateActivity : AppCompatActivity(){
             }
         }
 
-        //이름 변경
 
         myPageUpdateUserImgProfile.setOnClickListener{
             checkPermissions()
         }
-
+        //이름 변경
         editUpdateUserName.apply{
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -222,38 +223,157 @@ class MyPageUpdateActivity : AppCompatActivity(){
                 }
             })
         }
+        //이름은 true false만 해야함
         myPageUpdateBtn.setOnClickListener{
+            Log.d("chchch", myPageUpdateViewModel.isValidCurrentPassword.value.toString())
+            Log.d("chchch", myPageUpdateViewModel.isValidPassword.value.toString())
+            Log.d("chchch", myPageUpdateViewModel.isValidSamePassword.value.toString())
+            Log.d("chchch", myPageUpdateViewModel.isValidNickname.value.toString())
+            Log.d("chchch", myPageUpdateViewModel.isNicknameDuplication.value.toString())
+            Log.d("chchch", myPageUpdateViewModel.isValidImg.value.toString())
+
             if(myPageUpdateViewModel.checkAllConditions()){
                 lifecycleScope.launch {
+                    name = editUpdateUserName.text.toString().trim()
+                    changePassword = editUpdateUserPassword.text.toString().trim()
+                    currentPassword = editUpdateUserCurrentPassword.text.toString().trim()
 
-                    if(myPageUpdateViewModel.isValidNickname.value == true && passwordJudge){
-                        name = editUpdateUserName.text.toString().trim()
-//                        changePassword = editUpdateUserPassword.text.toString().trim()
-//                        currentPassword = editUpdateUserCurrentPassword.text.toString().trim()
-                        // 값이 안들어온다
-                        Log.d("mypage4", name!!)
-                        myPageUpdateViewModel.editInfo(
-                            userInfo.id.toString(),
-                            profile.toString(),
-                            editUpdateUserName.text.toString().trim(),
-                            userInfo.firstLocation.toString(),
-                            userInfo.secondLocation.toString(),
-                            passwordJudge
-                        )
-                    }
-                    else{
-                        myPageUpdateViewModel.editInfo(
-                            userInfo.id.toString(),
-                            profile.toString(),
-                            userInfo.name,
-                            userInfo.firstLocation.toString(),
-                            userInfo.secondLocation.toString(),
-                            passwordJudge
-                        )
-                    }
+
+                    myPageUpdateViewModel.editInfo(
+                        userInfo.id.toString(),
+                        profile.toString(),
+                        name,
+                        userInfo.firstLocation.toString(),
+                        userInfo.secondLocation.toString(),
+                        passwordJudge,
+                        userInfo.email,
+                        changePassword,
+                        currentPassword
+                    )
                 }
+            }
 
-            }else {
+                //비밀번호
+            else if(myPageUpdateViewModel.isValidCurrentPassword.value ==true
+                && myPageUpdateViewModel.isValidPassword.value ==true
+                && myPageUpdateViewModel.isValidSamePassword.value ==true
+                && myPageUpdateViewModel.isValidNickname.value == false
+                && myPageUpdateViewModel.isValidImg.value != true){
+                changePassword = editUpdateUserPassword.text.toString().trim()
+                currentPassword = editUpdateUserCurrentPassword.text.toString().trim()
+                myPageUpdateViewModel.editInfo(
+                    userInfo.id.toString(),
+                    profile.toString(),
+                    name,
+                    userInfo.firstLocation.toString(),
+                    userInfo.secondLocation.toString(),
+                    passwordJudge,
+                    userInfo.email,
+                    currentPassword,
+                    changePassword,
+                )
+            }
+            //비밀 번호, 이름
+            else if(myPageUpdateViewModel.isValidCurrentPassword.value ==true
+                && myPageUpdateViewModel.isValidPassword.value ==true
+                && myPageUpdateViewModel.isValidSamePassword.value ==true
+                && myPageUpdateViewModel.isValidNickname.value == true
+                && myPageUpdateViewModel.isNicknameDuplication.value == false
+                && myPageUpdateViewModel.isValidImg.value !=true){
+                name = editUpdateUserName.text.toString().trim()
+                changePassword = editUpdateUserPassword.text.toString().trim()
+                currentPassword = editUpdateUserCurrentPassword.text.toString().trim()
+                myPageUpdateViewModel.editInfo(
+                    userInfo.id.toString(),
+                    profile.toString(),
+                    name,
+                    userInfo.firstLocation.toString(),
+                    userInfo.secondLocation.toString(),
+                    passwordJudge,
+                    userInfo.email,
+                    currentPassword,
+                    changePassword,
+                )
+            }
+            // 비밀번호, 사진
+            else if(myPageUpdateViewModel.isValidCurrentPassword.value ==true
+                && myPageUpdateViewModel.isValidPassword.value ==true
+                && myPageUpdateViewModel.isValidSamePassword.value ==true
+                && myPageUpdateViewModel.isValidNickname.value !=true
+                && myPageUpdateViewModel.isValidImg.value == true){
+                changePassword = editUpdateUserPassword.text.toString().trim()
+                currentPassword = editUpdateUserCurrentPassword.text.toString().trim()
+                myPageUpdateViewModel.editInfo(
+                    userInfo.id.toString(),
+                    profile.toString(),
+                    name,
+                    userInfo.firstLocation.toString(),
+                    userInfo.secondLocation.toString(),
+                    passwordJudge,
+                    userInfo.email,
+                    currentPassword,
+                    changePassword,
+                )
+            }
+            //  이미지, 이름
+            else if(myPageUpdateViewModel.isValidCurrentPassword.value !=true
+                && myPageUpdateViewModel.isValidPassword.value !=true
+                && myPageUpdateViewModel.isValidSamePassword.value !=true
+                && myPageUpdateViewModel.isValidNickname.value == true
+            && myPageUpdateViewModel.isNicknameDuplication.value == false
+            && myPageUpdateViewModel.isValidImg.value == true){
+            name = editUpdateUserName.text.toString().trim()
+            myPageUpdateViewModel.editInfo(
+                userInfo.id.toString(),
+                profile.toString(),
+                name,
+                userInfo.firstLocation.toString(),
+                userInfo.secondLocation.toString(),
+                passwordJudge,
+                null,
+                null,
+                null,
+                )
+            }
+            //이름
+            else if(myPageUpdateViewModel.isValidCurrentPassword.value !=true
+                && myPageUpdateViewModel.isValidPassword.value !=true
+                && myPageUpdateViewModel.isValidSamePassword.value !=true
+                && myPageUpdateViewModel.isValidNickname.value == true
+                && myPageUpdateViewModel.isNicknameDuplication.value == false
+                && myPageUpdateViewModel.isValidImg.value !=true){
+                name = editUpdateUserName.text.toString().trim()
+                myPageUpdateViewModel.editInfo(
+                    userInfo.id.toString(),
+                    profile.toString(),
+                    name,
+                    userInfo.firstLocation.toString(),
+                    userInfo.secondLocation.toString(),
+                    passwordJudge,
+                    null,
+                    null,
+                    null,
+                )
+            }
+            // 이미지
+            else if(myPageUpdateViewModel.isValidCurrentPassword.value !=true
+                && myPageUpdateViewModel.isValidPassword.value !=true
+                && myPageUpdateViewModel.isValidSamePassword.value !=true
+                && myPageUpdateViewModel.isValidNickname.value !=true
+                && myPageUpdateViewModel.isValidImg.value == true){
+            myPageUpdateViewModel.editInfo(
+                userInfo.id.toString(),
+                profile.toString(),
+                editUpdateUserName.text.toString().trim(),
+                userInfo.firstLocation.toString(),
+                userInfo.secondLocation.toString(),
+                passwordJudge,
+                null,
+                null,
+                null,
+            )
+            }
+            else {
                 Toast.makeText(
                     applicationContext,
                     "입력 사항을 다시 한 번 확인해주세요",
@@ -267,6 +387,10 @@ class MyPageUpdateActivity : AppCompatActivity(){
 
     }
     private fun initViewModel() = with(binding) {
+
+        myPageUpdateViewModel._isValidNickname.value = false
+        myPageUpdateViewModel._isValidImg.value = null
+
         myPageUpdateViewModel.isValidNickname.observe(this@MyPageUpdateActivity){isValid ->
             if (isValid) {
                 tilUpdateUserName.boxStrokeColor =
@@ -355,30 +479,167 @@ class MyPageUpdateActivity : AppCompatActivity(){
         }
 
         myPageUpdateViewModel.setResult.observe(this@MyPageUpdateActivity){result ->
-            when (result) {
-                true -> {
-                    Log.d("mypage3", name!!)
-                    val intent = Intent().apply {
-                        putExtra(
-                            MyPageFragment.EXTRA_USER_NAME,
-                            name
-                        )
-                        putExtra(
-                            MyPageFragment.EXTRA_USER_PROFILE,
-                            profile
-                        )
-                    }
+            if (result as Boolean
+                && myPageUpdateViewModel.checkAllConditions()
+                ){
+                val intent = Intent().apply {
+                    putExtra(
+                        MyPageFragment.EXTRA_USER_NAME,
+                        name
+                    )
+                    putExtra(
+                        MyPageFragment.EXTRA_USER_PROFILE,
+                        profile
+                    )
+                }
+                setResult(Activity.RESULT_OK, intent)
+                Toast.makeText(
+                    applicationContext,
+                    "수정 성공",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-                    setResult(Activity.RESULT_OK, intent)
+                finish()
 
-                    Toast.makeText(
-                        applicationContext,
-                        "수정 성공",
-                        Toast.LENGTH_SHORT
-                    ).show()
+            }
+            //비밀번호
+            else if(                result
+                && myPageUpdateViewModel.isValidCurrentPassword.value ==true
+                && myPageUpdateViewModel.isValidPassword.value ==true
+                && myPageUpdateViewModel.isValidSamePassword.value ==true
+                && myPageUpdateViewModel.isValidNickname.value == false
+                && myPageUpdateViewModel.isValidImg.value != true){
+                val intent = Intent()
+                setResult(Activity.RESULT_OK, intent)
+                Toast.makeText(
+                    applicationContext,
+                    "수정 성공",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-                    finish()
-               }
+                finish()
+            }
+            //비밀 번호, 이름
+            else if(                result
+                && myPageUpdateViewModel.isValidCurrentPassword.value ==true
+                && myPageUpdateViewModel.isValidPassword.value ==true
+                && myPageUpdateViewModel.isValidSamePassword.value ==true
+                && myPageUpdateViewModel.isValidNickname.value == true
+                && myPageUpdateViewModel.isNicknameDuplication.value == false
+                && myPageUpdateViewModel.isValidImg.value !=true){
+                val intent = Intent().apply {
+                    putExtra(
+                        MyPageFragment.EXTRA_USER_NAME,
+                        name
+                    )
+                }
+                setResult(Activity.RESULT_OK, intent)
+                Toast.makeText(
+                    applicationContext,
+                    "수정 성공",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                finish()
+            }
+            // 비밀번호, 사진
+            else if(                result
+                && myPageUpdateViewModel.isValidCurrentPassword.value ==true
+                && myPageUpdateViewModel.isValidPassword.value ==true
+                && myPageUpdateViewModel.isValidSamePassword.value ==true
+                && myPageUpdateViewModel.isValidNickname.value !=true
+                && myPageUpdateViewModel.isValidImg.value == true){
+                val intent = Intent().apply {
+                    putExtra(
+                        MyPageFragment.EXTRA_USER_PROFILE,
+                        profile
+                    )
+                }
+                setResult(Activity.RESULT_OK, intent)
+                Toast.makeText(
+                    applicationContext,
+                    "수정 성공",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                finish()
+            }
+            else if(
+                // 이름 , 이미지
+                result
+                && myPageUpdateViewModel.isValidCurrentPassword.value !=true
+                && myPageUpdateViewModel.isValidPassword.value !=true
+                && myPageUpdateViewModel.isValidSamePassword.value !=true
+                && myPageUpdateViewModel.isValidNickname.value == true
+                && myPageUpdateViewModel.isNicknameDuplication.value == false
+                && myPageUpdateViewModel.isValidImg.value == true
+            ){
+                val intent = Intent().apply {
+                    putExtra(
+                        MyPageFragment.EXTRA_USER_NAME,
+                        name
+                    )
+                    putExtra(
+                        MyPageFragment.EXTRA_USER_PROFILE,
+                        profile
+                    )
+                }
+                setResult(Activity.RESULT_OK, intent)
+                Toast.makeText(
+                    applicationContext,
+                    "수정 성공",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                finish()
+            }
+            else if(
+                // 이름
+                result
+                && myPageUpdateViewModel.isValidCurrentPassword.value !=true
+                && myPageUpdateViewModel.isValidPassword.value !=true
+                && myPageUpdateViewModel.isValidSamePassword.value !=true
+                && myPageUpdateViewModel.isValidNickname.value == true
+                && myPageUpdateViewModel.isNicknameDuplication.value == false
+                && myPageUpdateViewModel.isValidImg.value !=true
+            ){
+                val intent = Intent().apply {
+                    putExtra(
+                        MyPageFragment.EXTRA_USER_NAME,
+                        name
+                    )
+                }
+                setResult(Activity.RESULT_OK, intent)
+                Toast.makeText(
+                    applicationContext,
+                    "수정 성공",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                finish()
+            }else if(
+                // 이미지
+                result
+                && myPageUpdateViewModel.isValidCurrentPassword.value !=true
+                && myPageUpdateViewModel.isValidPassword.value !=true
+                && myPageUpdateViewModel.isValidSamePassword.value !=true
+                && myPageUpdateViewModel.isValidNickname.value == false
+                && myPageUpdateViewModel.isValidImg.value == true
+                ){
+                val intent = Intent().apply {
+                    putExtra(
+                        MyPageFragment.EXTRA_USER_PROFILE,
+                        profile
+                    )
+                }
+                setResult(Activity.RESULT_OK, intent)
+                Toast.makeText(
+                    applicationContext,
+                    "수정 성공",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                finish()
             }
         }
     }

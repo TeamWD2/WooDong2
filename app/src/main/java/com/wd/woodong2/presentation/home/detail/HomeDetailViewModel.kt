@@ -72,7 +72,6 @@ class HomeDetailViewModel(
     fun toggleThumbCount(homeItem: HomeItem) {
     val newCount = if (homeItem.isLiked){
         homeItem.thumbCount - 1
-
         }
     else{
         homeItem.thumbCount + 1

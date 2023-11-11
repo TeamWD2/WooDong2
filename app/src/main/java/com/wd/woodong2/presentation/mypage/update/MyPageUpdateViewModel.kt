@@ -41,24 +41,25 @@ class MyPageUpdateViewModel(
     private val _isNicknameDuplication: MutableLiveData<Boolean> = MutableLiveData()
     val isNicknameDuplication: LiveData<Boolean> get() = _isNicknameDuplication
 
-    private val _isValidCurrentPassword: MutableLiveData<Boolean> = MutableLiveData()
+    val _isValidCurrentPassword: MutableLiveData<Boolean> = MutableLiveData()
     val isValidCurrentPassword: LiveData<Boolean> get() = _isValidCurrentPassword
 
-    private val _isValidPassword: MutableLiveData<Boolean> = MutableLiveData()
+    val _isValidPassword: MutableLiveData<Boolean> = MutableLiveData()
     val isValidPassword: LiveData<Boolean> get() = _isValidPassword
 
-    private val _isValidSamePassword: MutableLiveData<Boolean> = MutableLiveData()
+    val _isValidSamePassword: MutableLiveData<Boolean> = MutableLiveData()
     val isValidSamePassword: LiveData<Boolean> get() = _isValidSamePassword
 
-    private val _isValidNickname: MutableLiveData<Boolean> = MutableLiveData()
+    val _isValidNickname: MutableLiveData<Boolean> = MutableLiveData()
     val isValidNickname: LiveData<Boolean> get() = _isValidNickname
 
     private var imgProfile: Uri? = null
 
+    val _isValidImg: MutableLiveData<Boolean> = MutableLiveData()
+    val isValidImg: LiveData<Boolean> get() = _isValidImg
+
     private val _setResult: MutableLiveData<Any> = MutableLiveData()
     val setResult: LiveData<Any> get() = _setResult
-
-    private var passwordJudge : Boolean = false
 
     // 닉네임 중복 판단 메소드
     fun checkNicknameDuplication(nickname: String) {
@@ -90,26 +91,22 @@ class MyPageUpdateViewModel(
             imageStorageSetItem(uri).collect { imageUri ->
                 imgProfile = imageUri
             }
+            _isValidImg.value = true
+            _setResult.value = true
         }.onFailure {
             Log.e(SignUpViewModel.TAG, it.message.toString())
+            _isValidImg.value = false
         }
     }
 
     // 모든 요소 판단 메소드
     fun checkAllConditions(): Boolean {
-        return if(passwordJudge){
-            (isValidCurrentPassword.value == true
+        return isValidCurrentPassword.value == true
                     && isValidPassword.value == true
                     && isValidSamePassword.value == true
                     && isValidNickname.value == true
-                    && isNicknameDuplication.value == false)
-        } else {
-
-            (isValidNickname.value == true
-                    && isNicknameDuplication.value == false)
-                    ||(isValidNickname.value == false)
-        }
-
+                    && isNicknameDuplication.value == false
+                    && isValidImg.value == true
     }
 
     //작성완료 메소드
@@ -120,19 +117,41 @@ class MyPageUpdateViewModel(
         firstLocation: String,
         secondLocation: String,
         passwordJudge: Boolean,
+        email: String?,
+        currentPW: String?,
+        changePW: String?
         ) {
         viewModelScope.launch {
             try {
-                Log.d("mypage",name.toString())
-
-                this@MyPageUpdateViewModel.passwordJudge = passwordJudge
-
-                userUpdateInfoUseCase(userId,
-                    imgProfile.toString(), name.toString(), firstLocation, secondLocation)
-
-                //password 설정해야함
-
-                    _setResult.value = true
+                if(checkAllConditions() && passwordJudge){
+                    userUpdateInfoUseCase(
+                        userId,
+                        imgProfile.toString(),
+                        name.toString(),
+                        firstLocation,
+                        secondLocation)
+                    userUpdatePasswordUseCase(
+                        email.toString(),
+                        currentPW.toString(),
+                        changePW.toString()
+                    )
+                }
+                else if(passwordJudge){
+                    userUpdatePasswordUseCase(
+                        email.toString(),
+                        currentPW.toString(),
+                        changePW.toString()
+                    )
+                }
+                else{
+                    userUpdateInfoUseCase(
+                        userId,
+                        imgProfile.toString(),
+                        name.toString(),
+                        firstLocation,
+                        secondLocation)
+                }
+                _setResult.value = true
             } catch (e: Exception) {
                 // 에러 처리
                 _setResult.value = "ERROR: ${e.message}"
