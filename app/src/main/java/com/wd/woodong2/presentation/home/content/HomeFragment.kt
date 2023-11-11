@@ -54,7 +54,7 @@ class HomeFragment : Fragment() {
             },
             onDeleteItem = { item ->
                 viewModel.deleteItem(item)
-            }
+            },
         )
     }
 
@@ -141,6 +141,7 @@ class HomeFragment : Fragment() {
                     // 검색 수행
                     viewModel.searchItems(text.toString())
                     visibility = View.GONE
+                    imgHomeCancel.visibility = View.GONE
                     toolbarImgSearch.visibility = View.VISIBLE
                     // 키보드 숨기기
                     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -157,6 +158,7 @@ class HomeFragment : Fragment() {
             if (edtHomeSearch.visibility == View.GONE) {
                 // 검색 필드 보여주기
                 edtHomeSearch.visibility = View.VISIBLE
+                imgHomeCancel.visibility = View.VISIBLE
                 edtHomeSearch.requestFocus()
                 edtHomeSearch.text.clear() // 이전 검색어 지우기
                 // 키보드 보여주기
@@ -166,11 +168,19 @@ class HomeFragment : Fragment() {
                 // 검색 수행
                 viewModel.searchItems(edtHomeSearch.text.toString())
                 edtHomeSearch.visibility = View.GONE
+                imgHomeCancel.visibility = View.GONE
                 // 키보드 숨기기
                 val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(edtHomeSearch.windowToken, 0)
                 edtHomeSearch.text.clear() // 검색 후 검색어 지우기
             }
+        }
+
+        imgHomeCancel.setOnClickListener {
+            edtHomeSearch.visibility = View.GONE
+            imgHomeCancel.visibility = View.GONE
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(edtHomeSearch.windowToken, 0)
         }
 
     }

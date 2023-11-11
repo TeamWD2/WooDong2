@@ -42,7 +42,6 @@ class UserRepositoryImpl(
 
     override suspend fun getUser(userId: String): Flow<UserEntity?> =
         callbackFlow {
-            //오래 걸리는 작업??
             val listener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
@@ -55,13 +54,11 @@ class UserRepositoryImpl(
                                 response.copy(id = childSnapshot.key)
                             }
                         val userResponse = userListResponses.find {
-
                             it.id == userId
                         }
 
                         val entity: UserEntity? = userResponse?.toEntity()
                         trySend(entity)
-                        Log.d("homeItem2",userId)
                     } else {
                         throw RuntimeException("snapshot is not exists")
                     }
@@ -116,7 +113,7 @@ class UserRepositoryImpl(
                             groupIds = listOf(),        //모임
                             likedIds = listOf(),        //좋아요 게시물
                             writtenIds = listOf(),        //작성한 게시물
-                            imgProfile = "",
+                            imgProfile = imgProfile.toString(),
                             firstLocation = "",
                             secondLocation = "",
                             token = tokenProvider.getToken()
@@ -212,7 +209,6 @@ class UserRepositoryImpl(
         Log.d("locationcf", secondLocation)
         Log.d("mypagename", name)
         val userInfo = databaseReference.child(userId)
-
         val updateUserInfo = mapOf(
             "name" to name,
             "imgProfile" to imgProfile,
@@ -254,14 +250,12 @@ class UserRepositoryImpl(
     }
 
     override fun removeUserIds(
-        userId : String,
+        userId: String,
         writtenId: String?,
         likedId: String?,
         groupId: String?,
-        chatId: String?
-    ){
-
-
+        chatId: String?,
+    ) {
         val userIds = databaseReference.child(userId)
 
 

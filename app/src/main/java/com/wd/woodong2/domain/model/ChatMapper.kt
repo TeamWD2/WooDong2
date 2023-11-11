@@ -12,10 +12,10 @@ fun ChatItemsResponse.toEntity() = ChatItemsEntity(
 fun ChatResponse.toEntity() = ChatEntity(
     id = id,
     groupId = groupId,
-    last = last?.toMessage(),
+    last = last?.toEntity(),
     mainImage = mainImage,
     memberLimit = memberLimit,
-    message = message?.map { it.value.toMessage() }.orEmpty(),
+    message = message?.map { it.value.toEntity() }.orEmpty(),
     title = title,
     lastSeemTime = lastSeemTime
 )

@@ -45,8 +45,6 @@ class HomeViewModel(
 ) {
 
 
-    val allItems = MutableLiveData<List<HomeItem>>()
-
     // 필터링된 아이템을 저장하는 LiveData
     private val _filteredItems = MutableLiveData<List<HomeItem>>()
 
@@ -60,7 +58,12 @@ class HomeViewModel(
     val circumLocationList: LiveData<List<HomeMapSearchItem>> get() = _circumLocationList
 
     private val _searchResults = MutableLiveData<List<HomeItem>>()
+
     val searchResults: LiveData<List<HomeItem>> = _searchResults
+
+    private val _deleteResults = MutableLiveData<List<HomeItem>>()
+
+    val deleteResults: LiveData<List<HomeItem>> = _deleteResults
 
     //주변 위치 값 받아오기
     var circumLocation = mutableSetOf<String>()
@@ -76,8 +79,8 @@ class HomeViewModel(
     val userInfo: MutableLiveData<UserItem?> = MutableLiveData()
 
     init {
-        getUserItem()
         loadDataFromFirebase()
+        getUserItem()
     }
 
     fun circumLocationItemSearch(
@@ -308,6 +311,7 @@ class HomeViewModel(
                         }
                     }
                     _list.value = dataList.reversed()
+                    _printList.value = dataList.reversed()
 
                 }
 
@@ -382,7 +386,15 @@ class HomeViewModel(
         val itemId = item.id // 항목의 고유 ID 또는 키
         deleteItemFromFirebase(itemId)
 
-        _printList.value = _printList.value?.filter { it != item }
+        val updatedList = _list.value?.toMutableList() ?: mutableListOf()
+        updatedList.remove(item)
+        _list.value = updatedList
+
+        // 필터링된 아이템 업데이트
+        val filteredList = _filteredItems.value?.toMutableList() ?: mutableListOf()
+        filteredList.remove(item)
+        _filteredItems.value = filteredList
+
     }
 
     private fun deleteItemFromFirebase(itemId: String) {
@@ -392,7 +404,7 @@ class HomeViewModel(
         itemReference.removeValue()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-
+                    loadDataFromFirebase()
                 } else {
                     val exception = task.exception
                     if (exception != null) {
