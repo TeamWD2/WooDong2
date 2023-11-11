@@ -34,11 +34,29 @@ class GroupViewModel(
     private val _groupList: MutableLiveData<List<GroupItem>> = MutableLiveData()
     val groupList: LiveData<List<GroupItem>> get() = _groupList
 
+    private val _searchKeyword: MutableLiveData<String> = MutableLiveData()
+    val searchKeyword: LiveData<String> get() = _searchKeyword
+
     private val _loadingState: MutableLiveData<Boolean> = MutableLiveData()
     val loadingState: LiveData<Boolean> get() = _loadingState
 
     private val _isEmptyList: MutableLiveData<Boolean> = MutableLiveData()
     val isEmptyList: LiveData<Boolean> get() = _isEmptyList
+
+    fun setKeyword(keyword: String) {
+        _searchKeyword.value = keyword
+    }
+
+    fun searchKeywordGroupItem(keyword: String): List<GroupItem.GroupMain> {
+        val groupMainItem = _groupList.value?.filterIsInstance<GroupItem.GroupMain>()
+        return if(keyword.isBlank()) {
+            groupMainItem
+        } else {
+            groupMainItem?.filter {
+                it.groupName?.contains(keyword) == true || it.introduce?.contains(keyword) == true
+            }
+        } ?: listOf()
+    }
 
     fun getGroupItem() = viewModelScope.launch {
         _loadingState.value = true
