@@ -40,4 +40,7 @@ class UserPreferencesRepositoryImpl(
     override fun getUserInfo(): UserEntity? {
         return userInfoPref.getUserInfo()
     }
+    override fun editUserInfo(name: String?, profile: String?,firstLocation: String?, secondLocation: String?): UserEntity{
+        return  userInfoPref.editUserInfo(name, profile,firstLocation, secondLocation)
+    }
 }

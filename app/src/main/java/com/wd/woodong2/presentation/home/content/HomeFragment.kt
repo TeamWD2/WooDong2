@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -81,6 +82,13 @@ class HomeFragment : Fragment() {
                         receivedDataFirstLocation.toString(),
                         receivedDataSecondLocation.toString()
                     )
+                    //SharedPreference에 저장
+                    viewModel.userInfo.value = viewModel.editPrefUserInfo(
+                        viewModel.userInfo.value?.name,
+                        viewModel.userInfo.value?.imgProfile,
+                        receivedDataFirstLocation.toString(),
+                        receivedDataSecondLocation.toString())
+                    Log.d("check",viewModel.userInfo.value?.firstLocation.toString())
                 } else {
 
                 }
