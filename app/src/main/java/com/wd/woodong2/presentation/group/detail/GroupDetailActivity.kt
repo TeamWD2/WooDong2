@@ -4,9 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -155,22 +156,72 @@ class GroupDetailActivity : AppCompatActivity() {
                         )
                     )
 
-                    GroupDetailContentType.JOIN_GROUP ->
-                        AlertDialog.Builder(this@GroupDetailActivity).apply {
-                            setTitle(R.string.group_detail_dialog_title)
-                            setMessage(R.string.group_detail_dialog_message)
-                            setPositiveButton(R.string.group_detail_dialog_ok) { _, _ ->
-                                viewModel.updateUserInfo(itemId)
+                    GroupDetailContentType.JOIN_GROUP -> { //모임 가입하기 버튼 클릭
+                        // 1. 모임 가입 제한 인원 확인
+                        if(viewModel.isJoinPossibleMemberLimit()) {
+                            // 2. 비밀번호 활성화 여부 확인
+                            if(viewModel.isExistPassword()) { //비밀번호가 있는 경우
+                                showDialogEnterPw()
+                            } else { //비밀번호가 없는 경우
+                                showDialogJoinGroup()
                             }
-                            setNegativeButton(R.string.group_detail_dialog_cancel) { dialog, _ ->
-                                dialog.dismiss()
-                            }
-                            show()
+                        } else { // 모임 가입 제한 인원 가득찬 경우
+                            Toast.makeText(
+                                this@GroupDetailActivity,
+                                R.string.group_detail_toast_member_limit_full,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
+                    }
 
                     else -> Unit
                 }
             }
+        }
+
+        isSuccessJoinGroup.observe(this@GroupDetailActivity) { isSuccessJoinGroup ->
+            Toast.makeText(
+                this@GroupDetailActivity,
+                if(isSuccessJoinGroup) R.string.group_detail_toast_join_group_success else R.string.group_detail_toast_join_group_fail,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun showDialogEnterPw() {
+        val edtInput = EditText(this@GroupDetailActivity)
+        AlertDialog.Builder(this@GroupDetailActivity).apply {
+            setTitle(R.string.group_detail_dialog_title_enter_pw)
+            setView(edtInput)
+            setPositiveButton(R.string.group_detail_dialog_ok) { _, _ ->
+                if(viewModel.checkPassword(edtInput.text.toString())) { //비밀번호가 일치하는 경우
+                    showDialogJoinGroup()
+                } else {
+                    Toast.makeText(
+                        this@GroupDetailActivity,
+                        R.string.group_detail_toast_incorrect_password,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            setNegativeButton(R.string.group_detail_dialog_cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            show()
+        }
+    }
+
+    private fun showDialogJoinGroup() {
+        AlertDialog.Builder(this@GroupDetailActivity).apply {
+            setTitle(R.string.group_detail_dialog_title_join_group)
+            setMessage(R.string.group_detail_dialog_message_join_group)
+            setPositiveButton(R.string.group_detail_dialog_ok) { _, _ ->
+                viewModel.updateUserInfo(itemId)
+            }
+            setNegativeButton(R.string.group_detail_dialog_cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            show()
         }
     }
 

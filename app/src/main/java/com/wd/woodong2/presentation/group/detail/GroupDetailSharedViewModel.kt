@@ -53,6 +53,9 @@ class GroupDetailSharedViewModel(
     private val _groupDetailItem: MutableLiveData<List<GroupItem>> = MutableLiveData()
     val groupDetailItem: LiveData<List<GroupItem>> get() = _groupDetailItem
 
+    private val _isSuccessJoinGroup: MutableLiveData<Boolean> = MutableLiveData()
+    val isSuccessJoinGroup: LiveData<Boolean> get() = _isSuccessJoinGroup
+
     /**
      * 로그인 된 계정의 선택한 모임 가입 여부 확인
      */
@@ -189,6 +192,35 @@ class GroupDetailSharedViewModel(
     }
 
     /**
+     * 모임 가입 여부 확인 (1. 가입 제한 멤버 수 확인)
+     */
+    fun isJoinPossibleMemberLimit(): Boolean {
+        val groupMainItem =
+            groupDetailItem.value?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()
+        return if (groupMainItem?.memberLimit.equals("제한 없음")) {
+            true
+        } else {
+            val groupMemberItem = groupDetailItem.value?.filterIsInstance<GroupItem.GroupMember>()?.firstOrNull()
+            ((groupMainItem?.memberLimit?.filter { it.isDigit() }?.toInt() ?: 0) > (groupMemberItem?.memberList?.size ?: 0))
+        }
+    }
+
+    /**
+     * 모임 가입 여부 확인 (2. 비밀번호 존재 유무 확인 및 비밀번호 일치 여부 확인)
+     */
+    fun isExistPassword(): Boolean {
+        val groupMainItem =
+            groupDetailItem.value?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()
+        return !(groupMainItem?.password.equals("[WD2] No Password"))
+    }
+
+    fun checkPassword(password: String): Boolean {
+        val groupMainItem =
+            groupDetailItem.value?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()
+        return (groupMainItem?.password.equals(password))
+    }
+
+    /**
      * 모임 가입 시, User 정보 업데이트 및 멤버 추가
      */
     fun updateUserInfo(groupId: String?) {
@@ -200,15 +232,15 @@ class GroupDetailSharedViewModel(
                 val groupMainItem =
                     groupDetailItem.value?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()
                 if (groupMainItem != null) {
+                    val userInfo = getUserInfo()
                     //User 정보 업데이트
                     var chatId: String? = null
                     getChatId(groupId).collect { id ->
                         chatId = id
                     }
-                    updateGroupInfo(getUserInfo()?.userId ?: "UserId", groupId, chatId)
+                    updateGroupInfo(userInfo?.userId ?: "UserId", groupId, chatId)
 
                     //멤버 추가
-                    val userInfo = getUserInfo()
                     groupSetMemberItem(
                         groupId,
                         GroupDetailMemberAddItem(
@@ -219,11 +251,14 @@ class GroupDetailSharedViewModel(
                             comment = "모임 멤버"
                         )
                     )
+                    _isSuccessJoinGroup.value = true
                 } else {
                     Log.d(TAG, "groupMainItem is null")
+                    _isSuccessJoinGroup.value = false
                 }
             }.onFailure {
                 Log.e(TAG, it.message.toString())
+                _isSuccessJoinGroup.value = false
             }
         }
     }

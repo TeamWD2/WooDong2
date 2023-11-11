@@ -9,6 +9,7 @@ import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.wd.woodong2.R
@@ -34,25 +35,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: MainActivityBinding
-    /*
-
-        private val homeFragment by lazy {
-            HomeFragment.newInstance()
-        }
-
-        private val groupFragment by lazy {
-            GroupFragment.newInstance()
-        }
-
-        private val chatFragment by lazy {
-            ChatFragment.newInstance()
-        }
-
-        private val myPageFragment by lazy {
-            MyPageFragment.newInstance()
-        }
-
-    */
 
     /**
      * 갤러리 접근 권한 설정
@@ -72,15 +54,13 @@ class MainActivity : AppCompatActivity() {
 
     private val galleryPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            if (permissions.values.all { it }) {
-                initView()
-            } else {
-                Toast.makeText(this, getString(R.string.main_toast_permission), Toast.LENGTH_SHORT)
-                    .show()
-                finish()
-            }
+            Toast.makeText(
+                this,
+                if (permissions.values.all { it }) R.string.public_toast_permission_grant else R.string.public_toast_permission_deny,
+                Toast.LENGTH_SHORT
+            ).show()
+            initView()
         }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,16 +84,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissions() {
-        if (permissions.all {
+        when {
+            permissions.all {
                 ContextCompat.checkSelfPermission(
                     this,
                     it
                 ) == PackageManager.PERMISSION_GRANTED
+            } -> {
+                initView()
             }
-        ) {
-            initView()
-        } else {
-            galleryPermissionLauncher.launch(permissions)
+
+            permissions.any {
+                shouldShowRequestPermissionRationale(it)
+            } -> { //이전에 권한 요청을 거부한 적이 있는 경우
+                showRationalDialog()
+            }
+
+            else -> galleryPermissionLauncher.launch(permissions)
         }
     }
 
@@ -132,5 +119,16 @@ class MainActivity : AppCompatActivity() {
         }
         supportFragmentManager.beginTransaction()
             .replace(frameLayout.id, HomeFragment()).commit()
+    }
+
+    private fun showRationalDialog() {
+        AlertDialog.Builder(this@MainActivity).apply {
+            setTitle(R.string.public_dialog_rational_title)
+            setMessage(R.string.public_dialog_rational_message)
+            setPositiveButton(R.string.public_dialog_rational_ok) { _, _ ->
+                galleryPermissionLauncher.launch(permissions)
+            }
+            show()
+        }
     }
 }

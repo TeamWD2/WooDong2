@@ -146,7 +146,7 @@ class GroupDetailBoardDetailListAdapter(
             if (item is GroupDetailBoardDetailItem.BoardComment) {
                 imgProfile.load(item.userProfile)
                 txtName.text = item.userName
-                txtLocation.text = item.userLocation
+                txtLocation.text = item.userLocation?.split(" ")?.last()
                 txtDate.text = item.timestamp?.let { Date(it) }
                     ?.let { SimpleDateFormat("yyyy년 MM월 dd일").format(it) }
                 txtComment.text = item.comment

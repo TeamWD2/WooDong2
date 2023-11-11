@@ -138,7 +138,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
 
     override suspend fun deleteGroupBoardComment(
         itemId: String,
-        groupId: String,
+        boardId: String,
         commentId: String
     ) {
         databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -146,7 +146,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
                 snapshot.children.forEach { childSnapshot ->
                     val viewType = childSnapshot.child("viewType").value as? String
                     if (viewType?.uppercase() == GroupViewType.BOARD.name) {
-                        childSnapshot.ref.child("boardList").child(groupId)
+                        childSnapshot.ref.child("boardList").child(boardId)
                             .child("commentList").child(commentId).removeValue()
                     }
                 }
