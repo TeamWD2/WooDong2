@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.wd.woodong2.databinding.ChatListItemBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -130,14 +131,16 @@ class ChatItemListAdapter(
                 txtLastMassage.text = item.lastMessage
                 txtMemberNum.text = item.memberLimit
                 txtTimestamp.text = formatTimestamp(item.timeStamp ?: System.currentTimeMillis())
+                imgProfile.load(item.mainImage)
 
                 if (item.isRead != false) {
-                    txtNew.visibility = View.INVISIBLE
+                    cardViewNew.visibility = View.INVISIBLE
                 } else {
-                    txtNew.visibility = View.VISIBLE
+                    cardViewNew.visibility = View.VISIBLE
                 }
             }
             itemView.setOnClickListener {
+                cardViewNew.visibility = View.INVISIBLE
                 onClick(item)
             }
         }

@@ -9,6 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_gap"
         android:layout_width="0dp"
+        android:background="@android:color/transparent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/constraint_chat"
@@ -25,7 +26,16 @@
         app:layout_constraintHorizontal_weight="7"
         app:layout_constraintStart_toEndOf="@+id/layout_gap">
 
+        <TextView
+            android:id="@+id/txt_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            app:layout_constraintBottom_toBottomOf="@id/layout_message_box"
+            app:layout_constraintEnd_toStartOf="@id/layout_message_box" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_message_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/chat_detail_my_item_background"
