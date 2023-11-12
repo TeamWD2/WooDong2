@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.ChatDetailMyItemBinding
 import com.wd.woodong2.databinding.ChatDetailOpponentItemBinding
 
@@ -81,6 +82,9 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
         private val binding: ChatDetailOpponentItemBinding,
     ) : ViewHolder(binding.root) {
         override fun onBind(currentItem: MessageItem, previousItem: MessageItem?) = with(binding) {
+            imgProfile.load(currentItem.profileImg) {
+                error(R.drawable.public_default_wd2_ivory)
+            }
             txtName.text = currentItem.nickname
             txtChat.text = currentItem.content
 
@@ -106,7 +110,9 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
                 imgProfile.visibility = View.VISIBLE
                 txtName.visibility = View.VISIBLE
 
-                imgProfile.load(currentItem.profileImg)
+                imgProfile.load(currentItem.profileImg) {
+                    error(R.drawable.public_default_wd2_ivory)
+                }
 
                 params.setMargins(0, 0, 0, 0) // 마진을 원래대로 설정
             }

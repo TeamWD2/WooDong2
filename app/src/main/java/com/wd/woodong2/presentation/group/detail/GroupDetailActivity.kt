@@ -242,10 +242,10 @@ class GroupDetailActivity : AppCompatActivity() {
 
     private fun initClickItem(detailItem: List<GroupItem>?) = with(binding.includeLayoutCoordinator) {
         imgBackground.load(detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.backgroundImage) {
-            error(R.drawable.group_ic_no_image)
+            error(R.drawable.public_default_wd2_ivory)
         }
         imgMain.load(detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.mainImage) {
-            error(R.drawable.group_ic_no_image)
+            error(R.drawable.public_default_wd2_ivory)
         }
         txtTitle.text = detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.groupName
         txtMemberCount.text = detailItem?.filterIsInstance<GroupItem.GroupMember>()?.firstOrNull()?.memberList?.size?.toString() ?: "1"

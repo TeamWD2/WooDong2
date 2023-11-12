@@ -7,7 +7,7 @@
     android:layout_marginBottom="10dp"
     android:background="@drawable/public_border_box_full"
     android:elevation="@dimen/wd2_elevation"
-    android:padding="10dp">
+    android:padding="@dimen/wd2_box_padding">
 
     <TextView
         android:id="@+id/txt_board_title"

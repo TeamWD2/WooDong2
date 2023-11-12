@@ -99,7 +99,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
                     profile = uri.toString()
                     Glide.with(this)
                         .load(Uri.parse(profile))
-                        .error(R.drawable.group_ic_no_image)
+                        .error(R.drawable.public_default_wd2_ivory)
                         .fitCenter()
                         .into(binding.myPageUpdateUserImgProfile)
                     myPageUpdateViewModel.setProfileImage(uri)
@@ -139,7 +139,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
         //기본설정
         Glide.with(this@MyPageUpdateActivity)
             .load(profile)
-            .error(R.drawable.group_ic_no_image)
+            .error(R.drawable.public_default_wd2_ivory)
             .fitCenter()
             .into(myPageUpdateUserImgProfile)
 

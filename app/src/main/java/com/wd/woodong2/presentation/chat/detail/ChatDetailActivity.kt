@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.ChatDetailActivityBinding
 import com.wd.woodong2.presentation.chat.content.ChatItem
@@ -96,11 +97,17 @@ class ChatDetailActivity : AppCompatActivity() {
 
         when (val item = receiveItem) {
             is ChatItem.GroupChatItem -> {
+                imgProduct.load(item.mainImage) {
+                    error(R.drawable.public_default_wd2_ivory)
+                }
                 txtChatType.text = item.title
                 txtMemberNum.text = "## / ${item.memberLimit}"
             }
 
             is ChatItem.PrivateChatItem -> {
+                imgProduct.load(item.mainImage) {
+                    error(R.drawable.public_default_wd2_ivory)
+                }
                 txtChatType.text = item.title
                 txtMemberNum.visibility = View.GONE
             }
