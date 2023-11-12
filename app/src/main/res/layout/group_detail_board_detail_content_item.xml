@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/public_border_box_full"
-        android:elevation="2dp"
+        android:elevation="@dimen/wd2_elevation"
         android:padding="@dimen/wd2_box_padding">
 
         <TextView

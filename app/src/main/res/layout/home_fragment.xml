@@ -11,21 +11,25 @@
         android:id="@+id/toolbar_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/yellow"
-        android:minHeight="48dp"
+        android:background="@color/egg_yellow_toolbar"
+        android:minHeight="@dimen/wd2_toolbar_min_height"
+        app:layout_constraintBottom_toTopOf="@id/constraintLayout4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/toolbar_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp">
 
             <TextView
                 android:id="@+id/toolbar_tv_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/home_map_bottom_sheet_btn_location"
-                android:textSize="16sp"
+                android:textSize="@dimen/wd2_sub_title"
                 android:textStyle="bold" />
 
             <ImageView
@@ -35,6 +39,38 @@
                 android:src="@drawable/public_ic_down" />
         </LinearLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/edt_home_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/public_border_box_full"
+                android:hint="게시물 제목을 입력해 주세요."
+                android:maxLines="1"
+                android:padding="@dimen/wd2_box_padding"
+                android:textColor="@color/light_gray_txt"
+                android:textSize="@dimen/wd2_normal_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/img_home_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/home_map_btn_ic_close"
+                app:layout_constraintBottom_toBottomOf="@id/edt_home_search"
+                app:layout_constraintEnd_toEndOf="@id/edt_home_search"
+                app:layout_constraintTop_toTopOf="@id/edt_home_search" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/toolbar_img_search"
@@ -45,98 +81,11 @@
             android:src="@drawable/public_ic_search" />
     </androidx.appcompat.widget.Toolbar>
 
-    <EditText
-        android:id="@+id/edt_home_search"
-        android:layout_width="228dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="1dp"
-        android:background="@drawable/public_border_box"
-        android:padding="10dp"
-        android:layout_marginEnd="10dp"
-        android:backgroundTint="@color/white"
-        android:hint="게시물 제목을 입력해 주세요."
-        android:maxLines="1"
-        android:textSize="@dimen/wd2_normal_text"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar_home"
-        app:layout_constraintEnd_toEndOf="@+id/toolbar_home"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <ImageView
-        android:id="@+id/img_home_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/public_ic_cancel_image"
-        android:layout_marginTop="10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar_home"
-        app:layout_constraintEnd_toEndOf="@+id/toolbar_home"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="605dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/home_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.473"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/home_top_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:elevation="0dp"
-            android:backgroundTint="@color/dark_yellow_btn"
-            android:src="@drawable/public_ic_arrow_top"
-            app:layout_constraintBottom_toTopOf="@+id/fab_home_add"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.954"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.968"
-            app:shapeAppearanceOverlay="@style/fabBtn"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_home_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/dark_yellow_btn"
-            android:clickable="true"
-            android:elevation="0dp"
-            android:src="@drawable/public_ic_fab_add"
-            app:borderWidth="1dp"
-            app:fabSize="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.954"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.919"
-            app:shapeAppearanceOverlay="@style/fabBtn" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="15dp"
+        app:layout_constraintBottom_toTopOf="@id/home_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_home">
@@ -154,7 +103,8 @@
                 android:id="@+id/const_home_tag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/wd2_layout_padding"
+                android:paddingStart="@dimen/wd2_layout_padding"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -162,25 +112,22 @@
                 <com.google.android.material.chip.ChipGroup
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:checkedChip="@+id/home_tag1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:singleSelection="true"
-                    app:checkedChip="@+id/home_tag1">
+                    app:singleSelection="true">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/home_tag1"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:text="전체"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/home_tag2"
@@ -190,9 +137,7 @@
                         android:text="동네질문"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/home_tag3"
@@ -202,10 +147,7 @@
                         android:text="조심해요!"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/home_add_tag1"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0" />
+                        app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/home_tag4"
@@ -215,10 +157,7 @@
                         android:text="정보공유"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/home_add_tag2"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0" />
+                        app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/home_tag5"
@@ -228,9 +167,7 @@
                         android:text="동네소식"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/home_add_tag3"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/home_tag6"
@@ -240,9 +177,7 @@
                         android:text="사건/사고"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/home_add_tag4"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/home_tag7"
@@ -252,9 +187,7 @@
                         android:text="동네사진전"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/home_add_tag5"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/home_tag8"
@@ -264,9 +197,7 @@
                         android:text="분실/실종"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/home_add_tag6"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/home_tag9"
@@ -276,9 +207,7 @@
                         android:text="생활정보"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/home_add_tag7"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:ensureMinTouchTargetSize="false" />
 
 
                 </com.google.android.material.chip.ChipGroup>
@@ -289,5 +218,44 @@
         </HorizontalScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:padding="@dimen/wd2_layout_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintLayout4"
+        tools:listitem="@layout/home_list_item" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/home_top_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:backgroundTint="@color/dark_yellow_btn"
+        android:clickable="true"
+        android:elevation="0dp"
+        android:src="@drawable/public_ic_arrow_top"
+        app:layout_constraintBottom_toTopOf="@+id/fab_home_add"
+        app:layout_constraintEnd_toEndOf="@id/fab_home_add"
+        app:layout_constraintStart_toStartOf="@id/fab_home_add"
+        app:shapeAppearanceOverlay="@style/fabBtn" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_home_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/wd2_layout_padding"
+        android:backgroundTint="@color/dark_yellow_btn"
+        android:clickable="true"
+        android:elevation="0dp"
+        android:src="@drawable/public_ic_fab_add"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:shapeAppearanceOverlay="@style/fabBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

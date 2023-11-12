@@ -3,6 +3,7 @@ package com.wd.woodong2.presentation.chat.content
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -131,11 +132,7 @@ class ChatItemListAdapter(
                 txtMemberNum.text = item.memberLimit
                 txtTimestamp.text = formatTimestamp(item.timeStamp ?: System.currentTimeMillis())
 
-                if (item.isRead != false) {
-                    txtNew.visibility = View.INVISIBLE
-                } else {
-                    txtNew.visibility = View.VISIBLE
-                }
+                cardViewNew.isVisible = item.isRead == false
             }
             itemView.setOnClickListener {
                 onClick(item)

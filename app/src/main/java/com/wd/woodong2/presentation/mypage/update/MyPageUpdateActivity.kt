@@ -115,7 +115,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
         binding = MyPageUpdateActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.wd2_main_color)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.ivory_yellow_background)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
             window.insetsController?.setSystemBarsAppearance(

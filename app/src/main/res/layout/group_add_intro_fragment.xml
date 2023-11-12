@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="25dp">
+    android:paddingHorizontal="@dimen/wd2_layout_padding">
 
     <TextView
         android:id="@+id/txt_group_tag_title"
@@ -204,7 +204,7 @@
         android:background="@drawable/public_border_box"
         android:hint="@string/group_add_hint_introduce_name"
         android:maxLines="1"
-        android:padding="16dp"
+        android:padding="@dimen/wd2_box_padding"
         android:textSize="@dimen/wd2_normal_text"
         app:layout_constraintBottom_toTopOf="@id/txt_introduce_description"
         app:layout_constraintEnd_toEndOf="parent"
@@ -232,7 +232,7 @@
         android:hint="@string/group_add_hint_introduce_description"
         android:maxLines="10"
         android:minLines="4"
-        android:padding="16dp"
+        android:padding="@dimen/wd2_box_padding"
         android:textSize="@dimen/wd2_normal_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -242,14 +242,13 @@
         android:id="@+id/btn_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:background="@drawable/public_border_btn"
-        android:padding="16dp"
+        android:padding="@dimen/wd2_box_padding"
         android:text="@string/group_add_btn_next"
         android:textColor="@color/white"
         android:textSize="@dimen/wd2_main_title"
         android:textStyle="bold"
-        android:layout_marginVertical="25dp"
+        android:layout_marginVertical="@dimen/wd2_layout_padding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
