@@ -49,6 +49,9 @@ class GroupAddSharedViewModel(
     private val groupAddIntroduce: MutableLiveData<GroupAddSetItem.GroupAddIntroduce> =
         MutableLiveData(GroupAddSetItem.GroupAddIntroduce())
 
+    private val _isLoadingState: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoadingState: LiveData<Boolean> get() = _isLoadingState
+
     private val _isCreateSuccess: MutableLiveData<Boolean> = MutableLiveData()
     val isCreateSuccess: LiveData<Boolean> get() = _isCreateSuccess
 
@@ -116,6 +119,7 @@ class GroupAddSharedViewModel(
      */
     fun setGroupAddItem() {
         if (isCorrectGroupAddItem()) {
+            _isLoadingState.value = true
             viewModelScope.launch {
                 runCatching {
                     getImageStorage("imgMainImage", Uri.parse(groupAddMain.value?.mainImage))
@@ -134,7 +138,7 @@ class GroupAddSharedViewModel(
                             profile = userInfo?.userProfile,
                             name = userInfo?.userName ?: "UserName",
                             location = userInfo?.userLocation ?: "UserLocation",
-                            comment = "모임 멤버"
+                            comment = "(방장)"
                         )
                     )
 
@@ -149,10 +153,12 @@ class GroupAddSharedViewModel(
                     )
 
                     //사용자 정보 업데이트 (방장 자격)
-                    updateGroupInfo(getUserInfo()?.userId ?: "UserId", groupId, chatId)
+                    updateGroupInfo(userInfo?.userId ?: "UserId", groupId, chatId)
 
+                    _isLoadingState.value = false
                     _isCreateSuccess.value = true
                 }.onFailure {
+                    _isLoadingState.value = false
                     Log.e(TAG, it.message.toString())
                 }
             }

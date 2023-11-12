@@ -15,7 +15,7 @@ import java.util.Date
 import java.util.Locale
 
 class MyPageWrittenListAdapter (
-    private val onClickItem: (Int, HomeItem) -> Unit,
+    private val onClickItem: (HomeItem) -> Unit,
     //private val chatIds : String?     -> map 형식
 ): ListAdapter<HomeItem, MyPageWrittenListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<HomeItem>() {
@@ -36,13 +36,9 @@ class MyPageWrittenListAdapter (
 ){
     class ViewHolder(
         private val binding: HomeListItemBinding,
-        private val onClickItem: (Int, HomeItem) -> Unit,
-        //private val chatId : String?      ->map 형식
+        private val onClickItem: (HomeItem) -> Unit,
     ): RecyclerView.ViewHolder(binding.root){
 
-        // 아이템 기본 설정
-        // 모든 아이템을 갖고 오는게 아니라 가입한 그룹의 데이터만 갖고오기 설정
-        // chatIds로 판단하고 했으니깐       ->map 형식에 따라 설정하기
         fun bind(item: HomeItem) = with(binding){
             homeListItemBtnTag.text = item.tag
             homeListItemThumbnail.load(item.thumbnail)
@@ -52,13 +48,12 @@ class MyPageWrittenListAdapter (
             homeListItemTvLocation.text = HomeMapActivity.extractLocationInfo(item.location)
             homeListItemTvTimeStamp.text = formatTimestamp(item.timeStamp)
 
-
             homeListItemTvThumbCount.text = item.thumbCount.toString()
             homeListItemTvChatCount.text = item.chatCount.toString()
 
             homeListItem.setOnClickListener{
                 onClickItem(
-                    adapterPosition,item
+                    item
                 )
             }
 
@@ -101,7 +96,7 @@ class MyPageWrittenListAdapter (
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             HomeListItemBinding.inflate(LayoutInflater.from(parent.context), parent,false),
-            onClickItem
+            onClickItem,
         )
     }
 

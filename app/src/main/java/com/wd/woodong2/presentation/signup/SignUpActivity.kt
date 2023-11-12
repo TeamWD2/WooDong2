@@ -15,9 +15,9 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.SignupActivityBinding
@@ -52,10 +52,23 @@ class SignUpActivity : AppCompatActivity() {
     private val galleryPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             if (permissions.values.all { it }) {
-                initView()
+                Toast.makeText(
+                    this,
+                    R.string.public_toast_permission_grant,
+                    Toast.LENGTH_SHORT
+                ).show()
+                galleryLauncher.launch(
+                    Intent(Intent.ACTION_PICK).setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        "image/*"
+                    )
+                )
             } else {
-                Toast.makeText(this, getString(R.string.main_toast_permission), Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    this,
+                    R.string.public_toast_permission_deny,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -81,13 +94,8 @@ class SignUpActivity : AppCompatActivity() {
         _binding = SignupActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initInfo()
         initView()
         initModel()
-    }
-
-    private fun initInfo() {
-
     }
 
     private fun initView() = with(binding) {
@@ -325,21 +333,39 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun checkPermissions() {
-        if (permissions.all {
+        when {
+            permissions.all {
                 ContextCompat.checkSelfPermission(
                     this,
                     it
                 ) == PackageManager.PERMISSION_GRANTED
-            }
-        ) {
-            galleryLauncher.launch(
-                Intent(Intent.ACTION_PICK).setDataAndType(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    "image/*"
+            } -> {
+                galleryLauncher.launch(
+                    Intent(Intent.ACTION_PICK).setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        "image/*"
+                    )
                 )
-            )
-        } else {
-            galleryPermissionLauncher.launch(permissions)
+            }
+
+            permissions.any {
+                shouldShowRequestPermissionRationale(it)
+            } -> { //이전에 권한 요청을 거부한 적이 있는 경우
+                showRationalDialog()
+            }
+
+            else -> galleryPermissionLauncher.launch(permissions)
+        }
+    }
+
+    private fun showRationalDialog() {
+        AlertDialog.Builder(this@SignUpActivity).apply {
+            setTitle(R.string.public_dialog_rational_title)
+            setMessage(R.string.public_dialog_rational_message)
+            setPositiveButton(R.string.public_dialog_rational_ok) { _, _ ->
+                galleryPermissionLauncher.launch(permissions)
+            }
+            show()
         }
     }
 }

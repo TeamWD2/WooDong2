@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/yellow"
-        android:minHeight="?attr/actionBarSize"
-        app:layout_constraintBottom_toTopOf="@id/edt_search"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/recyclerView_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -34,9 +34,40 @@
                 android:id="@+id/img_toolbar_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:src="@drawable/public_ic_down" />
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/edt_toolbar_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/public_border_box_full"
+                android:hint="@string/group_hint_search_group"
+                android:padding="16dp"
+                android:textColor="@color/light_gray_txt"
+                android:textSize="@dimen/wd2_normal_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/img_toolbar_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/public_ic_cancel_image"
+                app:layout_constraintBottom_toBottomOf="@id/edt_toolbar_search"
+                app:layout_constraintEnd_toEndOf="@id/edt_toolbar_search"
+                app:layout_constraintTop_toTopOf="@id/edt_toolbar_search" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/img_toolbar_search"
@@ -44,24 +75,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/public_ic_search"
-            android:visibility="gone" />
+            android:src="@drawable/public_ic_search" />
     </androidx.appcompat.widget.Toolbar>
-
-    <EditText
-        android:id="@+id/edt_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/public_border_box"
-        android:hint="@string/group_hint_search_group"
-        android:padding="16dp"
-        android:textColor="@color/light_gray_txt"
-        android:textSize="@dimen/wd2_normal_text"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView_group"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_group" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_group"
@@ -72,7 +87,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edt_search"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_group"
         tools:listitem="@layout/group_list_item" />
 
     <TextView

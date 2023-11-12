@@ -29,6 +29,9 @@ class GroupDetailBoardAddViewModel(
     private val _imageList: MutableLiveData<List<GroupDetailBoardAddImageItem>> = MutableLiveData()
     val imageList: LiveData<List<GroupDetailBoardAddImageItem>> get() = _imageList
 
+    private val _isLoadingState: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoadingState: LiveData<Boolean> get() = _isLoadingState
+
     private val _isCreateSuccess: MutableLiveData<Boolean> = MutableLiveData()
     val isCreateSuccess: LiveData<Boolean> get() = _isCreateSuccess
 
@@ -83,6 +86,7 @@ class GroupDetailBoardAddViewModel(
         if (itemId == null || userInfo == null) {
             return
         }
+        _isLoadingState.value = true
         viewModelScope.launch {
             runCatching {
                 val uriImageList = createBoardImages()
@@ -101,9 +105,11 @@ class GroupDetailBoardAddViewModel(
                     itemId,
                     uriImageList
                 )
+                _isLoadingState.value = false
                 _isCreateSuccess.value = true
             }.onFailure {
                 Log.e(TAG, it.message.toString())
+                _isLoadingState.value = false
                 _isCreateSuccess.value = false
             }
         }

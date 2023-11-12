@@ -7,7 +7,12 @@
     <string name="toolbar_menu_search">검색</string>
     <string name="toolbar_menu_notice">알림</string>
 
-    <string name="main_toast_permission">권한 설정이 필요합니다.</string>
+    <string name="public_toast_permission_grant">권한 요청을 허용하셨습니다.</string>
+    <string name="public_toast_permission_deny">권한 요청을 거부하셨습니다.</string>
+    <string name="public_dialog_rational_title">권한 요청</string>
+    <string name="public_dialog_rational_message">프로필 설정 및 게시글 작성, 모임 생성 등의 기능을 원활하게 사용하기 위해서는 해당 권한이 필요합니다.\n
+        만약 해당 권한을 거부하시면, 일부 기능이 제한될 수 있습니다.\n\n이후 해당 기능을 사용하고 싶으신 경우, 설정 메뉴에서 권한을 허용하실 수 있습니다.</string>
+    <string name="public_dialog_rational_ok">확인</string>
 
     <string name="home_list_item_btn_tag_name">같이해요</string>
     <string name="home_list_item_thumbnail_count">99</string>
@@ -30,6 +35,7 @@
     <string name="home_map_naver_api">kdzwicc7da</string>
     <string name="home_map_search_location_error">처음 위치 설정이 완료 되지 않았습니다.</string>
     <string name="home_map_search_location_also_error">주소가 중복설정 되었습니다.</string>
+
     <string name="group_hint_search_group">우리 동네 모임을 검색해보세요.</string>
     <string name="group_text_empty_group_list">모임 정보가 존재하지 않습니다.</string>
 
@@ -76,9 +82,11 @@
     <string name="group_add_txt_background_image">배경 사진</string>
     <string name="group_add_btn_next">다음</string>
     <string name="group_add_btn_add_group">모임 만들기</string>
+    <string name="group_add_toast_create_group_loading">모임을 생성중입니다.</string>
     <string name="group_add_toast_create_group">모임이 생성되었습니다.</string>
     <string name="group_add_toast_no_info">입력되지 않은 정보가 있습니다.</string>
     <string name="group_add_board_add_toast_no_content">내용을 입력해주세요.</string>
+    <string name="group_add_board_add_toast_create_board_loading">게시글을 작성중입니다.</string>
     <string name="group_add_board_add_toast_create_board_success">게시글이 작성되었습니다.</string>
     <string name="group_add_board_add_toast_create_board_fail">게시글 작성에 실패하였습니다.</string>
     <string name="group_add_board_detail_hint_write_comment">댓글을 입력하세요.</string>
@@ -96,10 +104,16 @@
     <string name="group_detail_btn_more">전체보기 ></string>
     <string name="group_detail_txt_empty_board_list">게시글이 존재하지 않습니다.</string>
     <string name="group_detail_txt_empty_album_list">앨범이 존재하지 않습니다.</string>
-    <string name="group_detail_dialog_title">모임 가입</string>
-    <string name="group_detail_dialog_message">모임에 가입하시겠습니까?</string>
+    <string name="group_detail_dialog_title_join_group">모임 가입</string>
+    <string name="group_detail_dialog_message_join_group">모임에 가입하시겠습니까?</string>
+    <string name="group_detail_dialog_title_enter_pw">모임 비밀번호 확인</string>
     <string name="group_detail_dialog_ok">확인</string>
     <string name="group_detail_dialog_cancel">취소</string>
+    <string name="group_detail_toast_join_group_success">모임에 가입되었습니다.</string>
+    <string name="group_detail_toast_join_group_fail">다시 시도해주세요.</string>
+    <string name="group_detail_toast_member_limit_full">모임 가입 제한 인원이 가득 찼습니다.</string>
+    <string name="group_detail_toast_incorrect_password">비밀번호가 일치하지 않습니다.</string>
+
     <string name="group_detail_board_add_hint_board_title">제목을 입력하세요.</string>
     <string name="group_detail_board_add_hint_board_content">내용을 입력하세요.</string>
     <string name="group_detail_board_add_txt_add_image">사진 첨부</string>
@@ -108,6 +122,7 @@
     <string name="group_detail_board_detail_dialog_message">삭제하시겠습니까?</string>
     <string name="group_detail_board_detail_dialog_delete">삭제</string>
     <string name="group_detail_board_detail_dialog_cancel">취소</string>
+    <string name="group_detail_board_detail_toast_create_comment_success">댓글이 작성되었습니다.</string>
 
     <string name="chat_txt_title">채팅</string>
 

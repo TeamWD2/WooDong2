@@ -32,6 +32,9 @@ class GroupDetailBoardDetailViewModel(
         MutableLiveData()
     val groupBoardItem: LiveData<List<GroupDetailBoardDetailItem>> get() = _groupBoardItem
 
+    private val _isSuccessAddComment: MutableLiveData<Boolean> = MutableLiveData()
+    val isSuccessAddComment: LiveData<Boolean> get() = _isSuccessAddComment
+
     /**
      * 넘겨받아온 데이터 화면에 출력하기 위해 ViewType 별로 가공
      */
@@ -108,13 +111,19 @@ class GroupDetailBoardDetailViewModel(
                         comment = comment
                     )
                 )
+                _isSuccessAddComment.value = true
             }.onFailure {
                 Log.e(TAG, it.message.toString())
+                _isSuccessAddComment.value = false
             }
         }
 
         //현재 화면에 댓글 추가
         val currentItem = groupBoardItem.value.orEmpty().toMutableList()
+        val currentTitleItem = currentItem.filterIsInstance<GroupDetailBoardDetailItem.BoardTitle>().firstOrNull()
+        currentTitleItem?.let{
+            currentItem[1] = it.copy(boardCount = (it.boardCount?.toInt()?.plus(1)).toString())
+        }
         _groupBoardItem.value = currentItem.apply {
             add(
                 GroupDetailBoardDetailItem.BoardComment(
@@ -123,7 +132,7 @@ class GroupDetailBoardDetailViewModel(
                     userId = userInfo.userId,
                     userProfile = userInfo.userProfile,
                     userName = userInfo.userName,
-                    userLocation = userInfo.userLocation,
+                    userLocation = userInfo.userLocation.split(" ").last(),
                     timestamp = System.currentTimeMillis(),
                     isWriteOwner = true,
                     comment = comment
@@ -142,11 +151,11 @@ class GroupDetailBoardDetailViewModel(
      */
     fun deleteComment(
         itemPkId: String?,
-        groupId: String?,
+        boardId: String?,
         commentId: String?,
         position: Int
     ) {
-        if (itemPkId == null || groupId == null || commentId == null) {
+        if (itemPkId == null || boardId == null || commentId == null) {
             return
         }
 
@@ -155,7 +164,7 @@ class GroupDetailBoardDetailViewModel(
             runCatching {
                 groupDeleteBoardCommentItem(
                     itemPkId,
-                    groupId,
+                    boardId,
                     commentId
                 )
             }.onFailure {
@@ -165,6 +174,10 @@ class GroupDetailBoardDetailViewModel(
 
         //현재 화면에 댓글 삭제
         val currentItem = groupBoardItem.value.orEmpty().toMutableList()
+        val currentTitleItem = currentItem.filterIsInstance<GroupDetailBoardDetailItem.BoardTitle>().firstOrNull()
+        currentTitleItem?.let{
+            currentItem[1] = it.copy(boardCount = (it.boardCount?.toInt()?.minus(1)).toString())
+        }
         currentItem.removeAt(position)
         currentItem.removeAt(position) //Divider 도 같이 삭제
         _groupBoardItem.value = currentItem

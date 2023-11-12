@@ -18,11 +18,13 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
+import com.wd.woodong2.presentation.chat.detail.ChatDetailViewModel
 import com.wd.woodong2.presentation.home.content.HomeItem
 import kotlinx.coroutines.launch
 
@@ -40,49 +42,27 @@ class MyPageThumbViewModel(
     private val _isEmptyList: MutableLiveData<Boolean> = MutableLiveData()
     val isEmptyList: LiveData<Boolean> get() = _isEmptyList
 
-    val userId= getUserInfo()?.id ?: "UserId"
-    private var userInfo: MutableLiveData<UserItem> = MutableLiveData()
+    val userId = getUserInfo()?.id ?: "UserId"
+    var userInfo: MutableLiveData<UserItem> = MutableLiveData()
 
     init {
-        getUserItem()
         loadDataFromFirebase()
+        getUser()
     }
 
-    fun printListSet()= viewModelScope.launch{
+    private fun getUser() = viewModelScope.launch {
         _loadingState.value = true
         runCatching {
-            _isEmptyList.value = _printList.value?.isEmpty()
-            _printList.value = list.value?.filter { item ->
-                userInfo.value?.likedIds!!.contains(item.id)
-            }
-            _loadingState.value = false
-        }.onFailure {
-            _loadingState.value = false
-            Log.e("Item", "비어있음")
-        }
-    }
-
-    private fun getUserItem() = viewModelScope.launch {
-        runCatching {
             userItem(userId).collect { user ->
-                val userItem =
-                    UserItem(
-                        id = user?.id ?: "",
-                        name = user?.name ?: "",
-                        imgProfile = user?.imgProfile ?: "",
-                        email = user?.email ?: "",
-                        chatIds = user?.chatIds.orEmpty(),
-                        groupIds = user?.groupIds.orEmpty(),        //모임
-                        likedIds = user?.likedIds.orEmpty(),        //좋아요 게시물
-                        writtenIds = user?.writtenIds.orEmpty(),        //작성한 게시물
-                        firstLocation = user?.firstLocation ?: "",
-                        secondLocation = user?.secondLocation ?: ""
-                    )
-
-                userInfo.postValue(userItem)
+                _isEmptyList.value = _printList.value?.isEmpty()
+                _printList.value = list.value?.filter { item ->
+                    user?.likedIds?.contains(item.id) == true
+                }
+                _loadingState.value = false
             }
         }.onFailure {
-            Log.e("homeItem", it.message.toString())
+            Log.e(ChatDetailViewModel.TAG, it.message.toString())
+            _loadingState.value = false
         }
     }
 
@@ -129,7 +109,9 @@ class MyPageThumbViewModelFactory(
     //private val databaseReference = FirebaseDatabase.getInstance()
 
     val userPrefRepository = UserPreferencesRepositoryImpl(
-        null,
+        SignInPreferenceImpl(
+            context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+        ),
         UserInfoPreferenceImpl(
             context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
         )

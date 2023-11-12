@@ -43,12 +43,13 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView_photo_1"
-            android:layout_width="115dp"
+            android:layout_width="0dp"
             android:layout_height="115dp"
-            android:layout_marginEnd="10dp"
-            android:visibility="invisible"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:visibility="invisible"
             app:cardCornerRadius="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/cardView_photo_2"
@@ -66,8 +67,9 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView_photo_2"
-            android:layout_width="115dp"
+            android:layout_width="0dp"
             android:layout_height="115dp"
+            android:layout_weight="1"
             android:visibility="invisible"
             app:cardCornerRadius="4dp"
             app:layout_constraintBottom_toBottomOf="@id/cardView_photo_1"
@@ -85,9 +87,10 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView_photo_3"
-            android:layout_width="115dp"
+            android:layout_width="0dp"
             android:layout_height="115dp"
             android:layout_marginStart="10dp"
+            android:layout_weight="1"
             android:visibility="invisible"
             app:cardCornerRadius="4dp"
             app:layout_constraintBottom_toBottomOf="@id/cardView_photo_2"

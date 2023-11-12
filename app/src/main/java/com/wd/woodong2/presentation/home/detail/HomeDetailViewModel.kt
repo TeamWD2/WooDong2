@@ -21,6 +21,7 @@ import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.add.HomeAddViewModel
 import com.wd.woodong2.presentation.home.content.HomeItem
 import com.wd.woodong2.presentation.home.content.HomeViewModel
+import com.wd.woodong2.presentation.home.map.HomeMapActivity
 
 class HomeDetailViewModel(
     private val prefGetUserItem: UserPrefGetItemUseCase,
@@ -53,7 +54,10 @@ class HomeDetailViewModel(
     }
 
     fun postComment(homeItem: HomeItem, commentContent: String): HomeItem {
-        val comment = CommentItem(username = "익명의 우동이", content = commentContent, location = "화정동")
+        val comment = CommentItem(
+            username = homeItem.name,
+            content = commentContent,
+            location = HomeMapActivity.extractLocationInfo(homeItem.location))
         homeItem.comments.add(comment)
         itemRef.setValue(homeItem)
         _commentsLiveData.value = homeItem.comments
@@ -68,7 +72,6 @@ class HomeDetailViewModel(
     fun toggleThumbCount(homeItem: HomeItem) {
     val newCount = if (homeItem.isLiked){
         homeItem.thumbCount - 1
-
         }
     else{
         homeItem.thumbCount + 1
