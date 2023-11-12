@@ -134,12 +134,13 @@ class ChatItemListAdapter(
                 imgProfile.load(item.mainImage)
 
                 if (item.isRead != false) {
-                    txtNew.visibility = View.INVISIBLE
+                    cardViewNew.visibility = View.INVISIBLE
                 } else {
-                    txtNew.visibility = View.VISIBLE
+                    cardViewNew.visibility = View.VISIBLE
                 }
             }
             itemView.setOnClickListener {
+                cardViewNew.visibility = View.INVISIBLE
                 onClick(item)
             }
         }

@@ -112,7 +112,7 @@ class ChatViewModel(
             title = it.title,
             isRead = (it.lastSeemTime?.get(user.id ?: "") ?: 0) > (it.last?.timestamp ?: 0)
         )
-    }.orEmpty()
+    }?.sortedByDescending { it.timeStamp }.orEmpty()
 }
 
 class ChatViewModelFactory(

@@ -54,6 +54,7 @@ class ChatDetailViewModel(
 
     private lateinit var uid: String
     private var curUser: UserItem? = null
+    private var lastMessage: MessageItem? = null
 
     init {
         getMessageItem()
@@ -162,7 +163,9 @@ class ChatDetailViewModel(
                     }
                 }
 
-                _massageList.postValue(updatedMessageList.sortedBy { it.timestamp }.toMutableList())
+                val list = updatedMessageList.sortedBy { it.timestamp }.toMutableList()
+
+                _massageList.postValue(list)
                 _isLoading.value = false
             }
         }.onFailure {
@@ -185,6 +188,22 @@ class ChatDetailViewModel(
         if (chatId != null) {
             initChatItemTimestamp(chatId, uid)
         }
+    }
+
+    fun setLastMessage() {
+        val lastMessage = _massageList.value?.last()
+        this.lastMessage = lastMessage
+    }
+
+    fun isNewMessage(): Boolean {
+        val savedLastMessage = lastMessage
+        val loadLastMessage = _massageList.value?.last()
+
+        if (savedLastMessage == null || loadLastMessage == null) {
+            return false
+        }
+
+        return savedLastMessage.id != loadLastMessage.id
     }
 }
 
@@ -222,7 +241,7 @@ class ChatDetailViewModelFactory(
             FirebaseDatabase.getInstance().getReference("group_list"),
         )
     }
-    
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatDetailViewModel::class.java)) {
             return ChatDetailViewModel(
