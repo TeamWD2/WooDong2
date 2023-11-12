@@ -7,23 +7,29 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.ChatRepositoryImpl
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
+import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.ChatItemsEntity
+import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.ChatGetItemsUseCase
 import com.wd.woodong2.domain.usecase.GroupGetItemUseCase
+import com.wd.woodong2.domain.usecase.UserGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
     private val getChatItemUseCase: ChatGetItemsUseCase,
     private val prefGetUserItemUseCase: UserPrefGetItemUseCase,
-    private val getGroupMainItemUseCase: GroupGetItemUseCase,
+    private val getUserItemUseCase: UserGetItemUseCase,
 ) : ViewModel(
 ) {
     private val _chatList = MutableLiveData<MutableList<ChatItem>>()
@@ -67,6 +73,31 @@ class ChatViewModel(
             )
         }
 
+        getUser()
+    }
+
+    private fun getUser() = viewModelScope.launch {
+        _isLoading.value = true
+        runCatching {
+            getUserItemUseCase(user.id ?: "").collect { item ->
+                user = UserItem(
+                    id = item?.id ?: "(알수 없음)",
+                    name = item?.name ?: "(알수 없음)",
+                    imgProfile = item?.imgProfile ?: "(알수 없음)",
+                    email = item?.email ?: "(알수 없음)",
+                    chatIds = item?.chatIds ?: emptyList(),
+                    firstLocation = item?.firstLocation ?: "(알수 없음)",
+                    secondLocation = item?.secondLocation ?: "(알수 없음)",
+                    groupIds = item?.groupIds ?: emptyList(),        //모임
+                    likedIds = item?.likedIds ?: emptyList(),        //좋아요 게시물
+                    writtenIds = item?.writtenIds ?: emptyList(),        //작성한 게시물
+                )
+                _isLoading.value = false
+            }
+        }.onFailure {
+            Log.e("danny", it.message.toString())
+            _isLoading.value = false
+        }
     }
 
     private fun getChatItems() = viewModelScope.launch {
@@ -138,9 +169,11 @@ class ChatViewModelFactory(
         )
     }
 
-    private val groupRepositoryImpl by lazy {
-        GroupRepositoryImpl(
-            FirebaseDatabase.getInstance().getReference("group_list"),
+    private val userRepositoryImpl by lazy {
+        UserRepositoryImpl(
+            FirebaseDatabase.getInstance().getReference("users"),
+            Firebase.auth,
+            FirebaseTokenProvider(FirebaseMessaging.getInstance())
         )
     }
 
@@ -149,7 +182,7 @@ class ChatViewModelFactory(
             return ChatViewModel(
                 ChatGetItemsUseCase(chatRepositoryImpl),
                 UserPrefGetItemUseCase(userPreferencesRepository),
-                GroupGetItemUseCase(groupRepositoryImpl),
+                UserGetItemUseCase(userRepositoryImpl),
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
