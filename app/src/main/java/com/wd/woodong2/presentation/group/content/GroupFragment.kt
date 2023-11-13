@@ -2,6 +2,7 @@ package com.wd.woodong2.presentation.group.content
 
 import android.app.Activity
 import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.wd.woodong2.databinding.GroupFragmentBinding
@@ -100,6 +102,9 @@ class GroupFragment : Fragment() {
         imgToolbarSearch.setOnClickListener {
             constraintSearch.isVisible = true
             edtToolbarSearch.addTextChangedListener(searchTextWatcher())
+            edtToolbarSearch.requestFocus()
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(edtToolbarSearch, InputMethodManager.SHOW_IMPLICIT)
         }
 
         // 검색창 취소 아이콘 클릭 리스너
@@ -107,6 +112,8 @@ class GroupFragment : Fragment() {
             constraintSearch.isVisible = false
             keyword = ""
             viewModel.setKeyword(keyword)
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(edtToolbarSearch.windowToken, 0)
         }
 
         // Floating 버튼 클릭 리스너

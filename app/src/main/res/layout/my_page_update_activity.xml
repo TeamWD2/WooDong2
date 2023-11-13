@@ -1,37 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/wd2_main_color">
+    android:background="@color/ivory_yellow_background">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_my_page_update"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="56dp"
-        android:background="@color/wd2_main_color"
+        android:minHeight="@dimen/wd2_toolbar_min_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <ImageView
             android:id="@+id/my_page_update_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/public_ic_left_arrow"
             android:layout_margin="14dp"
+            android:src="@drawable/public_ic_left_arrow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/my_page_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/my_page_btn_update_profile"
-            android:layout_margin="14dp"
-            android:textSize="18sp"
+            android:textSize="@dimen/wd2_sub_title"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
@@ -39,7 +38,8 @@
         android:id="@+id/my_page_update_cv_background"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="10dp"
+        android:layout_marginHorizontal="@dimen/wd2_layout_padding"
+        android:layout_marginBottom="@dimen/wd2_layout_padding"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -49,14 +49,16 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="@dimen/wd2_box_padding">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="30dp"
                 app:cardCornerRadius="100dp"
+                app:layout_constraintBottom_toTopOf="@id/input_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -71,17 +73,16 @@
                 android:id="@+id/input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="25dp"
-                app:layout_constraintBottom_toTopOf="@+id/my_page_update_btn"
+                android:layout_marginTop="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView2"
-                app:layout_constraintVertical_bias="0.0">
+                app:layout_constraintTop_toBottomOf="@+id/cardView2">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/input_update_user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@id/input_update_user_current_password"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -91,29 +92,28 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/my_page_update_user_name"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/wd2_normal_text"
                         android:textStyle="bold"
-                        android:layout_margin="8dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-
 
                     <TextView
                         android:id="@+id/name_dup_check"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
                         android:text="@string/my_page_update_dup_check"
                         android:textColor="@color/light_sky_blue"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/wd2_normal_text"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@+id/til_update_user_name"
+                        app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_name"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@id/my_page_update_user_name" />
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_update_user_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:theme="@style/EditTextWD2Style"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -134,6 +134,8 @@
                     android:id="@+id/input_update_user_current_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintBottom_toTopOf="@id/input_update_user_password"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/input_update_user_name">
@@ -142,9 +144,8 @@
                         android:id="@+id/my_page_update_user_current_password"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
                         android:text="@string/my_page_update_user_current_password"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/wd2_normal_text"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -153,15 +154,16 @@
                         android:id="@+id/edit_password"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
                         android:src="@drawable/public_ic_edit"
-                        app:layout_constraintBottom_toTopOf="@+id/til_update_user_current_password"
+                        app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_current_password"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@id/my_page_update_user_current_password" />
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_update_user_current_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:theme="@style/EditTextWD2Style"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -183,6 +185,8 @@
                     android:id="@+id/input_update_user_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintBottom_toTopOf="@id/input_update_user_password_check"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/input_update_user_current_password">
@@ -191,26 +195,28 @@
                         android:id="@+id/my_page_update_user_password"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
                         android:text="@string/my_page_update_user_password"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/wd2_normal_text"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
                     <TextView
                         android:id="@+id/update_user_password_judge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
                         android:textColor="@color/light_sky_blue"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/wd2_normal_text"
                         android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_password"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@id/my_page_update_user_password" />
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_update_user_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:theme="@style/EditTextWD2Style"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -226,10 +232,12 @@
                         android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/input_update_user_password_check"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/input_update_user_password">
@@ -238,28 +246,30 @@
                         android:id="@+id/my_page_update_user_password_check"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
                         android:text="@string/my_page_update_user_password_check"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/wd2_normal_text"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
                     <TextView
                         android:id="@+id/update_user_password_check_judge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
                         android:text="@string/txt_check_pw_notification"
                         android:textColor="@color/light_sky_blue"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/wd2_normal_text"
                         android:textStyle="bold"
                         android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_password_check"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@id/my_page_update_user_password_check" />
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_update_user_password_check"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:theme="@style/EditTextWD2Style"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -284,16 +294,13 @@
                 android:id="@+id/my_page_update_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginEnd="25dp"
-                android:layout_marginBottom="25dp"
-                android:padding="16dp"
-                android:background="@drawable/my_page_btn_shape"
+                android:layout_marginTop="@dimen/wd2_box_padding"
+                android:background="@drawable/public_border_btn"
+                android:padding="@dimen/wd2_box_padding"
                 android:text="@string/my_page_update_btn"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="@dimen/wd2_main_title"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/input_layout"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

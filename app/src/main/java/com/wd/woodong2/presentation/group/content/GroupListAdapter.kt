@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.group.content
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -30,13 +31,14 @@ class GroupListAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: GroupItem.GroupMain) = with(binding) {
             imgGroupProfile.load(item.mainImage) {
-                error(R.drawable.group_ic_no_profile)
+                error(R.drawable.public_default_wd2_ivory)
             }
             txtName.text = item.groupName
             txtIntroduce.text = item.introduce
             txtGroupTag.text = item.groupTag
             txtAgeLimit.text = item.ageLimit
             txtMemberLimit.text = item.memberLimit
+            Log.d("sinw", "${item.groupLocation}")
 
             root.setOnClickListener {
                 itemClickListener(item)

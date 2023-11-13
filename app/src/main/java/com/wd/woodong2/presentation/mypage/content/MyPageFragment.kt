@@ -81,7 +81,7 @@ class MyPageFragment : Fragment() {
                         Log.d("check",viewModel.userInfo.value?.name.toString())
                         Glide.with(requireContext())
                             .load(Uri.parse(receivedProfileData))
-                            .error(R.drawable.group_ic_no_image)
+                            .error(R.drawable.public_default_wd2_ivory)
                             .fitCenter()
                             .into(binding.ivProfile)
                     }
@@ -114,7 +114,7 @@ class MyPageFragment : Fragment() {
                         Log.d("check",viewModel.userInfo.value?.name.toString())
                         Glide.with(requireContext())
                             .load(Uri.parse(receivedProfileData))
-                            .error(R.drawable.group_ic_no_image)
+                            .error(R.drawable.public_default_wd2_ivory)
                             .fitCenter()
                             .into(binding.ivProfile)
                     }
@@ -221,7 +221,7 @@ class MyPageFragment : Fragment() {
                 UserInfo = userInfo
                 Glide.with(requireContext())
                     .load(Uri.parse(userInfo.imgProfile))
-                    .error(R.drawable.group_ic_no_image)
+                    .error(R.drawable.public_default_wd2_ivory)
                     .fitCenter()
                     .into(binding.ivProfile)
                 binding.tvName.text = userInfo.name

@@ -9,8 +9,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.ChatDetailMyItemBinding
 import com.wd.woodong2.databinding.ChatDetailOpponentItemBinding
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<MessageItem>() {
@@ -33,7 +38,11 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
     abstract class ViewHolder(
         root: View,
     ) : RecyclerView.ViewHolder(root) {
-        abstract fun onBind(currentItem: MessageItem, previousItem: MessageItem?)
+        abstract fun onBind(
+            currentItem: MessageItem,
+            previousItem: MessageItem?,
+            nextItem: MessageItem?,
+        )
     }
 
     override fun onCreateViewHolder(
@@ -67,8 +76,10 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentItem = getItem(position)
         val previousItem = if (position > 0) getItem(position - 1) else null
-        holder.onBind(currentItem, previousItem)
+        val nextItem = if (position < itemCount - 1) getItem(position + 1) else null
+        holder.onBind(currentItem, previousItem, nextItem)
     }
+
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position).isMyMessage) {
@@ -77,10 +88,29 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
         }
     }
 
+
     class OpponentMessageViewHolder(
         private val binding: ChatDetailOpponentItemBinding,
     ) : ViewHolder(binding.root) {
-        override fun onBind(currentItem: MessageItem, previousItem: MessageItem?) = with(binding) {
+        /**
+         * 1분이 지났는지 체크하는 메소드
+         * */
+        private fun isOverAMinute(oldTimestamp: Long, newTimestamp: Long): Boolean {
+            val oldCalendar = Calendar.getInstance().apply { timeInMillis = oldTimestamp }
+            val newCalendar = Calendar.getInstance().apply { timeInMillis = newTimestamp }
+
+            val oldMinute = oldCalendar.get(Calendar.MINUTE)
+            val newMinute = newCalendar.get(Calendar.MINUTE)
+
+            return newMinute != oldMinute
+        }
+
+
+        override fun onBind(
+            currentItem: MessageItem,
+            previousItem: MessageItem?,
+            nextItem: MessageItem?,
+        ) = with(binding) {
             txtName.text = currentItem.nickname
             txtChat.text = currentItem.content
 
@@ -95,7 +125,24 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
             val params = constraintChat.layoutParams as ViewGroup.MarginLayoutParams
 
             // 이어지는 메시지
-            if (previousItem == null || previousItem.senderId == currentItem.senderId) {
+            if (previousItem != null && previousItem.senderId == currentItem.senderId) {
+                // 이어지는 메시지 중 마지막 메시지
+                if (nextItem == null || currentItem.senderId != nextItem.senderId) {
+                    val format = SimpleDateFormat("a h:mm", Locale.KOREA)
+                    val formattedDate = format.format(Date(currentItem.timestamp ?: 0))
+                    txtTimestamp.text = formattedDate
+                }
+                // 이어지는 메시지 중 중간 메시지
+                else {
+                    if (isOverAMinute(currentItem.timestamp ?: 0, nextItem.timestamp ?: 0)) {
+                        val format = SimpleDateFormat("a h:mm", Locale.KOREA)
+                        val formattedDate = format.format(Date(currentItem.timestamp ?: 0))
+                        txtTimestamp.text = formattedDate
+                    } else {
+                        txtTimestamp.text = ""
+                    }
+                }
+
                 cardView.visibility = View.GONE
                 txtName.visibility = View.GONE
 
@@ -106,7 +153,23 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
                 imgProfile.visibility = View.VISIBLE
                 txtName.visibility = View.VISIBLE
 
-                imgProfile.load(currentItem.profileImg)
+                imgProfile.load(currentItem.profileImg) {
+                    error(R.drawable.public_default_wd2_ivory)
+                }
+
+                if (previousItem?.senderId != currentItem.senderId && currentItem.senderId != nextItem?.senderId) {
+                    val format = SimpleDateFormat("a h:mm", Locale.KOREA)
+                    val formattedDate = format.format(Date(currentItem.timestamp ?: 0))
+                    txtTimestamp.text = formattedDate
+                } else {
+                    if (isOverAMinute(currentItem.timestamp ?: 0, nextItem?.timestamp ?: 0)) {
+                        val format = SimpleDateFormat("a h:mm", Locale.KOREA)
+                        val formattedDate = format.format(Date(currentItem.timestamp ?: 0))
+                        txtTimestamp.text = formattedDate
+                    } else {
+                        txtTimestamp.text = ""
+                    }
+                }
 
                 params.setMargins(0, 0, 0, 0) // 마진을 원래대로 설정
             }
@@ -118,13 +181,68 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
     class MyMessageViewHolder(
         private val binding: ChatDetailMyItemBinding,
     ) : ViewHolder(binding.root) {
-        override fun onBind(currentItem: MessageItem, previousItem: MessageItem?) = with(binding) {
+
+        /**
+         * 1분이 지났는지 체크하는 메소드
+         * */
+        private fun isOverAMinute(oldTimestamp: Long, newTimestamp: Long): Boolean {
+            val oldCalendar = Calendar.getInstance().apply { timeInMillis = oldTimestamp }
+            val newCalendar = Calendar.getInstance().apply { timeInMillis = newTimestamp }
+
+            val oldMinute = oldCalendar.get(Calendar.MINUTE)
+            val newMinute = newCalendar.get(Calendar.MINUTE)
+
+            return newMinute != oldMinute
+        }
+
+        override fun onBind(
+            currentItem: MessageItem,
+            previousItem: MessageItem?,
+            nextItem: MessageItem?,
+        ) = with(binding) {
             val params = txtChat.layoutParams as ConstraintLayout.LayoutParams
             params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
             params.startToStart = ConstraintLayout.LayoutParams.UNSET
             txtChat.layoutParams = params
-
             txtChat.text = currentItem.content
+
+            // 이어지는 메시지
+            if (previousItem != null && previousItem.senderId == currentItem.senderId) {
+                // 이어지는 메시지 중 마지막 메시지
+                if (nextItem == null || currentItem.senderId != nextItem.senderId) {
+                    val format = SimpleDateFormat("a h:mm", Locale.KOREA)
+                    val formattedDate = format.format(Date(currentItem.timestamp ?: 0))
+                    txtTimestamp.text = formattedDate
+                }
+                // 이어지는 메시지 중 중간 메시지
+                else {
+                    if (isOverAMinute(currentItem.timestamp ?: 0, nextItem.timestamp ?: 0)) {
+                        val format = SimpleDateFormat("a h:mm", Locale.KOREA)
+                        val formattedDate = format.format(Date(currentItem.timestamp ?: 0))
+                        txtTimestamp.text = formattedDate
+                    } else {
+                        txtTimestamp.text = ""
+                    }
+                }
+            } else {
+                // 초기 메시지
+                if (previousItem?.senderId != currentItem.senderId && currentItem.senderId != nextItem?.senderId) {
+                    val format = SimpleDateFormat("a h:mm", Locale.KOREA)
+                    val formattedDate = format.format(Date(currentItem.timestamp ?: 0))
+                    txtTimestamp.text = formattedDate
+                } else {
+                    if (isOverAMinute(currentItem.timestamp ?: 0, nextItem?.timestamp ?: 0)) {
+                        val format = SimpleDateFormat("a h:mm", Locale.KOREA)
+                        val formattedDate = format.format(Date(currentItem.timestamp ?: 0))
+                        txtTimestamp.text = formattedDate
+                    } else {
+                        txtTimestamp.text = ""
+                    }
+                }
+
+                params.setMargins(0, 0, 0, 0) // 마진을 원래대로 설정
+            }
+
         }
     }
 }

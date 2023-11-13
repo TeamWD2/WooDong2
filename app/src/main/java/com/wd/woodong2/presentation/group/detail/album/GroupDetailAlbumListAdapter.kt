@@ -43,7 +43,7 @@ class GroupDetailAlbumListAdapter : ListAdapter<String, GroupDetailAlbumListAdap
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(image: String) = with(binding) {
             imgPhoto.load(image) {
-                error(R.drawable.group_ic_no_image)
+                error(R.drawable.public_default_wd2_ivory)
             }
         }
     }

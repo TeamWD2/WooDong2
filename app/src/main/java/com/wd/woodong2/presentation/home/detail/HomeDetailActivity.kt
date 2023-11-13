@@ -61,7 +61,7 @@ class HomeDetailActivity : AppCompatActivity() {
             binding.recyclerviewComment.visibility = if (comments.isEmpty()) View.GONE else View.VISIBLE
         }
         //상태바 & 아이콘 색상 변경
-        window.statusBarColor = ContextCompat.getColor(this@HomeDetailActivity, R.color.yellow)
+        window.statusBarColor = ContextCompat.getColor(this@HomeDetailActivity, R.color.egg_yellow_toolbar)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
             window.insetsController?.setSystemBarsAppearance(
@@ -158,7 +158,7 @@ class HomeDetailActivity : AppCompatActivity() {
         txtDetailLocation.text = HomeMapActivity.extractLocationInfo(homeItem.location)
 
 
-        toolbar.setNavigationOnClickListener {
+        imgBack.setOnClickListener {
             finish()
         }
     }

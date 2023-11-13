@@ -46,7 +46,7 @@ class GroupDetailMemberListAdapter :
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(member: GroupItem.Member) = with(binding) {
             imgProfile.load(member.profile) {
-                error(R.drawable.group_ic_no_profile)
+                error(R.drawable.public_default_wd2_ivory)
             }
             txtName.text = member.name
             txtLocation.text = member.location

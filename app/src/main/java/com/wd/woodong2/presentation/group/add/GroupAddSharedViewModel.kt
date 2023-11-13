@@ -123,13 +123,12 @@ class GroupAddSharedViewModel(
             _isLoadingState.value = true
             viewModelScope.launch {
                 runCatching {
-                    getImageStorage("imgMainImage", Uri.parse(groupAddMain.value?.mainImage))
-                    getImageStorage(
-                        "imgBackgroundImage",
-                        Uri.parse(groupAddMain.value?.backgroundImage)
-                    )
-
                     val userInfo = getUserInfo()
+
+                    getImageStorage("imgMainImage", Uri.parse(groupAddMain.value?.mainImage))
+                    getImageStorage("imgBackgroundImage", Uri.parse(groupAddMain.value?.backgroundImage))
+                    groupAddMain.value = groupAddMain.value?.copy(groupLocation = userInfo?.userLocation)
+
                     // 모임 생성
                     val groupId = groupSetItem(combineGroupItem())
                     groupSetMemberItem(

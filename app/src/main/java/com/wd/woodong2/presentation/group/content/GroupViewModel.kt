@@ -171,6 +171,7 @@ class GroupViewModel(
                     password = entity.password,
                     mainImage = entity.mainImage,
                     backgroundImage = entity.backgroundImage,
+                    groupLocation = entity.groupLocation
                 )
 
                 is GroupIntroduceEntity -> GroupItem.GroupIntroduce(

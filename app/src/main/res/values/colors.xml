@@ -1,23 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--  사용되는 색  -->
     <color name="transparent">#00FFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-<!--    -->
-    <color name="gray_light">#464646</color>
-    <color name="light_sky_blue">#8CCFF8</color>
-    <color name="color1">#FFD62C</color>
-    <color name="gray">#F5F6F7</color>
-    <color name="jet">#323232</color>
-    <color name="yellow">#F9E272</color>
-    <color name="dodger_blue">#2D8DFF</color>
-    <color name="mustard">#FFD358</color>
     <color name="red">#FF0000</color>
-    <color name="wd2_main_color">#FFD358</color>
-    <color name="full_background">#FFF5C5</color>
+    <color name="dodger_blue">#2D8DFF</color>
+    <color name="light_sky_blue">#8CCFF8</color>
 
-    <!-- Figma 3차 협의 색상 -->
+    <color name="wd2_main_color">#FFD358</color>
     <color name="curry_yellow_txt">#CA9611</color>
     <color name="dark_yellow_btn">#FDBC15</color>
     <color name="egg_yellow_toolbar">#F9E272</color>
