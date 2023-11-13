@@ -114,6 +114,7 @@
                         android:id="@+id/til_update_user_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:theme="@style/EditTextWD2Style"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_name"
@@ -124,7 +125,6 @@
                         android:layout_height="match_parent"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/my_page_update_et_shape"
                         android:hint="@string/my_page_update_et_user_name_edit"
                         android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -162,6 +162,7 @@
                         android:id="@+id/til_update_user_current_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:theme="@style/EditTextWD2Style"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_current_password"
@@ -173,7 +174,6 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:inputType="textPassword"
-                        android:background="@drawable/my_page_update_et_shape"
                         android:hint="@string/my_page_update_et_user_current_password_edit"
                         android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -211,6 +211,7 @@
                         android:id="@+id/til_update_user_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:theme="@style/EditTextWD2Style"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_password">
@@ -221,7 +222,6 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:inputType="textPassword"
-                        android:background="@drawable/my_page_update_et_shape"
                         android:hint="@string/my_page_update_et_user_password_edit"
                         android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -260,11 +260,13 @@
                         android:id="@+id/til_update_user_password_check"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:theme="@style/EditTextWD2Style"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_password_check"
-                        app:hintEnabled="false">
+                        app:hintEnabled="false"
+                        >
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edit_update_user_password_check"
                         android:layout_width="match_parent"
@@ -272,7 +274,6 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:inputType="textPassword"
-                        android:background="@drawable/my_page_update_et_shape"
                         android:hint="@string/my_page_update_et_user_password_check_edit"
                         android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>

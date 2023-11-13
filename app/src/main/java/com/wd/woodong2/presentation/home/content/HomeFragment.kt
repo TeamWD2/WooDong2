@@ -88,7 +88,6 @@ class HomeFragment : Fragment() {
                         viewModel.userInfo.value?.imgProfile,
                         receivedDataFirstLocation.toString(),
                         receivedDataSecondLocation.toString())
-                    Log.d("check",viewModel.userInfo.value?.firstLocation.toString())
                 } else {
 
                 }

@@ -41,11 +41,11 @@ class MyPageUpdateViewModel(
     private val _isNicknameDuplication: MutableLiveData<Boolean> = MutableLiveData()
     val isNicknameDuplication: LiveData<Boolean> get() = _isNicknameDuplication
 
-    val _isValidCurrentPassword: MutableLiveData<Boolean> = MutableLiveData()
-    val isValidCurrentPassword: LiveData<Boolean> get() = _isValidCurrentPassword
+    val _isValidCurrentPassword: MutableLiveData<Boolean?> = MutableLiveData()
+    val isValidCurrentPassword: LiveData<Boolean?> get() = _isValidCurrentPassword
 
-    val _isValidPassword: MutableLiveData<Boolean> = MutableLiveData()
-    val isValidPassword: LiveData<Boolean> get() = _isValidPassword
+    val _isValidPassword: MutableLiveData<Boolean?> = MutableLiveData()
+    val isValidPassword: LiveData<Boolean?> get() = _isValidPassword
 
     val _isValidSamePassword: MutableLiveData<Boolean> = MutableLiveData()
     val isValidSamePassword: LiveData<Boolean> get() = _isValidSamePassword
