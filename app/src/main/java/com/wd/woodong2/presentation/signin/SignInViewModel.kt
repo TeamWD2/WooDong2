@@ -24,6 +24,7 @@ import com.wd.woodong2.domain.usecase.SignInSaveUserUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserPrefSetItemUseCase
 import com.wd.woodong2.domain.usecase.UserSignInUseCase
+import com.wd.woodong2.domain.usecase.UserUpdateTokenUseCase
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -37,6 +38,7 @@ class SignInViewModel(
     private val getUserUID: SignInGetUserUIDUseCase,
     private val getUserItem: UserGetItemUseCase,
     private val prefSetUserItem: UserPrefSetItemUseCase,
+    private val updateTokenUseCase: UserUpdateTokenUseCase,
 ) : ViewModel(
 ) {
     companion object {
@@ -110,6 +112,10 @@ class SignInViewModel(
             _isSetUserInfo.value = false
         }
     }
+
+    fun updateToken(uid: String) = viewModelScope.launch {
+        updateTokenUseCase(uid)
+    }
 }
 
 class SignInViewModelFactory(
@@ -146,7 +152,8 @@ class SignInViewModelFactory(
                 GetFirebaseTokenUseCase(),
                 SignInGetUserUIDUseCase(userRepositoryImpl),
                 UserGetItemUseCase(userRepositoryImpl),
-                UserPrefSetItemUseCase(userPreferencesRepository)
+                UserPrefSetItemUseCase(userPreferencesRepository),
+                UserUpdateTokenUseCase(userRepositoryImpl)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
