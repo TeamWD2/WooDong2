@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/layout_gap"
-        app:layout_constraintHorizontal_weight="7"
+        app:layout_constraintHorizontal_weight="20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -48,21 +48,21 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_chat"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:background="@drawable/chat_detail_opponent_item_background"
             android:paddingHorizontal="16dp"
             android:paddingVertical="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/txt_name"
             app:layout_constraintTop_toBottomOf="@id/txt_name">
 
             <TextView
                 android:id="@+id/txt_chat"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxWidth="185dp"
                 android:textSize="@dimen/wd2_normal_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -71,6 +71,13 @@
                 tools:text="채팅 테스트입니다.테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다테스트입니다" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <TextView
+            android:id="@+id/txt_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            app:layout_constraintBottom_toBottomOf="@id/constraint_chat"
+            app:layout_constraintStart_toEndOf="@id/constraint_chat" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

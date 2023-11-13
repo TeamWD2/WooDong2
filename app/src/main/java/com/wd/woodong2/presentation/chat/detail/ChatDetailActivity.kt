@@ -127,12 +127,32 @@ class ChatDetailActivity : AppCompatActivity() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    if (!isInitialLoad && !recyclerViewChat.canScrollVertically(-1)) {
+                    val isAtBottom = !canScrollVertically(1)
+
+                    if (!isInitialLoad && !canScrollVertically(-1)) {
                         chatDetailViewModel.getMessageItem()
                     }
+
+                    if (isAtBottom) {
+                        chatDetailViewModel.setLastMessage()
+                        constraintNewMessage.visibility = View.GONE
+                    }
+
                     isInitialLoad = false
                 }
             })
+        }
+
+
+        /* 스크롤 다운 버튼 클릭 시*/
+        btnScrollDown.setOnClickListener {
+            val lastItemPosition = chatDetailItemListAdapter.itemCount - 1
+            recyclerViewChat.post {
+                (recyclerViewChat.layoutManager as LinearLayoutManager)
+                    .scrollToPositionWithOffset(lastItemPosition, 0)
+            }
+
+            constraintNewMessage.visibility = View.GONE
         }
 
 
@@ -153,19 +173,58 @@ class ChatDetailActivity : AppCompatActivity() {
     }
 
     private fun initModel() = with(binding) {
+        var isInit = false
+
+        /*
+        * 메시지 감지*/
         chatDetailViewModel.messageList.observe(this@ChatDetailActivity) { itemList ->
             chatDetailItemListAdapter.submitList(itemList.toMutableList())
 
             val isAtBottom = !recyclerViewChat.canScrollVertically(1)
-            chatDetailItemListAdapter.submitList(itemList.toMutableList())
-            recyclerViewChat.post {
-                if (isAtBottom) {
+
+            if (!isAtBottom) {
+                if (chatDetailViewModel.isNewMessage()) {
+                    val lastMessage = itemList.last()
+
+                    constraintNewMessage.visibility = View.VISIBLE
+
+                    imgProfile.load(lastMessage.profileImg)
+                    txtLastMassage.text = lastMessage.content
+                } else {
+                    constraintNewMessage.visibility = View.GONE
+                }
+            }
+
+            if (isAtBottom) {
+                recyclerViewChat.post {
                     recyclerViewChat.scrollToPosition(itemList.size - 1)
                 }
             }
+
+            if (isInit){
+                recyclerViewChat.post {
+                    val lastItemPosition = chatDetailItemListAdapter.itemCount - 1
+                    val secondLastItemPosition = lastItemPosition - 1
+
+                    if (secondLastItemPosition >= 0) {
+                        chatDetailItemListAdapter.notifyItemChanged(secondLastItemPosition)
+                    }
+                    chatDetailItemListAdapter.notifyItemChanged(lastItemPosition)
+                }
+            }
+
+            isInit = true
         }
+
         chatDetailViewModel.isLoading.observe(this@ChatDetailActivity) { loadingState ->
-            binding.progressBar.isVisible = loadingState
+            progressBar.isVisible = loadingState
+        }
+
+        /*
+        * 그룸 정보 로딩 성공 시*/
+        chatDetailViewModel.curGroupInfo.observe(this@ChatDetailActivity) { groupInfo ->
+            imgProduct.load(groupInfo.mainImage)
+            txtMemberNum.text = "${groupInfo.memberList?.size ?: "##"}명 / ${groupInfo.memberLimit}"
         }
     }
 

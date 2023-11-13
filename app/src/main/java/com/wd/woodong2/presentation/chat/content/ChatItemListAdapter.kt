@@ -133,13 +133,13 @@ class ChatItemListAdapter(
                 txtLastMassage.text = item.lastMessage
                 txtMemberNum.text = item.memberLimit
                 txtTimestamp.text = formatTimestamp(item.timeStamp ?: System.currentTimeMillis())
-
                 cardViewNew.isVisible = item.isRead == false
                 imgProfile.load(item.mainImage) {
                     error(R.drawable.public_default_wd2_ivory)
                 }
             }
             itemView.setOnClickListener {
+                cardViewNew.visibility = View.INVISIBLE
                 onClick(item)
             }
         }

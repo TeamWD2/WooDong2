@@ -11,15 +11,20 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.data.repository.ChatRepositoryImpl
+import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.domain.model.GroupMainEntity
+import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.ChatInitChatItemTimestampUseCase
 import com.wd.woodong2.domain.usecase.ChatLoadMessageItemsUseCase
 import com.wd.woodong2.domain.usecase.ChatSendMessageUseCase
+import com.wd.woodong2.domain.usecase.GroupGetItemUseCase
 import com.wd.woodong2.domain.usecase.SignInGetUserUIDUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.ChatItem
 import com.wd.woodong2.presentation.chat.content.UserItem
+import com.wd.woodong2.presentation.group.content.GroupItem
 import kotlinx.coroutines.launch
 
 class ChatDetailViewModel(
@@ -29,6 +34,7 @@ class ChatDetailViewModel(
     private val getUserUID: SignInGetUserUIDUseCase,
     private val getUser: UserGetItemUseCase,
     private val initChatItemTimestamp: ChatInitChatItemTimestampUseCase,
+    private val getGroupMainItemUseCase: GroupGetItemUseCase,
 ) : ViewModel(
 ) {
     companion object {
@@ -39,16 +45,22 @@ class ChatDetailViewModel(
     val messageList: LiveData<MutableList<MessageItem>>
         get() = _massageList
 
+    private val _curGroupInfo = MutableLiveData<ChatDetailItem>()
+    val curGroupInfo: LiveData<ChatDetailItem>
+        get() = _curGroupInfo
+
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     private lateinit var uid: String
     private var curUser: UserItem? = null
+    private var lastMessage: MessageItem? = null
 
     init {
         getMessageItem()
         uid = getUserUID() ?: ""
         getUserEntity()
+        getGroupInfo()
     }
 
     private fun getUserEntity() = viewModelScope.launch {
@@ -71,6 +83,55 @@ class ChatDetailViewModel(
                 }
                 _isLoading.value = false
             }
+        }.onFailure {
+            Log.e(TAG, it.message.toString())
+            _isLoading.value = false
+        }
+    }
+
+    private fun getGroupInfo() = viewModelScope.launch {
+        runCatching {
+            _isLoading.value = true
+
+            if (chatItem is ChatItem.GroupChatItem) {
+                getGroupMainItemUseCase(chatItem.groupId ?: "").collect { group ->
+
+                    val curGroup = group?.groupList
+                    var chatDetailItem = ChatDetailItem()
+
+                    if (curGroup != null) {
+                        curGroup.forEach { groupEntity ->
+                            when (groupEntity) {
+                                is GroupMainEntity -> chatDetailItem = chatDetailItem.copy(
+                                    id = groupEntity.id,
+                                    groupName = groupEntity.groupName,
+                                    memberLimit = groupEntity.memberLimit,
+                                    mainImage = groupEntity.mainImage
+                                )
+
+                                is GroupMemberEntity -> chatDetailItem = chatDetailItem.copy(
+                                    title = groupEntity.title,
+                                    memberList = groupEntity.memberList?.map { member ->
+                                        GroupItem.Member(
+                                            userId = member.userId,
+                                            profile = member.profile,
+                                            name = member.name,
+                                            location = member.location,
+                                            comment = member.comment
+                                        )
+                                    },
+                                )
+
+                                else -> {}
+                            }
+                        }
+
+                        _curGroupInfo.value = chatDetailItem
+                    }
+                    _isLoading.value = false
+                }
+            }
+
         }.onFailure {
             Log.e(TAG, it.message.toString())
             _isLoading.value = false
@@ -102,7 +163,9 @@ class ChatDetailViewModel(
                     }
                 }
 
-                _massageList.postValue(updatedMessageList.sortedBy { it.timestamp }.toMutableList())
+                val list = updatedMessageList.sortedBy { it.timestamp }.toMutableList()
+
+                _massageList.postValue(list)
                 _isLoading.value = false
             }
         }.onFailure {
@@ -125,6 +188,22 @@ class ChatDetailViewModel(
         if (chatId != null) {
             initChatItemTimestamp(chatId, uid)
         }
+    }
+
+    fun setLastMessage() {
+        val lastMessage = _massageList.value?.last()
+        this.lastMessage = lastMessage
+    }
+
+    fun isNewMessage(): Boolean {
+        val savedLastMessage = lastMessage
+        val loadLastMessage = _massageList.value?.last()
+
+        if (savedLastMessage == null || loadLastMessage == null) {
+            return false
+        }
+
+        return savedLastMessage.id != loadLastMessage.id
     }
 }
 
@@ -157,6 +236,12 @@ class ChatDetailViewModelFactory(
         )
     }
 
+    private val groupRepositoryImpl by lazy {
+        GroupRepositoryImpl(
+            FirebaseDatabase.getInstance().getReference("group_list"),
+        )
+    }
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatDetailViewModel::class.java)) {
             return ChatDetailViewModel(
@@ -166,6 +251,7 @@ class ChatDetailViewModelFactory(
                 SignInGetUserUIDUseCase(userRepositoryImpl),
                 UserGetItemUseCase(userRepositoryImpl),
                 ChatInitChatItemTimestampUseCase(chatRepository),
+                GroupGetItemUseCase(groupRepositoryImpl),
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
