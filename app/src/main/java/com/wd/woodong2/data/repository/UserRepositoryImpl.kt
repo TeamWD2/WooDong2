@@ -13,15 +13,17 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.GsonBuilder
+import com.wd.woodong2.data.model.GCMRequest
 import com.wd.woodong2.data.model.UserResponse
+import com.wd.woodong2.domain.model.GroupMemberItemEntity
 import com.wd.woodong2.domain.model.UserEntity
 import com.wd.woodong2.domain.model.UserItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.provider.TokenProvider
 import com.wd.woodong2.domain.repository.UserRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.wd.woodong2.retrofit.GCMRetrofitClient
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
@@ -144,10 +146,7 @@ class UserRepositoryImpl(
                     val uid = auth.currentUser?.uid
 
                     if (uid != null) {
-                        // TODO Global 사용 지양
-                        CoroutineScope(Dispatchers.IO).launch {
-                            updateUserToken(uid)
-                        }
+                        updateUserToken(uid)
                     }
 
                     Log.d(TAG, "로그인 성공")
@@ -164,7 +163,7 @@ class UserRepositoryImpl(
         email: String,
         currentPassword: String,
         newPassword: String,
-    ){
+    ) {
         //패스워드 재설정
         try {
             val credential = EmailAuthProvider.getCredential(email, currentPassword)
@@ -186,7 +185,7 @@ class UserRepositoryImpl(
     /*
     * Realtime database 유저 토큰 업데이트
     * */
-    override suspend fun updateUserToken(userId: String): Flow<Boolean> = callbackFlow {
+    override fun updateUserToken(userId: String) {
         val userDataReference = databaseReference.child(userId)
         val token = mapOf("token" to tokenProvider?.getToken())
         userDataReference.updateChildren(token)
@@ -217,13 +216,13 @@ class UserRepositoryImpl(
     override fun addUserIds(
         userId: String,
         writtenId: String?,
-        likedId: String?
-    ){
+        likedId: String?,
+    ) {
         val userIds = databaseReference.child(userId)
 
         if (writtenId.isNullOrBlank().not()) {
             val writtenIds = userIds.child("writtenIds")
-            writtenIds.push().setValue(writtenId){ databaseError, _ ->
+            writtenIds.push().setValue(writtenId) { databaseError, _ ->
                 if (databaseError != null) {
                     Log.e(TAG, "Fail: ${databaseError.message}")
                 } else {
@@ -233,7 +232,7 @@ class UserRepositoryImpl(
         }
         if (likedId.isNullOrBlank().not()) {
             val likedIds = userIds.child("likedIds")
-            likedIds.push().setValue(likedId){ databaseError, _ ->
+            likedIds.push().setValue(likedId) { databaseError, _ ->
                 if (databaseError != null) {
                     Log.e(TAG, "Fail: ${databaseError.message}")
                 } else {
@@ -255,25 +254,27 @@ class UserRepositoryImpl(
 
         fun removeData(childPath: String, value: String?, onSuccess: () -> Unit) {
             if (value.isNullOrBlank().not()) {
-                userIds.child(childPath).orderByValue().equalTo(value).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        for (childSnapshot in snapshot.children) {
-                            childSnapshot.ref.removeValue()
-                                .addOnSuccessListener {
-                                    onSuccess()
-                                    Log.d(TAG, "데이터 삭제 성공")
-                                }
-                                .addOnFailureListener { e ->
-                                    Log.e(TAG, "데이터 삭제 실패: ${e.message}")
-                                }
-                            return
+                userIds.child(childPath).orderByValue().equalTo(value)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            for (childSnapshot in snapshot.children) {
+                                childSnapshot.ref.removeValue()
+                                    .addOnSuccessListener {
+                                        onSuccess()
+                                        Log.d(TAG, "데이터 삭제 성공")
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.e(TAG, "데이터 삭제 실패: ${e.message}")
+                                    }
+                                return
+                            }
+                            Log.w(TAG, "해당 값을 찾지 못했습니다.")
                         }
-                        Log.w(TAG, "해당 값을 찾지 못했습니다.")
-                    }
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "데이터 읽기 취소: ${error.message}")
-                    }
-                })
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e(TAG, "데이터 읽기 취소: ${error.message}")
+                        }
+                    })
             }
         }
 
@@ -320,5 +321,52 @@ class UserRepositoryImpl(
     override fun logout() {
         auth?.signOut()
     }
+
+    /**
+     * groupId에 해당하는 사람들에게
+     * push 알람 전송 */
+    override suspend fun sendPushMessageToGroupMember(memberList: List<GroupMemberItemEntity>?) {
+        coroutineScope {
+            memberList.orEmpty().forEach { member ->
+                launch {
+                    getUser(member.userId.orEmpty()).collect { user ->
+                        if (user != null) {
+                            // TODO FCM Notification 객체 생성
+                            val notification = GCMRequest(
+                                to = user.token.orEmpty(),
+                                data = mapOf("action" to "ChatDetail"),
+                                notification = mapOf(
+                                    "title" to "새로운 동네 친구 등장!",
+                                    "body" to "새로운 분이 모임에 합류했어요! 반갑게 인사해주세요!"
+                                ),
+                            )
+
+                            try {
+                                val response =
+                                    GCMRetrofitClient.gcmRemoteSource.sendNotification(notification)
+
+                                if (response.isSuccessful) {
+                                    Log.d(
+                                        TAG,
+                                        "Notification sent successfully. ${
+                                            response.body()?.string()
+                                        }"
+                                    )
+                                } else {
+                                    Log.e(
+                                        TAG,
+                                        "Failed to send notification: ${response.code()} ${response.message()}"
+                                    )
+                                }
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Exception during network request.", e)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 
