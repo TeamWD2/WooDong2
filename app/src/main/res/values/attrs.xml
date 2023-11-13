@@ -3,4 +3,13 @@
     <declare-styleable name="CustomRegularButton">
         <attr name="btn_text" format="reference|string" />
     </declare-styleable>
+
+    <declare-styleable name="CustomToolbar">
+        <attr name="toolbar_txt_title" format="reference|string" />
+        <attr name="toolbar_visible_ic_down" format="boolean" />
+        <attr name="toolbar_img_ic_right" format="reference|integer" />
+        <attr name="toolbar_visible_ic_right" format="boolean" />
+        <attr name="toolbar_visible_constraint_search" format="boolean" />
+        <attr name="toolbar_hint_edt_search" format="reference|string" />
+    </declare-styleable>
 </resources>

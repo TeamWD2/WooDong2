@@ -7,79 +7,19 @@
     android:background="@color/ivory_yellow_background"
     tools:context=".presentation.home.content.HomeFragment">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.wd.woodong2.presentation.customview.CustomToolbar
         android:id="@+id/toolbar_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/egg_yellow_toolbar"
-        android:minHeight="@dimen/wd2_toolbar_min_height"
         app:layout_constraintBottom_toTopOf="@id/constraintLayout4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:id="@+id/toolbar_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp">
-
-            <TextView
-                android:id="@+id/toolbar_tv_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/home_map_bottom_sheet_btn_location"
-                android:textSize="@dimen/wd2_sub_title"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/toolbar_img_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/public_ic_down" />
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:visibility="gone">
-
-            <EditText
-                android:id="@+id/edt_home_search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/public_border_box_full"
-                android:hint="게시물 제목을 입력해 주세요."
-                android:maxLines="1"
-                android:padding="@dimen/wd2_box_padding"
-                android:textColor="@color/light_gray_txt"
-                android:textSize="@dimen/wd2_normal_text"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/img_home_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/home_map_btn_ic_close"
-                app:layout_constraintBottom_toBottomOf="@id/edt_home_search"
-                app:layout_constraintEnd_toEndOf="@id/edt_home_search"
-                app:layout_constraintTop_toTopOf="@id/edt_home_search" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <ImageView
-            android:id="@+id/toolbar_img_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/public_ic_search" />
-    </androidx.appcompat.widget.Toolbar>
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbar_hint_edt_search="게시물 제목을 입력해 주세요."
+        app:toolbar_img_ic_right="@drawable/public_ic_search"
+        app:toolbar_visible_constraint_search="false"
+        app:toolbar_visible_ic_down="true"
+        app:toolbar_visible_ic_right="true" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout4"
@@ -238,12 +178,12 @@
         android:backgroundTint="@color/dark_yellow_btn"
         android:clickable="true"
         android:elevation="0dp"
-        app:tint="@color/white"
         android:src="@drawable/public_ic_arrow_top"
         app:layout_constraintBottom_toTopOf="@+id/fab_home_add"
         app:layout_constraintEnd_toEndOf="@id/fab_home_add"
         app:layout_constraintStart_toStartOf="@id/fab_home_add"
-        app:shapeAppearanceOverlay="@style/fabBtn" />
+        app:shapeAppearanceOverlay="@style/fabBtn"
+        app:tint="@color/white" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_home_add"
@@ -255,9 +195,9 @@
         android:elevation="0dp"
         android:src="@drawable/public_ic_fab_add"
         app:fabSize="normal"
-        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:shapeAppearanceOverlay="@style/fabBtn" />
+        app:shapeAppearanceOverlay="@style/fabBtn"
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

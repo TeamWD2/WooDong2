@@ -136,7 +136,7 @@ class MyPageFragment : Fragment() {
 
     private fun initView() = with(binding) {
         //로그아웃
-        toolbarImgLogout.setOnClickListener {
+        toolbarMyPage.setRightIcOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("로그아웃")
                 .setMessage("로그아웃 하시겠습니까?")

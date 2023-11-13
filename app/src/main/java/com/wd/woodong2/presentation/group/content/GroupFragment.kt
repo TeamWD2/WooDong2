@@ -54,21 +54,21 @@ class GroupFragment : Fragment() {
         // TODO("toolbar 설정")
 
         // 검색 아이콘 클릭 리스너
-        imgToolbarSearch.setOnClickListener {
-            constraintSearch.isVisible = true
-            edtToolbarSearch.addTextChangedListener(searchTextWatcher())
-            edtToolbarSearch.requestFocus()
+        toolbarGroup.setRightIcOnClickListener {
+            toolbarGroup.setConstraintSearchVisible(true)
+            toolbarGroup.toolbarBinding.edtToolbarSearch.addTextChangedListener(searchTextWatcher())
+            toolbarGroup.setRequestFocusEditText()
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(edtToolbarSearch, InputMethodManager.SHOW_IMPLICIT)
+            imm.showSoftInput(toolbarGroup.toolbarBinding.edtToolbarSearch, InputMethodManager.SHOW_IMPLICIT)
         }
 
         // 검색창 취소 아이콘 클릭 리스너
-        imgToolbarCancel.setOnClickListener {
-            constraintSearch.isVisible = false
+        toolbarGroup.setCancelOnClickListener {
+            toolbarGroup.setConstraintSearchVisible(false)
             keyword = ""
             viewModel.setKeyword(keyword)
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(edtToolbarSearch.windowToken, 0)
+            imm.hideSoftInputFromWindow(toolbarGroup.toolbarBinding.edtToolbarSearch.windowToken, 0)
         }
 
         // Floating 버튼 클릭 리스너
@@ -106,7 +106,7 @@ class GroupFragment : Fragment() {
         }
 
         override fun afterTextChanged(p0: Editable?) {
-            keyword = binding.edtToolbarSearch.text.toString()
+            keyword = binding.toolbarGroup.getSearchEditText()
             viewModel.setKeyword(keyword)
         }
     }

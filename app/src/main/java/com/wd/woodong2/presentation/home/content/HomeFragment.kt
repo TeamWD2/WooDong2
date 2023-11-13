@@ -75,8 +75,7 @@ class HomeFragment : Fragment() {
                         result.data!!.getStringExtra(EXTRA_SECOND_LOCATION)
                     firstLocation = receivedDataFirstLocation
                     secondLocation = receivedDataSecondLocation
-                    binding.toolbarTvLocation.text =
-                        HomeMapActivity.extractLocationInfo(firstLocation.toString())
+                    binding.toolbarHome.setToolbarTitleText(HomeMapActivity.extractLocationInfo(firstLocation.toString()))
                     // firebase에 있는 값을 변경
                     viewModel.updateUserLocation(
                         receivedDataFirstLocation.toString(),
@@ -105,16 +104,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
-
-
-        (activity as? AppCompatActivity)?.setSupportActionBar(toolbarHome)
+        (activity as? AppCompatActivity)?.setSupportActionBar(toolbarHome.toolbarBinding.toolbar)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayShowTitleEnabled(false)
 
         homeRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = listAdapter
         }
-        toolbarLayout.setOnClickListener {
+        toolbarHome.setLocationOnClickListener {
             homeMapLauncher.launch(
                 HomeMapActivity.newIntent(
                     requireContext(), firstLocation.toString(), secondLocation.toString()
@@ -140,7 +137,7 @@ class HomeFragment : Fragment() {
         homeTag9.setOnClickListener { viewModel.tagFilterList("생활정보") }
 
         // 검색 필드 초기화
-        edtHomeSearch.apply {
+        toolbarHome.toolbarBinding.edtToolbarSearch.apply {
             // EditText가 줄바꿈 대신 검색을 수행하도록 설정
             inputType = InputType.TYPE_CLASS_TEXT
             setOnKeyListener { _, keyCode, event ->
@@ -148,8 +145,8 @@ class HomeFragment : Fragment() {
                     // 검색 수행
                     viewModel.searchItems(text.toString())
                     visibility = View.GONE
-                    imgHomeCancel.visibility = View.GONE
-                    toolbarImgSearch.visibility = View.VISIBLE
+                    toolbarHome.setCancelIcVisible(false)
+                    toolbarHome.setRightIcVisible(true)
                     // 키보드 숨기기
                     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(windowToken, 0)
@@ -160,31 +157,30 @@ class HomeFragment : Fragment() {
             }
         }
 
-
-        toolbarImgSearch.setOnClickListener {
-            if (constraintSearch.visibility == View.GONE) {
+        toolbarHome.setRightIcOnClickListener {
+            if (!toolbarHome.isVisibleConstraintSearch()) {
                 // 검색 필드 보여주기
-                constraintSearch.visibility = View.VISIBLE
-                edtHomeSearch.requestFocus()
-                edtHomeSearch.text.clear() // 이전 검색어 지우기
+                toolbarHome.setConstraintSearchVisible(true)
+                toolbarHome.setRequestFocusEditText()
+                toolbarHome.setClearEditText() // 이전 검색어 지우기
                 // 키보드 보여주기
                 val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(edtHomeSearch, InputMethodManager.SHOW_IMPLICIT)
+                imm.showSoftInput(toolbarHome.toolbarBinding.edtToolbarSearch, InputMethodManager.SHOW_IMPLICIT)
             } else {
                 // 검색 수행
-                viewModel.searchItems(edtHomeSearch.text.toString())
-                constraintSearch.visibility = View.GONE
+                viewModel.searchItems(toolbarHome.getSearchEditText())
+                toolbarHome.setConstraintSearchVisible(false)
                 // 키보드 숨기기
                 val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(edtHomeSearch.windowToken, 0)
-                edtHomeSearch.text.clear() // 검색 후 검색어 지우기
+                imm.hideSoftInputFromWindow(toolbarHome.toolbarBinding.edtToolbarSearch.windowToken, 0)
+                toolbarHome.setClearEditText() // 검색 후 검색어 지우기
             }
         }
 
-        imgHomeCancel.setOnClickListener {
-            constraintSearch.visibility = View.GONE
+        toolbarHome.setCancelOnClickListener {
+            toolbarHome.setConstraintSearchVisible(false)
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(edtHomeSearch.windowToken, 0)
+            imm.hideSoftInputFromWindow(toolbarHome.toolbarBinding.edtToolbarSearch.windowToken, 0)
         }
 
     }
@@ -227,8 +223,7 @@ class HomeFragment : Fragment() {
                 secondLocation = userInfo?.secondLocation
                 userName = userInfo?.name
                 userId = userInfo?.id.toString()
-                binding.toolbarTvLocation.text =
-                    HomeMapActivity.extractLocationInfo(firstLocation.toString())
+                binding.toolbarHome.setToolbarTitleText(HomeMapActivity.extractLocationInfo(firstLocation.toString()))
                 if (userInfo?.firstLocation == "") {
 
                     Toast.makeText(requireContext(), "위치 설정이 필요합니다", Toast.LENGTH_SHORT).show()

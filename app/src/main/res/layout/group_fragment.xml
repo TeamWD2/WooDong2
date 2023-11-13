@@ -6,79 +6,19 @@
     android:layout_height="match_parent"
     android:background="@color/ivory_yellow_background">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.wd.woodong2.presentation.customview.CustomToolbar
         android:id="@+id/toolbar_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/egg_yellow_toolbar"
-        android:minHeight="@dimen/wd2_toolbar_min_height"
         app:layout_constraintBottom_toTopOf="@id/recyclerView_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:id="@+id/linear_toolbar_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp">
-
-            <TextView
-                android:id="@+id/txt_toolbar_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/home_map_bottom_sheet_btn_location"
-                android:textSize="@dimen/wd2_sub_title"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/img_toolbar_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/public_ic_down" />
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:visibility="gone">
-
-            <EditText
-                android:id="@+id/edt_toolbar_search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/public_border_box_full"
-                android:hint="@string/group_hint_search_group"
-                android:maxLines="1"
-                android:padding="@dimen/wd2_box_padding"
-                android:textColor="@color/light_gray_txt"
-                android:textSize="@dimen/wd2_normal_text"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/img_toolbar_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/home_map_btn_ic_close"
-                app:layout_constraintBottom_toBottomOf="@id/edt_toolbar_search"
-                app:layout_constraintEnd_toEndOf="@id/edt_toolbar_search"
-                app:layout_constraintTop_toTopOf="@id/edt_toolbar_search" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <ImageView
-            android:id="@+id/img_toolbar_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/public_ic_search" />
-    </androidx.appcompat.widget.Toolbar>
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbar_hint_edt_search="@string/group_hint_search_group"
+        app:toolbar_img_ic_right="@drawable/public_ic_search"
+        app:toolbar_visible_constraint_search="false"
+        app:toolbar_visible_ic_down="true"
+        app:toolbar_visible_ic_right="true" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_group"
@@ -123,9 +63,9 @@
         android:elevation="0dp"
         android:src="@drawable/public_ic_fab_add"
         app:fabSize="normal"
-        app:tint="@color/white"
         app:layout_behavior="com.google.android.material.appbar.ScrollingViewBehavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:shapeAppearanceOverlay="@style/fabBtn" />
+        app:shapeAppearanceOverlay="@style/fabBtn"
+        app:tint="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>
