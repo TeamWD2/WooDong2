@@ -13,7 +13,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.ChatRepositoryImpl
-import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
@@ -21,7 +20,6 @@ import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.ChatItemsEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.ChatGetItemsUseCase
-import com.wd.woodong2.domain.usecase.GroupGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
 import kotlinx.coroutines.launch
@@ -32,6 +30,10 @@ class ChatViewModel(
     private val getUserItemUseCase: UserGetItemUseCase,
 ) : ViewModel(
 ) {
+    companion object {
+        const val TAG = "ChatViewModel"
+    }
+
     private val _chatList = MutableLiveData<MutableList<ChatItem>>()
     val chatList: LiveData<MutableList<ChatItem>>
         get() = _chatList
@@ -57,7 +59,7 @@ class ChatViewModel(
                 likedIds = emptyList(),        //좋아요 게시물
                 writtenIds = emptyList(),        //작성한 게시물
             )
-            getChatItems()
+            initChatItems()
         } else {
             user = UserItem(
                 id = "(알수 없음)",
@@ -73,10 +75,9 @@ class ChatViewModel(
             )
         }
 
-        getUser()
     }
 
-    private fun getUser() = viewModelScope.launch {
+    private fun initChatItems() = viewModelScope.launch {
         _isLoading.value = true
         runCatching {
             getUserItemUseCase(user.id ?: "").collect { item ->
@@ -92,34 +93,11 @@ class ChatViewModel(
                     likedIds = item?.likedIds ?: emptyList(),        //좋아요 게시물
                     writtenIds = item?.writtenIds ?: emptyList(),        //작성한 게시물
                 )
-                _isLoading.value = false
-            }
-        }.onFailure {
-            Log.e("danny", it.message.toString())
-            _isLoading.value = false
-        }
-    }
 
-    private fun getChatItems() = viewModelScope.launch {
-        _isLoading.value = true
-        runCatching {
-            getChatItemUseCase(user.chatIds.orEmpty()).collect { items ->
-                _chatList.postValue(readChatItems(items).toMutableList())
-                _isLoading.value = false
-            }
-        }.onFailure {
-            Log.e("danny", it.message.toString())
-            _isLoading.value = false
-        }
-    }
-
-    fun reloadChatItems() = viewModelScope.launch {
-        _chatList.value?.clear()
-        _isLoading.value = true
-        runCatching {
-            getChatItemUseCase(user.chatIds.orEmpty()).collect { items ->
-                _chatList.postValue(readChatItems(items).toMutableList())
-                _isLoading.value = false
+                getChatItemUseCase(user.chatIds.orEmpty()).collect { items ->
+                    _chatList.postValue(readChatItems(items).toMutableList())
+                    _isLoading.value = false
+                }
             }
         }.onFailure {
             Log.e("danny", it.message.toString())
@@ -144,6 +122,20 @@ class ChatViewModel(
             isRead = (it.lastSeemTime?.get(user.id ?: "") ?: 0) > (it.last?.timestamp ?: 0)
         )
     }?.sortedByDescending { it.timeStamp }.orEmpty()
+
+    fun reloadChatItems() = viewModelScope.launch {
+        _isLoading.value = true
+        _chatList.value = mutableListOf()
+        runCatching {
+            getChatItemUseCase(user.chatIds.orEmpty()).collect { items ->
+                _chatList.postValue(readChatItems(items).toMutableList())
+                _isLoading.value = false
+            }
+        }.onFailure {
+            Log.e("danny", it.message.toString())
+            _isLoading.value = false
+        }
+    }
 }
 
 class ChatViewModelFactory(
