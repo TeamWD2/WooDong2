@@ -22,7 +22,6 @@ import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.ChatGetItemsUseCase
 import com.wd.woodong2.domain.usecase.UserGetItemUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
@@ -123,6 +122,20 @@ class ChatViewModel(
             isRead = (it.lastSeemTime?.get(user.id ?: "") ?: 0) > (it.last?.timestamp ?: 0)
         )
     }?.sortedByDescending { it.timeStamp }.orEmpty()
+
+    fun reloadChatItems() = viewModelScope.launch {
+        _isLoading.value = true
+        _chatList.value = mutableListOf()
+        runCatching {
+            getChatItemUseCase(user.chatIds.orEmpty()).collect { items ->
+                _chatList.postValue(readChatItems(items).toMutableList())
+                _isLoading.value = false
+            }
+        }.onFailure {
+            Log.e("danny", it.message.toString())
+            _isLoading.value = false
+        }
+    }
 }
 
 class ChatViewModelFactory(
