@@ -139,7 +139,7 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
         //넘겨 받은 사용자 위치 ToolBar 출력
-        toolBar.title = userInfo?.userLocation?.split(" ")?.last()
+        toolBar.title = userInfo?.userFirstLocation?.split(" ")?.last()
 
         recyclerviewPhoto.adapter = boardAddListAdapter
 

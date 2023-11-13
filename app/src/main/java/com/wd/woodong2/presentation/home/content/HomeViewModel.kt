@@ -160,7 +160,7 @@ class HomeViewModel(
 
             }
 
-            if (printList.value?.size!! < 10) {
+            if ((printList.value?.size ?: 0) < 10) {
                 val circumLocationItems = createCircumLocationItems(
                     Map = circumLocationItem(
                         y,
@@ -195,7 +195,7 @@ class HomeViewModel(
 
                 }
 
-                if (printList.value?.size!! < 10) {
+                if ((printList.value?.size ?: 0) < 10) {
                     val circumLocationItems = createCircumLocationItems(
                         Map = circumLocationItem(
                             y,
@@ -229,7 +229,7 @@ class HomeViewModel(
                             }
                         }
 
-                        if (printList.value?.size!! < 10) {
+                        if ((printList.value?.size ?: 0) < 10) {
                             val existingList = _printList.value.orEmpty()
                             val filteredList = list.value?.filter { item ->
                                 !circumLocation.contains(item.location)

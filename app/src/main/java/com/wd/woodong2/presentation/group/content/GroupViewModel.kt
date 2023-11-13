@@ -24,6 +24,7 @@ import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.model.MapSearchEntity
+import com.wd.woodong2.domain.model.UserEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.repository.MapSearchRepository
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
@@ -66,20 +67,23 @@ class GroupViewModel(
 
     var userInfo: MutableLiveData<UserItem?> = MutableLiveData()
 
-    val _printList: MutableLiveData<List<GroupItem>> = MutableLiveData()
-    val printList: LiveData<List<GroupItem>> get() = _printList
+    val _printList: MutableLiveData<List<GroupItem>?> = MutableLiveData()
+    val printList: LiveData<List<GroupItem>?> get() = _printList
 
     private val _circumLocationList: MutableLiveData<List<HomeMapSearchItem>> = MutableLiveData()
     val circumLocationList: LiveData<List<HomeMapSearchItem>> get() = _circumLocationList
 
     var circumLocation = mutableSetOf<String>()
 
+    init {
+        userInfo.postValue(getUserInfo())
+    }
     fun setKeyword(keyword: String) {
         _searchKeyword.value = keyword
     }
 
     fun searchKeywordGroupItem(keyword: String): List<GroupItem.GroupMain> {
-        val groupMainItem = _groupList.value?.filterIsInstance<GroupItem.GroupMain>()
+        val groupMainItem = _printList.value?.filterIsInstance<GroupItem.GroupMain>()
         return if (keyword.isBlank()) {
             groupMainItem
         } else {
@@ -106,12 +110,17 @@ class GroupViewModel(
 
     fun getUserInfo() =
         prefGetUserItem()?.let {
-            GroupUserInfoItem(
-                userId = it.id ?: "(알 수 없음)",
-                userProfile = it.imgProfile,
-                userName = it.name ?: "(알 수 없음)",
-                userFirstLocation = it.firstLocation ?: "(알 수 없음)",
-                userSecondLocation = it.secondLocation ?: "(알 수 없음)",
+            UserItem(
+                id = it.id ?: "unknown",
+                name = it.name ?: "unknown",
+                imgProfile = it.imgProfile,
+                email = it.email ?: "unknown",
+                chatIds = it.chatIds,
+                groupIds = it.groupIds,
+                likedIds = it.likedIds,
+                writtenIds = it.writtenIds,
+                firstLocation = it.firstLocation ?: "unknown",
+                secondLocation = it.secondLocation ?: "unknown"
             )
         }
 
@@ -121,9 +130,9 @@ class GroupViewModel(
     ) = viewModelScope.launch {
         runCatching {
             userUpdateInfoUseCase(
-                getUserInfo()?.userId ?: "(알 수 없음)",
-                getUserInfo()?.userProfile.toString(),
-                getUserInfo()?.userName.toString(),
+                getUserInfo()?.id ?: "(알 수 없음)",
+                getUserInfo()?.imgProfile.toString(),
+                getUserInfo()?.name.toString(),
                 firstLocation,
                 secondLocation
             )
@@ -244,7 +253,6 @@ class GroupViewModel(
         userLocation: String,
     ) = viewModelScope.launch {
         runCatching {
-
             val set = "주민센터"
             if (circumLocation.isNotEmpty()) {
                 circumLocation.clear()
@@ -303,13 +311,13 @@ class GroupViewModel(
             }
             if (circumLocation.isNotEmpty()) {
 
-                _printList.value = groupList.GroupMain.value?.filter { item ->
-                    circumLocation.contains(item.location)
+                _printList.value = groupList.value?.filter { item ->
+                    item is GroupItem.GroupMain && circumLocation.contains(item.groupLocation)
                 }
 
             }
 
-            if (printList.value?.size!! < 10) {
+            if ((printList.value?.size ?: 0) < 5) {
                 val circumLocationItems = createCircumLocationItems(
                     Map = circumLocationItem(
                         y,
@@ -318,7 +326,6 @@ class GroupViewModel(
                         "${HomeMapActivity.extractDistrictInfo(query)} $set"
                     )
                 )
-
                 _circumLocationList.postValue(circumLocationItems)
                 //주변 위치 설정하기
                 for (item in circumLocationItems) {
@@ -337,14 +344,11 @@ class GroupViewModel(
                     }
                 }
                 if (circumLocation.isNotEmpty()) {
-
                     _printList.value = groupList.value?.filter { item ->
-                        circumLocation.contains(item.location)
+                        item is GroupItem.GroupMain && circumLocation.contains(item.groupLocation)
                     }
-
                 }
-
-                if (printList.value?.size!! < 10) {
+                if ((printList.value?.size ?: 0) < 5) {
                     val circumLocationItems = createCircumLocationItems(
                         Map = circumLocationItem(
                             y,
@@ -353,7 +357,6 @@ class GroupViewModel(
                             "${HomeMapActivity.extractCityInfo(query)} $set"
                         )
                     )
-
                     _circumLocationList.postValue(circumLocationItems)
 
                     //주변 위치 설정하기
@@ -374,14 +377,13 @@ class GroupViewModel(
                     if (circumLocation.isNotEmpty()) {
                         for (loc in circumLocation) {
                             _printList.value = groupList.value?.filter { item ->
-                                circumLocation.contains(item.location)
+                                item is GroupItem.GroupMain && circumLocation.contains(item.groupLocation)
                             }
                         }
-
-                        if (printList.value?.size!! < 10) {
+                        if ((printList.value?.size ?: 0) < 5) {
                             val existingList = _printList.value.orEmpty()
                             val filteredList = groupList.value?.filter { item ->
-                                !circumLocation.contains(item.location)
+                                item is GroupItem.GroupMain && !circumLocation.contains(item.groupLocation)
                             }
 
                             val combinedList = existingList.toMutableList()
@@ -390,10 +392,8 @@ class GroupViewModel(
 
                         }
                     }
-
                 }
             }
-
         }.onFailure { e ->
             Log.e("Retrofit Error", "Request failed: ${e.message}")
         }

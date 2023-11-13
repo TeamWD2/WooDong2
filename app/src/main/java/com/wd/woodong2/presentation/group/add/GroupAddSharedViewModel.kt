@@ -127,7 +127,7 @@ class GroupAddSharedViewModel(
 
                     getImageStorage("imgMainImage", Uri.parse(groupAddMain.value?.mainImage))
                     getImageStorage("imgBackgroundImage", Uri.parse(groupAddMain.value?.backgroundImage))
-                    groupAddMain.value = groupAddMain.value?.copy(groupLocation = userInfo?.userLocation)
+                    groupAddMain.value = groupAddMain.value?.copy(groupLocation = userInfo?.userFirstLocation)
 
                     // 모임 생성
                     val groupId = groupSetItem(combineGroupItem())

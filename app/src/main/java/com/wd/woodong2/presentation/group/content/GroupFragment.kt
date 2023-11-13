@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -58,7 +59,7 @@ class GroupFragment : Fragment() {
                         result.data!!.getStringExtra(HomeMapActivity.EXTRA_SECOND_LOCATION)
 
                     binding.txtToolbarLocation.text =
-                        HomeMapActivity.extractLocationInfo(receivedDataFirstLocation.toString())
+                        HomeMapActivity.extractLocationInfo(HomeMapActivity.extractLocationInfo(receivedDataFirstLocation.toString()))
 
                     // firebase에 있는 값을 변경
                     viewModel.updateUserLocation(
@@ -67,8 +68,8 @@ class GroupFragment : Fragment() {
                     )
                     //SharedPreference에 저장
                     viewModel.userInfo.value = viewModel.editPrefUserInfo(
-                        viewModel.getUserInfo()?.userName.toString(),
-                        viewModel.getUserInfo()?.userProfile.toString(),
+                        viewModel.getUserInfo()?.name.toString(),
+                        viewModel.getUserInfo()?.imgProfile.toString(),
                         receivedDataFirstLocation.toString(),
                         receivedDataSecondLocation.toString())
                 } else {
@@ -88,12 +89,12 @@ class GroupFragment : Fragment() {
     private fun initView() = with(binding) {
         // TODO("toolbar 설정")
 
-        //txtToolbarLocation.text = viewModel.getUserInfo()?.userFirstLocation
+        txtToolbarLocation.text = HomeMapActivity.extractLocationInfo(viewModel.getUserInfo()?.firstLocation.toString())
 
         linearToolbarLocation.setOnClickListener{
             homeMapLauncher.launch(
                 HomeMapActivity.newIntent(
-                    requireContext(), viewModel.getUserInfo()?.userFirstLocation.toString(), viewModel.getUserInfo()?.userSecondLocation.toString()
+                    requireContext(), viewModel.getUserInfo()?.firstLocation.toString(), viewModel.getUserInfo()?.secondLocation.toString()
                 )
             )
         }
@@ -126,16 +127,37 @@ class GroupFragment : Fragment() {
     }
 
     private fun initViewModel() = with(viewModel) {
-        userInfo.observe(viewLifecycleOwner){
-            binding.txtToolbarLocation.text = viewModel.getUserInfo()?.userFirstLocation
+        userInfo.observe(viewLifecycleOwner){ userInfo ->
+
+            binding.txtToolbarLocation.text = HomeMapActivity.extractLocationInfo(viewModel.getUserInfo()?.firstLocation.toString())
+            //사용자 위치 변경시 초기 모임 설정
+            _printList.value = groupList.value?.filter { item ->
+                item is GroupItem.GroupMain && item.groupLocation?.contains(userInfo?.firstLocation.toString()) == true
+            }
+
+            if((printList.value?.size ?: 0) < 5){
+                HomeMapActivity.getLocationFromAddress(
+                    requireContext(),
+                    userInfo?.firstLocation.toString()
+                )
+                circumLocationItemSearch(
+                    HomeMapActivity.latitude,
+                    HomeMapActivity.longitude,
+                    20000,
+                    userInfo?.firstLocation.toString(),
+                    userInfo?.firstLocation.toString()
+                )
+            }
         }
 
         searchKeyword.observe(viewLifecycleOwner) { keyword ->
             groupListAdapter.submitList(searchKeywordGroupItem(keyword))
         }
 
-        groupList.observe(viewLifecycleOwner) {
-            groupListAdapter.submitList(searchKeywordGroupItem(keyword))
+        printList.observe(viewLifecycleOwner) {
+            if(_printList.value.isNullOrEmpty().not()){
+                groupListAdapter.submitList(searchKeywordGroupItem(keyword))
+            }
         }
 
         loadingState.observe(viewLifecycleOwner) { loadingState ->
