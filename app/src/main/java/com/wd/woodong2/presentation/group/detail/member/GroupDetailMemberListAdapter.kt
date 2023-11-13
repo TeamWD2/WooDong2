@@ -49,7 +49,7 @@ class GroupDetailMemberListAdapter :
                 error(R.drawable.public_default_wd2_ivory)
             }
             txtName.text = member.name
-            txtLocation.text = member.location
+            txtLocation.text = member.location?.split(" ")?.last()
             txtComment.text = member.comment
         }
     }

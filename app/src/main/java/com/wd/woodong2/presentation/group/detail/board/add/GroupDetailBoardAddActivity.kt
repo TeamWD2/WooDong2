@@ -141,6 +141,10 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         //넘겨 받은 사용자 위치 ToolBar 출력
         toolBar.title = userInfo?.userLocation?.split(" ")?.last()
 
+        toolBar.setNavigationOnClickListener {
+            finish()
+        }
+
         recyclerviewPhoto.adapter = boardAddListAdapter
 
         addImageItem() //초기 데이터 세팅
