@@ -36,7 +36,7 @@ class MyPageGroupListAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: GroupItem.GroupMain) = with(binding) {
             imgGroupProfile.load(item.mainImage) {
-                error(R.drawable.group_ic_no_image)
+                error(R.drawable.public_default_wd2_ivory)
             }
             txtName.text = item.groupName
             txtIntroduce.text = item.introduce

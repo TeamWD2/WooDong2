@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="25dp">
+    android:paddingHorizontal="@dimen/wd2_layout_padding">
 
     <TextView
         android:id="@+id/txt_neighbor_title"
@@ -213,7 +213,7 @@
         android:hint="@string/group_add_hint_password"
         android:inputType="textPassword"
         android:maxLines="1"
-        android:padding="16dp"
+        android:padding="@dimen/wd2_box_padding"
         android:textSize="@dimen/wd2_normal_text"
         app:layout_constraintEnd_toStartOf="@id/checkBox"
         app:layout_constraintStart_toStartOf="parent"
@@ -225,6 +225,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:text="@string/group_add_check_box_no_password"
+        app:buttonTint="@color/pressed_chip"
         app:layout_constraintBottom_toBottomOf="@id/edt_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/edt_password"
@@ -234,14 +235,13 @@
         android:id="@+id/btn_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginVertical="@dimen/wd2_layout_padding"
         android:background="@drawable/public_border_btn"
-        android:padding="16dp"
+        android:padding="@dimen/wd2_box_padding"
         android:text="@string/group_add_btn_next"
         android:textColor="@color/white"
         android:textSize="@dimen/wd2_main_title"
         android:textStyle="bold"
-        android:layout_marginVertical="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

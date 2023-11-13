@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailBoardDetailCommentItemBinding
 import com.wd.woodong2.databinding.GroupDetailBoardDetailContentItemBinding
 import com.wd.woodong2.databinding.GroupDetailBoardDetailDividerItemBinding
@@ -144,7 +145,9 @@ class GroupDetailBoardDetailListAdapter(
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupDetailBoardDetailItem) = with(binding) {
             if (item is GroupDetailBoardDetailItem.BoardComment) {
-                imgProfile.load(item.userProfile)
+                imgProfile.load(item.userProfile) {
+                    error(R.drawable.public_default_wd2_ivory)
+                }
                 txtName.text = item.userName
                 txtLocation.text = item.userLocation?.split(" ")?.last()
                 txtDate.text = item.timestamp?.let { Date(it) }

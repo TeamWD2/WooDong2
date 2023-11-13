@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowInsetsController
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -189,10 +191,23 @@ class GroupDetailActivity : AppCompatActivity() {
     }
 
     private fun showDialogEnterPw() {
-        val edtInput = EditText(this@GroupDetailActivity)
+        val container = FrameLayout(this@GroupDetailActivity)
+        val params = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ).apply {
+            topMargin = resources.getDimensionPixelSize(R.dimen.wd2_layout_padding)
+            leftMargin = resources.getDimensionPixelSize(R.dimen.wd2_layout_padding)
+            rightMargin = resources.getDimensionPixelSize(R.dimen.wd2_layout_padding)
+        }
+        val edtInput = EditText(this@GroupDetailActivity).apply {
+            layoutParams = params
+        }
+        container.addView(edtInput)
+
         AlertDialog.Builder(this@GroupDetailActivity).apply {
             setTitle(R.string.group_detail_dialog_title_enter_pw)
-            setView(edtInput)
+            setView(container)
             setPositiveButton(R.string.group_detail_dialog_ok) { _, _ ->
                 if(viewModel.checkPassword(edtInput.text.toString())) { //비밀번호가 일치하는 경우
                     showDialogJoinGroup()
@@ -227,10 +242,10 @@ class GroupDetailActivity : AppCompatActivity() {
 
     private fun initClickItem(detailItem: List<GroupItem>?) = with(binding.includeLayoutCoordinator) {
         imgBackground.load(detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.backgroundImage) {
-            error(R.drawable.group_ic_no_image)
+            error(R.drawable.public_default_wd2_ivory)
         }
         imgMain.load(detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.mainImage) {
-            error(R.drawable.group_ic_no_image)
+            error(R.drawable.public_default_wd2_ivory)
         }
         txtTitle.text = detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.groupName
         txtMemberCount.text = detailItem?.filterIsInstance<GroupItem.GroupMember>()?.firstOrNull()?.memberList?.size?.toString() ?: "1"

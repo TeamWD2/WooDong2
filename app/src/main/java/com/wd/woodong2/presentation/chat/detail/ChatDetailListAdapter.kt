@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.ChatDetailMyItemBinding
 import com.wd.woodong2.databinding.ChatDetailOpponentItemBinding
 import java.text.SimpleDateFormat
@@ -152,7 +153,9 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
                 imgProfile.visibility = View.VISIBLE
                 txtName.visibility = View.VISIBLE
 
-                imgProfile.load(currentItem.profileImg)
+                imgProfile.load(currentItem.profileImg) {
+                    error(R.drawable.public_default_wd2_ivory)
+                }
 
                 if (previousItem?.senderId != currentItem.senderId && currentItem.senderId != nextItem?.senderId) {
                     val format = SimpleDateFormat("a h:mm", Locale.KOREA)
