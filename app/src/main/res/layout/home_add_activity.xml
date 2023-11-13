@@ -356,5 +356,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:text="@string/group_detail_btn_write_board" />
+        app:btn_text="@string/group_detail_btn_write_board" />
 </androidx.constraintlayout.widget.ConstraintLayout>

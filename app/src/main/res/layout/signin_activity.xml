@@ -127,7 +127,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_password"
-            app:text="@string/login" />
+            app:btn_text="@string/login" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/checkbox_auto_login"

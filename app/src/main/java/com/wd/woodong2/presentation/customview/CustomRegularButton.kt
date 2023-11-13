@@ -20,13 +20,13 @@ class CustomRegularButton @JvmOverloads constructor(
     }
 
     private fun getAttrs(attrs: AttributeSet?, defStyle: Int) {
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.custom_regular_btn, defStyle, 0)
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomRegularButton, defStyle, 0)
         setTypeArray(typedArray)
     }
 
     //디폴트 설정
     private fun setTypeArray(typedArray: TypedArray) {
-        binding.btnCustom.text = typedArray.getString(R.styleable.custom_regular_btn_text)
+        binding.btnCustom.text = typedArray.getString(R.styleable.CustomRegularButton_btn_text)
         typedArray.recycle()
     }
 

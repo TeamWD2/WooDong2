@@ -243,7 +243,7 @@
             android:layout_marginVertical="@dimen/wd2_box_padding"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="parent"
-            app:text="@string/signup" />
+            app:btn_text="@string/signup" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
