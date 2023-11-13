@@ -123,6 +123,7 @@
         android:elevation="0dp"
         android:src="@drawable/public_ic_fab_add"
         app:fabSize="normal"
+        app:tint="@color/white"
         app:layout_behavior="com.google.android.material.appbar.ScrollingViewBehavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

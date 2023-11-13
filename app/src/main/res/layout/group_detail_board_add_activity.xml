@@ -74,9 +74,9 @@
 
         <ImageView
             android:id="@+id/img_gallery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/public_ic_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/public_ic_photo"
             app:layout_constraintBottom_toTopOf="@id/recyclerview_photo"
             app:layout_constraintEnd_toStartOf="@id/txt_add_image"
             app:layout_constraintStart_toStartOf="parent"

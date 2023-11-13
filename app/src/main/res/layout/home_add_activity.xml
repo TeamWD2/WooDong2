@@ -184,8 +184,8 @@
 
         <ImageView
             android:id="@+id/img_gallery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@drawable/public_ic_photo"
             app:layout_constraintBottom_toTopOf="@id/cardView_photo_1"
             app:layout_constraintEnd_toStartOf="@id/home_add_picture"

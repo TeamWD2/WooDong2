@@ -103,9 +103,9 @@
 
             <ImageView
                 android:id="@+id/img_warning"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/group_ic_warning"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/group_ic_age_limit"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/txt_age_limit"
                 app:layout_constraintStart_toStartOf="parent"
@@ -136,9 +136,9 @@
 
             <ImageView
                 android:id="@+id/img_member"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/main_bottom_menu_ic_group"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/group_ic_member_limit"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/txt_member_limit"
                 app:layout_constraintStart_toStartOf="parent"

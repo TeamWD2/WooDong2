@@ -238,6 +238,7 @@
         android:backgroundTint="@color/dark_yellow_btn"
         android:clickable="true"
         android:elevation="0dp"
+        app:tint="@color/white"
         android:src="@drawable/public_ic_arrow_top"
         app:layout_constraintBottom_toTopOf="@+id/fab_home_add"
         app:layout_constraintEnd_toEndOf="@id/fab_home_add"
@@ -254,6 +255,7 @@
         android:elevation="0dp"
         android:src="@drawable/public_ic_fab_add"
         app:fabSize="normal"
+        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:shapeAppearanceOverlay="@style/fabBtn" />
