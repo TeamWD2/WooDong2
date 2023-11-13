@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.group.content
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -37,6 +38,7 @@ class GroupListAdapter(
             txtGroupTag.text = item.groupTag
             txtAgeLimit.text = item.ageLimit
             txtMemberLimit.text = item.memberLimit
+            Log.d("sinw", "${item.groupLocation}")
 
             root.setOnClickListener {
                 itemClickListener(item)

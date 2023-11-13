@@ -125,7 +125,8 @@ class GroupDetailSharedViewModel(
                     memberLimit = entity.memberLimit,
                     password = entity.password,
                     mainImage = entity.mainImage,
-                    backgroundImage = entity.backgroundImage
+                    backgroundImage = entity.backgroundImage,
+                    groupLocation = entity.groupLocation
                 )
 
                 is GroupIntroduceEntity -> GroupItem.GroupIntroduce(
