@@ -12,7 +12,8 @@ sealed class GroupAddSetItem(
         val memberLimit: String? = null,
         val password: String? = null,
         val mainImage: String? = null,
-        val backgroundImage: String? = null
+        val backgroundImage: String? = null,
+        val groupLocation: String? = null
     ) : GroupAddSetItem(viewType)
 
     data class GroupAddIntroduce(
