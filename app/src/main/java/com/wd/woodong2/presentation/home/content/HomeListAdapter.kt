@@ -1,6 +1,7 @@
 package com.wd.woodong2.presentation.home.content
 
 
+
 import android.app.AlertDialog
 import android.content.Context
 import android.util.Log
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeListItemBinding
 import com.wd.woodong2.domain.repository.UserPreferencesRepository
 import com.wd.woodong2.presentation.chat.content.UserItem
@@ -50,7 +52,9 @@ class HomeListAdapter(
                 cardView3.visibility = View.GONE
             } else {
                 cardView3.visibility = View.VISIBLE
-                homeListItemThumbnail.load(item.thumbnail)
+                homeListItemThumbnail.load(item.thumbnail){
+                    error(R.drawable.public_default_wd2_ivory)
+                }
             }
             homeListItemTvTitle.text = item.title
             homeListItemTvDescription.text = item.description

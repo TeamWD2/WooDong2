@@ -144,7 +144,7 @@ class GroupDetailHomeListAdapter(
                         if (i < memberLayouts.size) {
                             memberLayouts[i].visibility = View.VISIBLE
                             memberProfiles[i].load(member[i].profile) {
-                                error(R.drawable.group_ic_no_profile)
+                                error(R.drawable.public_default_wd2_ivory)
                             }
                             memberNames[i].text = member[i].name
                             memberLocations[i].text = member[i].location?.split(" ")?.last()
@@ -183,13 +183,15 @@ class GroupDetailHomeListAdapter(
                         if (i < boardLayouts.size) {
                             boardLayouts[i].visibility = View.VISIBLE
                             boardProfiles[i].load(board[i].profile) {
-                                error(R.drawable.group_ic_no_profile)
+                                error(R.drawable.public_default_wd2_ivory)
                             }
                             boardNames[i].text = board[i].name
                             boardDates[i].text =
                                 SimpleDateFormat("yyyy년 MM월 dd일").format(Date(board[i].timestamp))
                             boardDescriptions[i].text = board[i].content
-                            boardPhotos[i].load(board[i].images?.firstOrNull())
+                            boardPhotos[i].load(board[i].images?.firstOrNull()) {
+                                error(R.drawable.public_default_wd2_ivory)
+                            }
                             cardViewPhoto[i].isVisible = board[i].images.isNullOrEmpty().not()
                             boardLayouts[i].setOnClickListener {
                                 item.id?.let { id -> onClickBoardItem(id, board[i]) }
@@ -227,7 +229,7 @@ class GroupDetailHomeListAdapter(
                         if (i < albumPhotos.size) {
                             albumCardView[i].visibility = View.VISIBLE
                             albumPhotos[i].load(image[i]) {
-                                error(R.drawable.group_ic_no_image)
+                                error(R.drawable.public_default_wd2_ivory)
                             }
                         }
                     }

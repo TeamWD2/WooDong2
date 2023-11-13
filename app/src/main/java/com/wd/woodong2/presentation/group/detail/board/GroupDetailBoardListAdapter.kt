@@ -52,13 +52,15 @@ class GroupDetailBoardListAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(board: GroupItem.Board) = with(binding) {
             imgProfile.load(board.profile) {
-                error(R.drawable.group_ic_no_profile)
+                error(R.drawable.public_default_wd2_ivory)
             }
             txtName.text = board.name
             txtDate.text =
                 SimpleDateFormat("yyyy년 MM월 dd일").format(Date(board.timestamp))
             txtDescription.text = board.content
-            imgPhoto.load(board.images?.firstOrNull())
+            imgPhoto.load(board.images?.firstOrNull()) {
+                error(R.drawable.public_default_wd2_ivory)
+            }
             cardViewPhoto.isVisible = board.images.isNullOrEmpty().not()
             itemView.setOnClickListener {
                 onClickBoardItem(board)

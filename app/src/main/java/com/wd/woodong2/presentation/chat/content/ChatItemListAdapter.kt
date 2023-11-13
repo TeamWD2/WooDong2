@@ -3,10 +3,12 @@ package com.wd.woodong2.presentation.chat.content
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.ChatListItemBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -131,12 +133,9 @@ class ChatItemListAdapter(
                 txtLastMassage.text = item.lastMessage
                 txtMemberNum.text = item.memberLimit
                 txtTimestamp.text = formatTimestamp(item.timeStamp ?: System.currentTimeMillis())
-                imgProfile.load(item.mainImage)
-
-                if (item.isRead != false) {
-                    cardViewNew.visibility = View.INVISIBLE
-                } else {
-                    cardViewNew.visibility = View.VISIBLE
+                cardViewNew.isVisible = item.isRead == false
+                imgProfile.load(item.mainImage) {
+                    error(R.drawable.public_default_wd2_ivory)
                 }
             }
             itemView.setOnClickListener {

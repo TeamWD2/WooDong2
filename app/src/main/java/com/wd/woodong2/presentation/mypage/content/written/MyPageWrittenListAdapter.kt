@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeListItemBinding
 import com.wd.woodong2.presentation.home.content.HomeItem
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
@@ -41,7 +42,9 @@ class MyPageWrittenListAdapter (
 
         fun bind(item: HomeItem) = with(binding){
             homeListItemBtnTag.text = item.tag
-            homeListItemThumbnail.load(item.thumbnail)
+            homeListItemThumbnail.load(item.thumbnail) {
+                error(R.drawable.public_default_wd2_ivory)
+            }
             homeListItemTvTitle.text = item.title
             homeListItemTvDescription.text = item.description
 

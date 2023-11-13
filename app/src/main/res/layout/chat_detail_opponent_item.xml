@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp">
+    android:layout_marginVertical="3dp"
+    android:layout_marginStart="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_opponent_chat"
@@ -38,8 +39,8 @@
             android:id="@+id/txt_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10sp"
-            android:textSize="16sp"
+            android:layout_marginStart="10dp"
+            android:textSize="@dimen/wd2_normal_text"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/cardView"
             app:layout_constraintTop_toTopOf="@id/cardView"
@@ -49,6 +50,7 @@
             android:id="@+id/constraint_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:background="@drawable/chat_detail_opponent_item_background"
             android:paddingHorizontal="16dp"
             android:paddingVertical="10dp"
@@ -61,6 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="185dp"
+                android:textSize="@dimen/wd2_normal_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
