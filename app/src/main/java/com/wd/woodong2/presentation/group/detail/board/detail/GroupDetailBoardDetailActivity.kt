@@ -124,7 +124,9 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        imgProfile.load(groupBoardItem?.profile)
+        imgProfile.load(groupBoardItem?.profile) {
+            error(R.drawable.public_default_wd2_ivory)
+        }
         txtName.text = groupBoardItem?.name
         txtLocation.text = groupBoardItem?.location?.split(" ")?.last()
         txtDate.text = groupBoardItem?.timestamp?.let { Date(it) }

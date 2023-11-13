@@ -97,11 +97,17 @@ class ChatDetailActivity : AppCompatActivity() {
 
         when (val item = receiveItem) {
             is ChatItem.GroupChatItem -> {
+                imgProduct.load(item.mainImage) {
+                    error(R.drawable.public_default_wd2_ivory)
+                }
                 txtChatType.text = item.title
                 txtMemberNum.text = "## / ${item.memberLimit}"
             }
 
             is ChatItem.PrivateChatItem -> {
+                imgProduct.load(item.mainImage) {
+                    error(R.drawable.public_default_wd2_ivory)
+                }
                 txtChatType.text = item.title
                 txtMemberNum.visibility = View.GONE
             }
