@@ -2,11 +2,13 @@ package com.wd.woodong2.presentation.home.detail
 
 import android.app.AlertDialog
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.wd.woodong2.databinding.HomeDetailListItemBinding
+import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.content.HomeItem
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -15,6 +17,7 @@ import java.util.Locale
 
 class CommentListAdapter(
     private val homeItem: HomeItem,
+    private val currentUser: UserItem?,
     private val viewModel: HomeDetailViewModel
 ) : ListAdapter<CommentItem, CommentListAdapter.CommentViewHolder>(CommentDiffCallback()) {
 
@@ -44,16 +47,20 @@ class CommentListAdapter(
         holder.binding.txtCommentLocation.text = comment.location
         holder.binding.txtCommentTimestamp.text = formatTimestamp(comment.timestamp)
 
-        holder.binding.txtCommnetDelete.setOnClickListener {
-            AlertDialog.Builder(holder.itemView.context)
-                .setTitle("댓글 삭제")
-                .setMessage("댓글을 삭제 하시겠습니까?")
-                .setPositiveButton("삭제") { _, _ ->
-                    viewModel.deleteComment(homeItem, comment)
-                }
-                .setNegativeButton("취소", null)
-                .show()
-        }
+        if(currentUser?.name == comment.username) {
+            holder.binding.txtCommnetDelete.visibility = View.VISIBLE
+            holder.binding.txtCommnetDelete.setOnClickListener {
+
+                AlertDialog.Builder(holder.itemView.context)
+                    .setTitle("댓글 삭제")
+                    .setMessage("댓글을 삭제 하시겠습니까?")
+                    .setPositiveButton("삭제") { _, _ ->
+                        viewModel.deleteComment(homeItem, comment)
+                    }
+                    .setNegativeButton("취소", null)
+                    .show()
+            }
+        } else {holder.binding.txtCommnetDelete.visibility = View.GONE}
     }
 
     fun updateComments(newComments: List<CommentItem>) {

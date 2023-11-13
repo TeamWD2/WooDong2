@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
@@ -18,6 +19,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import com.google.android.material.chip.Chip
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeAddActivityBinding
@@ -129,24 +131,36 @@ class HomeAddActivity : AppCompatActivity() {
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
         homeAddAddbtn.setOnClickListener {
-            val title = homeAddTitle.text.toString()
-            val description = homeAddContent.text.toString()
+            if (selectedTag == null) {
+                Log.d("HomeAddActivity", "태그가 선택되지 않음")
+                Toast.makeText(this@HomeAddActivity, "태그를 선택해주세요", Toast.LENGTH_SHORT).show()
+            } else if (binding.homeAddTitle.text.isEmpty()) {
+                Log.d("HomeAddActivity", "제목이 비어있음")
+                Toast.makeText(this@HomeAddActivity, "제목을 작성해주세요", Toast.LENGTH_SHORT).show()
+            } else if (binding.homeAddContent.text.isEmpty()) {
+                Log.d("HomeAddActivity", "내용이 비어있음")
+                Toast.makeText(this@HomeAddActivity, "내용을 작성해주세요", Toast.LENGTH_SHORT).show()
+            } else {
+                // 모든 검사를 통과한 경우에만 게시 로직을 수행
+                val title = homeAddTitle.text.toString()
+                val description = homeAddContent.text.toString()
 
-            viewModel.uploadData(
-                userId,
-                username,
-                selectedTag,
-                "",
-                selectedImageUri,
-                selectedThumbnailCount,
-                title,
-                description,
-                firstLocation,
-            )
-            {
-                finish()
+                viewModel.uploadData(
+                    userId,
+                    username,
+                    selectedTag,
+                    "",
+                    selectedImageUri,
+                    selectedThumbnailCount,
+                    title,
+                    description,
+                    firstLocation
+                ) {
+                    finish()
+                }
             }
         }
+
 
         homeAddPicture.setOnClickListener {
             checkPermissions()
@@ -189,6 +203,7 @@ class HomeAddActivity : AppCompatActivity() {
         }
 
     }
+
 
     private fun checkPermissions() {
         when {
@@ -240,5 +255,7 @@ class HomeAddActivity : AppCompatActivity() {
         selectedChip.isSelected = true
 
         selectedTag = tag
+
     }
+
 }

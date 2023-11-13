@@ -79,10 +79,11 @@ class HomeViewModel(
 
     //userItem
     var userId = getUserInfo()?.id ?: "UserId"
-
+    var currentUser = getUserInfo()?.name
     var userInfo: MutableLiveData<UserItem?> = MutableLiveData()
 
     init {
+        Log.d("HomeViewModel", "Current User ID: $userId")
         loadDataFromFirebase()
         getUserItem()
     }
@@ -369,7 +370,9 @@ class HomeViewModel(
             secondLocation = it.secondLocation ?: "unknown"
         )
     }
-
+    fun getCurrentUser(): UserItem? {
+        return userInfo.value
+    }
     fun updateUserLocation(
         firstLocation: String,
         secondLocation: String,

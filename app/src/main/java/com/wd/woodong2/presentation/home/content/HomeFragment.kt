@@ -45,6 +45,7 @@ class HomeFragment : Fragment() {
 
     private val listAdapter by lazy {
         HomeListAdapter(requireContext(),
+            currentUser = viewModel.getUserInfo(),
             onClickItem = { item ->
                 startActivity(
                     HomeDetailActivity.homeDetailActivityNewIntent(
@@ -101,6 +102,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initViewModel()
+
         setupScrollToTopButton()
     }
 

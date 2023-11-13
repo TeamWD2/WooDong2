@@ -14,11 +14,11 @@
         android:backgroundTint="@color/yellow"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:navigationIcon="@drawable/public_ic_left_arrow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/public_ic_left_arrow">
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -38,16 +38,14 @@
         android:id="@+id/txt_detail_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="244dp"
         android:layout_marginBottom="31dp"
         android:ellipsize="end"
         android:text="우동이"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.793"
         app:layout_constraintStart_toEndOf="@+id/img_home_profile"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
@@ -126,9 +124,9 @@
                 android:layout_width="340dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:padding="25dp"
                 android:background="@drawable/public_border_box"
                 android:backgroundTint="@color/white"
+                android:padding="25dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.493"
                 app:layout_constraintStart_toStartOf="parent"
@@ -197,6 +195,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/placeholder2">
+
                     <ImageView
                         android:id="@+id/img_home_thumnail"
                         android:layout_width="match_parent"
