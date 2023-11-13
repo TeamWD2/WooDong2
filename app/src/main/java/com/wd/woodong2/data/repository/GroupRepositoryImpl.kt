@@ -9,7 +9,9 @@ import com.google.gson.GsonBuilder
 import com.wd.woodong2.common.GroupViewType
 import com.wd.woodong2.data.model.GroupItemsResponse
 import com.wd.woodong2.data.model.GroupItemsResponseJsonDeserializer
+import com.wd.woodong2.data.model.GroupMemberItemResponse
 import com.wd.woodong2.domain.model.GroupItemsEntity
+import com.wd.woodong2.domain.model.GroupMemberItemEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.GroupRepository
 import com.wd.woodong2.presentation.group.add.GroupAddSetItem
@@ -102,6 +104,52 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
         }
     }
 
+    /**
+     * groupId에 해당하는 group의
+     * MemberList 반환
+     * */
+    override suspend fun getGroupMemberList(groupId: String): Flow<List<GroupMemberItemEntity>?> =
+        callbackFlow {
+            val listener =
+                databaseReference.child(groupId).addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            snapshot.children.forEach { groupSnapshot ->
+                                if (groupSnapshot.hasChild("memberList")) {
+                                    val gson = GsonBuilder().create()
+
+                                    val memberListSnapshot = groupSnapshot.child("memberList")
+
+                                    val memberListResponses =
+                                        memberListSnapshot.children.mapNotNull { childSnapshot ->
+                                            val jsonString = gson.toJson(childSnapshot.value)
+                                            val response = gson.fromJson(
+                                                jsonString,
+                                                GroupMemberItemResponse::class.java
+                                            )
+                                            response.copy()
+                                        }
+
+                                    val memberList = memberListResponses.map { it.toEntity() }
+
+                                    trySend(memberList)
+                                }
+                            }
+                        } else {
+                            //snapshot 이 존재하지 않는 경우
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        throw error.toException()
+                    }
+                })
+
+            awaitClose {
+                databaseReference.removeEventListener(listener)
+            }
+        }
+
 
     override suspend fun setGroupItem(groupAddSetItem: List<GroupAddSetItem>): String {
         val groupRef = databaseReference.push()
@@ -185,7 +233,7 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
     override suspend fun deleteGroupBoardComment(
         itemId: String,
         boardId: String,
-        commentId: String
+        commentId: String,
     ) {
         databaseReference.child(itemId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

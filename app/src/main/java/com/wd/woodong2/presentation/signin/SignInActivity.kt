@@ -56,6 +56,7 @@ class SignInActivity : AppCompatActivity() {
         if (uid != null) {
             startActivity(MainActivity.newIntentForAutoLogin(this@SignInActivity, uid))
             signInViewModel.setUserInfo(uid)
+            signInViewModel.updateToken(uid)
             finish()
         }
     }

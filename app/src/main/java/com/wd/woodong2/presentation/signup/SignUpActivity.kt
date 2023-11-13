@@ -176,7 +176,14 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         txtCheckNicknameDuplication.setOnClickListener {
-            signViewModel.checkNicknameDuplication(editName.text.toString().trim())
+            val nickname = editName.text.toString().trim()
+            if (nickname != "") {
+                signViewModel.checkNicknameDuplication(nickname)
+            } else {
+                Toast.makeText(
+                    applicationContext, "2자 이상 작성해주세요", Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         btnSummit.setBtnOnClickListener {
