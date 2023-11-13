@@ -145,7 +145,7 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
 
         addImageItem() //초기 데이터 세팅
 
-        btnAddBoard.setOnClickListener {
+        btnAddBoard.setBtnOnClickListener {
             if (edtContent.text.isNullOrBlank()) {
                 Toast.makeText(
                     this@GroupDetailBoardAddActivity,
@@ -153,7 +153,7 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                btnAddBoard.isClickable = false //같은 게시글 중복 생성 방지
+                btnAddBoard.setBtnClickable(false) //같은 게시글 중복 생성 방지
                 viewModel.setGroupBoardAlbumItem(
                     itemId,
                     userInfo,

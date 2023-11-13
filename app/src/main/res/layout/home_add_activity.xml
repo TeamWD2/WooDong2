@@ -347,19 +347,14 @@
             app:layout_constraintTop_toTopOf="@id/cardView_photo_3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.wd.woodong2.presentation.customview.CustomRegularButton
         android:id="@+id/home_add_addbtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/wd2_layout_padding"
         android:layout_marginBottom="@dimen/wd2_layout_padding"
-        android:background="@drawable/public_border_btn"
-        android:padding="@dimen/wd2_box_padding"
-        android:text="@string/group_detail_btn_write_board"
-        android:textColor="@color/white"
-        android:textSize="@dimen/wd2_main_title"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:text="@string/group_detail_btn_write_board" />
 </androidx.constraintlayout.widget.ConstraintLayout>

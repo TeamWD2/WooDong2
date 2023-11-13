@@ -112,8 +112,8 @@ class GroupAddImageFragment: Fragment() {
             checkPermissions()
         }
 
-        btnAddGroup.setOnClickListener {
-            btnAddGroup.isClickable = false //같은 모임 중복 생성 방지
+        btnAddGroup.setBtnOnClickListener {
+            btnAddGroup.setBtnClickable(false) //같은 모임 중복 생성 방지
             sharedViewModel.setGroupAddItem()
         }
     }

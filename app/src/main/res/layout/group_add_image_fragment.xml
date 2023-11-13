@@ -84,20 +84,15 @@
         app:layout_constraintStart_toStartOf="@id/img_background_image"
         app:layout_constraintTop_toTopOf="@id/img_background_image" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.wd.woodong2.presentation.customview.CustomRegularButton
         android:id="@+id/btn_add_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/wd2_layout_padding"
-        android:background="@drawable/public_border_btn"
-        android:padding="@dimen/wd2_box_padding"
-        android:text="@string/group_add_btn_add_group"
-        android:textColor="@color/white"
-        android:textSize="@dimen/wd2_main_title"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:text="@string/group_add_btn_add_group" />
 
     <ProgressBar
         android:id="@+id/progressBar"

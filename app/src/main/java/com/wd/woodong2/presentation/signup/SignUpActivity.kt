@@ -179,7 +179,7 @@ class SignUpActivity : AppCompatActivity() {
             signViewModel.checkNicknameDuplication(editName.text.toString().trim())
         }
 
-        btnSummit.setOnClickListener {
+        btnSummit.setBtnOnClickListener {
             if (signViewModel.checkAllConditions()) {
                 lifecycleScope.launch {
                     signViewModel.signUp(

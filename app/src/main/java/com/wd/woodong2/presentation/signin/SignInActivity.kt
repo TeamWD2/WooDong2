@@ -80,7 +80,7 @@ class SignInActivity : AppCompatActivity() {
         }
 
         // 로그인 버튼 클릭 시
-        btnLogin.setOnClickListener {
+        btnLogin.setBtnOnClickListener {
             signInViewModel.signIn(
                 editId.text.toString(),
                 editPassword.text.toString(),

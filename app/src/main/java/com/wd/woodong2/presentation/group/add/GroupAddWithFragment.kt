@@ -109,7 +109,7 @@ class GroupAddWithFragment: Fragment() {
             }
         }
 
-        btnNext.setOnClickListener {
+        btnNext.setBtnOnClickListener {
             sharedViewModel.modifyViewPager2(1)
         }
     }

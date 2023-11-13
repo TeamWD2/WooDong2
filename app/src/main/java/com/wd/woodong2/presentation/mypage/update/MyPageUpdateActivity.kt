@@ -234,7 +234,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
         }
 
         //이름은 true false만 해야함
-        myPageUpdateBtn.setOnClickListener {
+        myPageUpdateBtn.setBtnOnClickListener {
             Log.d("chchch", myPageUpdateViewModel.isValidCurrentPassword.value.toString())
             Log.d("chchch", myPageUpdateViewModel.isValidPassword.value.toString())
             Log.d("chchch", myPageUpdateViewModel.isValidSamePassword.value.toString())
