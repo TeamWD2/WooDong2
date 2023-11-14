@@ -40,7 +40,7 @@
             app:layout_constraintTop_toTopOf="@id/txt_detail_user">
 
             <ImageView
-                android:id="@+id/img_home_profile"
+                android:id="@+id/img_detail_profile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"

@@ -12,8 +12,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeListItemBinding
+import com.wd.woodong2.domain.repository.UserPreferencesRepository
+import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -22,10 +25,11 @@ import java.util.Locale
 
 class HomeListAdapter(
     context: Context,
+    private val currentUser: UserItem?,
     private val onClickItem: (HomeItem) -> Unit,
     private val onDeleteItem: (HomeItem) -> Unit
-) : ListAdapter<HomeItem, HomeListAdapter.ViewHolder> (
-    object : DiffUtil.ItemCallback<HomeItem>(){
+) : ListAdapter<HomeItem, HomeListAdapter.ViewHolder>(
+    object : DiffUtil.ItemCallback<HomeItem>() {
         override fun areContentsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
             return oldItem == newItem
         }
@@ -34,17 +38,23 @@ class HomeListAdapter(
             return oldItem.id == newItem.id
         }
     }
-){
+) {
 
     class ViewHolder(
         private val binding: HomeListItemBinding,
+        private val currentUser: UserItem?,
         private val onClickItem: (HomeItem) -> Unit,
         private val onDeleteItem: (HomeItem) -> Unit
-    ):RecyclerView.ViewHolder(binding.root){
-        fun bind(item: HomeItem) = with(binding){
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: HomeItem) = with(binding) {
             homeListItemBtnTag.text = item.tag
-            homeListItemThumbnail.load(item.thumbnail) {
-                error(R.drawable.public_default_wd2_ivory)
+            if (item.thumbnail.isNullOrEmpty()) { //이미지 없을때, 카드뷰 숨김처리
+                cardView3.visibility = View.GONE
+            } else {
+                cardView3.visibility = View.VISIBLE
+                homeListItemThumbnail.load(item.thumbnail){
+                    error(R.drawable.public_default_wd2_ivory)
+                }
             }
             homeListItemTvTitle.text = item.title
             homeListItemTvDescription.text = item.description
@@ -56,15 +66,20 @@ class HomeListAdapter(
             homeListItemTvThumbCount.text = item.thumbCount.toString()
             homeListItemTvChatCount.text = item.chatCount.toString()
 
-            homeListItem.setOnClickListener{
+            homeListItem.setOnClickListener {
                 onClickItem(
                     item
                 )
             }
 
+            if (currentUser?.name == item.name) {
+                homeListItemDelete.visibility = View.VISIBLE
                 homeListItemDelete.setOnClickListener {
                     showDeleteConfirmationDialog(item)
                 }
+            } else {
+                homeListItemDelete.visibility = View.GONE
+            }
         }
 
         private fun formatTimestamp(timestamp: Long?): String {
@@ -118,10 +133,10 @@ class HomeListAdapter(
     }
 
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            HomeListItemBinding.inflate(LayoutInflater.from(parent.context), parent,false),
+            HomeListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+            currentUser,
             onClickItem,
             onDeleteItem
 
