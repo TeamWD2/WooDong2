@@ -26,6 +26,10 @@ import com.wd.woodong2.presentation.chat.content.ChatItem
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.group.content.GroupItem
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class ChatDetailViewModel(
     private val chatItem: ChatItem,
@@ -143,17 +147,36 @@ class ChatDetailViewModel(
             _isLoading.value = true
             if (chatItem.id == null) return@launch
             loadMessageItem(chatItem.id!!).collect { items ->
-                val messageItemList = items?.messageItems?.map { messageResponse ->
-                    MessageItem(
-                        id = messageResponse.id,
-                        content = messageResponse.content,
-                        senderId = messageResponse.senderId,
-                        timestamp = messageResponse.timestamp,
-                        isMyMessage = messageResponse.senderId == uid,
-                        nickname = messageResponse.nickname,
-                        profileImg = messageResponse.profileImg
+                val messageItems = items?.messageItems ?: emptyList()
+
+                val messageItemList = mutableListOf<MessageItem>()
+
+                for (i in messageItems.indices) {
+                    val messageResponse = messageItems[i]
+                    val previousTimestamp = messageItems.getOrNull(i - 1)?.timestamp
+
+                    val dateToShow = if (previousTimestamp != null && isOverADay(
+                            previousTimestamp,
+                            messageResponse.timestamp ?: 0
+                        )
+                    ) {
+                        formatDate(messageResponse.timestamp)
+                    } else {
+                        null
+                    }
+                    messageItemList.add(
+                        MessageItem(
+                            id = messageResponse.id,
+                            content = messageResponse.content,
+                            senderId = messageResponse.senderId,
+                            timestamp = messageResponse.timestamp,
+                            isMyMessage = messageResponse.senderId == uid,
+                            nickname = messageResponse.nickname,
+                            profileImg = messageResponse.profileImg,
+                            dateToShow = dateToShow
+                        )
                     )
-                } ?: emptyList()
+                }
 
                 val updatedMessageList = _massageList.value.orEmpty().toMutableList()
 
@@ -173,6 +196,7 @@ class ChatDetailViewModel(
             _isLoading.value = false
         }
     }
+
 
     fun sendMessage(message: String) = viewModelScope.launch {
         runCatching {
@@ -204,6 +228,23 @@ class ChatDetailViewModel(
         }
 
         return savedLastMessage.id != loadLastMessage.id
+    }
+
+    private fun isOverADay(previousTimestamp: Long, currentTimestamp: Long): Boolean {
+        val previousCalendar = Calendar.getInstance().apply { timeInMillis = previousTimestamp }
+        val currentCalendar = Calendar.getInstance().apply { timeInMillis = currentTimestamp }
+
+        return previousCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
+                previousCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR)
+    }
+
+    private fun formatDate(timestamp: Long?): String? {
+        return if (timestamp != null) {
+            val sdf = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+            sdf.format(Date(timestamp))
+        } else {
+            null
+        }
     }
 }
 

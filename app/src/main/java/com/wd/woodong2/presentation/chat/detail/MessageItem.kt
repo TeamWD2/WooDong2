@@ -8,4 +8,5 @@ data class MessageItem(
     val timestamp: Long?,
     val isMyMessage: Boolean,
     val profileImg: String?,
+    val dateToShow: String? = null,
 )

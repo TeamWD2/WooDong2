@@ -114,17 +114,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        app:hintEnabled="false"
+                        android:theme="@style/EditTextWD2Style"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_name">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edit_update_user_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:hint="@string/my_page_update_et_user_name_edit"
-                            android:textSize="@dimen/wd2_normal_text" />
+                        app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_name"
+                        app:hintEnabled="false">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_update_user_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:hint="@string/my_page_update_et_user_name_edit"
+                        android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -162,18 +164,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        app:hintEnabled="false"
+                        android:theme="@style/EditTextWD2Style"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_current_password">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edit_update_user_current_password"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/my_page_update_et_user_current_password_edit"
-                            android:inputType="textPassword"
-                            android:textSize="@dimen/wd2_normal_text" />
+                        app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_current_password"
+                        app:hintEnabled="false">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_update_user_current_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:inputType="textPassword"
+                        android:hint="@string/my_page_update_et_user_current_password_edit"
+                        android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -213,17 +217,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:theme="@style/EditTextWD2Style"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_password">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edit_update_user_password"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/my_page_update_et_user_password_edit"
-                            android:inputType="textPassword"
-                            android:textSize="@dimen/wd2_normal_text" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_update_user_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:inputType="textPassword"
+                        android:hint="@string/my_page_update_et_user_password_edit"
+                        android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -264,19 +270,22 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        app:hintEnabled="false"
+                        android:theme="@style/EditTextWD2Style"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_password_check">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edit_update_user_password_check"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/my_page_update_et_user_password_check_edit"
-                            android:inputType="textPassword"
-                            android:textSize="@dimen/wd2_normal_text" />
+                        app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_password_check"
+                        app:hintEnabled="false"
+                        >
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_update_user_password_check"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:inputType="textPassword"
+                        android:hint="@string/my_page_update_et_user_password_check_edit"
+                        android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

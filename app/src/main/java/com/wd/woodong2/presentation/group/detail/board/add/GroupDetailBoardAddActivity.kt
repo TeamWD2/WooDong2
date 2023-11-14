@@ -141,7 +141,7 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
         //넘겨 받은 사용자 위치 ToolBar 출력
-        toolBar.title = findUserLocation(userInfo?.userLocation)
+        toolBar.title = findUserLocation(userInfo?.userFirstLocation)
 
         toolBar.setNavigationOnClickListener {
             finish()

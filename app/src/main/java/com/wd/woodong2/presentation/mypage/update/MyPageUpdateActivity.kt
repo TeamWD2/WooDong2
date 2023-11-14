@@ -12,8 +12,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.util.TypedValue
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsetsController
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -150,31 +152,27 @@ class MyPageUpdateActivity : AppCompatActivity() {
         editUpdateUserPassword.isEnabled = false
         editUpdateUserPasswordCheck.isEnabled = false
         if (passwordJudge) {
-            editUpdateUserCurrentPassword.setBackgroundResource(R.drawable.my_page_update_et_shape)
-            editUpdateUserPassword.setBackgroundResource(R.drawable.my_page_update_et_shape)
-            editUpdateUserPasswordCheck.setBackgroundResource(R.drawable.my_page_update_et_shape)
+            tilUpdateUserCurrentPassword.boxBackgroundColor = (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
+            tilUpdateUserPassword.boxBackgroundColor = (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
+            tilUpdateUserPasswordCheck.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
         } else {
-            editUpdateUserCurrentPassword.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
-            editUpdateUserPassword.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
-            editUpdateUserPasswordCheck.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
-
+            tilUpdateUserCurrentPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
+            tilUpdateUserPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
+            tilUpdateUserPasswordCheck.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
         }
         editPassword.setOnClickListener {
             if (passwordJudge) {
-                editUpdateUserCurrentPassword.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
-                editUpdateUserPassword.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
-                editUpdateUserPasswordCheck.setBackgroundResource(R.drawable.my_page_update_et_shape_not)
-
+                tilUpdateUserCurrentPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
+                tilUpdateUserPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
+                tilUpdateUserPasswordCheck.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
                 editUpdateUserCurrentPassword.isEnabled = false
                 editUpdateUserPassword.isEnabled = false
                 editUpdateUserPasswordCheck.isEnabled = false
                 passwordJudge = false
             } else {
-                editUpdateUserCurrentPassword.setBackgroundResource(R.drawable.my_page_update_et_shape)
-                editUpdateUserPassword.setBackgroundResource(R.drawable.my_page_update_et_shape)
-                editUpdateUserPasswordCheck.setBackgroundResource(R.drawable.my_page_update_et_shape)
-
-
+                tilUpdateUserCurrentPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
+                tilUpdateUserPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
+                tilUpdateUserPasswordCheck.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
                 editUpdateUserCurrentPassword.isEnabled = true
                 editUpdateUserPassword.isEnabled = true
                 editUpdateUserPasswordCheck.isEnabled = true
@@ -442,7 +440,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
         }
 
         myPageUpdateViewModel.isValidPassword.observe(this@MyPageUpdateActivity) { isValid ->
-            if (isValid && myPageUpdateViewModel.isValidCurrentPassword.value == true) {
+            if (isValid == true && myPageUpdateViewModel.isValidCurrentPassword.value == true) {
                 tilUpdateUserPassword.boxStrokeColor =
                     ContextCompat.getColor(this@MyPageUpdateActivity, R.color.dodger_blue)
                 updateUserPasswordJudge.apply {
@@ -690,4 +688,16 @@ class MyPageUpdateActivity : AppCompatActivity() {
             show()
         }
     }
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        val imm: InputMethodManager =
+            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        return super.dispatchTouchEvent(ev)
+    }
+    private fun hideKeyboard() {
+        val view = this.currentFocus
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
 }

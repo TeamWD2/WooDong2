@@ -78,7 +78,9 @@
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:hint="@string/signin_enter_id"
+                android:imeOptions="actionGo"
                 android:padding="@dimen/wd2_box_padding"
+                android:singleLine="true"
                 android:textColor="#CC999999"
                 android:textSize="@dimen/wd2_normal_text" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -113,8 +115,10 @@
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:hint="@string/signin_input_pw"
+                android:imeOptions="actionGo"
                 android:inputType="textPassword"
                 android:padding="@dimen/wd2_box_padding"
+                android:singleLine="true"
                 android:textColor="#CC999999"
                 android:textSize="@dimen/wd2_normal_text" />
         </com.google.android.material.textfield.TextInputLayout>

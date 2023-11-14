@@ -8,10 +8,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserItem(
-    val id: String?,
-    val name: String?,
-    val imgProfile: String?,
-    val email: String?,
+    val id: String? ,
+    val name: String? ,
+    val imgProfile: String? ,
+    val email: String? = null,
     val chatIds: List<String>?,
     val groupIds: List<String>?,        //모임
     val likedIds: List<String>?,        //좋아요 게시물

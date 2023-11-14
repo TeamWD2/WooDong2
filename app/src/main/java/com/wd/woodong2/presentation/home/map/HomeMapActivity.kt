@@ -262,14 +262,14 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(receivedData)
                     binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
                     binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                    binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                    binding.homeMapFirstAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                    binding.check.visibility = View.VISIBLE
+                    binding.homeMapFirstAddBtnIvLocation.visibility =  View.INVISIBLE
+                    binding.homeMapFirstCloseBtnIvLocation.visibility =  View.VISIBLE
                     binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
-                    binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
-                    Glide.with(this)
-                        .load(R.drawable.home_map_btn_ic_close)
-                        .override(96, 96)
-                        .centerCrop()
-                        .into(binding.homeMapFirstBtnIvLocation)
+                    binding.homeMapSecondAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+                    binding.homeMapSecondAddBtnIvLocation.visibility =  View.VISIBLE
+                    binding.homeMapSecondCloseBtnIvLocation.visibility =  View.INVISIBLE
                 }
                 else{//1위치 있을때
                     reverse = firstLocation
@@ -278,21 +278,16 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(receivedData)
                     binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
                     binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                    binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                    Glide.with(this)
-                        .load(R.drawable.home_map_btn_ic_close)
-                        .override(96, 96)
-                        .centerCrop()
-                        .into(binding.homeMapFirstBtnIvLocation)
+                    binding.homeMapFirstAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                    binding.check.visibility = View.VISIBLE
+                    binding.homeMapFirstAddBtnIvLocation.visibility =  View.INVISIBLE
+                    binding.homeMapFirstCloseBtnIvLocation.visibility =  View.VISIBLE
                     binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
                     binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
                     binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-                    binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-                    Glide.with(this)
-                        .load(R.drawable.home_map_btn_ic_close)
-                        .override(96, 96)
-                        .centerCrop()
-                        .into(binding.homeMapSecondBtnIvLocation)
+                    binding.homeMapSecondCloseBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+                    binding.homeMapSecondAddBtnIvLocation.visibility =  View.INVISIBLE
+                    binding.homeMapSecondCloseBtnIvLocation.visibility =  View.VISIBLE
                 }
             }
             //예외 처리
@@ -361,28 +356,33 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         //1위치 없을때
         if(firstLocation!!.isEmpty()){
             binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
-            binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+            binding.homeMapFirstAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+            binding.check.visibility = View.INVISIBLE
+            binding.homeMapFirstAddBtnIvLocation.visibility =  View.VISIBLE
+            binding.homeMapFirstCloseBtnIvLocation.visibility =  View.INVISIBLE
             homeMapSearchLauncher.launch(
                 HomeMapSearchActivity.newIntent(this@HomeMapActivity,
                     firstLocation.toString(), secondLocation.toString()
                 )
             )
-            Glide.with(this)
-                .load(R.drawable.public_ic_add)
-                .override(96, 96)
-                .centerCrop()
-                .into(binding.homeMapFirstBtnIvLocation)
+            binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
+            binding.homeMapSecondAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+            binding.homeMapSecondAddBtnIvLocation.visibility =  View.VISIBLE
+            binding.homeMapSecondCloseBtnIvLocation.visibility =  View.INVISIBLE
+
         } else{//1위치 있을때 -> 1위치 출력
 
             binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
             binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
             binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
-            binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
-            Glide.with(this)
-                .load(R.drawable.home_map_btn_ic_close)
-                .override(96, 96)
-                .centerCrop()
-                .into(binding.homeMapFirstBtnIvLocation)
+            binding.homeMapFirstCloseBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+            binding.check.visibility = View.VISIBLE
+            binding.homeMapFirstAddBtnIvLocation.visibility =  View.INVISIBLE
+            binding.homeMapFirstCloseBtnIvLocation.visibility =  View.VISIBLE
+            binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
+            binding.homeMapSecondAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+            binding.homeMapSecondAddBtnIvLocation.visibility =  View.VISIBLE
+            binding.homeMapSecondCloseBtnIvLocation.visibility =  View.INVISIBLE
         }
 
         //2위치 있을때 -> 2위치 출력
@@ -390,15 +390,14 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
             binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
             binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-            binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-            Glide.with(this)
-                .load(R.drawable.home_map_btn_ic_close)
-                .override(96, 96)
-                .centerCrop()
-                .into(binding.homeMapSecondBtnIvLocation)
+            binding.homeMapSecondCloseBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+            binding.homeMapSecondAddBtnIvLocation.visibility =  View.INVISIBLE
+            binding.homeMapSecondCloseBtnIvLocation.visibility =  View.VISIBLE
         }else{//2위치 없을때
             binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
-            binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+            binding.homeMapSecondAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+            binding.homeMapSecondAddBtnIvLocation.visibility =  View.VISIBLE
+            binding.homeMapSecondCloseBtnIvLocation.visibility =  View.INVISIBLE
         }
 
         //종료
@@ -440,6 +439,11 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         //1위치 버튼 클릭시
         binding.homeMapFirstBtn.setOnClickListener{
             if(binding.homeMapFirstBtnTvLocation.text.toString().isEmpty()){
+                binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
+                binding.homeMapFirstAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+                binding.check.visibility = View.INVISIBLE
+                binding.homeMapFirstAddBtnIvLocation.visibility =  View.VISIBLE
+                binding.homeMapFirstCloseBtnIvLocation.visibility =  View.INVISIBLE
                 homeMapSearchLauncher.launch(
                     HomeMapSearchActivity.newIntent(this@HomeMapActivity,
                         firstLocation.toString(), secondLocation.toString()
@@ -447,55 +451,71 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
             }
             else{
+
                 binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
                 binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                binding.homeMapFirstCloseBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                binding.check.visibility = View.VISIBLE
+                binding.homeMapFirstAddBtnIvLocation.visibility =  View.INVISIBLE
+                binding.homeMapFirstCloseBtnIvLocation.visibility =  View.VISIBLE
                 getLocationFromAddress(this, firstLocation!!)
                 naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(latitude, longitude)))
                 marker(latitude, longitude)
             }
         }
         //첫번재 이미지 클릭시
-        binding.homeMapFirstBtnIvLocation.setOnClickListener{
-            if(binding.homeMapFirstBtnTvLocation.text.toString().isEmpty()){//1위치 없을때
+        binding.homeMapFirstAddBtnIvLocation.setOnClickListener{
+            //1위치 없을때
+            if(binding.homeMapFirstBtnTvLocation.text.toString().isEmpty()){
                 homeMapSearchLauncher.launch(
                     HomeMapSearchActivity.newIntent(this@HomeMapActivity,
                         firstLocation.toString(), secondLocation.toString()
                     )
                 )
             }
+
             else{//1위치 있을때
                 if(binding.homeMapSecondBtnTvLocation.text.toString().isNotEmpty()){//2위치 있을때
-                    binding.homeMapFirstBtnTvLocation.text = binding.homeMapSecondBtnTvLocation.text.toString()
-                    binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
-                    binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
-                    secondLocation = ""
-                    binding.homeMapSecondBtnTvLocation.text = ""
-                    binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
-                    binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                    binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                    binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
-                    binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-                    binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-                    Glide.with(this)
-                        .load(R.drawable.public_ic_add)
-                        .override(96, 96)
-                        .centerCrop()
-                        .into(binding.homeMapSecondBtnIvLocation)
-                }
-                else{//2위치 없을때
-                    binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
-                    binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
-                    firstLocation = ""
-                    binding.homeMapFirstBtnTvLocation.text = ""
-                    homeMapSearchLauncher.launch(
-                        HomeMapSearchActivity.newIntent(this@HomeMapActivity,
-                            firstLocation.toString(), secondLocation.toString()
-                        )
-                    )
+
                 }
             }
         }
+
+        binding.homeMapFirstCloseBtnIvLocation.setOnClickListener {
+            //2위치 없을때
+            if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
+                binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
+                binding.homeMapFirstAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+                binding.check.visibility = View.INVISIBLE
+                binding.homeMapFirstAddBtnIvLocation.visibility =  View.VISIBLE
+                binding.homeMapFirstCloseBtnIvLocation.visibility =  View.INVISIBLE
+                firstLocation = ""
+                binding.homeMapFirstBtnTvLocation.text = ""
+                homeMapSearchLauncher.launch(
+                    HomeMapSearchActivity.newIntent(this@HomeMapActivity,
+                        firstLocation.toString(), secondLocation.toString()
+                    )
+                )
+            }
+            //있을때
+            else
+            {   firstLocation = secondLocation
+                binding.homeMapFirstBtnTvLocation.text = binding.homeMapSecondBtnTvLocation.text.toString()
+                binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
+                binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                binding.homeMapFirstCloseBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                binding.check.visibility = View.VISIBLE
+                binding.homeMapFirstAddBtnIvLocation.visibility =  View.INVISIBLE
+                binding.homeMapFirstCloseBtnIvLocation.visibility =  View.VISIBLE
+                secondLocation = ""
+                binding.homeMapSecondBtnTvLocation.text = ""
+                binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
+                binding.homeMapSecondAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+                binding.homeMapSecondAddBtnIvLocation.visibility =  View.VISIBLE
+                binding.homeMapSecondCloseBtnIvLocation.visibility =  View.INVISIBLE
+            }
+        }
+
         //2위치 버튼 클릭시
         binding.homeMapSecondBtn.setOnClickListener{
             if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){//2위치 없을때
@@ -514,17 +534,22 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 secondLocation = reverse
                 binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
                 binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
+
                 binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
                 binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                binding.homeMapFirstCloseBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                binding.check.visibility = View.VISIBLE
+                binding.homeMapFirstAddBtnIvLocation.visibility =  View.INVISIBLE
+                binding.homeMapFirstCloseBtnIvLocation.visibility =  View.VISIBLE
                 binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
                 binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-                binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-
+                binding.homeMapSecondCloseBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+                binding.homeMapSecondAddBtnIvLocation.visibility =  View.INVISIBLE
+                binding.homeMapSecondCloseBtnIvLocation.visibility =  View.VISIBLE
             }
         }
         //2위치 이미지 클릭시
-        binding.homeMapSecondBtnIvLocation.setOnClickListener{
+        binding.homeMapSecondAddBtnIvLocation.setOnClickListener{
             if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){//2위치 없을때
                 homeMapSearchLauncher.launch(
                     HomeMapSearchActivity.newIntent(this@HomeMapActivity,
@@ -532,20 +557,18 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     )
                 )
             }
-            else{//2위치 있을때
+        }
+        binding.homeMapSecondCloseBtnIvLocation.setOnClickListener{
+            if(binding.homeMapSecondBtnTvLocation.text.toString().isNotEmpty()){//2위치 있을때
                 binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_empty)
-                binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
-                Log.d("location",firstLocation.toString())
-                Log.d("location",secondLocation.toString())
+                binding.homeMapSecondAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
+                binding.homeMapSecondAddBtnIvLocation.visibility =  View.VISIBLE
+                binding.homeMapSecondCloseBtnIvLocation.visibility =  View.INVISIBLE
                 secondLocation = ""
                 binding.homeMapSecondBtnTvLocation.text = ""
-                Glide.with(this)
-                    .load(R.drawable.public_ic_add)
-                    .override(96, 96)
-                    .centerCrop()
-                    .into(binding.homeMapSecondBtnIvLocation)
             }
         }
+
         if(locationTrackingEnabled){
             binding.trackingLocation.setColorFilter(ContextCompat.getColor(this, R.color.red))
         }
@@ -634,12 +657,10 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                         binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
                         binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                        binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                        Glide.with(this)
-                            .load(R.drawable.home_map_btn_ic_close)
-                            .override(96, 96)
-                            .centerCrop()
-                            .into(binding.homeMapFirstBtnIvLocation)
+                        binding.homeMapFirstCloseBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                        binding.check.visibility = View.VISIBLE
+                        binding.homeMapFirstAddBtnIvLocation.visibility =  View.INVISIBLE
+                        binding.homeMapFirstCloseBtnIvLocation.visibility =  View.VISIBLE
                     }
                 }else{
 
@@ -666,30 +687,23 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                         if(extractLocationSetInfo(reverse.toString()) !=
                             extractLocationSetInfo(firstLocation.toString())){
-                            Log.d("location",extractLocationSetInfo(reverse.toString()))
-                            Log.d("location",extractLocationSetInfo(firstLocation.toString()))
                             secondLocation = reverse
                             binding.homeMapSecondBtnTvLocation.text = extractLocationInfo(secondLocation.toString())
                             binding.homeMapClSecondBtn.setBackgroundResource(R.drawable.home_map_btn_uncheck)
                             binding.homeMapSecondBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-                            binding.homeMapSecondBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
-                            Glide.with(this)
-                                .load(R.drawable.home_map_btn_ic_close)
-                                .override(96, 96)
-                                .centerCrop()
-                                .into(binding.homeMapSecondBtnIvLocation)
+                            binding.homeMapSecondCloseBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.curry_yellow_txt))
+                            binding.homeMapSecondAddBtnIvLocation.visibility =  View.INVISIBLE
+                            binding.homeMapSecondCloseBtnIvLocation.visibility =  View.VISIBLE
 
                             binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
                             getAddressFromLocation(this,latitude,longitude)
 
                             binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
                             binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                            binding.homeMapFirstBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
-                            Glide.with(this)
-                                .load(R.drawable.home_map_btn_ic_close)
-                                .override(96, 96)
-                                .centerCrop()
-                                .into(binding.homeMapFirstBtnIvLocation)
+                            binding.homeMapFirstCloseBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
+                            binding.check.visibility = View.VISIBLE
+                            binding.homeMapFirstAddBtnIvLocation.visibility =  View.INVISIBLE
+                            binding.homeMapFirstCloseBtnIvLocation.visibility =  View.VISIBLE
                         }
                     }
                 } else{

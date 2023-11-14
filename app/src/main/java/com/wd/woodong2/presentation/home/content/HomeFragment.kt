@@ -57,6 +57,7 @@ class HomeFragment : Fragment() {
             },
             onDeleteItem = { item ->
                 viewModel.deleteItem(item)
+                updateTagSelectionUI()
             },
         )
     }
@@ -128,6 +129,7 @@ class HomeFragment : Fragment() {
                 firstLocation.toString(), userName,
                 userId.toString()
             )
+            updateTagSelectionUI()
             startActivity(intent)
         }
         homeTag1.setOnClickListener {
@@ -178,6 +180,8 @@ class HomeFragment : Fragment() {
                     visibility = View.GONE
                     toolbarHome.setCancelIcVisible(false)
                     toolbarHome.setRightIcVisible(true)
+                    toolbarHome.setCancelIcVisible(false)
+
                     // 키보드 숨기기
                     val imm =
                         context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -195,6 +199,8 @@ class HomeFragment : Fragment() {
                 toolbarHome.setConstraintSearchVisible(true)
                 toolbarHome.setRequestFocusEditText()
                 toolbarHome.setClearEditText() // 이전 검색어 지우기
+                toolbarHome.setCancelIcVisible(true)
+
                 // 키보드 보여주기
                 val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(toolbarHome.toolbarBinding.edtToolbarSearch, InputMethodManager.SHOW_IMPLICIT)
@@ -202,6 +208,9 @@ class HomeFragment : Fragment() {
                 // 검색 수행
                 viewModel.searchItems(toolbarHome.getSearchEditText())
                 toolbarHome.setConstraintSearchVisible(false)
+                toolbarHome.setCancelIcVisible(false)
+                toolbarHome.setRightIcVisible(true)
+
                 // 키보드 숨기기
                 val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(toolbarHome.toolbarBinding.edtToolbarSearch.windowToken, 0)
@@ -235,19 +244,22 @@ class HomeFragment : Fragment() {
                     list.value?.filter { it.location == userInfo?.firstLocation } ?: emptyList()
                 _printList.value = filteredList
 
-                // 구, 군
-                if (printList.value?.size!! < 10) {
-                    HomeMapActivity.getLocationFromAddress(
-                        requireContext(),
-                        userInfo?.firstLocation.toString()
-                    )
-                    circumLocationItemSearch(
-                        HomeMapActivity.latitude,
-                        HomeMapActivity.longitude,
-                        20000,
-                        userInfo?.firstLocation.toString(),
-                        userInfo?.firstLocation.toString()
-                    )
+
+
+                printList.value?.let { list ->
+                    if (list.size < 10) {
+                        HomeMapActivity.getLocationFromAddress(
+                            requireContext(),
+                            userInfo?.firstLocation.toString()
+                        )
+                        circumLocationItemSearch(
+                            HomeMapActivity.latitude,
+                            HomeMapActivity.longitude,
+                            20000,
+                            userInfo?.firstLocation.toString(),
+                            userInfo?.firstLocation.toString()
+                        )
+                    }
 
                     handleTagSelection(currentTag)
                 }
@@ -281,6 +293,10 @@ class HomeFragment : Fragment() {
             }
         }
     }
+    private fun updateTagSelectionUI() {
+        binding.homeTagGroup.clearCheck() // 칩 그룹 내 모든 칩의 선택 해제
+    }
+
     private fun handleTagSelection(tag: String?) {
         if (tag == null) {
             // 태그가 해제되었을 때의 로직

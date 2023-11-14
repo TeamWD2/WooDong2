@@ -134,12 +134,27 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/home_map_first_btn_iv_location"
+                        android:id="@+id/home_map_first_add_btn_iv_location"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:src="@drawable/public_ic_add"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <ImageView
+                        android:id="@+id/home_map_first_close_btn_iv_location"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:clickable="true"
                         android:focusable="true"
                         android:src="@drawable/home_map_btn_ic_close"
+                        android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -171,15 +186,29 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/home_map_second_btn_iv_location"
+                        android:id="@+id/home_map_second_add_btn_iv_location"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:clickable="true"
                         android:focusable="true"
                         android:src="@drawable/public_ic_add"
+                        android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <ImageView
+                        android:id="@+id/home_map_second_close_btn_iv_location"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:src="@drawable/home_map_btn_ic_close"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="SpeakableTextPresentCheck" />
 

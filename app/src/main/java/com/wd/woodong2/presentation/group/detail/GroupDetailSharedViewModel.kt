@@ -77,7 +77,8 @@ class GroupDetailSharedViewModel(
                 userId = it.id ?: "(알 수 없음)",
                 userProfile = it.imgProfile,
                 userName = it.name ?: "(알 수 없음)",
-                userLocation = it.firstLocation ?: "(알 수 없음)"
+                userFirstLocation = it.firstLocation ?: "(알 수 없음)",
+                userSecondLocation = it.secondLocation ?: "(알 수 없음)"
             )
         }
 
@@ -255,7 +256,7 @@ class GroupDetailSharedViewModel(
                             userId = userInfo?.userId ?: "UserId",
                             profile = userInfo?.userProfile,
                             name = userInfo?.userName ?: "UserName",
-                            location = userInfo?.userLocation ?: "UserLocation",
+                            location = userInfo?.userFirstLocation ?: "UserLocation",
                             comment = "모임 멤버"
                         )
                     )
