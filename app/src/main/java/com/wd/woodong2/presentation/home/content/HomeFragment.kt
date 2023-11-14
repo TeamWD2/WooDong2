@@ -36,7 +36,7 @@ class HomeFragment : Fragment() {
             by viewModels {
                 HomeViewModelFactory(requireContext())
             }
-
+    private var currentTag: String? = null
     private var firstLocation: String? = null
     private var secondLocation: String? = null
     private var userName: String? = null
@@ -44,7 +44,9 @@ class HomeFragment : Fragment() {
     private lateinit var homeMapLauncher: ActivityResultLauncher<Intent>
 
     private val listAdapter by lazy {
-        HomeListAdapter(requireContext(),
+        HomeListAdapter(
+            requireContext(),
+            currentUser = viewModel.getUserInfo(),
             onClickItem = { item ->
                 startActivity(
                     HomeDetailActivity.homeDetailActivityNewIntent(
@@ -87,7 +89,8 @@ class HomeFragment : Fragment() {
                         viewModel.userInfo.value?.name,
                         viewModel.userInfo.value?.imgProfile,
                         receivedDataFirstLocation.toString(),
-                        receivedDataSecondLocation.toString())
+                        receivedDataSecondLocation.toString()
+                    )
                 } else {
 
                 }
@@ -100,6 +103,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initViewModel()
+
         setupScrollToTopButton()
     }
 
@@ -128,15 +132,42 @@ class HomeFragment : Fragment() {
             )
             startActivity(intent)
         }
-        homeTag1.setOnClickListener { viewModel.tagFilterList("All") }
-        homeTag2.setOnClickListener { viewModel.tagFilterList("동네질문") }
-        homeTag3.setOnClickListener { viewModel.tagFilterList("조심해요!") }
-        homeTag4.setOnClickListener { viewModel.tagFilterList("정보공유") }
-        homeTag5.setOnClickListener { viewModel.tagFilterList("동네소식") }
-        homeTag6.setOnClickListener { viewModel.tagFilterList("사건/사고") }
-        homeTag7.setOnClickListener { viewModel.tagFilterList("동네사진전") }
-        homeTag8.setOnClickListener { viewModel.tagFilterList("분실/실종") }
-        homeTag9.setOnClickListener { viewModel.tagFilterList("생활정보") }
+        homeTag1.setOnClickListener {
+            currentTag = if (currentTag == "All") null else "All"
+            handleTagSelection(currentTag)
+        }
+        homeTag2.setOnClickListener {
+            currentTag = if (currentTag == "동네질문") null else "동네질문"
+            handleTagSelection(currentTag)
+        }
+        homeTag3.setOnClickListener {
+            currentTag = if (currentTag == "조심해요!") null else "조심해요!"
+            handleTagSelection(currentTag)
+        }
+        homeTag4.setOnClickListener {
+            currentTag = if (currentTag == "정보공유") null else "정보공유"
+            handleTagSelection(currentTag)
+        }
+        homeTag5.setOnClickListener {
+            currentTag = if (currentTag == "동네소식") null else "동네소식"
+            handleTagSelection(currentTag)
+        }
+        homeTag6.setOnClickListener {
+            currentTag = if (currentTag == "사건/사고") null else "사건/사고"
+            handleTagSelection(currentTag)
+        }
+        homeTag7.setOnClickListener {
+            currentTag = if (currentTag == "동네사진전") null else "동네사진전"
+            handleTagSelection(currentTag)
+        }
+        homeTag8.setOnClickListener {
+            currentTag = if (currentTag == "분실/실종") null else "분실/실종"
+            handleTagSelection(currentTag)
+        }
+        homeTag9.setOnClickListener {
+            currentTag = if (currentTag == "생활정보") null else "생활정보"
+            handleTagSelection(currentTag)
+        }
 
         // 검색 필드 초기화
         edtHomeSearch.apply {
@@ -150,7 +181,8 @@ class HomeFragment : Fragment() {
                     imgHomeCancel.visibility = View.GONE
                     toolbarImgSearch.visibility = View.VISIBLE
                     // 키보드 숨기기
-                    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val imm =
+                        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(windowToken, 0)
                     true // 이벤트 처리 완료
                 } else {
@@ -167,14 +199,16 @@ class HomeFragment : Fragment() {
                 edtHomeSearch.requestFocus()
                 edtHomeSearch.text.clear() // 이전 검색어 지우기
                 // 키보드 보여주기
-                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm =
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(edtHomeSearch, InputMethodManager.SHOW_IMPLICIT)
             } else {
                 // 검색 수행
                 viewModel.searchItems(edtHomeSearch.text.toString())
                 constraintSearch.visibility = View.GONE
                 // 키보드 숨기기
-                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm =
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(edtHomeSearch.windowToken, 0)
                 edtHomeSearch.text.clear() // 검색 후 검색어 지우기
             }
@@ -191,13 +225,13 @@ class HomeFragment : Fragment() {
     private fun initViewModel() {
         with(viewModel) {
 
-            list.observe(viewLifecycleOwner) {newList ->
+            list.observe(viewLifecycleOwner) { newList ->
                 _printList.value = newList.filter { item ->
                     circumLocation.contains(item.location)
                 }
             }
 
-            printList.observe(viewLifecycleOwner){
+            printList.observe(viewLifecycleOwner) {
                 listAdapter.submitList(it)
             }
 
@@ -205,6 +239,7 @@ class HomeFragment : Fragment() {
                 val filteredList =
                     list.value?.filter { it.location == userInfo?.firstLocation } ?: emptyList()
                 _printList.value = filteredList
+
 
                 printList.value?.let { list ->
                     if (list.size < 10) {
@@ -252,6 +287,15 @@ class HomeFragment : Fragment() {
             }
         }
     }
+    private fun handleTagSelection(tag: String?) {
+        if (tag == null) {
+            // 태그가 해제되었을 때의 로직
+            viewModel.resetToInitialList()
+        } else {
+            // 태그가 선택되었을 때의 로직
+            viewModel.tagFilterList(tag)
+        }
+    }
 
     private fun setupScrollToTopButton() {
         val fab: FloatingActionButton = binding.homeTopFab
@@ -265,6 +309,7 @@ class HomeFragment : Fragment() {
                     fab.show()
                 }
             }
+
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && recyclerView.computeVerticalScrollOffset() == 0) {
                     fab.hide()

@@ -135,7 +135,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="삭제하기"
+        android:text="삭제"
         android:textColor="@color/light_gray_txt"
         android:textSize="@dimen/wd2_small_text"
         app:layout_constraintBottom_toBottomOf="@id/home_list_item_tv_time_stamp"
@@ -144,10 +144,11 @@
 
     <ImageView
         android:id="@+id/home_list_item_iv_thumb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:padding="2dp"
         android:layout_marginEnd="5dp"
-        android:src="@drawable/home_list_item_ic_thumb"
+        android:src="@drawable/home_list_favorite"
         app:layout_constraintBottom_toBottomOf="@id/home_list_item_tv_thumb_count"
         app:layout_constraintEnd_toStartOf="@+id/home_list_item_tv_thumb_count"
         app:layout_constraintTop_toTopOf="@id/home_list_item_tv_thumb_count" />
