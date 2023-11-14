@@ -44,7 +44,9 @@ class HomeFragment : Fragment() {
     private lateinit var homeMapLauncher: ActivityResultLauncher<Intent>
 
     private val listAdapter by lazy {
-        HomeListAdapter(requireContext(),
+        HomeListAdapter(
+            requireContext(),
+            currentUser = viewModel.getUserInfo(),
             onClickItem = { item ->
                 startActivity(
                     HomeDetailActivity.homeDetailActivityNewIntent(
@@ -88,6 +90,7 @@ class HomeFragment : Fragment() {
                         viewModel.userInfo.value?.imgProfile,
                         receivedDataFirstLocation.toString(),
                         receivedDataSecondLocation.toString())
+                    Log.d("check",viewModel.userInfo.value?.firstLocation.toString())
                 } else {
 
                 }
@@ -206,20 +209,19 @@ class HomeFragment : Fragment() {
                     list.value?.filter { it.location == userInfo?.firstLocation } ?: emptyList()
                 _printList.value = filteredList
 
-                printList.value?.let { list ->
-                    if (list.size < 10) {
-                        HomeMapActivity.getLocationFromAddress(
-                            requireContext(),
-                            userInfo?.firstLocation.toString()
-                        )
-                        circumLocationItemSearch(
-                            HomeMapActivity.latitude,
-                            HomeMapActivity.longitude,
-                            20000,
-                            userInfo?.firstLocation.toString(),
-                            userInfo?.firstLocation.toString()
-                        )
-                    }
+                // 구, 군
+                if (printList.value?.size!! < 10) {
+                    HomeMapActivity.getLocationFromAddress(
+                        requireContext(),
+                        userInfo?.firstLocation.toString()
+                    )
+                    circumLocationItemSearch(
+                        HomeMapActivity.latitude,
+                        HomeMapActivity.longitude,
+                        20000,
+                        userInfo?.firstLocation.toString(),
+                        userInfo?.firstLocation.toString()
+                    )
                 }
 
 
