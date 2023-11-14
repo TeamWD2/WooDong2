@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -123,12 +124,18 @@ class HomeDetailActivity : AppCompatActivity() {
                 viewModel.postComment(homeItem, commentContent)
                 binding.editComment.text.clear()
                 viewModel.updateChatCount(homeItem)
+                hideKeyboard()
             } else {
                 Toast.makeText(this, "댓글을 입력하세요", Toast.LENGTH_SHORT).show()
             }
         }
     }
-
+    private fun hideKeyboard() {
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        currentFocus?.let {
+            inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+        }
+    }
     private fun initLikeButton(homeItem: HomeItem) = with(binding) {
         updateLikeButton(homeItem)
 
