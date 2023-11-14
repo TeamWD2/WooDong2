@@ -209,6 +209,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:imeOptions="actionDone"
         android:background="@drawable/public_border_box"
         android:hint="@string/group_add_hint_password"
         android:inputType="textPassword"

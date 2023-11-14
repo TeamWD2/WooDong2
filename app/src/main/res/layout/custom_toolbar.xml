@@ -45,6 +45,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/public_border_box_full"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:maxLines="1"
                 android:padding="@dimen/wd2_box_padding"
                 android:textColor="@color/light_gray_txt"
