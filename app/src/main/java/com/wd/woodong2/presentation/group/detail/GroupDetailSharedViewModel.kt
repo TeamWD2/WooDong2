@@ -22,11 +22,12 @@ import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.usecase.ChatGetChatIdUseCase
 import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
+import com.wd.woodong2.domain.usecase.GroupGetMemberListUseCase
 import com.wd.woodong2.domain.usecase.GroupSetMemberItemUseCase
 import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.UserSendPushMessageUseCase
 import com.wd.woodong2.domain.usecase.UserUpdateGroupInfoUseCase
 import com.wd.woodong2.presentation.group.GroupUserInfoItem
-import com.wd.woodong2.presentation.group.add.GroupAddSetItem
 import com.wd.woodong2.presentation.group.content.GroupItem
 import kotlinx.coroutines.launch
 
@@ -36,6 +37,8 @@ class GroupDetailSharedViewModel(
     private val getChatId: ChatGetChatIdUseCase,
     private val updateGroupInfo: UserUpdateGroupInfoUseCase,
     private val groupSetMemberItem: GroupSetMemberItemUseCase,
+    private val groupGetMemberList: GroupGetMemberListUseCase,
+    private val sendPushMessage: UserSendPushMessageUseCase,
 ) : ViewModel() {
     companion object {
         private const val TAG = "GroupDetailSharedViewModel"
@@ -99,7 +102,7 @@ class GroupDetailSharedViewModel(
 
     private fun getRelatedItems(
         items: GroupItemsEntity,
-        itemId: String
+        itemId: String,
     ): List<GroupItem> = readGroupItems(items).filter {
         it.id == itemId
     }
@@ -108,7 +111,7 @@ class GroupDetailSharedViewModel(
      * Firebase 에서 모임 목록 read
      */
     private fun readGroupItems(
-        items: GroupItemsEntity
+        items: GroupItemsEntity,
     ): List<GroupItem> {
         return items.groupList.map { entity ->
             when (entity) {
@@ -122,7 +125,8 @@ class GroupDetailSharedViewModel(
                     memberLimit = entity.memberLimit,
                     password = entity.password,
                     mainImage = entity.mainImage,
-                    backgroundImage = entity.backgroundImage
+                    backgroundImage = entity.backgroundImage,
+                    groupLocation = entity.groupLocation
                 )
 
                 is GroupIntroduceEntity -> GroupItem.GroupIntroduce(
@@ -200,8 +204,10 @@ class GroupDetailSharedViewModel(
         return if (groupMainItem?.memberLimit.equals("제한 없음")) {
             true
         } else {
-            val groupMemberItem = groupDetailItem.value?.filterIsInstance<GroupItem.GroupMember>()?.firstOrNull()
-            ((groupMainItem?.memberLimit?.filter { it.isDigit() }?.toInt() ?: 0) > (groupMemberItem?.memberList?.size ?: 0))
+            val groupMemberItem =
+                groupDetailItem.value?.filterIsInstance<GroupItem.GroupMember>()?.firstOrNull()
+            ((groupMainItem?.memberLimit?.filter { it.isDigit() }?.toInt()
+                ?: 0) > (groupMemberItem?.memberList?.size ?: 0))
         }
     }
 
@@ -238,6 +244,8 @@ class GroupDetailSharedViewModel(
                     getChatId(groupId).collect { id ->
                         chatId = id
                     }
+
+                    // 새로 가입한 멤버 업데이트
                     updateGroupInfo(userInfo?.userId ?: "UserId", groupId, chatId)
 
                     //멤버 추가
@@ -251,6 +259,10 @@ class GroupDetailSharedViewModel(
                             comment = "모임 멤버"
                         )
                     )
+
+                    // 가입 알람 전송
+                    groupSendPushMessage(groupId)
+
                     _isSuccessJoinGroup.value = true
                 } else {
                     Log.d(TAG, "groupMainItem is null")
@@ -262,10 +274,21 @@ class GroupDetailSharedViewModel(
             }
         }
     }
+
+    private suspend fun groupSendPushMessage(groupId: String) = viewModelScope.launch {
+        runCatching {
+            groupGetMemberList(groupId).collect { memberList ->
+                sendPushMessage(memberList)
+            }
+        }.onFailure {
+            Log.e(TAG, it.message.toString())
+            _isSuccessJoinGroup.value = false
+        }
+    }
 }
 
 class GroupDetailSharedViewModelFactory(
-    val context: Context
+    val context: Context,
 ) : ViewModelProvider.Factory {
     private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
     private val databaseReference = FirebaseDatabase.getInstance()
@@ -288,7 +311,9 @@ class GroupDetailSharedViewModelFactory(
                 GroupGetItemsUseCase(groupRepository),
                 ChatGetChatIdUseCase(chatGetRepository),
                 UserUpdateGroupInfoUseCase(userUpdateRepository),
-                GroupSetMemberItemUseCase(groupRepository)
+                GroupSetMemberItemUseCase(groupRepository),
+                GroupGetMemberListUseCase(groupRepository),
+                UserSendPushMessageUseCase(userUpdateRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")
