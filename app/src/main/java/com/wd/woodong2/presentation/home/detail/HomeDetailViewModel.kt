@@ -59,7 +59,7 @@ class HomeDetailViewModel(
         val comment = CommentItem(
             username = currentUser?.name ?: "알 수 없음",
             content = commentContent,
-            location = HomeMapActivity.extractLocationInfo(homeItem.location),
+            location = HomeMapActivity.extractLocationInfo(currentUser?.firstLocation ?: ""),
             userImageUrl = currentUser?.imgProfile ?: "")
         homeItem.comments.add(comment)
         itemRef.setValue(homeItem)

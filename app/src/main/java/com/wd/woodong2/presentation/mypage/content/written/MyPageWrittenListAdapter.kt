@@ -1,6 +1,7 @@
 package com.wd.woodong2.presentation.mypage.content.written
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -42,8 +43,13 @@ class MyPageWrittenListAdapter (
 
         fun bind(item: HomeItem) = with(binding){
             homeListItemBtnTag.text = item.tag
-            homeListItemThumbnail.load(item.thumbnail) {
-                error(R.drawable.public_default_wd2_ivory)
+            if(item.thumbnail.isNullOrEmpty()) { //이미지 없을 때, 카드뷰 숨김 처리
+                cardView3.visibility = View.GONE
+            } else {
+                cardView3.visibility = View.VISIBLE
+                homeListItemThumbnail.load(item.thumbnail) {
+                    error(R.drawable.public_default_wd2_ivory)
+                }
             }
             homeListItemTvTitle.text = item.title
             homeListItemTvDescription.text = item.description
