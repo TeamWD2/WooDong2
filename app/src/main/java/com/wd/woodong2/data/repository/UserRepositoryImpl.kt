@@ -152,7 +152,7 @@ class UserRepositoryImpl(
                     Log.d(TAG, "로그인 성공")
                     trySend(true)
                 } else {
-                    Log.d(TAG, "로그인 실패")
+                    Log.e(TAG, "로그인 실패")
                     trySend(false)
                 }
             }
@@ -171,7 +171,7 @@ class UserRepositoryImpl(
             auth?.currentUser?.updatePassword(newPassword)?.await()
             Log.d(TAG, "비밀번호 변경 성공")
         } catch (e: Exception) {
-            Log.d(TAG, "비밀번호 변경 실패")
+            Log.e(TAG, "비밀번호 변경 실패")
         }
     }
 
@@ -198,9 +198,6 @@ class UserRepositoryImpl(
         firstLocation: String,
         secondLocation: String,
     ) {
-        Log.d("locationcf", firstLocation)
-        Log.d("locationcf", secondLocation)
-        Log.d("mypagename", name)
         val userInfo = databaseReference.child(userId)
         val updateUserInfo = mapOf(
             "name" to name,

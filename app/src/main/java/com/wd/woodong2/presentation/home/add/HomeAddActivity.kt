@@ -132,13 +132,10 @@ class HomeAddActivity : AppCompatActivity() {
 
         homeAddAddbtn.setOnClickListener {
             if (selectedTag == null) {
-                Log.d("HomeAddActivity", "태그가 선택되지 않음")
                 Toast.makeText(this@HomeAddActivity, "태그를 선택해주세요", Toast.LENGTH_SHORT).show()
             } else if (binding.homeAddTitle.text.isEmpty()) {
-                Log.d("HomeAddActivity", "제목이 비어있음")
                 Toast.makeText(this@HomeAddActivity, "제목을 작성해주세요", Toast.LENGTH_SHORT).show()
             } else if (binding.homeAddContent.text.isEmpty()) {
-                Log.d("HomeAddActivity", "내용이 비어있음")
                 Toast.makeText(this@HomeAddActivity, "내용을 작성해주세요", Toast.LENGTH_SHORT).show()
             } else {
                 // 모든 검사를 통과한 경우에만 게시 로직을 수행

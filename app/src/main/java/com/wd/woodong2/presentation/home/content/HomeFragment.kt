@@ -91,7 +91,6 @@ class HomeFragment : Fragment() {
                         receivedDataFirstLocation.toString(),
                         receivedDataSecondLocation.toString()
                     )
-                    Log.d("check", viewModel.userInfo.value?.firstLocation.toString())
                 } else {
 
                 }

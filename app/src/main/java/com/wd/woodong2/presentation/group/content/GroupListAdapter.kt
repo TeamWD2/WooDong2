@@ -38,7 +38,6 @@ class GroupListAdapter(
             txtGroupTag.text = item.groupTag
             txtAgeLimit.text = item.ageLimit
             txtMemberLimit.text = item.memberLimit
-            Log.d("sinw", "${item.groupLocation}")
 
             root.setOnClickListener {
                 itemClickListener(item)

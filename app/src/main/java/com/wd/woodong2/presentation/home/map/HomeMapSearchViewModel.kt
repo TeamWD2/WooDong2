@@ -26,7 +26,6 @@ class HomeMapSearchViewModel (
                 Map = MapSearch(query)
             )
 
-            Log.d("location", items.toString())
             _list.postValue(items)
         }.onFailure { e ->
             Log.e("Retrofit Error", "Request failed: ${e.message}")

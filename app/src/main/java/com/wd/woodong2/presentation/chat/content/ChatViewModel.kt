@@ -105,7 +105,7 @@ class ChatViewModel(
                 }
             }
         }.onFailure {
-            Log.e("danny", it.message.toString())
+            Log.e(TAG, it.message.toString())
             _isLoading.value = false
         }
     }
@@ -137,7 +137,7 @@ class ChatViewModel(
                 _isLoading.value = false
             }
         }.onFailure {
-            Log.e("danny", it.message.toString())
+            Log.e(TAG, it.message.toString())
             _isLoading.value = false
         }
     }

@@ -17,8 +17,6 @@ class GCMRequestInterceptor : Interceptor {
             .addHeader("Content-Type", "application/json")
             .build()
 
-        Log.d("GCMRequestInterceptor", newRequest.toString())
-
         return chain.proceed(newRequest)
     }
 }

@@ -47,7 +47,9 @@ class HomeViewModel(
     private val userPrefEditItemUseCase: UserPrefEditItemUseCase,
 ) : ViewModel(
 ) {
-
+    companion object {
+        private val TAG = "HomeViewModel"
+    }
 
     // 필터링된 아이템을 저장하는 LiveData
     private val _filteredItems = MutableLiveData<List<HomeItem>>()
@@ -82,7 +84,6 @@ class HomeViewModel(
     var userInfo: MutableLiveData<UserItem?> = MutableLiveData()
 
     init {
-        Log.d("HomeViewModel", "Current User ID: $userId")
         loadDataFromFirebase()
         getUserItem()
     }
@@ -334,7 +335,7 @@ class HomeViewModel(
                 userInfo.postValue(userItem)
             }
         }.onFailure {
-            Log.e("homeItem", it.message.toString())
+            Log.e(TAG, it.message.toString())
         }
     }
     fun getUserInfo() =
@@ -387,7 +388,7 @@ class HomeViewModel(
                 secondLocation
             )
         }.onFailure {
-            Log.e("locationhv", it.message.toString())
+            Log.e(TAG, it.message.toString())
         }
     }
     fun deleteItem(item: HomeItem) {

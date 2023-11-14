@@ -130,7 +130,7 @@ class GroupFragment : Fragment() {
             _printList.value = groupList.value?.filter { item ->
                 item is GroupItem.GroupMain && item.groupLocation?.contains(userInfo?.firstLocation.toString()) == true
             }
-            Log.d("gg","gg")
+
             if((printList.value?.size ?: 0) < 5){
                 HomeMapActivity.getLocationFromAddress(
                     requireContext(),

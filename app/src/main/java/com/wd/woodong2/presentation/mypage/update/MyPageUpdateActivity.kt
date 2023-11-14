@@ -233,13 +233,6 @@ class MyPageUpdateActivity : AppCompatActivity() {
 
         //이름은 true false만 해야함
         myPageUpdateBtn.setBtnOnClickListener {
-            Log.d("chchch", myPageUpdateViewModel.isValidCurrentPassword.value.toString())
-            Log.d("chchch", myPageUpdateViewModel.isValidPassword.value.toString())
-            Log.d("chchch", myPageUpdateViewModel.isValidSamePassword.value.toString())
-            Log.d("chchch", myPageUpdateViewModel.isValidNickname.value.toString())
-            Log.d("chchch", myPageUpdateViewModel.isNicknameDuplication.value.toString())
-            Log.d("chchch", myPageUpdateViewModel.isValidImg.value.toString())
-
             if (myPageUpdateViewModel.checkAllConditions()) {
                 lifecycleScope.launch {
                     name = editUpdateUserName.text.toString().trim()

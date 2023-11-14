@@ -266,7 +266,7 @@ class GroupDetailSharedViewModel(
 
                     _isSuccessJoinGroup.value = true
                 } else {
-                    Log.d(TAG, "groupMainItem is null")
+                    Log.e(TAG, "groupMainItem is null")
                     _isSuccessJoinGroup.value = false
                 }
             }.onFailure {
