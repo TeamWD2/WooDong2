@@ -259,7 +259,7 @@ class MyPageGroupViewModelFactory(
 
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
-            FirebaseDatabase.getInstance().getReference("users"),
+            FirebaseDatabase.getInstance().getReference("user_list"),
             Firebase.auth,
             FirebaseTokenProvider(FirebaseMessaging.getInstance())
         )
