@@ -75,9 +75,9 @@ class GroupViewModel(
 
     var circumLocation = mutableSetOf<String>()
 
-    init {
-        userInfo.postValue(getUserInfo())
-    }
+//    init {
+//        userInfo.postValue(getUserInfo())
+//    }
     fun setKeyword(keyword: String) {
         _searchKeyword.value = keyword
     }

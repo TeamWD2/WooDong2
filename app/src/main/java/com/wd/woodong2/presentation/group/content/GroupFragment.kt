@@ -128,13 +128,12 @@ class GroupFragment : Fragment() {
 
     private fun initViewModel() = with(viewModel) {
         userInfo.observe(viewLifecycleOwner){ userInfo ->
-
             binding.txtToolbarLocation.text = HomeMapActivity.extractLocationInfo(viewModel.getUserInfo()?.firstLocation.toString())
             //사용자 위치 변경시 초기 모임 설정
             _printList.value = groupList.value?.filter { item ->
                 item is GroupItem.GroupMain && item.groupLocation?.contains(userInfo?.firstLocation.toString()) == true
             }
-
+            Log.d("gg","gg")
             if((printList.value?.size ?: 0) < 5){
                 HomeMapActivity.getLocationFromAddress(
                     requireContext(),
@@ -149,7 +148,6 @@ class GroupFragment : Fragment() {
                 )
             }
         }
-
         searchKeyword.observe(viewLifecycleOwner) { keyword ->
             groupListAdapter.submitList(searchKeywordGroupItem(keyword))
         }
@@ -158,6 +156,10 @@ class GroupFragment : Fragment() {
             if(_printList.value.isNullOrEmpty().not()){
                 groupListAdapter.submitList(searchKeywordGroupItem(keyword))
             }
+        }
+
+        groupList.observe(viewLifecycleOwner){
+            userInfo.postValue(getUserInfo())
         }
 
         loadingState.observe(viewLifecycleOwner) { loadingState ->
