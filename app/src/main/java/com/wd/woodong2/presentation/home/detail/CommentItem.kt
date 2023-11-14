@@ -8,5 +8,6 @@ data class CommentItem(
     val username: String = "",
     val content: String = "",
     val timestamp: Long = System.currentTimeMillis(),
-    val location: String = ""
+    val location: String = "",
+    val userImageUrl: String = ""
 ) : Parcelable

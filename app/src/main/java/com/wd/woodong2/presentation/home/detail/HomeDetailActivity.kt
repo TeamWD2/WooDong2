@@ -110,7 +110,7 @@ class HomeDetailActivity : AppCompatActivity() {
         binding.txtDetailThumbCount.text = thumbCount.toString()
     }
     private fun setupCommentsRecyclerView() {
-        commentsAdapter = CommentListAdapter(homeItem, viewModel)
+        commentsAdapter = CommentListAdapter(homeItem, currentUser = viewModel.getUserInfo(),viewModel)
         binding.recyclerviewComment.layoutManager = NoScrollLinearLayoutManager(this)
         binding.recyclerviewComment.adapter = commentsAdapter
     }
@@ -139,17 +139,27 @@ class HomeDetailActivity : AppCompatActivity() {
     }
 
     private fun updateLikeButton(homeItem: HomeItem) {
-        val likeButtonResource = if (homeItem.isLiked) R.drawable.home_detail_like
-        else R.drawable.home_detail_unlike
+        val likeButtonResource = if (homeItem.isLiked) R.drawable.home_detail_favorite_filled
+        else R.drawable.home_list_favorite
         binding.imgHomeUnlike.setImageResource(likeButtonResource)
     }
 
     private fun displayData(homeItem: HomeItem) = with(binding) {
         txtHomeTitle.text = homeItem.title
+        imgDetailProfile.load(R.drawable.public_default_wd2_ivory)
         txtHomeDescription.text = homeItem.description
         txtHomeTag.text = homeItem.tag
-        imgHomeThumnail.load(homeItem.thumbnail) {
-            crossfade(true)
+        if (homeItem.thumbnail.isNullOrEmpty()) {
+            // 이미지 URL이 없는 경우, 이미지 뷰를 숨깁니다.
+            imgHomeThumnail.visibility = View.GONE
+            thumbnailCradview.visibility = View.GONE
+        } else {
+            // 이미지 URL이 있는 경우, 이미지 뷰를 보이게 하고 이미지를 로드합니다.
+            imgHomeThumnail.visibility = View.VISIBLE
+            thumbnailCradview.visibility = View.VISIBLE
+            imgHomeThumnail.load(homeItem.thumbnail) {
+                crossfade(true)
+            }
         }
         txtHomeTimestamp.text = formatTimestamp(homeItem.timeStamp)
         txtCommentCount.text = homeItem.chatCount.toString()

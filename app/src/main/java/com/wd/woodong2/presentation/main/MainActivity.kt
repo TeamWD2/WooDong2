@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -81,6 +82,13 @@ class MainActivity : AppCompatActivity() {
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
         checkPermissions()
+
+        val onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                showExitConfirmationDialog()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     private fun checkPermissions() {
@@ -131,4 +139,17 @@ class MainActivity : AppCompatActivity() {
             show()
         }
     }
+
+    private fun showExitConfirmationDialog() {
+        AlertDialog.Builder(this).apply {
+            setTitle(getString(R.string.exit_confirmation_title))
+            setMessage(getString(R.string.exit_confirmation_message))
+            setPositiveButton(getString(R.string.exit_confirmation_positive_button)) { _, _ ->
+                finish() // 앱 종료
+            }
+            setNegativeButton(getString(R.string.exit_confirmation_negative_button), null)
+            show()
+        }
+    }
+
 }
