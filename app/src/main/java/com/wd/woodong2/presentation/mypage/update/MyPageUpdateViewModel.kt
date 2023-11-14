@@ -32,10 +32,11 @@ class MyPageUpdateViewModel(
 ): ViewModel(
 )  {
     companion object {
+        private val TAG = "MyPageUpdateViewModel"
+
         const val nicknamePattern = "^[a-zA-Z0-9가-힣_]+$"
         const val passwordPattern =
             "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{8,16}$"
-
     }
 
     private val _isNicknameDuplication: MutableLiveData<Boolean> = MutableLiveData()
@@ -94,7 +95,7 @@ class MyPageUpdateViewModel(
             _isValidImg.value = true
             _setResult.value = true
         }.onFailure {
-            Log.e(SignUpViewModel.TAG, it.message.toString())
+            Log.e(TAG, it.message.toString())
             _isValidImg.value = false
         }
     }

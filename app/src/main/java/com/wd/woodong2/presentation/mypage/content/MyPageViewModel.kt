@@ -38,6 +38,10 @@ class MyPageViewModel(
 ) : ViewModel(
 
 ) {
+    companion object {
+        private val TAG = "MyPageViewModel"
+    }
+
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
 
@@ -67,10 +71,10 @@ class MyPageViewModel(
                     )
 
                 userInfo.postValue(userItem)
-                Log.d("homeItem", userItem.toString())
+                Log.d(TAG, userItem.toString())
             }
         }.onFailure {
-            Log.e("homeItem", it.message.toString())
+            Log.e(TAG, it.message.toString())
         }
     }
 

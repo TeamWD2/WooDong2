@@ -71,7 +71,6 @@ class MyPageGroupViewModel(
             _loadingState.value = false
         }.onFailure {
             _loadingState.value = false
-            Log.e("Item", "비어있음")
         }
     }
 
@@ -222,7 +221,7 @@ class MyPageGroupViewModel(
                 userInfo.postValue(userItem)
             }
         }.onFailure {
-            Log.e("homeItem", it.message.toString())
+            Log.e(TAG, it.message.toString())
         }
     }
 

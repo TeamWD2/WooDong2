@@ -31,7 +31,11 @@ import kotlinx.coroutines.launch
 class MyPageWrittenViewModel (
     private val prefGetUserItem: UserPrefGetItemUseCase,
     private val userItem: UserGetItemUseCase,
-) : ViewModel(){
+) : ViewModel() {
+    companion object {
+        private val TAG = "MyPageWrittenViewModel"
+    }
+
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
 
@@ -62,7 +66,7 @@ class MyPageWrittenViewModel (
                 _loadingState.value = false
             }
         }.onFailure {
-            Log.e(ChatDetailViewModel.TAG, it.message.toString())
+            Log.e(TAG, it.message.toString())
             _loadingState.value = false
         }
     }

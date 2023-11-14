@@ -4,9 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsetsController
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -126,7 +129,8 @@ class GroupDetailActivity : AppCompatActivity() {
                 binding.includeLayoutCoordinator.materialToolbar.post {
                     binding.includeLayoutCoordinator.materialToolbar.title =
                         if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
-                            detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.groupName
+                            detailItem?.filterIsInstance<GroupItem.GroupMain>()
+                                ?.firstOrNull()?.groupName
                         } else {
                             ""
                         }
@@ -142,13 +146,16 @@ class GroupDetailActivity : AppCompatActivity() {
         }
 
         isJoinGroup.observe(this@GroupDetailActivity) { isJoinGroup ->
-            groupDetailContentType = if(isJoinGroup) GroupDetailContentType.WRITE_BOARD else GroupDetailContentType.JOIN_GROUP
+            groupDetailContentType =
+                if (isJoinGroup) GroupDetailContentType.WRITE_BOARD else GroupDetailContentType.JOIN_GROUP
 
-            binding.btnAddInfo.text = when (groupDetailContentType) {
-                GroupDetailContentType.WRITE_BOARD -> getString(R.string.group_detail_btn_write_board)
-                GroupDetailContentType.JOIN_GROUP -> getString(R.string.group_detail_btn_join_group)
-            }
-            binding.btnAddInfo.setOnClickListener {
+            binding.btnAddInfo.setBtnText(
+                when (groupDetailContentType) {
+                    GroupDetailContentType.WRITE_BOARD -> getString(R.string.group_detail_btn_write_board)
+                    GroupDetailContentType.JOIN_GROUP -> getString(R.string.group_detail_btn_join_group)
+                }
+            )
+            binding.btnAddInfo.setBtnOnClickListener {
                 when (groupDetailContentType) {
                     GroupDetailContentType.WRITE_BOARD -> startActivity(
                         GroupDetailBoardAddActivity.newIntent(
@@ -160,9 +167,9 @@ class GroupDetailActivity : AppCompatActivity() {
 
                     GroupDetailContentType.JOIN_GROUP -> { //모임 가입하기 버튼 클릭
                         // 1. 모임 가입 제한 인원 확인
-                        if(viewModel.isJoinPossibleMemberLimit()) {
+                        if (viewModel.isJoinPossibleMemberLimit()) {
                             // 2. 비밀번호 활성화 여부 확인
-                            if(viewModel.isExistPassword()) { //비밀번호가 있는 경우
+                            if (viewModel.isExistPassword()) { //비밀번호가 있는 경우
                                 showDialogEnterPw()
                             } else { //비밀번호가 없는 경우
                                 showDialogJoinGroup()
@@ -184,7 +191,7 @@ class GroupDetailActivity : AppCompatActivity() {
         isSuccessJoinGroup.observe(this@GroupDetailActivity) { isSuccessJoinGroup ->
             Toast.makeText(
                 this@GroupDetailActivity,
-                if(isSuccessJoinGroup) R.string.group_detail_toast_join_group_success else R.string.group_detail_toast_join_group_fail,
+                if (isSuccessJoinGroup) R.string.group_detail_toast_join_group_success else R.string.group_detail_toast_join_group_fail,
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -205,11 +212,33 @@ class GroupDetailActivity : AppCompatActivity() {
         }
         container.addView(edtInput)
 
+        edtInput.imeOptions = EditorInfo.IME_ACTION_DONE
+        edtInput.setRawInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
+
+        edtInput.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) { //PositiveBtn 눌렀을 때와 동일한 동작
+                if (viewModel.checkPassword(edtInput.text.toString())) { //비밀번호가 일치하는 경우
+                    showDialogJoinGroup()
+                } else {
+                    Toast.makeText(
+                        this@GroupDetailActivity,
+                        R.string.group_detail_toast_incorrect_password,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(edtInput.windowToken, 0)
+                true // 이벤트 소비됨을 의미
+            } else {
+                false // 이벤트가 아직 처리되지 않았음을 의미
+            }
+        }
+
         AlertDialog.Builder(this@GroupDetailActivity).apply {
             setTitle(R.string.group_detail_dialog_title_enter_pw)
             setView(container)
             setPositiveButton(R.string.group_detail_dialog_ok) { _, _ ->
-                if(viewModel.checkPassword(edtInput.text.toString())) { //비밀번호가 일치하는 경우
+                if (viewModel.checkPassword(edtInput.text.toString())) { //비밀번호가 일치하는 경우
                     showDialogJoinGroup()
                 } else {
                     Toast.makeText(
@@ -240,15 +269,23 @@ class GroupDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun initClickItem(detailItem: List<GroupItem>?) = with(binding.includeLayoutCoordinator) {
-        imgBackground.load(detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.backgroundImage) {
-            error(R.drawable.public_default_wd2_ivory)
+    private fun initClickItem(detailItem: List<GroupItem>?) =
+        with(binding.includeLayoutCoordinator) {
+            imgBackground.load(
+                detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.backgroundImage
+            ) {
+                error(R.drawable.public_default_wd2_ivory)
+            }
+            imgMain.load(
+                detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.mainImage
+            ) {
+                error(R.drawable.public_default_wd2_ivory)
+            }
+            txtTitle.text =
+                detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.groupName
+            txtMemberCount.text = detailItem?.filterIsInstance<GroupItem.GroupMember>()
+                ?.firstOrNull()?.memberList?.size?.toString() ?: "1"
+            txtBoardCount.text = detailItem?.filterIsInstance<GroupItem.GroupBoard>()
+                ?.firstOrNull()?.boardList?.size?.toString() ?: "0"
         }
-        imgMain.load(detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.mainImage) {
-            error(R.drawable.public_default_wd2_ivory)
-        }
-        txtTitle.text = detailItem?.filterIsInstance<GroupItem.GroupMain>()?.firstOrNull()?.groupName
-        txtMemberCount.text = detailItem?.filterIsInstance<GroupItem.GroupMember>()?.firstOrNull()?.memberList?.size?.toString() ?: "1"
-        txtBoardCount.text = detailItem?.filterIsInstance<GroupItem.GroupBoard>()?.firstOrNull()?.boardList?.size?.toString() ?: "0"
-    }
 }

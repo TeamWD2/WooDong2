@@ -41,6 +41,9 @@ class ChatViewModel(
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
+    private val _isEmptyList: MutableLiveData<Boolean> = MutableLiveData()
+    val isEmptyList: LiveData<Boolean> get() = _isEmptyList
+
     // User test
     var user: UserItem
 
@@ -95,12 +98,14 @@ class ChatViewModel(
                 )
 
                 getChatItemUseCase(user.chatIds.orEmpty()).collect { items ->
-                    _chatList.postValue(readChatItems(items).toMutableList())
+                    val chatItems = readChatItems(items)
+                    _isEmptyList.value = chatItems.isEmpty()
+                    _chatList.postValue(chatItems.toMutableList())
                     _isLoading.value = false
                 }
             }
         }.onFailure {
-            Log.e("danny", it.message.toString())
+            Log.e(TAG, it.message.toString())
             _isLoading.value = false
         }
     }
@@ -132,7 +137,7 @@ class ChatViewModel(
                 _isLoading.value = false
             }
         }.onFailure {
-            Log.e("danny", it.message.toString())
+            Log.e(TAG, it.message.toString())
             _isLoading.value = false
         }
     }

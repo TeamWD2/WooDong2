@@ -244,18 +244,14 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.wd.woodong2.presentation.customview.CustomRegularButton
             android:id="@+id/btn_summit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/public_border_btn"
-            android:padding="@dimen/wd2_box_padding"
-            android:text="@string/signup"
-            android:textColor="@color/white"
-            android:textSize="@dimen/wd2_main_title"
-            android:textStyle="bold"
+            android:layout_marginVertical="@dimen/wd2_box_padding"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="parent" />
+            app:layout_constraintStart_toEndOf="parent"
+            app:btn_text="@string/signup" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

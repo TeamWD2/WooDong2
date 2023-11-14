@@ -72,13 +72,11 @@ class MyPageFragment : Fragment() {
                             receivedNameData.toString(),
                             receivedProfileData.toString()
                         )
-                        Log.d("mypage2", receivedNameData.toString())
                         viewModel.userInfo.value = viewModel.editPrefUserInfo(
                             receivedNameData.toString(),
                             receivedProfileData.toString(),
                             viewModel.userInfo.value?.firstLocation,
                             viewModel.userInfo.value?.secondLocation)
-                        Log.d("check",viewModel.userInfo.value?.name.toString())
                         Glide.with(requireContext())
                             .load(Uri.parse(receivedProfileData))
                             .error(R.drawable.public_default_wd2_ivory)
@@ -91,13 +89,11 @@ class MyPageFragment : Fragment() {
                             receivedNameData.toString(),
                             viewModel.userInfo.value?.imgProfile.toString()
                         )
-                        Log.d("mypage2", receivedNameData.toString())
                         viewModel.userInfo.value = viewModel.editPrefUserInfo(
                             receivedNameData.toString(),
                             viewModel.userInfo.value?.imgProfile.toString(),
                             viewModel.userInfo.value?.firstLocation,
                             viewModel.userInfo.value?.secondLocation)
-                        Log.d("check",viewModel.userInfo.value?.name.toString())
                     }
 
                     else if(receivedProfileData.isNullOrEmpty().not()){
@@ -105,13 +101,11 @@ class MyPageFragment : Fragment() {
                             viewModel.userInfo.value?.name.toString(),
                             receivedProfileData.toString()
                         )
-                        Log.d("mypage2", receivedNameData.toString())
                         viewModel.userInfo.value = viewModel.editPrefUserInfo(
                             viewModel.userInfo.value?.name.toString(),
                             receivedProfileData.toString(),
                             viewModel.userInfo.value?.firstLocation,
                             viewModel.userInfo.value?.secondLocation)
-                        Log.d("check",viewModel.userInfo.value?.name.toString())
                         Glide.with(requireContext())
                             .load(Uri.parse(receivedProfileData))
                             .error(R.drawable.public_default_wd2_ivory)
@@ -136,7 +130,7 @@ class MyPageFragment : Fragment() {
 
     private fun initView() = with(binding) {
         //로그아웃
-        toolbarImgLogout.setOnClickListener {
+        toolbarMyPage.setRightIcOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("로그아웃")
                 .setMessage("로그아웃 하시겠습니까?")

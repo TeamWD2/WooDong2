@@ -290,23 +290,18 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.wd.woodong2.presentation.customview.CustomRegularButton
                 android:id="@+id/my_page_update_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/wd2_box_padding"
-                android:background="@drawable/public_border_btn"
-                android:padding="@dimen/wd2_box_padding"
-                android:text="@string/my_page_update_btn"
-                android:textColor="@color/white"
-                android:textSize="@dimen/wd2_main_title"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:btn_text="@string/my_page_update_btn" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

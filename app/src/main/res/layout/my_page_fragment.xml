@@ -7,33 +7,18 @@
     android:layout_height="match_parent"
     android:background="@color/ivory_yellow_background">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.wd.woodong2.presentation.customview.CustomToolbar
         android:id="@+id/toolbar_my_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/egg_yellow_toolbar"
-        android:minHeight="@dimen/wd2_toolbar_min_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/toolbar_tv_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/my_page_txt_title"
-            android:textSize="@dimen/wd2_sub_title"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/toolbar_img_logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/public_ic_logout" />
-    </androidx.appcompat.widget.Toolbar>
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbar_img_ic_right="@drawable/public_ic_logout"
+        app:toolbar_txt_title="@string/my_page_txt_title"
+        app:toolbar_visible_constraint_search="false"
+        app:toolbar_visible_ic_down="false"
+        app:toolbar_visible_ic_right="true" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/nested_scroll_view"
