@@ -82,7 +82,9 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
 
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position).isMyMessage) {
+        val currentItem = getItem(position)
+
+        return when (currentItem.isMyMessage) {
             true -> MessageViewType.MY_MESSAGE.ordinal
             false -> MessageViewType.OPPONENT_MESSAGE.ordinal
         }
@@ -105,7 +107,6 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
             return newMinute != oldMinute
         }
 
-
         override fun onBind(
             currentItem: MessageItem,
             previousItem: MessageItem?,
@@ -113,6 +114,27 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
         ) = with(binding) {
             txtName.text = currentItem.nickname
             txtChat.text = currentItem.content
+
+            // 하루가 지났는지 확인
+            if (currentItem.dateToShow != null) {
+                txtDate.visibility = View.VISIBLE
+                txtDate.text = currentItem.dateToShow
+
+                // txt_date가 보이는 경우, layout_opponent_chat의 상단은 txt_date의 하단에 붙습니다.
+                val params = layoutOpponentChat.layoutParams as ConstraintLayout.LayoutParams
+                params.topToBottom = R.id.txt_date
+                params.topToTop = ConstraintLayout.LayoutParams.UNSET
+                layoutOpponentChat.layoutParams = params
+            } else {
+                // 하루 이상 차이나지 않으면 날짜를 숨깁니다.
+                txtDate.visibility = View.GONE
+
+                // txt_date가 숨겨진 경우, layout_opponent_chat의 상단은 부모 뷰에 붙습니다.
+                val params = layoutOpponentChat.layoutParams as ConstraintLayout.LayoutParams
+                params.topToBottom = ConstraintLayout.LayoutParams.UNSET
+                params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+                layoutOpponentChat.layoutParams = params
+            }
 
             // TODO 변경 예정
             val dpValue = 60
@@ -125,7 +147,7 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
             val params = constraintChat.layoutParams as ViewGroup.MarginLayoutParams
 
             // 이어지는 메시지
-            if (previousItem != null && previousItem.senderId == currentItem.senderId) {
+            if (previousItem != null && previousItem.senderId == currentItem.senderId && currentItem.dateToShow == null) {
                 // 이어지는 메시지 중 마지막 메시지
                 if (nextItem == null || currentItem.senderId != nextItem.senderId) {
                     val format = SimpleDateFormat("a h:mm", Locale.KOREA)
@@ -205,6 +227,28 @@ class ChatDetailListAdapter : ListAdapter<MessageItem, ChatDetailListAdapter.Vie
             params.startToStart = ConstraintLayout.LayoutParams.UNSET
             txtChat.layoutParams = params
             txtChat.text = currentItem.content
+
+            // 하루가 지났는지 확인
+            if (currentItem.dateToShow != null) {
+                txtDate.visibility = View.VISIBLE
+                txtDate.text = currentItem.dateToShow
+
+                // txt_date가 보이는 경우, constraint_chat의 상단은 txt_date의 하단에 붙습니다.
+                val params = constraintChat.layoutParams as ConstraintLayout.LayoutParams
+                params.topToBottom = R.id.txt_date
+                params.topToTop = ConstraintLayout.LayoutParams.UNSET
+                constraintChat.layoutParams = params
+            } else {
+                // 하루 이상 차이나지 않으면 날짜를 숨깁니다.
+                txtDate.visibility = View.GONE
+
+                // txt_date가 숨겨진 경우, constraint_chat의 상단은 부모 뷰에 붙습니다.
+                val params = constraintChat.layoutParams as ConstraintLayout.LayoutParams
+                params.topToBottom = ConstraintLayout.LayoutParams.UNSET
+                params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+                constraintChat.layoutParams = params
+            }
+
 
             // 이어지는 메시지
             if (previousItem != null && previousItem.senderId == currentItem.senderId) {
