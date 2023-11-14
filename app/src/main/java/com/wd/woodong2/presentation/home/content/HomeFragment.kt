@@ -89,8 +89,9 @@ class HomeFragment : Fragment() {
                         viewModel.userInfo.value?.name,
                         viewModel.userInfo.value?.imgProfile,
                         receivedDataFirstLocation.toString(),
-                        receivedDataSecondLocation.toString())
-                    Log.d("check",viewModel.userInfo.value?.firstLocation.toString())
+
+                        receivedDataSecondLocation.toString()
+                    )
                 } else {
 
                 }
@@ -209,19 +210,23 @@ class HomeFragment : Fragment() {
                     list.value?.filter { it.location == userInfo?.firstLocation } ?: emptyList()
                 _printList.value = filteredList
 
-                // 구, 군
-                if (printList.value?.size!! < 10) {
-                    HomeMapActivity.getLocationFromAddress(
-                        requireContext(),
-                        userInfo?.firstLocation.toString()
-                    )
-                    circumLocationItemSearch(
-                        HomeMapActivity.latitude,
-                        HomeMapActivity.longitude,
-                        20000,
-                        userInfo?.firstLocation.toString(),
-                        userInfo?.firstLocation.toString()
-                    )
+
+
+                printList.value?.let { list ->
+                    if (list.size < 10) {
+                        HomeMapActivity.getLocationFromAddress(
+                            requireContext(),
+                            userInfo?.firstLocation.toString()
+                        )
+                        circumLocationItemSearch(
+                            HomeMapActivity.latitude,
+                            HomeMapActivity.longitude,
+                            20000,
+                            userInfo?.firstLocation.toString(),
+                            userInfo?.firstLocation.toString()
+                        )
+                    }
+
                 }
 
 
