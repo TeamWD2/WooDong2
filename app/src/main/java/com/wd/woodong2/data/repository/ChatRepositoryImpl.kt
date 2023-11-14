@@ -17,6 +17,7 @@ import com.wd.woodong2.domain.model.MessageItemsEntity
 import com.wd.woodong2.domain.model.toEntity
 import com.wd.woodong2.domain.repository.ChatRepository
 import com.wd.woodong2.data.model.GCMRequest
+import com.wd.woodong2.data.model.GroupItemsResponse
 import com.wd.woodong2.domain.model.MessageEntity
 import com.wd.woodong2.presentation.group.detail.GroupDetailChatItem
 import com.wd.woodong2.retrofit.GCMRetrofitClient
@@ -71,7 +72,8 @@ class ChatRepositoryImpl(
                         val entity = ChatItemsResponse(filteredChatResponses).toEntity()
                         trySend(entity)
                     } else {
-                        throw RuntimeException("snapshot is not exists")
+                        //snapshot이 존재하지 않는 경우
+                        trySend(ChatItemsResponse(emptyList()).toEntity())
                     }
                 }
 
