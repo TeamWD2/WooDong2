@@ -1,6 +1,7 @@
 package com.wd.woodong2.presentation.home.detail
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -54,10 +55,13 @@ class HomeDetailViewModel(
     }
 
     fun postComment(homeItem: HomeItem, commentContent: String): HomeItem {
+        val currentUser = getUserInfo()
+        Log.d("HomeDetailViewModel", "imgProfile: ${currentUser?.imgProfile}")
         val comment = CommentItem(
-            username = homeItem.name,
+            username = currentUser?.name ?: "알 수 없음",
             content = commentContent,
-            location = HomeMapActivity.extractLocationInfo(homeItem.location))
+            location = HomeMapActivity.extractLocationInfo(homeItem.location),
+            userImageUrl = currentUser?.imgProfile ?: "")
         homeItem.comments.add(comment)
         itemRef.setValue(homeItem)
         _commentsLiveData.value = homeItem.comments

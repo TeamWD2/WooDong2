@@ -6,6 +6,10 @@
     <string name="bottom_menu_my_page">우동이</string>
     <string name="toolbar_menu_search">검색</string>
     <string name="toolbar_menu_notice">알림</string>
+    <string name="exit_confirmation_title">앱 종료</string>
+    <string name="exit_confirmation_message">앱을 종료하시겠습니까?</string>
+    <string name="exit_confirmation_positive_button">예</string>
+    <string name="exit_confirmation_negative_button">아니오</string>
 
     <string name="public_toast_permission_grant">권한 요청을 허용하셨습니다.</string>
     <string name="public_toast_permission_deny">권한 요청을 거부하셨습니다.</string>

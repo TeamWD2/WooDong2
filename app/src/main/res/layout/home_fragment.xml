@@ -112,7 +112,6 @@
                 <com.google.android.material.chip.ChipGroup
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:checkedChip="@+id/home_tag1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +123,7 @@
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="전체"
+                        android:text="우리동네"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
                         app:ensureMinTouchTargetSize="false" />

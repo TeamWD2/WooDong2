@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeDetailListItemBinding
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.content.HomeItem
@@ -47,7 +49,13 @@ class CommentListAdapter(
         holder.binding.txtCommentLocation.text = comment.location
         holder.binding.txtCommentTimestamp.text = formatTimestamp(comment.timestamp)
 
-        if(currentUser?.name == comment.username) {
+        holder.binding.imgProfile.load(comment.userImageUrl) {
+            error(R.drawable.public_default_wd2_ivory)
+            crossfade(true)
+        }
+
+
+        if (currentUser?.name == comment.username) {
             holder.binding.txtCommnetDelete.visibility = View.VISIBLE
             holder.binding.txtCommnetDelete.setOnClickListener {
 
@@ -60,7 +68,9 @@ class CommentListAdapter(
                     .setNegativeButton("취소", null)
                     .show()
             }
-        } else {holder.binding.txtCommnetDelete.visibility = View.GONE}
+        } else {
+            holder.binding.txtCommnetDelete.visibility = View.GONE
+        }
     }
 
     fun updateComments(newComments: List<CommentItem>) {

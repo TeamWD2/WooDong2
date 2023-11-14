@@ -139,13 +139,14 @@ class HomeDetailActivity : AppCompatActivity() {
     }
 
     private fun updateLikeButton(homeItem: HomeItem) {
-        val likeButtonResource = if (homeItem.isLiked) R.drawable.home_detail_like
-        else R.drawable.home_detail_unlike
+        val likeButtonResource = if (homeItem.isLiked) R.drawable.home_detail_favorite_filled
+        else R.drawable.home_list_favorite
         binding.imgHomeUnlike.setImageResource(likeButtonResource)
     }
 
     private fun displayData(homeItem: HomeItem) = with(binding) {
         txtHomeTitle.text = homeItem.title
+        imgDetailProfile.load(R.drawable.public_default_wd2_ivory)
         txtHomeDescription.text = homeItem.description
         txtHomeTag.text = homeItem.tag
         if (homeItem.thumbnail.isNullOrEmpty()) {
