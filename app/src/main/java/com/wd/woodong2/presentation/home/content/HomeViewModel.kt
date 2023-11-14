@@ -75,14 +75,14 @@ class HomeViewModel(
     //Home에 출력할 list 설정하기
     val _printList: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val printList: LiveData<List<HomeItem>> get() = _printList
-
-
+    
     //userItem
     var userId = getUserInfo()?.id ?: "UserId"
-
+    var currentUser = getUserInfo()?.name
     var userInfo: MutableLiveData<UserItem?> = MutableLiveData()
 
     init {
+        Log.d("HomeViewModel", "Current User ID: $userId")
         loadDataFromFirebase()
         getUserItem()
     }
@@ -294,12 +294,14 @@ class HomeViewModel(
     }
 
     fun tagFilterList(tag: String) {
+        val currentUserLocation = userInfo.value?.firstLocation ?: return
+
         val filteredList = if (tag.equals("All", ignoreCase = true)) {
-            // "전체" 태그가 선택된 경우 모든 아이템을 표시
-            list.value
+            // "전체" 태그가 선택된 경우, 현재 사용자의 지역에 해당하는 모든 아이템을 표시
+            list.value?.filter { it.location == currentUserLocation }
         } else {
             // 선택한 태그를 기반으로 아이템 필터링
-            list.value?.filter { it.tag.equals(tag, ignoreCase = true) }
+            list.value?.filter { it.tag.equals(tag, ignoreCase = true) && it.location == currentUserLocation }
         }
         _filteredItems.value = filteredList ?: emptyList()
     }
@@ -369,7 +371,9 @@ class HomeViewModel(
             secondLocation = it.secondLocation ?: "unknown"
         )
     }
-
+    fun resetToInitialList() {
+        _printList.value = _list.value
+    }
     fun updateUserLocation(
         firstLocation: String,
         secondLocation: String,
