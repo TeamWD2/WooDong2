@@ -1,19 +1,25 @@
 package com.wd.woodong2.presentation.group.content
 
+import android.app.Activity
+import android.content.Intent
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.wd.woodong2.databinding.GroupFragmentBinding
 import com.wd.woodong2.presentation.group.add.GroupAddActivity
 import com.wd.woodong2.presentation.group.detail.GroupDetailActivity
+import com.wd.woodong2.presentation.home.map.HomeMapActivity
 
 class GroupFragment : Fragment() {
     companion object {
@@ -37,10 +43,40 @@ class GroupFragment : Fragment() {
 
     private var keyword = ""
 
+    private lateinit var homeMapLauncher: ActivityResultLauncher<Intent>
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = GroupFragmentBinding.inflate(inflater, container, false)
+
+        homeMapLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val receivedDataFirstLocation =
+                        result.data!!.getStringExtra(HomeMapActivity.EXTRA_FIRST_LOCATION)
+                    val receivedDataSecondLocation =
+                        result.data!!.getStringExtra(HomeMapActivity.EXTRA_SECOND_LOCATION)
+
+                    binding.txtToolbarLocation.text =
+                        HomeMapActivity.extractLocationInfo(HomeMapActivity.extractLocationInfo(receivedDataFirstLocation.toString()))
+
+                    // firebase에 있는 값을 변경
+                    viewModel.updateUserLocation(
+                        receivedDataFirstLocation.toString(),
+                        receivedDataSecondLocation.toString()
+                    )
+                    //SharedPreference에 저장
+                    viewModel.userInfo.value = viewModel.editPrefUserInfo(
+                        viewModel.getUserInfo()?.name.toString(),
+                        viewModel.getUserInfo()?.imgProfile.toString(),
+                        receivedDataFirstLocation.toString(),
+                        receivedDataSecondLocation.toString())
+                } else {
+
+                }
+            }
+
         return binding.root
     }
 
@@ -52,6 +88,16 @@ class GroupFragment : Fragment() {
 
     private fun initView() = with(binding) {
         // TODO("toolbar 설정")
+
+        txtToolbarLocation.text = HomeMapActivity.extractLocationInfo(viewModel.getUserInfo()?.firstLocation.toString())
+
+        linearToolbarLocation.setOnClickListener{
+            homeMapLauncher.launch(
+                HomeMapActivity.newIntent(
+                    requireContext(), viewModel.getUserInfo()?.firstLocation.toString(), viewModel.getUserInfo()?.secondLocation.toString()
+                )
+            )
+        }
 
         // 검색 아이콘 클릭 리스너
         imgToolbarSearch.setOnClickListener {
@@ -81,12 +127,39 @@ class GroupFragment : Fragment() {
     }
 
     private fun initViewModel() = with(viewModel) {
+        userInfo.observe(viewLifecycleOwner){ userInfo ->
+            binding.txtToolbarLocation.text = HomeMapActivity.extractLocationInfo(viewModel.getUserInfo()?.firstLocation.toString())
+            //사용자 위치 변경시 초기 모임 설정
+            _printList.value = groupList.value?.filter { item ->
+                item is GroupItem.GroupMain && item.groupLocation?.contains(userInfo?.firstLocation.toString()) == true
+            }
+            Log.d("gg","gg")
+            if((printList.value?.size ?: 0) < 5){
+                HomeMapActivity.getLocationFromAddress(
+                    requireContext(),
+                    userInfo?.firstLocation.toString()
+                )
+                circumLocationItemSearch(
+                    HomeMapActivity.latitude,
+                    HomeMapActivity.longitude,
+                    20000,
+                    userInfo?.firstLocation.toString(),
+                    userInfo?.firstLocation.toString()
+                )
+            }
+        }
         searchKeyword.observe(viewLifecycleOwner) { keyword ->
             groupListAdapter.submitList(searchKeywordGroupItem(keyword))
         }
 
-        groupList.observe(viewLifecycleOwner) {
-            groupListAdapter.submitList(searchKeywordGroupItem(keyword))
+        printList.observe(viewLifecycleOwner) {
+            if(_printList.value.isNullOrEmpty().not()){
+                groupListAdapter.submitList(searchKeywordGroupItem(keyword))
+            }
+        }
+
+        groupList.observe(viewLifecycleOwner){
+            userInfo.postValue(getUserInfo())
         }
 
         loadingState.observe(viewLifecycleOwner) { loadingState ->
