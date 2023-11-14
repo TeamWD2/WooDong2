@@ -8,5 +8,6 @@ data class GroupUserInfoItem (
     val userId: String,
     val userProfile: String?,
     val userName: String,
-    val userLocation: String
+    val userFirstLocation: String,
+    val userSecondLocation: String,
 ) : Parcelable

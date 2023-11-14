@@ -96,7 +96,7 @@ class GroupDetailBoardAddViewModel(
                         userId = userInfo.userId,
                         profile = userInfo.userProfile,
                         name = userInfo.userName,
-                        location = userInfo.userLocation,
+                        location = userInfo.userFirstLocation,
                         content = edtContent,
                         images = uriImageList
                     )
