@@ -317,7 +317,7 @@ class GroupViewModel(
 
             }
 
-            if ((printList.value?.size ?: 0) < 5) {
+            if ((printList.value?.size ?: 0) < 3) {
                 val circumLocationItems = createCircumLocationItems(
                     Map = circumLocationItem(
                         y,
@@ -348,7 +348,7 @@ class GroupViewModel(
                         item is GroupItem.GroupMain && circumLocation.contains(item.groupLocation)
                     }
                 }
-                if ((printList.value?.size ?: 0) < 5) {
+                if ((printList.value?.size ?: 0) < 3) {
                     val circumLocationItems = createCircumLocationItems(
                         Map = circumLocationItem(
                             y,
@@ -380,7 +380,7 @@ class GroupViewModel(
                                 item is GroupItem.GroupMain && circumLocation.contains(item.groupLocation)
                             }
                         }
-                        if ((printList.value?.size ?: 0) < 5) {
+                        if ((printList.value?.size ?: 0) < 3) {
                             val existingList = _printList.value.orEmpty()
                             val filteredList = groupList.value?.filter { item ->
                                 item is GroupItem.GroupMain && !circumLocation.contains(item.groupLocation)
