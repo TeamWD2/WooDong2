@@ -113,13 +113,13 @@ class GroupAddImageFragment: Fragment() {
         }
 
         btnAddGroup.setBtnOnClickListener {
-            btnAddGroup.setBtnClickable(false) //같은 모임 중복 생성 방지
             sharedViewModel.setGroupAddItem()
         }
     }
 
     private fun initViewModel() = with(sharedViewModel) {
         isLoadingState.observe(viewLifecycleOwner) { isLoadingState ->
+            binding.btnAddGroup.setBtnClickable(!isLoadingState) //같은 모임 중복 생성 방지
             binding.progressBar.isVisible = isLoadingState
             if(isLoadingState) {
                 Toast.makeText(requireContext(), R.string.group_add_toast_create_group_loading, Toast.LENGTH_SHORT).show()
