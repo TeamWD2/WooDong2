@@ -18,7 +18,7 @@ class ImageStorageRepositoryImpl (
     }
 
     override suspend fun getImageUri(galleryUri: Uri): Flow<Uri> = callbackFlow {
-        val storageRef = storageReference.child("\"images/${UUID.randomUUID()}")
+        val storageRef = storageReference.child("images/${UUID.randomUUID()}")
         storageRef.putFile(galleryUri).addOnSuccessListener {
             storageRef.downloadUrl.addOnSuccessListener { imageUri ->
                 trySend(imageUri)
