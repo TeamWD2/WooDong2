@@ -238,7 +238,7 @@ class GroupAddSharedViewModelFactory(
         val chatSetRepository =
             ChatRepositoryImpl(databaseReference.getReference("chat_list").child("group"), null)
         val userUpdateRepository =
-            UserRepositoryImpl(databaseReference.getReference("users"), null, null)
+            UserRepositoryImpl(databaseReference.getReference("user_list"), null, null)
         if (modelClass.isAssignableFrom(GroupAddSharedViewModel::class.java)) {
             return GroupAddSharedViewModel(
                 UserPrefGetItemUseCase(userPrefRepository),

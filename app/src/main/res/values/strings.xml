@@ -158,9 +158,7 @@
     <string name="my_page_update_et_user_password_check_edit">변경할 비밀번호를 다시 입력해주세요.</string>
     <string name="my_page_update_btn">수정하기</string>
 
-    <string name="gcm_api">AAAAkLePWrQ:APA91bEkLe8vhgdQ-ibx2g1jb-crx6v1ky_0MDFMF-fPc7haPJvj_BAila-AUmGlQl2hFUXZQm7_hp5sw-_-9ki4LtXav4LO50_EskbyYHolNNpV_0Q3I_WDgLaV4WmRJNK4JXznhB9E</string>
-
-    <string name="test_client_token">cqy3qh3SQA26GzsUXZz7Kv:APA91bHAhNGwyN1rf4PSJ4rSe5kWySQh-pHy_6Mr5RLKE9Gl5kZyKAoMQvHYYp_bC5L8U-EOLN17TB6DbEKYQhZ3rfJZt2c3Z9nBQ8ctNVo01prjvaWnjiPzbN_V9fdph6FurVouZvwQ</string>
+    <string name="gcm_api">AAAAKOS1ziI:APA91bHHZ0VluJf9glcNjnwboJAmJHZLNaR1cOlYtFgcTD0dv7fhK8nEmsm1WcAj3lq8LoSUyD6LVoku1b6bsKCdhVjcioKLJAsdtuQVS-iY2rKV8Hdf-6RpA1x-HqlsYTvKKTlD_Jm3</string>
 
     <string name="wd2">우동이</string>
 
