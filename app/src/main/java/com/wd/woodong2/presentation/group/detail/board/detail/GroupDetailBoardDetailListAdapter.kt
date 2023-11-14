@@ -149,7 +149,7 @@ class GroupDetailBoardDetailListAdapter(
                     error(R.drawable.public_default_wd2_ivory)
                 }
                 txtName.text = item.userName
-                txtLocation.text = item.userLocation?.split(" ")?.last()
+                txtLocation.text = findUserLocation(item.userLocation)
                 txtDate.text = item.timestamp?.let { Date(it) }
                     ?.let { SimpleDateFormat("yyyy년 MM월 dd일").format(it) }
                 txtComment.text = item.comment
@@ -158,6 +158,18 @@ class GroupDetailBoardDetailListAdapter(
                     onClickDeleteComment(bindingAdapterPosition)
                 }
             }
+        }
+
+        private fun findUserLocation(userLocation: String?): String {
+            val parts = userLocation?.split(" ")
+            parts?.let {
+                for(part in it) {
+                    if(part.endsWith("동")) {
+                        return part
+                    }
+                }
+            }
+            return ""
         }
     }
 

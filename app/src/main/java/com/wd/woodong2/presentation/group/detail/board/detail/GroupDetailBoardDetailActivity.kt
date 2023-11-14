@@ -128,7 +128,7 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
             error(R.drawable.public_default_wd2_ivory)
         }
         txtName.text = groupBoardItem?.name
-        txtLocation.text = groupBoardItem?.location?.split(" ")?.last()
+        txtLocation.text = findUserLocation(groupBoardItem?.location)
         txtDate.text = groupBoardItem?.timestamp?.let { Date(it) }
             ?.let { SimpleDateFormat("yyyy년 MM월 dd일").format(it) }
 
@@ -152,6 +152,18 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
                 edtWriteComment.setText("")
             }
         }
+    }
+
+    private fun findUserLocation(userLocation: String?): String {
+        val parts = userLocation?.split(" ")
+        parts?.let {
+            for(part in it) {
+                if(part.endsWith("동")) {
+                    return part
+                }
+            }
+        }
+        return ""
     }
 
     private fun initViewModel() = with(viewModel) {

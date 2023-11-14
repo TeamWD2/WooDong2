@@ -141,7 +141,7 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
         //넘겨 받은 사용자 위치 ToolBar 출력
-        toolBar.title = userInfo?.userLocation?.split(" ")?.last()
+        toolBar.title = findUserLocation(userInfo?.userLocation)
 
         toolBar.setNavigationOnClickListener {
             finish()
@@ -167,6 +167,18 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    private fun findUserLocation(userLocation: String?): String {
+        val parts = userLocation?.split(" ")
+        parts?.let {
+            for(part in it) {
+                if(part.endsWith("동")) {
+                    return part
+                }
+            }
+        }
+        return ""
     }
 
     private fun initViewModel() = with(viewModel) {

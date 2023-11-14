@@ -132,7 +132,7 @@ class GroupDetailBoardDetailViewModel(
                     userId = userInfo.userId,
                     userProfile = userInfo.userProfile,
                     userName = userInfo.userName,
-                    userLocation = userInfo.userLocation.split(" ").last(),
+                    userLocation = findUserLocation(userInfo.userLocation),
                     timestamp = System.currentTimeMillis(),
                     isWriteOwner = true,
                     comment = comment
@@ -144,6 +144,16 @@ class GroupDetailBoardDetailViewModel(
                 )
             )
         }
+    }
+
+    private fun findUserLocation(userLocation: String): String {
+        val parts = userLocation.split(" ")
+        for(part in parts) {
+            if(part.endsWith("동")) {
+                return part
+            }
+        }
+        return ""
     }
 
     /**
