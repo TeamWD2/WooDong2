@@ -137,7 +137,7 @@ class GroupViewModel(
                 secondLocation
             )
         }.onFailure {
-            Log.e("locationhv", it.message.toString())
+            Log.e(TAG, it.message.toString())
         }
     }
 

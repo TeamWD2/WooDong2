@@ -186,7 +186,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        btnSummit.setOnClickListener {
+        btnSummit.setBtnOnClickListener {
             if (signViewModel.checkAllConditions()) {
                 lifecycleScope.launch {
                     signViewModel.signUp(

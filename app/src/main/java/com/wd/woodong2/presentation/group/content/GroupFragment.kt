@@ -58,8 +58,7 @@ class GroupFragment : Fragment() {
                     val receivedDataSecondLocation =
                         result.data!!.getStringExtra(HomeMapActivity.EXTRA_SECOND_LOCATION)
 
-                    binding.txtToolbarLocation.text =
-                        HomeMapActivity.extractLocationInfo(HomeMapActivity.extractLocationInfo(receivedDataFirstLocation.toString()))
+                    binding.toolbarGroup.setToolbarTitleText(HomeMapActivity.extractLocationInfo(HomeMapActivity.extractLocationInfo(receivedDataFirstLocation.toString())))
 
                     // firebase에 있는 값을 변경
                     viewModel.updateUserLocation(
@@ -87,11 +86,9 @@ class GroupFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
-        // TODO("toolbar 설정")
+        toolbarGroup.setToolbarTitleText(HomeMapActivity.extractLocationInfo(viewModel.getUserInfo()?.firstLocation.toString()))
 
-        txtToolbarLocation.text = HomeMapActivity.extractLocationInfo(viewModel.getUserInfo()?.firstLocation.toString())
-
-        linearToolbarLocation.setOnClickListener{
+        toolbarGroup.setLocationOnClickListener {
             homeMapLauncher.launch(
                 HomeMapActivity.newIntent(
                     requireContext(), viewModel.getUserInfo()?.firstLocation.toString(), viewModel.getUserInfo()?.secondLocation.toString()
@@ -100,21 +97,21 @@ class GroupFragment : Fragment() {
         }
 
         // 검색 아이콘 클릭 리스너
-        imgToolbarSearch.setOnClickListener {
-            constraintSearch.isVisible = true
-            edtToolbarSearch.addTextChangedListener(searchTextWatcher())
-            edtToolbarSearch.requestFocus()
+        toolbarGroup.setRightIcOnClickListener {
+            toolbarGroup.setConstraintSearchVisible(true)
+            toolbarGroup.toolbarBinding.edtToolbarSearch.addTextChangedListener(searchTextWatcher())
+            toolbarGroup.setRequestFocusEditText()
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(edtToolbarSearch, InputMethodManager.SHOW_IMPLICIT)
+            imm.showSoftInput(toolbarGroup.toolbarBinding.edtToolbarSearch, InputMethodManager.SHOW_IMPLICIT)
         }
 
         // 검색창 취소 아이콘 클릭 리스너
-        imgToolbarCancel.setOnClickListener {
-            constraintSearch.isVisible = false
+        toolbarGroup.setCancelOnClickListener {
+            toolbarGroup.setConstraintSearchVisible(false)
             keyword = ""
             viewModel.setKeyword(keyword)
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(edtToolbarSearch.windowToken, 0)
+            imm.hideSoftInputFromWindow(toolbarGroup.toolbarBinding.edtToolbarSearch.windowToken, 0)
         }
 
         // Floating 버튼 클릭 리스너
@@ -128,12 +125,11 @@ class GroupFragment : Fragment() {
 
     private fun initViewModel() = with(viewModel) {
         userInfo.observe(viewLifecycleOwner){ userInfo ->
-            binding.txtToolbarLocation.text = HomeMapActivity.extractLocationInfo(viewModel.getUserInfo()?.firstLocation.toString())
+            binding.toolbarGroup.setToolbarTitleText(HomeMapActivity.extractLocationInfo(viewModel.getUserInfo()?.firstLocation.toString()))
             //사용자 위치 변경시 초기 모임 설정
             _printList.value = groupList.value?.filter { item ->
                 item is GroupItem.GroupMain && item.groupLocation?.contains(userInfo?.firstLocation.toString()) == true
             }
-            Log.d("gg","gg")
             if((printList.value?.size ?: 0) < 3){
                 HomeMapActivity.getLocationFromAddress(
                     requireContext(),
@@ -179,7 +175,7 @@ class GroupFragment : Fragment() {
         }
 
         override fun afterTextChanged(p0: Editable?) {
-            keyword = binding.edtToolbarSearch.text.toString()
+            keyword = binding.toolbarGroup.getSearchEditText()
             viewModel.setKeyword(keyword)
         }
     }

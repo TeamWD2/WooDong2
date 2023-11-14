@@ -192,7 +192,7 @@ class ChatDetailViewModel(
                 _isLoading.value = false
             }
         }.onFailure {
-            Log.e("danny", it.message.toString())
+            Log.e(TAG, it.message.toString())
             _isLoading.value = false
         }
     }
@@ -203,7 +203,7 @@ class ChatDetailViewModel(
             // Test
             sendMessageItem(uid, message, curUser?.name ?: "(알 수 없음)", curUser?.imgProfile ?: "")
         }.onFailure {
-            Log.e("danny", it.message.toString())
+            Log.e(TAG, it.message.toString())
         }
     }
 

@@ -123,19 +123,15 @@
                 android:textSize="@dimen/wd2_normal_text" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.wd.woodong2.presentation.customview.CustomRegularButton
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="15dp"
-            android:background="@drawable/public_border_btn"
-            android:padding="@dimen/wd2_box_padding"
-            android:text="@string/login"
-            android:textColor="@color/white"
-            android:textSize="@dimen/wd2_main_title"
+            android:layout_marginVertical="@dimen/wd2_box_padding"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_password" />
+            app:layout_constraintTop_toBottomOf="@+id/til_password"
+            app:btn_text="@string/login" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/checkbox_auto_login"

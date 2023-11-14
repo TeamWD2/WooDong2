@@ -143,7 +143,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     geocoder.getFromLocation(lat, lng, 2) { addresses ->
                         firstLocation = if (addresses.isNotEmpty()) {
                             val addressLine = addresses[1].getAddressLine(0)
-                            Log.d("Address", addressLine)
                             addressLine
                         } else {
                             ""
@@ -153,7 +152,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     val addresses = geocoder.getFromLocation(lat, lng, 2)
                     firstLocation = if (!addresses.isNullOrEmpty()) {
                         val addressLine = addresses[1].getAddressLine(0)
-                        Log.d("Address", addressLine)
                         addressLine
                     } else {
                         ""

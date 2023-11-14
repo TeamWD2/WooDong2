@@ -147,7 +147,7 @@ class GroupDetailHomeListAdapter(
                                 error(R.drawable.public_default_wd2_ivory)
                             }
                             memberNames[i].text = member[i].name
-                            memberLocations[i].text = member[i].location?.split(" ")?.last()
+                            memberLocations[i].text = findUserLocation(member[i].location)
                             memberComments[i].text = member[i].comment
                         }
                     }
@@ -158,6 +158,18 @@ class GroupDetailHomeListAdapter(
                     onClickMoreBtn(R.string.group_detail_tab_member_title)
                 }
             }
+        }
+
+        private fun findUserLocation(userLocation: String?): String {
+            val parts = userLocation?.split(" ")
+            parts?.let {
+                for(part in it) {
+                    if(part.endsWith("동")) {
+                        return part
+                    }
+                }
+            }
+            return ""
         }
     }
 

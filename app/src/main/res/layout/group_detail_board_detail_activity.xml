@@ -127,6 +127,7 @@
             android:background="@drawable/public_border_btn"
             android:padding="@dimen/wd2_box_padding"
             android:text="@string/group_add_board_detail_btn_write_comment"
+            android:textColor="@color/white"
             android:textSize="@dimen/wd2_normal_text"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/edt_write_comment"

@@ -8,8 +8,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsetsController
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -139,13 +141,17 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
         //넘겨 받은 사용자 위치 ToolBar 출력
-        toolBar.title = userInfo?.userFirstLocation?.split(" ")?.last()
+        toolBar.title = findUserLocation(userInfo?.userFirstLocation)
+
+        toolBar.setNavigationOnClickListener {
+            finish()
+        }
 
         recyclerviewPhoto.adapter = boardAddListAdapter
 
         addImageItem() //초기 데이터 세팅
 
-        btnAddBoard.setOnClickListener {
+        btnAddBoard.setBtnOnClickListener {
             if (edtContent.text.isNullOrBlank()) {
                 Toast.makeText(
                     this@GroupDetailBoardAddActivity,
@@ -153,7 +159,7 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                btnAddBoard.isClickable = false //같은 게시글 중복 생성 방지
+                btnAddBoard.setBtnClickable(false) //같은 게시글 중복 생성 방지
                 viewModel.setGroupBoardAlbumItem(
                     itemId,
                     userInfo,
@@ -161,6 +167,18 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    private fun findUserLocation(userLocation: String?): String {
+        val parts = userLocation?.split(" ")
+        parts?.let {
+            for(part in it) {
+                if(part.endsWith("동")) {
+                    return part
+                }
+            }
+        }
+        return ""
     }
 
     private fun initViewModel() = with(viewModel) {
@@ -239,5 +257,12 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
             isPlusBtn = false
         )
         viewModel.updateBoardImageItem(imageItem)
+    }
+
+    // 화면 터치 시 키보드 내리기
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        return super.dispatchTouchEvent(ev)
     }
 }

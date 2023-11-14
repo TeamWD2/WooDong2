@@ -72,17 +72,17 @@ class ChatFragment : Fragment() {
         }
     }
 
-    private fun initModel() = with(binding) {
-        chatViewModel.chatList.observe(viewLifecycleOwner) { itemList ->
+    private fun initModel() = with(chatViewModel) {
+        chatList.observe(viewLifecycleOwner) { itemList ->
             chatItemListAdapter.submitList(itemList.toMutableList())
-            if (itemList.isEmpty()) {
-                txtNoChat.visibility = View.VISIBLE
-            } else {
-                txtNoChat.visibility = View.INVISIBLE
-            }
         }
-        chatViewModel.isLoading.observe(viewLifecycleOwner) { loadingState ->
+
+        isLoading.observe(viewLifecycleOwner) { loadingState ->
             binding.progressBar.isVisible = loadingState
+        }
+
+        isEmptyList.observe(viewLifecycleOwner) { isEmptyList ->
+            binding.txtNoChat.isVisible = isEmptyList
         }
     }
 

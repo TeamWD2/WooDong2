@@ -56,7 +56,6 @@ class HomeDetailViewModel(
 
     fun postComment(homeItem: HomeItem, commentContent: String): HomeItem {
         val currentUser = getUserInfo()
-        Log.d("HomeDetailViewModel", "imgProfile: ${currentUser?.imgProfile}")
         val comment = CommentItem(
             username = currentUser?.name ?: "알 수 없음",
             content = commentContent,

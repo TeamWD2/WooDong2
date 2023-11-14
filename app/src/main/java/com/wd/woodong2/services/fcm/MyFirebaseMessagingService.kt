@@ -18,17 +18,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d(TAG, token)
 
         // sharedPreferences X 토큰을 저장 <- 휘발성 데이터
         // 토큰을 user_db에 계속 업데이트 해야 됨
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-
-        Log.d(TAG, "remoteMessage Title: " + remoteMessage.notification?.title)
-        Log.d(TAG, "remoteMessage Body: " + remoteMessage.notification?.body)
-
         showNotification(remoteMessage.notification?.title, remoteMessage.notification?.body)
     }
 

@@ -49,8 +49,20 @@ class GroupDetailMemberListAdapter :
                 error(R.drawable.public_default_wd2_ivory)
             }
             txtName.text = member.name
-            txtLocation.text = member.location
+            txtLocation.text = findUserLocation(member.location)
             txtComment.text = member.comment
+        }
+
+        private fun findUserLocation(userLocation: String?): String {
+            val parts = userLocation?.split(" ")
+            parts?.let {
+                for(part in it) {
+                    if(part.endsWith("동")) {
+                        return part
+                    }
+                }
+            }
+            return ""
         }
     }
 }
