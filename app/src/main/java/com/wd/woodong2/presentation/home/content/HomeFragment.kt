@@ -57,6 +57,7 @@ class HomeFragment : Fragment() {
             },
             onDeleteItem = { item ->
                 viewModel.deleteItem(item)
+                updateTagSelectionUI()
             },
         )
     }
@@ -131,6 +132,7 @@ class HomeFragment : Fragment() {
                 firstLocation.toString(), userName,
                 userId.toString()
             )
+            updateTagSelectionUI()
             startActivity(intent)
         }
         homeTag1.setOnClickListener {
@@ -178,7 +180,7 @@ class HomeFragment : Fragment() {
                 if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                     // 검색 수행
                     viewModel.searchItems(text.toString())
-                    visibility = View.GONE
+                    constraintSearch.visibility = View.GONE
                     imgHomeCancel.visibility = View.GONE
                     toolbarImgSearch.visibility = View.VISIBLE
                     // 키보드 숨기기
@@ -197,6 +199,7 @@ class HomeFragment : Fragment() {
             if (constraintSearch.visibility == View.GONE) {
                 // 검색 필드 보여주기
                 constraintSearch.visibility = View.VISIBLE
+                imgHomeCancel.visibility = View.VISIBLE
                 edtHomeSearch.requestFocus()
                 edtHomeSearch.text.clear() // 이전 검색어 지우기
                 // 키보드 보여주기
@@ -207,6 +210,8 @@ class HomeFragment : Fragment() {
                 // 검색 수행
                 viewModel.searchItems(edtHomeSearch.text.toString())
                 constraintSearch.visibility = View.GONE
+                imgHomeCancel.visibility = View.GONE
+                toolbarImgSearch.visibility = View.VISIBLE
                 // 키보드 숨기기
                 val imm =
                     context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -288,6 +293,10 @@ class HomeFragment : Fragment() {
             }
         }
     }
+    private fun updateTagSelectionUI() {
+        binding.homeTagGroup.clearCheck() // 칩 그룹 내 모든 칩의 선택 해제
+    }
+
     private fun handleTagSelection(tag: String?) {
         if (tag == null) {
             // 태그가 해제되었을 때의 로직
