@@ -180,38 +180,6 @@ class ChatRepositoryImpl(
 
                 // lastMessage 업데이트
                 chatDatabaseReference.child("last").setValue(messageData)
-
-                // FCM Notification 객체 생성
-                val notification = GCMRequest(
-                    to = WooDongApp.getApp().getString(R.string.test_client_token),
-                    data = mapOf("action" to "ChatDetail"),
-                    notification = mapOf(
-                        "title" to "GCM Test : title",
-                        "body" to "GCM Test : body"
-                    ),
-                )
-
-                // TODO 나중에 메소드로 분리
-                CoroutineScope(Dispatchers.IO).launch {
-                    try {
-                        val response =
-                            GCMRetrofitClient.gcmRemoteSource.sendNotification(notification)
-
-                        if (response.isSuccessful) {
-                            Log.d(
-                                TAG,
-                                "Notification sent successfully. ${response.body()?.string()}"
-                            )
-                        } else {
-                            Log.e(
-                                TAG,
-                                "Failed to send notification: ${response.code()} ${response.message()}"
-                            )
-                        }
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Exception during network request.", e)
-                    }
-                }
             }
 
             override fun onCancelled(error: DatabaseError) {

@@ -21,7 +21,7 @@
             android:layout_marginTop="20dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/public_default_wd2_ivory"
+            android:src="@drawable/signup_ic_add_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
