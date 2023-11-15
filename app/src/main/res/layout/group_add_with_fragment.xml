@@ -204,20 +204,8 @@
                 android:textSize="@dimen/wd2_normal_text"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/edt_password"
-                app:layout_constraintEnd_toStartOf="@id/txt_password_valid"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_password_title" />
-
-            <TextView
-                android:id="@+id/txt_password_valid"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@id/txt_password"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/txt_password"
-                app:layout_constraintTop_toTopOf="@id/txt_password" />
 
             <EditText
                 android:id="@+id/edt_password"
