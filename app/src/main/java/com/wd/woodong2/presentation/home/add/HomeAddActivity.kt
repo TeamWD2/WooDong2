@@ -130,7 +130,7 @@ class HomeAddActivity : AppCompatActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
-        homeAddAddbtn.setOnClickListener {
+        homeAddAddbtn.setBtnOnClickListener {
             if (selectedTag == null) {
                 Toast.makeText(this@HomeAddActivity, "태그를 선택해주세요", Toast.LENGTH_SHORT).show()
             } else if (binding.homeAddTitle.text.isEmpty()) {
