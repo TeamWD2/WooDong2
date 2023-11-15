@@ -242,7 +242,7 @@ class GroupViewModel(
                     images = entity.images?.toSortedMap(reverseOrder())?.values?.toList()
                 )
             }
-        }.sortedBy { it.id }
+        }.sortedByDescending { it.id }
     }
 
     fun circumLocationItemSearch(

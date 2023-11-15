@@ -3,243 +3,249 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="@dimen/wd2_layout_padding">
+    android:padding="@dimen/wd2_layout_padding">
 
-    <TextView
-        android:id="@+id/txt_neighbor_title"
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="@string/group_add_txt_neighbor_title"
-        android:textSize="@dimen/wd2_main_title"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/txt_neighbor_age_limit"
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@id/btn_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/txt_neighbor_age_limit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="@string/group_add_txt_neighbor_age_limit"
-        android:textSize="@dimen/wd2_normal_text"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/chip_group_age_limit"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_neighbor_title" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group_age_limit"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/txt_neighbor_member_limit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_neighbor_age_limit"
-        app:singleLine="false"
-        app:singleSelection="true">
+            <TextView
+                android:id="@+id/txt_neighbor_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/group_add_txt_neighbor_title"
+                android:textSize="@dimen/wd2_main_title"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/txt_neighbor_age_limit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_anyone"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/group_add_chip_anyone"
-            android:textColor="@color/black"
-            app:chipBackgroundColor="@color/pressed_chip"
-            app:ensureMinTouchTargetSize="false" />
+            <TextView
+                android:id="@+id/txt_neighbor_age_limit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/group_add_txt_neighbor_age_limit"
+                android:textSize="@dimen/wd2_normal_text"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/chip_group_age_limit"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_neighbor_title" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_nineteen_under"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/group_add_chip_nineteen_under"
-            android:textColor="@color/black"
-            app:chipBackgroundColor="@color/pressed_chip"
-            app:ensureMinTouchTargetSize="false" />
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_age_limit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/txt_neighbor_member_limit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_neighbor_age_limit"
+                app:singleLine="false"
+                app:singleSelection="true">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_nineteen_over"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/group_add_chip_nineteen_over"
-            android:textColor="@color/black"
-            app:chipBackgroundColor="@color/pressed_chip"
-            app:ensureMinTouchTargetSize="false" />
-    </com.google.android.material.chip.ChipGroup>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_anyone"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_add_chip_anyone"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/pressed_chip"
+                    app:ensureMinTouchTargetSize="false" />
 
-    <TextView
-        android:id="@+id/txt_neighbor_member_limit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="10dp"
-        android:text="@string/group_add_txt_neighbor_member_limit"
-        android:textSize="@dimen/wd2_normal_text"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/chip_group_member_limit"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chip_group_age_limit" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_nineteen_under"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_add_chip_nineteen_under"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/pressed_chip"
+                    app:ensureMinTouchTargetSize="false" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group_member_limit"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/view_line"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_neighbor_member_limit"
-        app:singleLine="false"
-        app:singleSelection="true">
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_nineteen_over"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_add_chip_nineteen_over"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/pressed_chip"
+                    app:ensureMinTouchTargetSize="false" />
+            </com.google.android.material.chip.ChipGroup>
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_no_limit"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/group_add_chip_no_limit"
-            android:textColor="@color/black"
-            app:chipBackgroundColor="@color/pressed_chip"
-            app:ensureMinTouchTargetSize="false" />
+            <TextView
+                android:id="@+id/txt_neighbor_member_limit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/group_add_txt_neighbor_member_limit"
+                android:textSize="@dimen/wd2_normal_text"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/chip_group_member_limit"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chip_group_age_limit" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_5_people"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/group_add_chip_5_people"
-            android:textColor="@color/black"
-            app:chipBackgroundColor="@color/pressed_chip"
-            app:ensureMinTouchTargetSize="false" />
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_member_limit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/view_line"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_neighbor_member_limit"
+                app:singleLine="false"
+                app:singleSelection="true">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_10_people"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/group_add_chip_10_people"
-            android:textColor="@color/black"
-            app:chipBackgroundColor="@color/pressed_chip"
-            app:ensureMinTouchTargetSize="false" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_no_limit"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_add_chip_no_limit"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/pressed_chip"
+                    app:ensureMinTouchTargetSize="false" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_20_people"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/group_add_chip_20_people"
-            android:textColor="@color/black"
-            app:chipBackgroundColor="@color/pressed_chip"
-            app:ensureMinTouchTargetSize="false" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_5_people"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_add_chip_5_people"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/pressed_chip"
+                    app:ensureMinTouchTargetSize="false" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_30_people"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/group_add_chip_30_people"
-            android:textColor="@color/black"
-            app:chipBackgroundColor="@color/pressed_chip"
-            app:ensureMinTouchTargetSize="false" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_10_people"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_add_chip_10_people"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/pressed_chip"
+                    app:ensureMinTouchTargetSize="false" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_50_people"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/group_add_chip_50_people"
-            android:textColor="@color/black"
-            app:chipBackgroundColor="@color/pressed_chip"
-            app:ensureMinTouchTargetSize="false" />
-    </com.google.android.material.chip.ChipGroup>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_20_people"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_add_chip_20_people"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/pressed_chip"
+                    app:ensureMinTouchTargetSize="false" />
 
-    <View
-        android:id="@+id/view_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginVertical="20dp"
-        android:background="@color/light_gray_box"
-        app:layout_constraintBottom_toTopOf="@id/txt_password_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chip_group_member_limit" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_30_people"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_add_chip_30_people"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/pressed_chip"
+                    app:ensureMinTouchTargetSize="false" />
 
-    <TextView
-        android:id="@+id/txt_password_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/group_add_txt_password_title"
-        android:textSize="@dimen/wd2_main_title"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/txt_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_line" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_50_people"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_add_chip_50_people"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/pressed_chip"
+                    app:ensureMinTouchTargetSize="false" />
+            </com.google.android.material.chip.ChipGroup>
 
-    <TextView
-        android:id="@+id/txt_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/group_add_txt_password"
-        android:textSize="@dimen/wd2_normal_text"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/edt_password"
-        app:layout_constraintEnd_toStartOf="@id/txt_password_valid"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_password_title" />
+            <View
+                android:id="@+id/view_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="20dp"
+                android:background="@color/light_gray_box"
+                app:layout_constraintBottom_toTopOf="@id/txt_password_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chip_group_member_limit" />
 
-    <TextView
-        android:id="@+id/txt_password_valid"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:gravity="end"
-        app:layout_constraintBottom_toBottomOf="@id/txt_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/txt_password"
-        app:layout_constraintTop_toTopOf="@id/txt_password" />
+            <TextView
+                android:id="@+id/txt_password_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/group_add_txt_password_title"
+                android:textSize="@dimen/wd2_main_title"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/txt_password"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_line" />
 
-    <EditText
-        android:id="@+id/edt_password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:imeOptions="actionDone"
-        android:background="@drawable/public_border_box"
-        android:hint="@string/group_add_hint_password"
-        android:inputType="textPassword"
-        android:maxLines="1"
-        android:padding="@dimen/wd2_box_padding"
-        android:textSize="@dimen/wd2_normal_text"
-        app:layout_constraintEnd_toStartOf="@id/checkBox"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_password" />
+            <TextView
+                android:id="@+id/txt_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/group_add_txt_password"
+                android:textSize="@dimen/wd2_normal_text"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/edt_password"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_password_title" />
 
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:text="@string/group_add_check_box_no_password"
-        app:buttonTint="@color/pressed_chip"
-        app:layout_constraintBottom_toBottomOf="@id/edt_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/edt_password"
-        app:layout_constraintTop_toTopOf="@id/edt_password" />
+            <EditText
+                android:id="@+id/edt_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/public_border_box"
+                android:hint="@string/group_add_hint_password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:padding="@dimen/wd2_box_padding"
+                android:textSize="@dimen/wd2_normal_text"
+                app:layout_constraintEnd_toStartOf="@id/checkBox"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_password" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="@string/group_add_check_box_no_password"
+                app:buttonTint="@color/pressed_chip"
+                app:layout_constraintBottom_toBottomOf="@id/edt_password"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/edt_password"
+                app:layout_constraintTop_toTopOf="@id/edt_password" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <com.wd.woodong2.presentation.customview.CustomRegularButton
         android:id="@+id/btn_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/wd2_layout_padding"
+        android:layout_marginTop="@dimen/wd2_layout_padding"
+        app:btn_text="@string/group_add_btn_next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:btn_text="@string/group_add_btn_next" />
+        app:layout_constraintTop_toBottomOf="@id/scrollView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,33 +11,33 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/wd2_layout_padding"
         android:src="@drawable/public_ic_left_arrow"
-        app:layout_constraintBottom_toTopOf="@id/viewPager2_group_add"
+        app:layout_constraintBottom_toTopOf="@id/dots_indicator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+        android:id="@+id/dots_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:dotsColor="@color/light_gray_box"
+        app:dotsCornerRadius="8dp"
+        app:dotsSize="10dp"
+        app:dotsSpacing="4dp"
+        app:dotsWidthFactor="2.5"
+        app:layout_constraintBottom_toTopOf="@id/viewPager2_group_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_back"
+        app:progressMode="true"
+        app:selectedDotColor="@color/dark_yellow_btn" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager2_group_add"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/dots_indicator"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_back" />
-
-    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-        android:id="@+id/dots_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        app:dotsColor="@color/light_gray_box"
-        app:dotsCornerRadius="8dp"
-        app:dotsSize="14dp"
-        app:dotsSpacing="4dp"
-        app:dotsWidthFactor="2.5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:progressMode="true"
-        app:selectedDotColor="@color/dark_yellow_btn" />
+        app:layout_constraintTop_toBottomOf="@id/dots_indicator" />
 </androidx.constraintlayout.widget.ConstraintLayout>

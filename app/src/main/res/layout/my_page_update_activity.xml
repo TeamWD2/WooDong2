@@ -52,248 +52,258 @@
             android:layout_height="match_parent"
             android:padding="@dimen/wd2_box_padding">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                app:cardCornerRadius="100dp"
-                app:layout_constraintBottom_toTopOf="@id/input_layout"
+            <ScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:overScrollMode="never"
+                android:scrollbars="none"
+                app:layout_constraintBottom_toTopOf="@id/my_page_update_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
-                    android:id="@+id/my_page_update_user_img_profile"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
-                    android:scaleType="centerCrop"
-                    tools:src="@tools:sample/avatars" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/input_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView2">
-
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/input_update_user_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@id/input_update_user_current_password"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/my_page_update_user_name"
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/my_page_update_user_name"
-                        android:textSize="@dimen/wd2_normal_text"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/name_dup_check"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/my_page_update_dup_check"
-                        android:textColor="@color/light_sky_blue"
-                        android:textSize="@dimen/wd2_normal_text"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_name"
+                        android:layout_marginTop="20dp"
+                        app:cardCornerRadius="100dp"
+                        app:layout_constraintBottom_toTopOf="@id/input_layout"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/my_page_update_user_name" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_update_user_name"
+                        <ImageView
+                            android:id="@+id/my_page_update_user_img_profile"
+                            android:layout_width="130dp"
+                            android:layout_height="130dp"
+                            android:scaleType="centerCrop"
+                            tools:src="@tools:sample/avatars" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/input_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:theme="@style/EditTextWD2Style"
-                        app:hintEnabled="false"
+                        android:layout_marginTop="30dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_name">
+                        app:layout_constraintTop_toBottomOf="@+id/cardView2">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edit_update_user_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:hint="@string/my_page_update_et_user_name_edit"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/input_update_user_current_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintBottom_toTopOf="@id/input_update_user_password"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/input_update_user_name">
-
-                    <TextView
-                        android:id="@+id/my_page_update_user_current_password"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/my_page_update_user_current_password"
-                        android:textSize="@dimen/wd2_normal_text"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/edit_password"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/public_ic_edit"
-                        app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_current_password"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/my_page_update_user_current_password" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_update_user_current_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:theme="@style/EditTextWD2Style"
-                        app:hintEnabled="false"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_current_password">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edit_update_user_current_password"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/input_update_user_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:hint="@string/my_page_update_et_user_current_password_edit"
-                            android:inputType="textPassword"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                            app:layout_constraintBottom_toTopOf="@id/input_update_user_current_password"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/input_update_user_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintBottom_toTopOf="@id/input_update_user_password_check"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/input_update_user_current_password">
+                            <TextView
+                                android:id="@+id/my_page_update_user_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/my_page_update_user_name"
+                                android:textSize="@dimen/wd2_normal_text"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/my_page_update_user_password"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/my_page_update_user_password"
-                        android:textSize="@dimen/wd2_normal_text"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                            <TextView
+                                android:id="@+id/name_dup_check"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/my_page_update_dup_check"
+                                android:textColor="@color/light_sky_blue"
+                                android:textSize="@dimen/wd2_normal_text"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_name"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/my_page_update_user_name" />
 
-                    <TextView
-                        android:id="@+id/update_user_password_judge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/light_sky_blue"
-                        android:textSize="@dimen/wd2_normal_text"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_password"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/my_page_update_user_password" />
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/til_update_user_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:theme="@style/EditTextWD2Style"
+                                app:hintEnabled="false"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_name">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_update_user_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:theme="@style/EditTextWD2Style"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_password">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edit_update_user_name"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:hint="@string/my_page_update_et_user_name_edit"
+                                    android:textSize="14sp" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edit_update_user_password"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/input_update_user_current_password"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:hint="@string/my_page_update_et_user_password_edit"
-                            android:inputType="textPassword"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                            android:layout_marginTop="10dp"
+                            app:layout_constraintBottom_toTopOf="@id/input_update_user_password"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/input_update_user_name">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/input_update_user_password_check"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/input_update_user_password">
+                            <TextView
+                                android:id="@+id/my_page_update_user_current_password"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/my_page_update_user_current_password"
+                                android:textSize="@dimen/wd2_normal_text"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/my_page_update_user_password_check"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/my_page_update_user_password_check"
-                        android:textSize="@dimen/wd2_normal_text"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                            <ImageView
+                                android:id="@+id/edit_password"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/public_ic_edit"
+                                app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_current_password"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/my_page_update_user_current_password" />
 
-                    <TextView
-                        android:id="@+id/update_user_password_check_judge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txt_check_pw_notification"
-                        android:textColor="@color/light_sky_blue"
-                        android:textSize="@dimen/wd2_normal_text"
-                        android:textStyle="bold"
-                        android:visibility="invisible"
-                        app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_password_check"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/my_page_update_user_password_check" />
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/til_update_user_current_password"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:theme="@style/EditTextWD2Style"
+                                app:hintEnabled="false"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_current_password">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_update_user_password_check"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:theme="@style/EditTextWD2Style"
-                        app:hintEnabled="false"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_password_check">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edit_update_user_current_password"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/my_page_update_et_user_current_password_edit"
+                                    android:inputType="textPassword"
+                                    android:textSize="14sp" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edit_update_user_password_check"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/input_update_user_password"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:hint="@string/my_page_update_et_user_password_check_edit"
-                            android:inputType="textPassword"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_marginTop="10dp"
+                            app:layout_constraintBottom_toTopOf="@id/input_update_user_password_check"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/input_update_user_current_password">
+
+                            <TextView
+                                android:id="@+id/my_page_update_user_password"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/my_page_update_user_password"
+                                android:textSize="@dimen/wd2_normal_text"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/update_user_password_judge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/light_sky_blue"
+                                android:textSize="@dimen/wd2_normal_text"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_password"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/my_page_update_user_password" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/til_update_user_password"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:theme="@style/EditTextWD2Style"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_password">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edit_update_user_password"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/my_page_update_et_user_password_edit"
+                                    android:inputType="textPassword"
+                                    android:textSize="14sp" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/input_update_user_password_check"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/input_update_user_password">
+
+                            <TextView
+                                android:id="@+id/my_page_update_user_password_check"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/my_page_update_user_password_check"
+                                android:textSize="@dimen/wd2_normal_text"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/update_user_password_check_judge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/txt_check_pw_notification"
+                                android:textColor="@color/light_sky_blue"
+                                android:textSize="@dimen/wd2_normal_text"
+                                android:textStyle="bold"
+                                android:visibility="invisible"
+                                app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_password_check"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/my_page_update_user_password_check" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/til_update_user_password_check"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:theme="@style/EditTextWD2Style"
+                                app:hintEnabled="false"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_password_check">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edit_update_user_password_check"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/my_page_update_et_user_password_check_edit"
+                                    android:inputType="textPassword"
+                                    android:textSize="14sp" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </ScrollView>
 
             <com.wd.woodong2.presentation.customview.CustomRegularButton
                 android:id="@+id/my_page_update_btn"
@@ -303,7 +313,8 @@
                 app:btn_text="@string/my_page_update_btn"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scrollView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
