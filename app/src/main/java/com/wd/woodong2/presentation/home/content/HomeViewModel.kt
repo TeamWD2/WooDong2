@@ -63,9 +63,8 @@ class HomeViewModel(
     private val _circumLocationList: MutableLiveData<List<HomeMapSearchItem>> = MutableLiveData()
     val circumLocationList: LiveData<List<HomeMapSearchItem>> get() = _circumLocationList
 
-    private val _searchResults = MutableLiveData<List<HomeItem>>()
-
-    val searchResults: LiveData<List<HomeItem>> = _searchResults
+    private val _searchKeyword: MutableLiveData<String> = MutableLiveData()
+    val searchKeyword: LiveData<String> get() = _searchKeyword
 
     private val _deleteResults = MutableLiveData<List<HomeItem>>()
 
@@ -77,7 +76,7 @@ class HomeViewModel(
     //Home에 출력할 list 설정하기
     val _printList: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val printList: LiveData<List<HomeItem>> get() = _printList
-    
+
     //userItem
     var userId = getUserInfo()?.id ?: "UserId"
     var currentUser = getUserInfo()?.name
@@ -189,7 +188,6 @@ class HomeViewModel(
                     }
                 }
                 if (circumLocation.isNotEmpty()) {
-
                     _printList.value = list.value?.filter { item ->
                         circumLocation.contains(item.location)
                     }
@@ -242,18 +240,12 @@ class HomeViewModel(
 
                         }
                     }
-
                 }
             }
-
         }.onFailure { e ->
             Log.e("Retrofit Error", "Request failed: ${e.message}")
         }
     }
-
-
-
-
 
     private fun createCircumLocationItems(
         Map: MapSearchEntity,
@@ -267,7 +259,6 @@ class HomeViewModel(
                 y = document.y
             )
         }
-
         return createMapSearchItems(Map)
     }
 
@@ -286,9 +277,7 @@ class HomeViewModel(
                     }
                     _list.value = dataList.reversed()
                     _printList.value = dataList.reversed()
-
                 }
-
                 override fun onCancelled(databaseError: DatabaseError) {
                 }
             })
@@ -296,23 +285,29 @@ class HomeViewModel(
 
     fun tagFilterList(tag: String) {
         val currentUserLocation = userInfo.value?.firstLocation ?: return
-
         val filteredList = if (tag.equals("All", ignoreCase = true)) {
             // "전체" 태그가 선택된 경우, 현재 사용자의 지역에 해당하는 모든 아이템을 표시
             list.value?.filter { it.location == currentUserLocation }
         } else {
             // 선택한 태그를 기반으로 아이템 필터링
-            list.value?.filter { it.tag.equals(tag, ignoreCase = true) && it.location == currentUserLocation }
+            list.value?.filter {
+                it.tag.equals(
+                    tag,
+                    ignoreCase = true
+                ) && it.location == currentUserLocation
+            }
         }
         _filteredItems.value = filteredList ?: emptyList()
     }
 
+    fun setKeyword(keyword: String) {
+        _searchKeyword.value = keyword
+    }
 
-    fun searchItems(query: String) {
-        val filteredList = list.value?.filter { item ->
-            item.title.contains(query, ignoreCase = true)
-        } ?: emptyList()
-        _searchResults.value = filteredList
+    fun searchItems(keyword: String): List<HomeItem> {
+        return list.value?.filter {
+            it.title.contains(keyword, ignoreCase = true)
+        } ?: listOf()
     }
 
     // 작동이 안되는 거였네..
@@ -338,6 +333,7 @@ class HomeViewModel(
             Log.e(TAG, it.message.toString())
         }
     }
+
     fun getUserInfo() =
         prefGetUserItem()?.let {
             UserItem(
@@ -353,12 +349,13 @@ class HomeViewModel(
                 secondLocation = it.secondLocation ?: "unknown"
             )
         }
+
     fun editPrefUserInfo(
-        name :String?,
-        imgProfile : String?,
-        firstLocation : String?,
+        name: String?,
+        imgProfile: String?,
+        firstLocation: String?,
         secondLocation: String?
-    ) = userPrefEditItemUseCase(name,imgProfile,firstLocation,secondLocation)?.let{
+    ) = userPrefEditItemUseCase(name, imgProfile, firstLocation, secondLocation)?.let {
         UserItem(
             id = it.id ?: "unknown",
             name = it.name ?: "unknown",
@@ -372,9 +369,11 @@ class HomeViewModel(
             secondLocation = it.secondLocation ?: "unknown"
         )
     }
+
     fun resetToInitialList() {
         _printList.value = _list.value
     }
+
     fun updateUserLocation(
         firstLocation: String,
         secondLocation: String,
@@ -391,11 +390,12 @@ class HomeViewModel(
             Log.e(TAG, it.message.toString())
         }
     }
+
     fun deleteItem(item: HomeItem) {
         // Firebase에서 항목 삭제
         val itemId = item.id // 항목의 고유 ID 또는 키
         deleteItemFromFirebase(itemId)
-        userRemoveIdsUseCase(getUserInfo()?.id ?: "UserId",itemId,null,null,null)
+        userRemoveIdsUseCase(getUserInfo()?.id ?: "UserId", itemId, null, null, null)
         val updatedList = _list.value?.toMutableList() ?: mutableListOf()
         updatedList.remove(item)
         _list.value = updatedList
