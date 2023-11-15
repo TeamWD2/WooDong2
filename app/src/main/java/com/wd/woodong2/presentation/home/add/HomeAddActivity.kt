@@ -141,7 +141,7 @@ class HomeAddActivity : AppCompatActivity() {
                 // 모든 검사를 통과한 경우에만 게시 로직을 수행
                 val title = homeAddTitle.text.toString()
                 val description = homeAddContent.text.toString()
-
+                homeAddAddbtn.setBtnClickable(false)
                 viewModel.uploadData(
                     userId,
                     username,
@@ -237,19 +237,24 @@ class HomeAddActivity : AppCompatActivity() {
     }
 
     private fun selectTag(selectedChip: Chip, tag: String) = with(binding) {
-        homeAddTag1.isSelected = false
-        homeAddTag2.isSelected = false
-        homeAddTag3.isSelected = false
-        homeAddTag4.isSelected = false
-        homeAddTag5.isSelected = false
-        homeAddTag6.isSelected = false
-        homeAddTag7.isSelected = false
-        homeAddTag8.isSelected = false
+        // 모든 태그의 클릭 가능 상태를 활성화
+        enableAllTagsClickable()
 
-        selectedChip.isSelected = true
+        // 선택된 태그만 클릭 불가능하도록 설정
+        selectedChip.isClickable = false
 
+        // 선택된 태그 업데이트
         selectedTag = tag
 
     }
-
+    private fun enableAllTagsClickable() {
+        binding.homeAddTag1.isClickable = true
+        binding.homeAddTag2.isClickable = true
+        binding.homeAddTag3.isClickable = true
+        binding.homeAddTag4.isClickable = true
+        binding.homeAddTag5.isClickable = true
+        binding.homeAddTag6.isClickable = true
+        binding.homeAddTag7.isClickable = true
+        binding.homeAddTag8.isClickable = true
+    }
 }
