@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="transparent">#00FFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="dodger_blue">#2D8DFF</color>
+    <color name="light_sky_blue">#8CCFF8</color>
+
+    <color name="wd2_main_color">#FFD358</color>
+    <color name="curry_yellow_txt">#CA9611</color>
+    <color name="dark_yellow_btn">#FDBC15</color>
+    <color name="egg_yellow_toolbar">#F9E272</color>
+    <color name="ivory_yellow_background">#FFF5C5</color>
+    <color name="light_gray_box">#D5D5D5</color>
+    <color name="normal_gray_txt">#555555</color>
+    <color name="light_gray_txt">#8C8C8C</color>
 </resources>

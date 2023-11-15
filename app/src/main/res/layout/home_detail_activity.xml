@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/egg_yellow_toolbar"
+        android:paddingHorizontal="@dimen/wd2_layout_padding"
+        android:paddingVertical="10dp"
+        app:layout_constraintBottom_toTopOf="@id/nestedScrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/public_ic_left_arrow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cardView_home_profile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_home_profile"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            app:cardCornerRadius="100dp"
+            app:layout_constraintBottom_toBottomOf="@id/txt_detail_location"
+            app:layout_constraintEnd_toStartOf="@id/txt_detail_user"
+            app:layout_constraintStart_toEndOf="@id/img_back"
+            app:layout_constraintTop_toTopOf="@id/txt_detail_user">
+
+            <ImageView
+                android:id="@+id/img_detail_profile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                tools:src="@tools:sample/avatars" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/txt_detail_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textSize="@dimen/wd2_normal_text"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/txt_detail_location"
+            app:layout_constraintStart_toEndOf="@id/cardView_home_profile"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="우동이" />
+
+        <TextView
+            android:id="@+id/txt_detail_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/light_gray_txt"
+            android:textSize="@dimen/wd2_small_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/txt_home_timestamp"
+            app:layout_constraintStart_toStartOf="@id/txt_detail_user"
+            app:layout_constraintTop_toBottomOf="@id/txt_detail_user"
+            tools:text="지역" />
+
+        <TextView
+            android:id="@+id/txt_home_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/light_gray_txt"
+            android:textSize="@dimen/wd2_small_text"
+            app:layout_constraintBottom_toBottomOf="@id/txt_detail_location"
+            app:layout_constraintStart_toEndOf="@id/txt_detail_location"
+            app:layout_constraintTop_toTopOf="@id/txt_detail_location"
+            tools:text="시간" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraint_comment_write"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/ivory_yellow_background"
+                android:padding="@dimen/wd2_layout_padding"
+                app:layout_constraintBottom_toTopOf="@id/constraintLayout2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/public_border_box_full"
+                    android:elevation="@dimen/wd2_elevation"
+                    android:padding="@dimen/wd2_box_padding"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/txt_home_tag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/public_border_btn"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="5dp"
+                        android:textSize="@dimen/wd2_tiny_text"
+                        app:layout_constraintBottom_toTopOf="@id/txt_home_title"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="동네친구" />
+
+                    <TextView
+                        android:id="@+id/txt_home_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="제목"
+                        android:textSize="@dimen/wd2_sub_title"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/txt_home_description"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_home_tag" />
+
+                    <TextView
+                        android:id="@+id/txt_home_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textSize="@dimen/wd2_normal_text"
+                        app:layout_constraintBottom_toTopOf="@id/thumbnail_cradview"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_home_title"
+                        tools:text="내용" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/thumbnail_cradview"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_marginVertical="10dp"
+                        app:cardCornerRadius="4dp"
+                        app:layout_constraintBottom_toTopOf="@id/img_home_unlike"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_home_description">
+
+                        <ImageView
+                            android:id="@+id/img_home_thumnail"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            tools:src="@tools:sample/avatars" />
+                    </androidx.cardview.widget.CardView>
+
+                    <ImageView
+                        android:id="@+id/img_home_unlike"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/home_detail_unlike"
+                        app:layout_constraintBottom_toBottomOf="@id/txt_detail_thumb_count"
+                        app:layout_constraintEnd_toStartOf="@id/txt_detail_thumb_count"
+                        app:layout_constraintTop_toTopOf="@id/txt_detail_thumb_count" />
+
+                    <TextView
+                        android:id="@+id/txt_detail_thumb_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/thumbnail_cradview" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="@dimen/wd2_layout_padding"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/constraint_content">
+
+                <TextView
+                    android:id="@+id/txt_detail_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="댓글"
+                    android:textSize="@dimen/wd2_normal_text"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/recyclerview_comment"
+                    app:layout_constraintEnd_toStartOf="@id/txt_comment_count"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/txt_comment_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="0"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_detail_comment"
+                    app:layout_constraintStart_toEndOf="@+id/txt_detail_comment"
+                    app:layout_constraintTop_toTopOf="@id/txt_detail_comment" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:overScrollMode="never"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_detail_comment"
+                    tools:listitem="@layout/home_detail_list_item" />
+
+                <TextView
+                    android:id="@+id/textViewNoComments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="아직 댓글이 없어요 \n 댓글을 작성해 주세요!"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_detail_comment" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_comment_write"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:scrollHorizontally="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nestedScrollView">
+
+        <EditText
+            android:id="@+id/edit_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/public_border_box"
+            android:hint="@string/group_add_board_detail_hint_write_comment"
+            android:inputType="textMultiLine"
+            android:padding="@dimen/wd2_box_padding"
+            android:textSize="@dimen/wd2_normal_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_save"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/public_border_btn"
+            android:padding="@dimen/wd2_box_padding"
+            android:text="@string/group_add_board_detail_btn_write_comment"
+            android:textColor="@color/white"
+            android:textSize="@dimen/wd2_normal_text"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/edit_comment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/edit_comment"
+            app:layout_constraintTop_toTopOf="@id/edit_comment" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

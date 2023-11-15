@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ivory_yellow_background"
+    tools:context=".presentation.home.content.HomeFragment">
+
+    <com.wd.woodong2.presentation.customview.CustomToolbar
+        android:id="@+id/toolbar_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/constraintLayout4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbar_hint_edt_search="게시물 제목을 입력해 주세요."
+        app:toolbar_img_ic_right="@drawable/public_ic_search"
+        app:toolbar_visible_constraint_search="false"
+        app:toolbar_visible_ic_down="true"
+        app:toolbar_visible_ic_right="true" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/home_recycler_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_home">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/const_home_tag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/wd2_layout_padding"
+                android:paddingStart="@dimen/wd2_layout_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/home_tag_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/home_tag1"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="우리동네"
+                        android:textColor="@color/black"
+                        app:chipBackgroundColor="@color/pressed_chip"
+                        app:ensureMinTouchTargetSize="false" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/home_tag2"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="동네질문"
+                        android:textColor="@color/black"
+                        app:chipBackgroundColor="@color/pressed_chip"
+                        app:ensureMinTouchTargetSize="false" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/home_tag3"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="조심해요!"
+                        android:textColor="@color/black"
+                        app:chipBackgroundColor="@color/pressed_chip"
+                        app:ensureMinTouchTargetSize="false" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/home_tag4"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="정보공유"
+                        android:textColor="@color/black"
+                        app:chipBackgroundColor="@color/pressed_chip"
+                        app:ensureMinTouchTargetSize="false" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/home_tag5"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="동네소식"
+                        android:textColor="@color/black"
+                        app:chipBackgroundColor="@color/pressed_chip"
+                        app:ensureMinTouchTargetSize="false" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/home_tag6"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="사건/사고"
+                        android:textColor="@color/black"
+                        app:chipBackgroundColor="@color/pressed_chip"
+                        app:ensureMinTouchTargetSize="false" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/home_tag7"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="동네사진전"
+                        android:textColor="@color/black"
+                        app:chipBackgroundColor="@color/pressed_chip"
+                        app:ensureMinTouchTargetSize="false" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/home_tag8"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="분실/실종"
+                        android:textColor="@color/black"
+                        app:chipBackgroundColor="@color/pressed_chip"
+                        app:ensureMinTouchTargetSize="false" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/home_tag9"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="생활정보"
+                        android:textColor="@color/black"
+                        app:chipBackgroundColor="@color/pressed_chip"
+                        app:ensureMinTouchTargetSize="false" />
+
+
+                </com.google.android.material.chip.ChipGroup>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </HorizontalScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:padding="@dimen/wd2_layout_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintLayout4"
+        tools:listitem="@layout/home_list_item" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/home_top_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:backgroundTint="@color/dark_yellow_btn"
+        android:clickable="true"
+        android:elevation="0dp"
+        android:src="@drawable/public_ic_arrow_top"
+        app:layout_constraintBottom_toTopOf="@+id/fab_home_add"
+        app:layout_constraintEnd_toEndOf="@id/fab_home_add"
+        app:layout_constraintStart_toStartOf="@id/fab_home_add"
+        app:shapeAppearanceOverlay="@style/fabBtn"
+        app:tint="@color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_home_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/wd2_layout_padding"
+        android:backgroundTint="@color/dark_yellow_btn"
+        android:clickable="true"
+        android:elevation="0dp"
+        android:src="@drawable/public_ic_fab_add"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:shapeAppearanceOverlay="@style/fabBtn"
+        app:tint="@color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

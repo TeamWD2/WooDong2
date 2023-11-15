@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/bottom_menu_home"
+        android:enabled="true"
+        android:icon="@drawable/main_bottom_menu_ic_home"
+        android:title="@string/bottom_menu_home"/>
+    <item
+        android:id="@+id/bottom_menu_group"
+        android:enabled="true"
+        android:icon="@drawable/main_bottom_menu_ic_group"
+        android:title="@string/bottom_menu_group"/>
+    <item
+        android:id="@+id/bottom_menu_chat"
+        android:enabled="true"
+        android:icon="@drawable/main_bottom_menu_ic_chat"
+        android:title="@string/bottom_menu_chat"/>
+    <item
+        android:id="@+id/bottom_menu_my_page"
+        android:enabled="true"
+        android:icon="@drawable/main_bottom_menu_ic_my_page"
+        android:title="@string/bottom_menu_my_page"/>
+</menu>

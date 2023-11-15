@@ -1,3 +1,198 @@
 <resources>
     <string name="app_name">WooDong2</string>
+    <string name="bottom_menu_home">홈</string>
+    <string name="bottom_menu_group">모임</string>
+    <string name="bottom_menu_chat">채팅</string>
+    <string name="bottom_menu_my_page">우동이</string>
+    <string name="toolbar_menu_search">검색</string>
+    <string name="toolbar_menu_notice">알림</string>
+    <string name="exit_confirmation_title">앱 종료</string>
+    <string name="exit_confirmation_message">앱을 종료하시겠습니까?</string>
+    <string name="exit_confirmation_positive_button">예</string>
+    <string name="exit_confirmation_negative_button">아니오</string>
+
+    <string name="public_toast_permission_grant">권한 요청을 허용하셨습니다.</string>
+    <string name="public_toast_permission_deny">권한 요청을 거부하셨습니다.</string>
+    <string name="public_dialog_rational_title">권한 요청</string>
+    <string name="public_dialog_rational_message">프로필 설정 및 게시글 작성, 모임 생성 등의 기능을 원활하게 사용하기 위해서는 해당 권한이 필요합니다.\n
+        만약 해당 권한을 거부하시면, 일부 기능이 제한될 수 있습니다.\n\n이후 해당 기능을 사용하고 싶으신 경우, 설정 메뉴에서 권한을 허용하실 수 있습니다.</string>
+    <string name="public_dialog_rational_ok">확인</string>
+
+    <string name="home_list_item_btn_tag_name">같이해요</string>
+    <string name="home_list_item_thumbnail_count">99</string>
+    <string name="home_list_item_tv_title">런닝메이트 구합니다.</string>
+    <string name="home_list_item_tv_description">주로 한강 뛰실 분 구해요</string>
+    <string name="home_list_item_tv_time_stamp">14시간전</string>
+    <string name="home_list_item_tv_views">조회 199</string>
+    <string name="home_list_item_tv_thumb">99</string>
+    <string name="home_list_item_tv_chat">99</string>
+
+    <string name="home_map_bottom_sheet_title"> 내 동네 </string>
+    <string name="home_map_toolbar_title"> 내 동네 설정 </string>
+    <string name="home_map_bottom_sheet_btn_location"> 모임 목록 </string>
+    <string name="home_map_bottom_sheet_near_location_set_1"> 과 근처 동네 </string>
+    <string name="home_map_bottom_sheet_near_location_count"> 12 </string>
+    <string name="home_map_bottom_sheet_near_location_set_2"> 개 </string>
+    <string name="home_map_search_btn">동명(읍, 면)으로 검색(ex. 서초동)</string>
+    <string name="home_map_search_error_btn">동명(읍, 면)으로 검색해주세요.</string>
+    <string name="home_map_search_kakao_api">2944f118955b6cf31d773eea99bcc7d2</string>
+    <string name="home_map_naver_api">kdzwicc7da</string>
+    <string name="home_map_search_location_error">처음 위치 설정이 완료 되지 않았습니다.</string>
+    <string name="home_map_search_location_also_error">주소가 중복설정 되었습니다.</string>
+
+    <string name="group_hint_search_group">우리 동네 모임을 검색해보세요.</string>
+    <string name="group_text_empty_group_list">모임 정보가 존재하지 않습니다.</string>
+
+    <string name="group_add_txt_group_tag_title">어떤 모임을 만들까요?</string>
+    <string name="group_add_chip_exercise">운동</string>
+    <string name="group_add_chip_neighbor_friend">동네친구</string>
+    <string name="group_add_chip_study">스터디</string>
+    <string name="group_add_chip_family">가족/육아</string>
+    <string name="group_add_chip_pet">반려동물</string>
+    <string name="group_add_chip_volunteer">봉사활동</string>
+    <string name="group_add_chip_food">음식</string>
+    <string name="group_add_chip_finance">투자/금융</string>
+    <string name="group_add_chip_arts">문화/예술</string>
+    <string name="group_add_chip_game">게임</string>
+    <string name="group_add_chip_music">음악</string>
+    <string name="group_add_chip_making">공예/만들기</string>
+    <string name="group_add_chip_etc">기타</string>
+    <string name="group_add_txt_introduce_title">모임을 소개해주세요.</string>
+    <string name="group_add_txt_introduce_name">모임명</string>
+    <string name="group_add_hint_introduce_name">모임명을 입력해주세요.</string>
+    <string name="group_add_txt_introduce_description">모임 소개</string>
+    <string name="group_add_hint_introduce_description">모임을 소개해주세요. 자세할 수록 좋습니다.</string>
+    <string name="group_add_txt_neighbor_title">어떤 이웃과 함께하고 싶나요?</string>
+    <string name="group_add_txt_neighbor_age_limit">연령대</string>
+    <string name="group_add_chip_anyone">누구나</string>
+    <string name="group_add_chip_nineteen_under">만 19세 미만</string>
+    <string name="group_add_chip_nineteen_over">만 19세 이상</string>
+    <string name="group_add_txt_neighbor_member_limit">최대 인원</string>
+    <string name="group_add_chip_no_limit">제한 없음</string>
+    <string name="group_add_chip_5_people">5명</string>
+    <string name="group_add_chip_10_people">10명</string>
+    <string name="group_add_chip_20_people">20명</string>
+    <string name="group_add_chip_30_people">30명</string>
+    <string name="group_add_chip_50_people">50명</string>
+    <string name="group_add_txt_password_title">비밀번호를 설정할까요?</string>
+    <string name="group_add_txt_password">비밀번호</string>
+    <string name="group_add_hint_password">비밀번호를 입력해주세요.</string>
+    <string name="group_add_check_box_no_password">없음</string>
+    <string name="group_add_txt_password_valid">사용 가능한 비밀번호입니다.</string>
+    <string name="group_add_txt_password_invalid">영문+숫자+특수문자 조합으로 입력해주세요.(8~16자리)</string>
+    <string name="group_add_txt_current_password_invalid">현재 비밀번호와 일치합니다. 다시 설정해주세요.</string>
+    <string name="group_add_txt_image_title">모임 사진을 등록해주세요.</string>
+    <string name="group_add_txt_main_image">대표 사진</string>
+    <string name="group_add_txt_background_image">배경 사진</string>
+    <string name="group_add_btn_next">다음</string>
+    <string name="group_add_btn_add_group">모임 만들기</string>
+    <string name="group_add_toast_create_group_loading">모임을 생성중입니다.</string>
+    <string name="group_add_toast_create_group">모임이 생성되었습니다.</string>
+    <string name="group_add_toast_no_info">입력되지 않은 정보가 있습니다.</string>
+    <string name="group_add_board_add_toast_no_content">내용을 입력해주세요.</string>
+    <string name="group_add_board_add_toast_create_board_loading">게시글을 작성중입니다.</string>
+    <string name="group_add_board_add_toast_create_board_success">게시글이 작성되었습니다.</string>
+    <string name="group_add_board_add_toast_create_board_fail">게시글 작성에 실패하였습니다.</string>
+    <string name="group_add_board_detail_hint_write_comment">댓글을 입력하세요.</string>
+    <string name="group_add_board_detail_btn_write_comment">작성</string>
+    <string name="group_add_board_detail_txt_delete_comment">삭제</string>
+
+    <string name="group_detail_tab_home_title">홈</string>
+    <string name="group_detail_tab_member_title">멤버</string>
+    <string name="group_detail_tab_board_title">게시판</string>
+    <string name="group_detail_tab_album_title">앨범</string>
+    <string name="group_detail_txt_member">멤버</string>
+    <string name="group_detail_txt_board">/ 게시판</string>
+    <string name="group_detail_btn_write_board">게시글 작성하기</string>
+    <string name="group_detail_btn_join_group">모임 가입하기</string>
+    <string name="group_detail_btn_more">전체보기 ></string>
+    <string name="group_detail_txt_empty_board_list">게시글이 존재하지 않습니다.</string>
+    <string name="group_detail_txt_empty_album_list">앨범이 존재하지 않습니다.</string>
+    <string name="group_detail_dialog_title_join_group">모임 가입</string>
+    <string name="group_detail_dialog_message_join_group">모임에 가입하시겠습니까?</string>
+    <string name="group_detail_dialog_title_enter_pw">모임 비밀번호 확인</string>
+    <string name="group_detail_dialog_ok">확인</string>
+    <string name="group_detail_dialog_cancel">취소</string>
+    <string name="group_detail_toast_join_group_success">모임에 가입되었습니다.</string>
+    <string name="group_detail_toast_join_group_fail">다시 시도해주세요.</string>
+    <string name="group_detail_toast_member_limit_full">모임 가입 제한 인원이 가득 찼습니다.</string>
+    <string name="group_detail_toast_incorrect_password">비밀번호가 일치하지 않습니다.</string>
+
+    <string name="group_detail_board_add_hint_board_title">제목을 입력하세요.</string>
+    <string name="group_detail_board_add_hint_board_content">내용을 입력하세요.</string>
+    <string name="group_detail_board_add_txt_add_image">사진 첨부</string>
+    <string name="group_detail_board_detail_no_comment">댓글을 입력해주세요.</string>
+    <string name="group_detail_board_detail_dialog_title">댓글 삭제</string>
+    <string name="group_detail_board_detail_dialog_message">삭제하시겠습니까?</string>
+    <string name="group_detail_board_detail_dialog_delete">삭제</string>
+    <string name="group_detail_board_detail_dialog_cancel">취소</string>
+    <string name="group_detail_board_detail_toast_create_comment_success">댓글이 작성되었습니다.</string>
+
+    <string name="chat_txt_title">채팅</string>
+
+    <string name="my_page_tv_location">군자동</string>
+    <string name="my_page_tv_name">가나다</string>
+    <string name="my_page_tv_member_number">#123456789</string>
+    <string name="my_page_txt_title">마이페이지</string>
+    <string name="my_page_txt_views">누적 조회수</string>
+    <string name="my_page_txt_comment">작성글/댓글</string>
+    <string name="my_page_txt_heart">받은 공감</string>
+
+    <string name="my_page_tab_tv_group">가입한 모임</string>
+    <string name="my_page_tab_tv_written">작성한 글</string>
+    <string name="my_page_tab_tv_thumb">좋아요 게시물</string>
+
+    <string name="my_page_btn_update_profile">프로필 수정</string>
+    <string name="my_page_txt_views_count">0</string>
+    <string name="my_page_txt_comment_count">0</string>
+    <string name="my_page_txt_heart_count">0</string>
+
+    <string name="my_page_update_dup_check">중복 체크</string>
+    <string name="my_page_update_user_name">닉네임</string>
+    <string name="my_page_update_et_user_name_edit">변경할 닉네임을 입력해주세요.</string>
+    <string name="my_page_update_user_current_password">현재 비밀번호 입력</string>
+    <string name="my_page_update_et_user_current_password_edit">현재 비밀번호를 입력해주세요.</string>
+    <string name="my_page_update_user_password">비밀번호 변경</string>
+    <string name="my_page_update_et_user_password_edit">변경할 비밀번호를 입력해주세요.</string>
+    <string name="my_page_update_user_password_check">비밀번호 변경 확인</string>
+    <string name="my_page_update_et_user_password_check_edit">변경할 비밀번호를 다시 입력해주세요.</string>
+    <string name="my_page_update_btn">수정하기</string>
+
+    <string name="gcm_api">AAAAKOS1ziI:APA91bHHZ0VluJf9glcNjnwboJAmJHZLNaR1cOlYtFgcTD0dv7fhK8nEmsm1WcAj3lq8LoSUyD6LVoku1b6bsKCdhVjcioKLJAsdtuQVS-iY2rKV8Hdf-6RpA1x-HqlsYTvKKTlD_Jm3</string>
+
+    <string name="wd2">우동이</string>
+
+    <!-- start_activity.xml -->
+    <string name="wd2_full">우리 동네 이야기</string>
+    <string name="start">시작하기</string>
+
+    <!-- signin_activity.xml -->
+    <string name="signin_id">아이디(이메일 형식)</string>
+    <string name="signin_enter_id">아이디를 입력하세요</string>
+    <string name="signin_pw">비밀번호</string>
+    <string name="signin_input_pw">비밀번호를 입력하세요</string>
+    <string name="login">로그인</string>
+    <string name="signin">회원가입</string>
+    <string name="login_success">로그인 성공</string>
+    <string name="login_fail">로그인 실패</string>
+
+    <!-- signup_activity.xml -->
+    <string name="check_id_duplication">중복</string>
+    <string name="check_nickname_duplication">중복 체크</string>
+    <string name="signup_pw_check">비밀번호 확인</string>
+    <string name="signup_name">닉네임</string>
+    <string name="signup_email">이메일</string>
+    <string name="signup">가입하기</string>
+    <string name="txt_check_pw_notification">비밀번호 맞음</string>
+    <string name="signup_correct_pw">비밀번호 같음</string>
+    <string name="signup_incorrect_pw">비밀번호 다름</string>
+    <string name="signup_pw_match">비밀번호 맞음</string>
+    <string name="signup_pw_not_match">비밀번호 틀림</string>
+    <string name="signup_id_hint">example@example.com</string>
+    <string name="nickname_valid">사용 가능</string>
+    <string name="nickname_invalid">사용 불가능</string>
+    <string name="signin_auto_login">자동 로그인</string>
+    <string name="pref_key_user_preferences_key">USER_PREFERENCES</string>
+    <string name="signin_login_retry">다시 시도해주세요</string>
+
 </resources>

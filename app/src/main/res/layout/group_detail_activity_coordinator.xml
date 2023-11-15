@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentScrim="@color/white"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="parallax">
+
+                <ImageView
+                    android:id="@+id/img_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@tools:sample/avatars" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView_main"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="15dp"
+                    app:cardCornerRadius="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_member"
+                    app:layout_constraintEnd_toStartOf="@id/txt_title"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <ImageView
+                        android:id="@+id/img_main"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        tools:src="@tools:sample/avatars" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/txt_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textSize="@dimen/wd2_main_title"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/txt_member_count"
+                    app:layout_constraintStart_toEndOf="@id/cardView_main"
+                    app:layout_constraintTop_toBottomOf="@id/img_background"
+                    tools:text="자전거 동호회. 젊은 사람만~" />
+
+                <TextView
+                    android:id="@+id/txt_member"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_detail_txt_member"
+                    android:textColor="@color/normal_gray_txt"
+                    android:textSize="@dimen/wd2_normal_text"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/txt_member_count"
+                    app:layout_constraintStart_toStartOf="@id/txt_title"
+                    app:layout_constraintTop_toBottomOf="@id/txt_title" />
+
+                <TextView
+                    android:id="@+id/txt_member_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/normal_gray_txt"
+                    android:textSize="@dimen/wd2_normal_text"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_member"
+                    app:layout_constraintEnd_toStartOf="@id/txt_board"
+                    app:layout_constraintStart_toEndOf="@id/txt_member"
+                    app:layout_constraintTop_toTopOf="@id/txt_member"
+                    tools:text="41" />
+
+                <TextView
+                    android:id="@+id/txt_board"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/group_detail_txt_board"
+                    android:textColor="@color/normal_gray_txt"
+                    android:textSize="@dimen/wd2_normal_text"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_member_count"
+                    app:layout_constraintEnd_toStartOf="@id/txt_board_count"
+                    app:layout_constraintStart_toEndOf="@id/txt_member_count"
+                    app:layout_constraintTop_toTopOf="@id/txt_member_count" />
+
+                <TextView
+                    android:id="@+id/txt_board_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/normal_gray_txt"
+                    android:textSize="@dimen/wd2_normal_text"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_board"
+                    app:layout_constraintStart_toEndOf="@id/txt_board"
+                    app:layout_constraintTop_toTopOf="@id/txt_board"
+                    tools:text="11" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/materialToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/public_ic_left_arrow"
+                app:titleTextColor="@color/black" />
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/viewPager2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabIndicatorColor="@color/dark_yellow_btn"
+            app:tabIndicatorFullWidth="true"
+            app:tabSelectedTextColor="@color/curry_yellow_txt"
+            app:tabTextColor="@color/black" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/ivory_yellow_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="200dp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/viewPager2"
+            app:layout_constraintStart_toStartOf="@id/viewPager2"
+            app:layout_constraintTop_toTopOf="@id/viewPager2" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
