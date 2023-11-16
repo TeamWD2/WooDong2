@@ -235,7 +235,7 @@ class HomeViewModel(
 
                             val combinedList = existingList.toMutableList()
                                 .apply { addAll(filteredList.orEmpty()) }
-                            _printList.value = combinedList.reversed()
+                            _printList.value = combinedList
 
                         }
                     }
