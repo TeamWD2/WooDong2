@@ -54,6 +54,7 @@ class MyPageThumbViewModel(
         getUser()
     }
 
+
     fun getUser() = viewModelScope.launch {
         _loadingState.value = true
         runCatching {
