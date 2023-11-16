@@ -72,7 +72,7 @@ class HomeListAdapter(
                 )
             }
 
-            if (currentUser?.name == item.name) {
+            if (currentUser?.id == item.userId) {
                 homeListItemDelete.visibility = View.VISIBLE
                 homeListItemDelete.setOnClickListener {
                     showDeleteConfirmationDialog(item)

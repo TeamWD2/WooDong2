@@ -1,6 +1,8 @@
 package com.wd.woodong2.presentation.mypage.content.thumb
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -8,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeListItemBinding
+import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.content.HomeItem
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import java.text.SimpleDateFormat
@@ -15,10 +18,10 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-
 class MyPageThumbListAdapter (
-    private val onClickItem: (Int, HomeItem) -> Unit,
-    //private val chatIds : String?     -> map 형식
+    private val currentUser: UserItem?,
+    private val onClickItem: (HomeItem) -> Unit,
+    private val onDeleteItem: (HomeItem) -> Unit
 ): ListAdapter<HomeItem, MyPageThumbListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<HomeItem>() {
         override fun areItemsTheSame(
@@ -38,34 +41,47 @@ class MyPageThumbListAdapter (
 ){
     class ViewHolder(
         private val binding: HomeListItemBinding,
-        private val onClickItem: (Int, HomeItem) -> Unit,
-        //private val chatId : String?      ->map 형식
+        private val currentUser: UserItem?,
+        private val onClickItem: (HomeItem) -> Unit,
+        private val onDeleteItem: (HomeItem) -> Unit
     ): RecyclerView.ViewHolder(binding.root){
 
         //아이템 기본 설정
         // 모든 아이템을 갖고 오는게 아니라 가입한 그룹의 데이터만 갖고오기 설정
-
-        fun bind(item: HomeItem) = with(binding){
-            //if(item.isLiked){
-                homeListItemBtnTag.text = item.tag
-                homeListItemThumbnail.load(item.thumbnail) {
+        fun bind(item: HomeItem) = with(binding) {
+            homeListItemBtnTag.text = item.tag
+            if (item.thumbnail.isNullOrEmpty()) { //이미지 없을때, 카드뷰 숨김처리
+                cardView3.visibility = View.GONE
+            } else {
+                cardView3.visibility = View.VISIBLE
+                homeListItemThumbnail.load(item.thumbnail){
                     error(R.drawable.public_default_wd2_ivory)
                 }
-                homeListItemTvTitle.text = item.title
-                homeListItemTvDescription.text = item.description
+            }
+            homeListItemTvTitle.text = item.title
+            homeListItemTvDescription.text = item.description
+            homeListItemUser.text = item.name
 
-                homeListItemTvLocation.text = HomeMapActivity.extractLocationInfo(item.location)
-                homeListItemTvTimeStamp.text = formatTimestamp(item.timeStamp)
+            homeListItemTvLocation.text = HomeMapActivity.extractLocationInfo(item.location)
+            homeListItemTvTimeStamp.text = formatTimestamp(item.timeStamp)
 
-                homeListItemTvThumbCount.text = item.thumbCount.toString()
-                homeListItemTvChatCount.text = item.chatCount.toString()
+            homeListItemTvThumbCount.text = item.thumbCount.toString()
+            homeListItemTvChatCount.text = item.chatCount.toString()
 
-                homeListItem.setOnClickListener{
-                    onClickItem(
-                        adapterPosition,item
-                    )
+            homeListItem.setOnClickListener {
+                onClickItem(
+                    item
+                )
+            }
+
+            if (currentUser?.id == item.userId) {
+                homeListItemDelete.visibility = View.VISIBLE
+                homeListItemDelete.setOnClickListener {
+                    showDeleteConfirmationDialog(item)
                 }
-            //}
+            } else {
+                homeListItemDelete.visibility = View.GONE
+            }
         }
         private fun formatTimestamp(timestamp: Long?): String {
             if (timestamp == null) return "정보 없음"
@@ -100,12 +116,28 @@ class MyPageThumbListAdapter (
                 else -> SimpleDateFormat("yyyy.MM.dd", Locale.KOREA).format(messageTime)
             }
         }
+        private fun showDeleteConfirmationDialog(item: HomeItem) {
+            val builder = AlertDialog.Builder(binding.root.context)
+            builder.setTitle("삭제 확인")
+            builder.setMessage("정말로 이 항목을 삭제하시겠습니까?")
+            builder.setPositiveButton("예") { _, _ ->
+                // 사용자가 "예"를 클릭한 경우 항목을 삭제합니다.
+                onDeleteItem(item)
+            }
+            builder.setNegativeButton("아니오") { _, _ ->
+                // 사용자가 "아니오"를 클릭한 경우 아무 작업도 수행하지 않습니다.
+            }
+            val dialog = builder.create()
+            dialog.show()
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             HomeListItemBinding.inflate(LayoutInflater.from(parent.context), parent,false),
-            onClickItem
+            currentUser,
+            onClickItem,
+            onDeleteItem
         )
     }
 

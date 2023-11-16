@@ -10,12 +10,11 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
-import com.wd.woodong2.domain.usecase.GroupSetAlbumItemUseCase
-import com.wd.woodong2.domain.usecase.GroupSetBoardItemUseCase
+import com.wd.woodong2.domain.usecase.group.GroupSetAlbumItemUseCase
+import com.wd.woodong2.domain.usecase.group.GroupSetBoardItemUseCase
 import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
 import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class GroupDetailBoardAddViewModel(
     private val imageStorageSetItem: ImageStorageSetItemUseCase,

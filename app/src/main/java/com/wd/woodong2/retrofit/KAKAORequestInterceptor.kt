@@ -11,7 +11,7 @@ class KAKAORequestInterceptor : Interceptor {
             .addHeader(
                 "Authorization",
                 "KakaoAK %s".format(
-                    WooDongApp.getApp().getString(R.string.home_map_search_kakao_api)
+                    WooDongApp.getApp().getString(R.string.kakao_key)
                 )
             ).build()
         return chain.proceed(newRequest)

@@ -2,10 +2,8 @@ package com.wd.woodong2.presentation.home.add
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
@@ -17,15 +15,9 @@ import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.MapSearchCircumLocationGetItemsUseCase
-import com.wd.woodong2.domain.usecase.MapSearchGetItemsUseCase
-import com.wd.woodong2.domain.usecase.UserAddIdsUseCase
-import com.wd.woodong2.domain.usecase.UserGetItemUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
-import com.wd.woodong2.domain.usecase.UserUpdateInfoUseCase
+import com.wd.woodong2.domain.usecase.user.UserAddIdsUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
-import com.wd.woodong2.presentation.group.GroupUserInfoItem
-import com.wd.woodong2.presentation.home.content.HomeViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -58,7 +50,8 @@ class HomeAddViewModel(
                         val newRef = databaseReference.push()
                         val newItemId = newRef.key ?: ""
                         val data = HomeAddItem(
-                            newItemId,
+                            id = newItemId,
+                            userId = getUserInfo()?.id ?: "defaultUserId",
                             name = name.toString(),
                             tag = selectedTag,
                             groupTag = groupTag.toString(),
@@ -79,6 +72,7 @@ class HomeAddViewModel(
                 val newItemId = newRef.key ?: ""
                 val data = HomeAddItem(
                     id = newItemId,
+                    userId = getUserInfo()?.id ?: "defaultUserId",
                     name = name.toString(),
                     tag = selectedTag,
                     groupTag = groupTag.toString(),

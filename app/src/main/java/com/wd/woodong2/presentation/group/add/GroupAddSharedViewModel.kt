@@ -17,17 +17,16 @@ import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
-import com.wd.woodong2.domain.usecase.ChatSetItemUseCase
-import com.wd.woodong2.domain.usecase.GroupSetItemUseCase
-import com.wd.woodong2.domain.usecase.GroupSetMemberItemUseCase
+import com.wd.woodong2.domain.usecase.chat.ChatSetItemUseCase
+import com.wd.woodong2.domain.usecase.group.GroupSetItemUseCase
+import com.wd.woodong2.domain.usecase.group.GroupSetMemberItemUseCase
 import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
-import com.wd.woodong2.domain.usecase.UserUpdateGroupInfoUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.user.UserUpdateGroupInfoUseCase
 import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import com.wd.woodong2.presentation.group.detail.GroupDetailChatItem
 import com.wd.woodong2.presentation.group.detail.GroupDetailMemberAddItem
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class GroupAddSharedViewModel(
     private val prefGetUserItem: UserPrefGetItemUseCase,

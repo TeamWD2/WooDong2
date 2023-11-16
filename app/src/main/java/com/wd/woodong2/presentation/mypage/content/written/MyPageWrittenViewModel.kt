@@ -2,7 +2,6 @@ package com.wd.woodong2.presentation.mypage.content.written
 
 import android.content.Context
 import android.util.Log
-import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,20 +20,27 @@ import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.UserGetItemUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.user.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.user.UserRemoveIdsUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
-import com.wd.woodong2.presentation.chat.detail.ChatDetailViewModel
 import com.wd.woodong2.presentation.home.content.HomeItem
 import kotlinx.coroutines.launch
 
 class MyPageWrittenViewModel (
     private val prefGetUserItem: UserPrefGetItemUseCase,
     private val userItem: UserGetItemUseCase,
+    private val userRemoveIdsUseCase: UserRemoveIdsUseCase,
 ) : ViewModel() {
     companion object {
         private val TAG = "MyPageWrittenViewModel"
     }
+
+    // 필터링된 아이템을 저장하는 LiveData
+    private val _filteredItems = MutableLiveData<List<HomeItem>>()
+
+    val filteredItems: LiveData<List<HomeItem>> = _filteredItems
+
 
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
@@ -55,14 +61,14 @@ class MyPageWrittenViewModel (
         getUser()
     }
 
-    private fun getUser() = viewModelScope.launch {
+    fun getUser() = viewModelScope.launch {
         _loadingState.value = true
         runCatching {
             userItem(userId).collect { user ->
-                _isEmptyList.value = _printList.value?.isEmpty()
                 _printList.value = list.value?.filter { item ->
                     user?.writtenIds?.contains(item.id) == true
                 }
+                _isEmptyList.value = _printList.value?.isEmpty()
                 _loadingState.value = false
             }
         }.onFailure {
@@ -109,6 +115,37 @@ class MyPageWrittenViewModel (
                 secondLocation = it.secondLocation ?: "unknown"
             )
         }
+    fun deleteItem(item: HomeItem) {
+        // Firebase에서 항목 삭제
+        val itemId = item.id // 항목의 고유 ID 또는 키
+        deleteItemFromFirebase(itemId)
+        userRemoveIdsUseCase(getUserInfo()?.id ?: "UserId", itemId, null, null, null)
+        val updatedList = _list.value?.toMutableList() ?: mutableListOf()
+        updatedList.remove(item)
+        _list.value = updatedList
+
+        // 필터링된 아이템 업데이트
+        val filteredList = _filteredItems.value?.toMutableList() ?: mutableListOf()
+        filteredList.remove(item)
+        _filteredItems.value = filteredList
+
+    }
+    private fun deleteItemFromFirebase(itemId: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("home_list")
+        val itemReference = databaseReference.child(itemId)
+
+        itemReference.removeValue()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    loadDataFromFirebase()
+                } else {
+                    val exception = task.exception
+                    if (exception != null) {
+                        // 오류 처리 코드
+                    }
+                }
+            }
+    }
 }
 class MyPageWrittenViewModelFactory(
     val context: Context
@@ -139,6 +176,7 @@ class MyPageWrittenViewModelFactory(
             return MyPageWrittenViewModel(
                 UserPrefGetItemUseCase(userPrefRepository),
                 UserGetItemUseCase(userRepositoryImpl),
+                UserRemoveIdsUseCase(userRepositoryImpl),
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")

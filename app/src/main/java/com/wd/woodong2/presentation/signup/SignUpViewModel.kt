@@ -16,10 +16,9 @@ import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
-import com.wd.woodong2.domain.usecase.SignUpCheckNickNameDupUseCase
-import com.wd.woodong2.domain.usecase.UserSignUpUseCase
+import com.wd.woodong2.domain.usecase.account.SignUpCheckNickNameDupUseCase
+import com.wd.woodong2.domain.usecase.user.UserSignUpUseCase
 import kotlinx.coroutines.launch
-import java.util.UUID
 import java.util.regex.Pattern
 
 class SignUpViewModel(

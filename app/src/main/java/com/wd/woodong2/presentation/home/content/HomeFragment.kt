@@ -5,7 +5,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -62,6 +64,8 @@ class HomeFragment : Fragment() {
         )
     }
 
+    private var keyword = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -115,6 +119,7 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = listAdapter
         }
+
         toolbarHome.setLocationOnClickListener {
             homeMapLauncher.launch(
                 HomeMapActivity.newIntent(
@@ -122,6 +127,7 @@ class HomeFragment : Fragment() {
                 )
             )
         }
+
         fabHomeAdd.setOnClickListener {
             val intent = HomeAddActivity.homeAddActivityNewIntent(
                 requireContext(),
@@ -131,6 +137,7 @@ class HomeFragment : Fragment() {
             updateTagSelectionUI()
             startActivity(intent)
         }
+
         homeTag1.setOnClickListener {
             currentTag = if (currentTag == "All") null else "All"
             handleTagSelection(currentTag)
@@ -168,82 +175,44 @@ class HomeFragment : Fragment() {
             handleTagSelection(currentTag)
         }
 
-        // 검색 필드 초기화
-        toolbarHome.toolbarBinding.edtToolbarSearch.apply {
-            // EditText가 줄바꿈 대신 검색을 수행하도록 설정
-            inputType = InputType.TYPE_CLASS_TEXT
-            setOnKeyListener { _, keyCode, event ->
-                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                    // 검색 수행
-                    viewModel.searchItems(text.toString())
-                    visibility = View.GONE
-                    toolbarHome.setCancelIcVisible(false)
-                    toolbarHome.setRightIcVisible(true)
-                    toolbarHome.setCancelIcVisible(false)
-
-                    // 키보드 숨기기
-                    val imm =
-                        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(windowToken, 0)
-                    true // 이벤트 처리 완료
-                } else {
-                    false // 기본 이벤트 처리를 계속 진행
-                }
-            }
-        }
-
+        // 검색 아이콘 클릭 리스너
         toolbarHome.setRightIcOnClickListener {
-            if (!toolbarHome.isVisibleConstraintSearch()) {
-                // 검색 필드 보여주기
-                toolbarHome.setConstraintSearchVisible(true)
-                toolbarHome.setRequestFocusEditText()
-                toolbarHome.setClearEditText() // 이전 검색어 지우기
-                toolbarHome.setCancelIcVisible(true)
-
-                // 키보드 보여주기
-                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(toolbarHome.toolbarBinding.edtToolbarSearch, InputMethodManager.SHOW_IMPLICIT)
-            } else {
-                // 검색 수행
-                viewModel.searchItems(toolbarHome.getSearchEditText())
-                toolbarHome.setConstraintSearchVisible(false)
-                toolbarHome.setCancelIcVisible(false)
-                toolbarHome.setRightIcVisible(true)
-
-                // 키보드 숨기기
-                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(toolbarHome.toolbarBinding.edtToolbarSearch.windowToken, 0)
-                toolbarHome.setClearEditText() // 검색 후 검색어 지우기
-            }
+            toolbarHome.setConstraintSearchVisible(true)
+            toolbarHome.toolbarBinding.edtToolbarSearch.addTextChangedListener(searchTextWatcher())
+            toolbarHome.setRequestFocusEditText()
+            toolbarHome.setRightIcVisible(false)
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(toolbarHome.toolbarBinding.edtToolbarSearch, InputMethodManager.SHOW_IMPLICIT)
         }
 
+        // 검색창 취소 아이콘 클릭 리스너
         toolbarHome.setCancelOnClickListener {
             toolbarHome.setConstraintSearchVisible(false)
+            toolbarHome.setClearEditText()
+            keyword = toolbarHome.getSearchEditText()
+            viewModel.setKeyword(keyword)
+            toolbarHome.setRightIcVisible(true)
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(toolbarHome.toolbarBinding.edtToolbarSearch.windowToken, 0)
         }
-
     }
 
     private fun initViewModel() {
         with(viewModel) {
 
-            list.observe(viewLifecycleOwner) { newList ->
-                _printList.value = newList.filter { item ->
-                    circumLocation.contains(item.location)
-                }
-            }
+//            list.observe(viewLifecycleOwner) { newList ->
+//                _printList.value = newList.filter { item ->
+//                    circumLocation.contains(item.location)
+//                }
+//            }
 
             printList.observe(viewLifecycleOwner) {
                 listAdapter.submitList(it)
             }
 
             userInfo.observe(viewLifecycleOwner) { userInfo ->
-                val filteredList =
+                _printList.value =
                     list.value?.filter { it.location == userInfo?.firstLocation } ?: emptyList()
-                _printList.value = filteredList
-
-
 
                 printList.value?.let { list ->
                     if (list.size < 10) {
@@ -279,12 +248,10 @@ class HomeFragment : Fragment() {
                         )
                     )
                 }
-
-
             }
 
-            searchResults.observe(viewLifecycleOwner) { results ->
-                listAdapter.submitList(results)
+            searchKeyword.observe(viewLifecycleOwner) { keyword ->
+                listAdapter.submitList(searchItems(keyword))
             }
 
             filteredItems.observe(viewLifecycleOwner) { updatedList ->
@@ -328,6 +295,18 @@ class HomeFragment : Fragment() {
         })
     }
 
+    private fun searchTextWatcher() = object : TextWatcher {
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
+
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
+
+        override fun afterTextChanged(p0: Editable?) {
+            keyword = binding.toolbarHome.getSearchEditText()
+            viewModel.setKeyword(keyword)
+        }
+    }
 
     override fun onDestroyView() {
         _binding = null

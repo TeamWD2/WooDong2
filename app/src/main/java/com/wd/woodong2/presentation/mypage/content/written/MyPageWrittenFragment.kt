@@ -19,6 +19,7 @@ class MyPageWrittenFragment : Fragment() {
     private val binding get() = _binding!!
     private val listAdapter by lazy {
         MyPageWrittenListAdapter(
+            currentUser = viewModel.getUserInfo(),
             onClickItem = { item ->
                 startActivity(
                     HomeDetailActivity.homeDetailActivityNewIntent(
@@ -26,6 +27,9 @@ class MyPageWrittenFragment : Fragment() {
                         item,
                     )
                 )
+            },
+            onDeleteItem = { item ->
+                viewModel.deleteItem(item)
             },
         )
     }
@@ -51,8 +55,12 @@ class MyPageWrittenFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
         }
     }
+
     private fun initViewModel(){
         with(viewModel){
+            list.observe(viewLifecycleOwner){
+                getUser()
+            }
             printList.observe(viewLifecycleOwner){
                 listAdapter.submitList(it)
             }

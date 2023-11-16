@@ -5,11 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wd.woodong2.R
-import com.wd.woodong2.WooDongApp
 import com.wd.woodong2.domain.model.MapSearchEntity
-import com.wd.woodong2.domain.model.PlaceEntity
-import com.wd.woodong2.domain.usecase.MapSearchGetItemsUseCase
+import com.wd.woodong2.domain.usecase.map.MapSearchGetItemsUseCase
 import kotlinx.coroutines.launch
 
 class HomeMapSearchViewModel (

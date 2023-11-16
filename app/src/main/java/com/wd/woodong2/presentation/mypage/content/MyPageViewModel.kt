@@ -16,14 +16,13 @@ import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
-import com.wd.woodong2.domain.usecase.UserGetItemUseCase
-import com.wd.woodong2.domain.usecase.UserUpdateInfoUseCase
-import com.wd.woodong2.domain.usecase.UserUpdatePasswordUseCase
+import com.wd.woodong2.domain.usecase.user.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.user.UserUpdateInfoUseCase
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.UserLogOutUseCase
-import com.wd.woodong2.domain.usecase.UserPrefDeleteItemUseCase
-import com.wd.woodong2.domain.usecase.UserPrefEditItemUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.user.UserLogOutUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefDeleteItemUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefEditItemUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.home.content.HomeItem
 import kotlinx.coroutines.launch
@@ -71,7 +70,6 @@ class MyPageViewModel(
                     )
 
                 userInfo.postValue(userItem)
-                Log.d(TAG, userItem.toString())
             }
         }.onFailure {
             Log.e(TAG, it.message.toString())

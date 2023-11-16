@@ -167,17 +167,13 @@ class SignUpActivity : AppCompatActivity() {
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
                     signViewModel.checkValidNickname(text.toString().trim())
-                    txtCheckNicknameDuplication.apply {
-                        text = "중복 체크"
-                        setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
-                    }
                 }
             })
         }
 
-        txtCheckNicknameDuplication.setOnClickListener {
+        btnCheckNicknameDuplication.setOnClickListener {
             val nickname = editName.text.toString().trim()
-            if (nickname != "") {
+            if (nickname.length > 1) {
                 signViewModel.checkNicknameDuplication(nickname)
             } else {
                 Toast.makeText(
@@ -279,6 +275,8 @@ class SignUpActivity : AppCompatActivity() {
                     text = "사용 가능"
                     isEnabled = false
                     setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
+                    background = null
+                    backgroundTintList = null
                 }
                 Toast.makeText(
                     applicationContext,
@@ -286,10 +284,6 @@ class SignUpActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                txtCheckNicknameDuplication.apply {
-                    text = "중복"
-                    setTextColor(ContextCompat.getColor(context, R.color.red))
-                }
                 tilName.boxStrokeColor =
                     ContextCompat.getColor(this@SignUpActivity, R.color.red)
                 Toast.makeText(

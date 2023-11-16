@@ -24,17 +24,15 @@ import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.model.MapSearchEntity
-import com.wd.woodong2.domain.model.UserEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.repository.MapSearchRepository
-import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
-import com.wd.woodong2.domain.usecase.MapSearchCircumLocationGetItemsUseCase
-import com.wd.woodong2.domain.usecase.MapSearchGetItemsUseCase
-import com.wd.woodong2.domain.usecase.UserPrefEditItemUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
-import com.wd.woodong2.domain.usecase.UserUpdateInfoUseCase
+import com.wd.woodong2.domain.usecase.group.GroupGetItemsUseCase
+import com.wd.woodong2.domain.usecase.map.MapSearchCircumLocationGetItemsUseCase
+import com.wd.woodong2.domain.usecase.map.MapSearchGetItemsUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefEditItemUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.user.UserUpdateInfoUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
-import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.home.map.HomeMapSearchItem
 import com.wd.woodong2.retrofit.KAKAORetrofitClient
@@ -73,11 +71,8 @@ class GroupViewModel(
     private val _circumLocationList: MutableLiveData<List<HomeMapSearchItem>> = MutableLiveData()
     val circumLocationList: LiveData<List<HomeMapSearchItem>> get() = _circumLocationList
 
-    var circumLocation = mutableSetOf<String>()
+    private var circumLocation = mutableSetOf<String>()
 
-//    init {
-//        userInfo.postValue(getUserInfo())
-//    }
     fun setKeyword(keyword: String) {
         _searchKeyword.value = keyword
     }
@@ -242,7 +237,7 @@ class GroupViewModel(
                     images = entity.images?.toSortedMap(reverseOrder())?.values?.toList()
                 )
             }
-        }.sortedBy { it.id }
+        }.sortedByDescending { it.id }
     }
 
     fun circumLocationItemSearch(
@@ -317,7 +312,7 @@ class GroupViewModel(
 
             }
 
-            if ((printList.value?.size ?: 0) < 5) {
+            if ((printList.value?.size ?: 0) < 3) {
                 val circumLocationItems = createCircumLocationItems(
                     Map = circumLocationItem(
                         y,
@@ -348,7 +343,7 @@ class GroupViewModel(
                         item is GroupItem.GroupMain && circumLocation.contains(item.groupLocation)
                     }
                 }
-                if ((printList.value?.size ?: 0) < 5) {
+                if ((printList.value?.size ?: 0) < 3) {
                     val circumLocationItems = createCircumLocationItems(
                         Map = circumLocationItem(
                             y,
@@ -380,7 +375,7 @@ class GroupViewModel(
                                 item is GroupItem.GroupMain && circumLocation.contains(item.groupLocation)
                             }
                         }
-                        if ((printList.value?.size ?: 0) < 5) {
+                        if ((printList.value?.size ?: 0) < 3) {
                             val existingList = _printList.value.orEmpty()
                             val filteredList = groupList.value?.filter { item ->
                                 item is GroupItem.GroupMain && !circumLocation.contains(item.groupLocation)
