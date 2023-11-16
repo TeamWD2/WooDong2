@@ -101,6 +101,7 @@ class GroupFragment : Fragment() {
             toolbarGroup.setConstraintSearchVisible(true)
             toolbarGroup.toolbarBinding.edtToolbarSearch.addTextChangedListener(searchTextWatcher())
             toolbarGroup.setRequestFocusEditText()
+            toolbarGroup.setRightIcVisible(false)
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(toolbarGroup.toolbarBinding.edtToolbarSearch, InputMethodManager.SHOW_IMPLICIT)
         }
@@ -108,8 +109,10 @@ class GroupFragment : Fragment() {
         // 검색창 취소 아이콘 클릭 리스너
         toolbarGroup.setCancelOnClickListener {
             toolbarGroup.setConstraintSearchVisible(false)
-            keyword = ""
+            toolbarGroup.setClearEditText()
+            keyword = toolbarGroup.getSearchEditText()
             viewModel.setKeyword(keyword)
+            toolbarGroup.setRightIcVisible(true)
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(toolbarGroup.toolbarBinding.edtToolbarSearch.windowToken, 0)
         }

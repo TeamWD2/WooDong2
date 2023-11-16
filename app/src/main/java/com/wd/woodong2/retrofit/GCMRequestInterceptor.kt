@@ -1,6 +1,7 @@
 package com.wd.woodong2.retrofit
 
 import android.util.Log
+import com.wd.woodong2.BuildConfig
 import com.wd.woodong2.R
 import com.wd.woodong2.WooDongApp
 import okhttp3.Interceptor
@@ -11,7 +12,7 @@ class GCMRequestInterceptor : Interceptor {
         val newRequest = chain.request().newBuilder()
             .addHeader(
                 "Authorization", "key=%s".format(
-                    WooDongApp.getApp().getString(R.string.gcm_api)
+                    BuildConfig.GCM_API_KEY
                 )
             )
             .addHeader("Content-Type", "application/json")

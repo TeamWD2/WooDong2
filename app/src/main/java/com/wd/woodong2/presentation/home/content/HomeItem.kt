@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class HomeItem(
     val id: String = "",
+    val userId : String = "",
     val name: String = "",
     val tag: String = "",
     val groupTag: String = "",
@@ -20,6 +21,7 @@ data class HomeItem(
     var thumbCount: Int = 0,
     var chatCount: Int = 0,
     var isLiked: Boolean = false,
-    var comments: MutableList<CommentItem> = mutableListOf()
+    var comments: MutableList<CommentItem> = mutableListOf(),
+    val likedBy: MutableList<String> = mutableListOf()
 ) : Parcelable
 

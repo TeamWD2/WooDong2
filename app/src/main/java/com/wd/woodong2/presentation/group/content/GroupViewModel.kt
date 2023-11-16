@@ -73,11 +73,8 @@ class GroupViewModel(
     private val _circumLocationList: MutableLiveData<List<HomeMapSearchItem>> = MutableLiveData()
     val circumLocationList: LiveData<List<HomeMapSearchItem>> get() = _circumLocationList
 
-    var circumLocation = mutableSetOf<String>()
+    private var circumLocation = mutableSetOf<String>()
 
-//    init {
-//        userInfo.postValue(getUserInfo())
-//    }
     fun setKeyword(keyword: String) {
         _searchKeyword.value = keyword
     }
@@ -242,7 +239,7 @@ class GroupViewModel(
                     images = entity.images?.toSortedMap(reverseOrder())?.values?.toList()
                 )
             }
-        }.sortedBy { it.id }
+        }.sortedByDescending { it.id }
     }
 
     fun circumLocationItemSearch(

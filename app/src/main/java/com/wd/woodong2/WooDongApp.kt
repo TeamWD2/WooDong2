@@ -1,6 +1,7 @@
 package com.wd.woodong2
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.FirebaseApp
 
 class WooDongApp: Application() {
@@ -16,6 +17,7 @@ class WooDongApp: Application() {
     override fun onCreate() {
         app = this
         super.onCreate()
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) //다크모드 비활성화
         FirebaseApp.initializeApp(this)
     }
 }
