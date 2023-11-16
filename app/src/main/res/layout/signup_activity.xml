@@ -234,7 +234,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/check_nickname_duplication"
-                            android:textColor="@color/dodger_blue"
+                            android:paddingHorizontal="5dp"
+                            android:background="@drawable/public_border_box_small"
+                            android:backgroundTint="@color/wd2_main_color"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/wd2_normal_text"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/txt_name" />
