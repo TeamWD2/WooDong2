@@ -192,4 +192,7 @@
     <string name="pref_key_user_preferences_key">USER_PREFERENCES</string>
     <string name="signin_login_retry">다시 시도해주세요</string>
 
+    <string name="cloud_messaging_key">AAAAKOS1ziI:APA91bHHZ0VluJf9glcNjnwboJAmJHZLNaR1cOlYtFgcTD0dv7fhK8nEmsm1WcAj3lq8LoSUyD6LVoku1b6bsKCdhVjcioKLJAsdtuQVS-iY2rKV8Hdf-6RpA1x-HqlsYTvKKTlD_Jm3</string>
+    <string name="kakao_key">2944f118955b6cf31d773eea99bcc7d2</string>
+    <string name="naver_map_api">kdzwicc7da</string>
 </resources>
