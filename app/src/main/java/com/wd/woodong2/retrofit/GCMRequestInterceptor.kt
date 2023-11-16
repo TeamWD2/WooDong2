@@ -12,7 +12,7 @@ class GCMRequestInterceptor : Interceptor {
         val newRequest = chain.request().newBuilder()
             .addHeader(
                 "Authorization", "key=%s".format(
-                    BuildConfig.GCM_API_KEY
+                    WooDongApp.getApp().getString(R.string.cloud_messaging_key)
                 )
             )
             .addHeader("Content-Type", "application/json")
