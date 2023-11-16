@@ -23,16 +23,15 @@ import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.MapSearchEntity
-import com.wd.woodong2.domain.model.UserEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.repository.MapSearchRepository
-import com.wd.woodong2.domain.usecase.MapSearchCircumLocationGetItemsUseCase
-import com.wd.woodong2.domain.usecase.MapSearchGetItemsUseCase
-import com.wd.woodong2.domain.usecase.UserGetItemUseCase
-import com.wd.woodong2.domain.usecase.UserPrefEditItemUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
-import com.wd.woodong2.domain.usecase.UserRemoveIdsUseCase
-import com.wd.woodong2.domain.usecase.UserUpdateInfoUseCase
+import com.wd.woodong2.domain.usecase.map.MapSearchCircumLocationGetItemsUseCase
+import com.wd.woodong2.domain.usecase.map.MapSearchGetItemsUseCase
+import com.wd.woodong2.domain.usecase.user.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefEditItemUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.user.UserRemoveIdsUseCase
+import com.wd.woodong2.domain.usecase.user.UserUpdateInfoUseCase
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.home.map.HomeMapSearchItem
 import com.wd.woodong2.retrofit.KAKAORetrofitClient
@@ -235,7 +234,7 @@ class HomeViewModel(
 
                             val combinedList = existingList.toMutableList()
                                 .apply { addAll(filteredList.orEmpty()) }
-                            _printList.value = combinedList.reversed()
+                            _printList.value = combinedList
 
                         }
                     }

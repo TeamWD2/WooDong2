@@ -2,7 +2,6 @@ package com.wd.woodong2.presentation.mypage.content.written
 
 import android.content.Context
 import android.util.Log
-import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,10 +20,9 @@ import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.UserGetItemUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.user.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
-import com.wd.woodong2.presentation.chat.detail.ChatDetailViewModel
 import com.wd.woodong2.presentation.home.content.HomeItem
 import kotlinx.coroutines.launch
 

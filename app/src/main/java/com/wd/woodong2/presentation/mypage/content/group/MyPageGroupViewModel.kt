@@ -24,20 +24,17 @@ import com.wd.woodong2.domain.model.GroupItemsEntity
 import com.wd.woodong2.domain.model.GroupMainEntity
 import com.wd.woodong2.domain.model.GroupMemberEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.GroupGetItemsUseCase
-import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.group.GroupGetItemsUseCase
+import com.wd.woodong2.domain.usecase.user.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
 import com.wd.woodong2.presentation.group.content.GroupItem
-import com.wd.woodong2.presentation.group.content.GroupViewModel
-import com.wd.woodong2.presentation.home.content.HomeItem
-import com.wd.woodong2.presentation.mypage.content.thumb.MyPageThumbViewModel
 import kotlinx.coroutines.launch
 
 class MyPageGroupViewModel(
     private val prefGetUserItem: UserPrefGetItemUseCase,
     private val groupGetItems: GroupGetItemsUseCase,
-    private val userItem: UserGetItemsUseCase,
+    private val userItem: UserGetItemUseCase,
 ) : ViewModel(){
     companion object {
         private const val TAG = "GroupViewModel"
@@ -271,7 +268,7 @@ class MyPageGroupViewModelFactory(
             return MyPageGroupViewModel(
                 UserPrefGetItemUseCase(userPrefRepository),
                 GroupGetItemsUseCase(repository),
-                UserGetItemsUseCase(userRepositoryImpl),
+                UserGetItemUseCase(userRepositoryImpl),
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")

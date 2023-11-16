@@ -191,15 +191,11 @@ class MyPageUpdateActivity : AppCompatActivity() {
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
                     myPageUpdateViewModel.checkValidNickname(text.toString().trim())
-                    nameDupCheck.apply {
-                        text = "중복 체크"
-                        setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
-                    }
                 }
             })
         }
 
-        nameDupCheck.setOnClickListener {
+        btnNameDupCheck.setOnClickListener {
             myPageUpdateViewModel.checkNicknameDuplication(
                 editUpdateUserName.text.toString().trim()
             )

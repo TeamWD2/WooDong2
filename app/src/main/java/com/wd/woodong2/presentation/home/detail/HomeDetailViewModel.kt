@@ -1,7 +1,6 @@
 package com.wd.woodong2.presentation.home.detail
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,13 +14,11 @@ import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.UserAddIdsUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
-import com.wd.woodong2.domain.usecase.UserRemoveIdsUseCase
+import com.wd.woodong2.domain.usecase.user.UserAddIdsUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.user.UserRemoveIdsUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
-import com.wd.woodong2.presentation.home.add.HomeAddViewModel
 import com.wd.woodong2.presentation.home.content.HomeItem
-import com.wd.woodong2.presentation.home.content.HomeViewModel
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 
 class HomeDetailViewModel(
