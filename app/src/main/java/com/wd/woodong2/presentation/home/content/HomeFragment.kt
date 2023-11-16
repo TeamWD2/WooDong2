@@ -228,22 +228,19 @@ class HomeFragment : Fragment() {
     private fun initViewModel() {
         with(viewModel) {
 
-            list.observe(viewLifecycleOwner) { newList ->
-                _printList.value = newList.filter { item ->
-                    circumLocation.contains(item.location)
-                }
-            }
+//            list.observe(viewLifecycleOwner) { newList ->
+//                _printList.value = newList.filter { item ->
+//                    circumLocation.contains(item.location)
+//                }
+//            }
 
             printList.observe(viewLifecycleOwner) {
                 listAdapter.submitList(it)
             }
 
             userInfo.observe(viewLifecycleOwner) { userInfo ->
-                val filteredList =
+                _printList.value =
                     list.value?.filter { it.location == userInfo?.firstLocation } ?: emptyList()
-                _printList.value = filteredList
-
-
 
                 printList.value?.let { list ->
                     if (list.size < 10) {
