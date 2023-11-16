@@ -70,7 +70,6 @@ class MyPageViewModel(
                     )
 
                 userInfo.postValue(userItem)
-                Log.d(TAG, userItem.toString())
             }
         }.onFailure {
             Log.e(TAG, it.message.toString())
