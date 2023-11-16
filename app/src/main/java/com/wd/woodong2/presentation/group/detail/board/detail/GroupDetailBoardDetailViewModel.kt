@@ -12,9 +12,9 @@ import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
-import com.wd.woodong2.domain.usecase.GroupAddBoardCommentUseCase
-import com.wd.woodong2.domain.usecase.GroupDeleteBoardCommentUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.group.GroupAddBoardCommentUseCase
+import com.wd.woodong2.domain.usecase.group.GroupDeleteBoardCommentUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import com.wd.woodong2.presentation.group.content.GroupItem
 import kotlinx.coroutines.launch

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.wd.woodong2.data.repository.MapSearchRepositoryImpl
 import com.wd.woodong2.domain.repository.MapSearchRepository
-import com.wd.woodong2.domain.usecase.MapSearchGetItemsUseCase
+import com.wd.woodong2.domain.usecase.map.MapSearchGetItemsUseCase
 import com.wd.woodong2.retrofit.KAKAORetrofitClient
 
 class HomeMapSearchViewModelFactory : ViewModelProvider.Factory {

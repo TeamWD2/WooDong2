@@ -10,8 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.databinding.MyPageThumbFragmentBinding
 import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
-import com.wd.woodong2.presentation.mypage.content.MyPageFragment
-
 
 class MyPageThumbFragment : Fragment() {
 
@@ -24,7 +22,7 @@ class MyPageThumbFragment : Fragment() {
                     HomeDetailActivity.homeDetailActivityNewIntent(
                         requireContext(),
                         item,
-                        )
+                    )
                 )
             }
         )
@@ -54,14 +52,11 @@ class MyPageThumbFragment : Fragment() {
     }
     private fun initViewModel(){
         with(viewModel){
-            list.observe(viewLifecycleOwner){
-                getUser()
-            }
             printList.observe(viewLifecycleOwner){
                 listAdapter.submitList(it)
             }
             loadingState.observe(viewLifecycleOwner) { loadingState ->
-                binding.progressBar.isVisible = loadingState ?: false
+                binding.progressBar.isVisible = loadingState
             }
             isEmptyList.observe(viewLifecycleOwner){isEmptyList->
                 binding.txtEmptyThumbList.isVisible = isEmptyList ?: false

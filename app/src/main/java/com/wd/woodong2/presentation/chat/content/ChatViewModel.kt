@@ -19,9 +19,9 @@ import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.model.ChatItemsEntity
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.ChatGetItemsUseCase
-import com.wd.woodong2.domain.usecase.UserGetItemUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.chat.ChatGetItemsUseCase
+import com.wd.woodong2.domain.usecase.user.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
