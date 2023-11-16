@@ -35,7 +35,7 @@
     <string name="home_map_bottom_sheet_near_location_set_2"> 개 </string>
     <string name="home_map_search_btn">동명(읍, 면)으로 검색(ex. 서초동)</string>
     <string name="home_map_search_error_btn">동명(읍, 면)으로 검색해주세요.</string>
-    <string name="home_map_search_kakao_api">2944f118955b6cf31d773eea99bcc7d2</string>
+
     <string name="home_map_naver_api">kdzwicc7da</string>
     <string name="home_map_search_location_error">처음 위치 설정이 완료 되지 않았습니다.</string>
     <string name="home_map_search_location_also_error">주소가 중복설정 되었습니다.</string>
@@ -157,8 +157,6 @@
     <string name="my_page_update_user_password_check">비밀번호 변경 확인</string>
     <string name="my_page_update_et_user_password_check_edit">변경할 비밀번호를 다시 입력해주세요.</string>
     <string name="my_page_update_btn">수정하기</string>
-
-    <string name="gcm_api">AAAAKOS1ziI:APA91bHHZ0VluJf9glcNjnwboJAmJHZLNaR1cOlYtFgcTD0dv7fhK8nEmsm1WcAj3lq8LoSUyD6LVoku1b6bsKCdhVjcioKLJAsdtuQVS-iY2rKV8Hdf-6RpA1x-HqlsYTvKKTlD_Jm3</string>
 
     <string name="wd2">우동이</string>
 
