@@ -1,13 +1,10 @@
 package com.wd.woodong2.presentation.mypage.content.thumb
 
-
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -21,21 +18,15 @@ import com.wd.woodong2.data.repository.UserRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
-import com.wd.woodong2.domain.usecase.UserGetItemsUseCase
-import com.wd.woodong2.domain.usecase.UserPrefGetItemUseCase
+import com.wd.woodong2.domain.usecase.user.UserGetItemUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.chat.content.UserItem
-import com.wd.woodong2.presentation.chat.detail.ChatDetailViewModel
 import com.wd.woodong2.presentation.home.content.HomeItem
-import kotlinx.coroutines.launch
 
 class MyPageThumbViewModel(
     private val prefGetUserItem: UserPrefGetItemUseCase,
-    private val userItem: UserGetItemsUseCase,
-) : ViewModel(){
-    companion object {
-        private val TAG = "MyPageThumbViewModel"
-    }
-
+    private val userItem: UserGetItemUseCase,
+) : ViewModel() {
     private val _list: MutableLiveData<List<HomeItem>> = MutableLiveData()
     val list: LiveData<List<HomeItem>> get() = _list
 
@@ -51,45 +42,33 @@ class MyPageThumbViewModel(
 
     init {
         loadDataFromFirebase()
-        getUser()
-    }
-
-
-    fun getUser() = viewModelScope.launch {
-        _loadingState.value = true
-        runCatching {
-            userItem(userId).collect { user ->
-                _printList.value = list.value?.filter { item ->
-                    user?.likedIds?.contains(item.id) == true
-                }
-                _isEmptyList.value = _printList.value?.isEmpty()
-                _loadingState.value = false
-            }
-        }.onFailure {
-            Log.e(TAG, it.message.toString())
-            _loadingState.value = false
-        }
     }
 
     private fun loadDataFromFirebase() {
+        _loadingState.value = true  // 데이터 로딩 시작
+
         val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val dataList = ArrayList<HomeItem>()
-
                 for (postSnapshot in dataSnapshot.children) {
                     val firebaseData = postSnapshot.getValue(HomeItem::class.java)
-                    if (firebaseData != null) {
+                    if (firebaseData != null && userId in firebaseData.likedBy) {
                         dataList.add(firebaseData)
                     }
                 }
                 _list.value = dataList.reversed()
+                _printList.value = dataList
+                _isEmptyList.value = dataList.isEmpty()
+                _loadingState.value = false  // 데이터 로딩 완료
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
+                _loadingState.value = false  // 데이터 로딩 실패 또는 취소
             }
         })
     }
+
     fun getUserInfo() =
         prefGetUserItem()?.let {
             UserItem(
@@ -106,12 +85,11 @@ class MyPageThumbViewModel(
             )
         }
 }
+
 class MyPageThumbViewModelFactory(
     val context: Context
 ) : ViewModelProvider.Factory {
-
     private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
-    //private val databaseReference = FirebaseDatabase.getInstance()
 
     val userPrefRepository = UserPreferencesRepositoryImpl(
         SignInPreferenceImpl(
@@ -122,7 +100,6 @@ class MyPageThumbViewModelFactory(
         )
     )
 
-
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
             FirebaseDatabase.getInstance().getReference("user_list"),
@@ -131,16 +108,14 @@ class MyPageThumbViewModelFactory(
         )
     }
 
-
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MyPageThumbViewModel::class.java)) {
             return MyPageThumbViewModel(
                 UserPrefGetItemUseCase(userPrefRepository),
-                UserGetItemsUseCase(userRepositoryImpl),
+                UserGetItemUseCase(userRepositoryImpl),
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
         }
-
     }
 }

@@ -15,10 +15,8 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-
 class MyPageThumbListAdapter (
     private val onClickItem: (Int, HomeItem) -> Unit,
-    //private val chatIds : String?     -> map 형식
 ): ListAdapter<HomeItem, MyPageThumbListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<HomeItem>() {
         override fun areItemsTheSame(
@@ -39,33 +37,29 @@ class MyPageThumbListAdapter (
     class ViewHolder(
         private val binding: HomeListItemBinding,
         private val onClickItem: (Int, HomeItem) -> Unit,
-        //private val chatId : String?      ->map 형식
     ): RecyclerView.ViewHolder(binding.root){
 
         //아이템 기본 설정
         // 모든 아이템을 갖고 오는게 아니라 가입한 그룹의 데이터만 갖고오기 설정
-
         fun bind(item: HomeItem) = with(binding){
-            //if(item.isLiked){
-                homeListItemBtnTag.text = item.tag
-                homeListItemThumbnail.load(item.thumbnail) {
-                    error(R.drawable.public_default_wd2_ivory)
-                }
-                homeListItemTvTitle.text = item.title
-                homeListItemTvDescription.text = item.description
+            homeListItemBtnTag.text = item.tag
+            homeListItemThumbnail.load(item.thumbnail) {
+                error(R.drawable.public_default_wd2_ivory)
+            }
+            homeListItemTvTitle.text = item.title
+            homeListItemTvDescription.text = item.description
 
-                homeListItemTvLocation.text = HomeMapActivity.extractLocationInfo(item.location)
-                homeListItemTvTimeStamp.text = formatTimestamp(item.timeStamp)
+            homeListItemTvLocation.text = HomeMapActivity.extractLocationInfo(item.location)
+            homeListItemTvTimeStamp.text = formatTimestamp(item.timeStamp)
 
-                homeListItemTvThumbCount.text = item.thumbCount.toString()
-                homeListItemTvChatCount.text = item.chatCount.toString()
+            homeListItemTvThumbCount.text = item.thumbCount.toString()
+            homeListItemTvChatCount.text = item.chatCount.toString()
 
-                homeListItem.setOnClickListener{
-                    onClickItem(
-                        adapterPosition,item
-                    )
-                }
-            //}
+            homeListItem.setOnClickListener{
+                onClickItem(
+                    bindingAdapterPosition,item
+                )
+            }
         }
         private fun formatTimestamp(timestamp: Long?): String {
             if (timestamp == null) return "정보 없음"

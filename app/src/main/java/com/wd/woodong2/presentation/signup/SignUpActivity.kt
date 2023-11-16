@@ -167,16 +167,13 @@ class SignUpActivity : AppCompatActivity() {
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
                     signViewModel.checkValidNickname(text.toString().trim())
-                    txtCheckNicknameDuplication.apply {
-                        text = "중복 체크"
-                    }
                 }
             })
         }
 
-        txtCheckNicknameDuplication.setOnClickListener {
+        btnCheckNicknameDuplication.setOnClickListener {
             val nickname = editName.text.toString().trim()
-            if (nickname != "") {
+            if (nickname.length > 1) {
                 signViewModel.checkNicknameDuplication(nickname)
             } else {
                 Toast.makeText(
