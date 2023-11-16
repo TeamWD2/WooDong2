@@ -51,12 +51,27 @@ class MyPageThumbViewModel(
 
     init {
         loadDataFromFirebase()
+        getUser()
+    }
 
+
+    fun getUser() = viewModelScope.launch {
+        _loadingState.value = true
+        runCatching {
+            userItem(userId).collect { user ->
+                _printList.value = list.value?.filter { item ->
+                    user?.likedIds?.contains(item.id) == true
+                }
+                _isEmptyList.value = _printList.value?.isEmpty()
+                _loadingState.value = false
+            }
+        }.onFailure {
+            Log.e(TAG, it.message.toString())
+            _loadingState.value = false
+        }
     }
 
     private fun loadDataFromFirebase() {
-        _loadingState.value = true  // 데이터 로딩 시작
-
         val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -64,22 +79,17 @@ class MyPageThumbViewModel(
 
                 for (postSnapshot in dataSnapshot.children) {
                     val firebaseData = postSnapshot.getValue(HomeItem::class.java)
-                    if (firebaseData != null && userId in firebaseData.likedBy) {
+                    if (firebaseData != null) {
                         dataList.add(firebaseData)
                     }
                 }
                 _list.value = dataList.reversed()
-                _printList.value = dataList
-                _isEmptyList.value = dataList.isEmpty()
-                _loadingState.value = false  // 데이터 로딩 완료
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                _loadingState.value = false  // 데이터 로딩 실패 또는 취소
             }
         })
     }
-
     fun getUserInfo() =
         prefGetUserItem()?.let {
             UserItem(

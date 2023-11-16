@@ -157,7 +157,6 @@ class HomeViewModel(
                 _printList.value = list.value?.filter { item ->
                     circumLocation.contains(item.location)
                 }
-
             }
 
             if ((printList.value?.size ?: 0) < 10) {
@@ -236,7 +235,7 @@ class HomeViewModel(
 
                             val combinedList = existingList.toMutableList()
                                 .apply { addAll(filteredList.orEmpty()) }
-                            _printList.value = combinedList
+                            _printList.value = combinedList.reversed()
 
                         }
                     }

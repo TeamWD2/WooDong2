@@ -55,14 +55,14 @@ class MyPageWrittenViewModel (
         getUser()
     }
 
-    private fun getUser() = viewModelScope.launch {
+    fun getUser() = viewModelScope.launch {
         _loadingState.value = true
         runCatching {
             userItem(userId).collect { user ->
-                _isEmptyList.value = _printList.value?.isEmpty()
                 _printList.value = list.value?.filter { item ->
                     user?.writtenIds?.contains(item.id) == true
                 }
+                _isEmptyList.value = _printList.value?.isEmpty()
                 _loadingState.value = false
             }
         }.onFailure {
