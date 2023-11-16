@@ -146,7 +146,10 @@ class HomeDetailActivity : AppCompatActivity() {
     }
 
     private fun updateLikeButton(homeItem: HomeItem) {
-        val likeButtonResource = if (homeItem.isLiked) R.drawable.home_detail_favorite_filled
+        val currentUserID = viewModel.getUserInfo()?.id ?: "UserId"
+        val isLiked = currentUserID in homeItem.likedBy
+
+        val likeButtonResource = if (isLiked) R.drawable.home_detail_favorite_filled
         else R.drawable.home_list_favorite
         binding.imgHomeUnlike.setImageResource(likeButtonResource)
     }
