@@ -24,6 +24,7 @@ android {
 
         buildConfigField "String", "GCM_API_KEY", properties["gcm_key"]
         buildConfigField "String", "KAKAO_API_KEY", properties["kakao_key"]
+        buildConfigField "String", "NAVER_MAP_API", properties["naver_map_api"]
     }
 
     buildTypes {

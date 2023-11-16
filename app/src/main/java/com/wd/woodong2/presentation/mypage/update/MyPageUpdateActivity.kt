@@ -107,6 +107,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
                     myPageUpdateViewModel.setProfileImage(uri)
                     if (profile.isNullOrEmpty().not()) {
                         myPageUpdateViewModel._isValidImg.value = true
+
                     }
                 }
             }

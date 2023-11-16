@@ -53,6 +53,9 @@ class MyPageWrittenFragment : Fragment() {
     }
     private fun initViewModel(){
         with(viewModel){
+            list.observe(viewLifecycleOwner){
+                getUser()
+            }
             printList.observe(viewLifecycleOwner){
                 listAdapter.submitList(it)
             }
