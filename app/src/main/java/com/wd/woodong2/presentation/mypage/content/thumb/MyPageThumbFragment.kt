@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.databinding.MyPageThumbFragmentBinding
 import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
+import com.wd.woodong2.presentation.mypage.content.written.MyPageWrittenListAdapter
 
 class MyPageThumbFragment : Fragment() {
 
@@ -17,14 +18,18 @@ class MyPageThumbFragment : Fragment() {
     private val binding get() = _binding!!
     private val listAdapter by lazy {
         MyPageThumbListAdapter(
-            onClickItem = { _,item ->
+            currentUser = viewModel.getUserInfo(),
+            onClickItem = { item ->
                 startActivity(
                     HomeDetailActivity.homeDetailActivityNewIntent(
                         requireContext(),
                         item,
                     )
                 )
-            }
+            },
+            onDeleteItem = { item ->
+                viewModel.deleteItem(item)
+            },
         )
     }
     private val viewModel : MyPageThumbViewModel by viewModels {
