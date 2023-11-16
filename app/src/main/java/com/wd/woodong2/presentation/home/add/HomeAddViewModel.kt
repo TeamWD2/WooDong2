@@ -58,7 +58,8 @@ class HomeAddViewModel(
                         val newRef = databaseReference.push()
                         val newItemId = newRef.key ?: ""
                         val data = HomeAddItem(
-                            newItemId,
+                            id = newItemId,
+                            userId = getUserInfo()?.id ?: "defaultUserId",
                             name = name.toString(),
                             tag = selectedTag,
                             groupTag = groupTag.toString(),
@@ -79,6 +80,7 @@ class HomeAddViewModel(
                 val newItemId = newRef.key ?: ""
                 val data = HomeAddItem(
                     id = newItemId,
+                    userId = getUserInfo()?.id ?: "defaultUserId",
                     name = name.toString(),
                     tag = selectedTag,
                     groupTag = groupTag.toString(),

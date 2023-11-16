@@ -68,46 +68,62 @@ class HomeDetailViewModel(
     }
 
     fun updateChatCount(homeItem: HomeItem) {
-        homeItem.chatCount = homeItem.comments.size
-        itemRef.setValue(homeItem)
+        val updateMap = mapOf("chatCount" to homeItem.comments.size)
+        itemRef.updateChildren(updateMap)
     }
 
     fun toggleThumbCount(homeItem: HomeItem) {
-    val newCount = if (homeItem.isLiked){
-        homeItem.thumbCount - 1
-        }
-    else{
-        homeItem.thumbCount + 1
+        val currentUserID = getUserInfo()?.id ?: "UserId"
+        val isLiked = currentUserID in homeItem.likedBy
 
+        if (isLiked) {
+            homeItem.likedBy.remove(currentUserID)
+            homeItem.thumbCount--
+        } else {
+            homeItem.likedBy.add(currentUserID)
+            homeItem.thumbCount++
         }
-        if (homeItem.isLiked){
-            userRemoveIdsUseCase(getUserInfo()?.id ?: "UserId",null,homeItem.id,null,null)
+
+        val updateMap = mapOf(
+            "likedBy" to homeItem.likedBy,
+            "thumbCount" to homeItem.thumbCount
+        )
+
+        // updateChildren 메소드를 사용하여 데이터베이스 업데이트
+        itemRef.updateChildren(updateMap).addOnSuccessListener {
+            _thumbCountLiveData.value = homeItem.thumbCount
+        }.addOnFailureListener {
+            // 에러 처리
         }
-        else{
-            userAddIdsUseCase(getUserInfo()?.id ?: "UserId",null,homeItem.id)
-        }
-    homeItem.isLiked = !homeItem.isLiked
-    ///itemRef.setValue(homeItem)///
-    homeItem.thumbCount = newCount
-    itemRef.setValue(homeItem).addOnSuccessListener {
-        _thumbCountLiveData.value = homeItem.thumbCount
-        _commentsLiveData.value = homeItem.comments
-    }.addOnFailureListener {
     }
-}
 
     fun deleteComment(homeItem: HomeItem, commentToDelete: CommentItem) {
         itemRef.child("comments").child(commentToDelete.timestamp.toString()).removeValue().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 homeItem.comments.remove(commentToDelete)
-                _commentsLiveData.value = homeItem.comments
-                updateChatCount(homeItem)
+
+                // 업데이트할 데이터 맵을 준비
+                val updateMap = mapOf(
+                    "comments" to homeItem.comments,
+                    "chatCount" to homeItem.comments.size
+                )
+
+                // Firebase 데이터베이스 업데이트
+                itemRef.updateChildren(updateMap).addOnSuccessListener {
+                    _commentsLiveData.value = homeItem.comments
+                    // 다른 필요한 UI 업데이트 처리
+                }.addOnFailureListener {
+                    // 에러 처리
+                }
             } else {
+                // 삭제 실패 시 에러 처리
                 task.exception?.let {
+                    // 에러 처리
                 }
             }
         }
     }
+
 
     fun getUserInfo() =
         prefGetUserItem()?.let {
