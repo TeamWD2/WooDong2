@@ -14,244 +14,264 @@
         android:background="@drawable/signup_round_bg"
         android:padding="@dimen/wd2_box_padding">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_profile"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:layout_marginTop="20dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/signup_ic_add_profile"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/roundedImageView"
-            app:strokeWidth="3dp" />
-
-        <TextView
-            android:id="@+id/txt_img_profile"
+        <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:text="@string/my_page_btn_update_profile"
-            android:textSize="@dimen/wd2_normal_text"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/layout_input"
+            android:layout_height="0dp"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@id/btn_summit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_img_profile">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_input_id"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/txt_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/signin_id"
-                    android:textSize="@dimen/wd2_normal_text"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/txt_check_id_duplication"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/check_id_duplication"
-                    android:textColor="@color/red"
-                    android:textSize="@dimen/wd2_normal_text"
-                    android:visibility="invisible"
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_profile"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="20dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/signup_ic_add_profile"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/txt_id" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/roundedImageView"
+                    app:strokeWidth="3dp" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_id"
+                <TextView
+                    android:id="@+id/txt_img_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:theme="@style/EditTextWD2Style"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_id">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edit_id"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:imeOptions="actionGo"
-                        android:singleLine="true"
-                        android:textColor="#CC999999"
-                        android:textSize="@dimen/wd2_normal_text" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_input_pw"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layout_input_id">
-
-                <TextView
-                    android:id="@+id/txt_pw"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/signin_pw"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:text="@string/my_page_btn_update_profile"
                     android:textSize="@dimen/wd2_normal_text"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/txt_check_correct_pw"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/dodger_blue"
-                    android:textSize="@dimen/wd2_normal_text"
-                    app:layout_constraintBottom_toBottomOf="@+id/txt_pw"
+                    app:layout_constraintBottom_toTopOf="@+id/layout_input"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/txt_pw" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_pw"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:theme="@style/EditTextWD2Style"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_pw"
-                    app:passwordToggleTint="@color/wd2_main_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edit_pw"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:imeOptions="actionGo"
-                        android:inputType="textPassword"
-                        android:singleLine="true"
-                        android:textColor="#CC999999"
-                        android:textSize="@dimen/wd2_normal_text" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_input_pw_check"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layout_input_pw">
-
-                <TextView
-                    android:id="@+id/txt_pw_check"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/signup_pw_check"
-                    android:textSize="@dimen/wd2_normal_text"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/txt_check_pw_notification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/txt_check_pw_notification"
-                    android:textColor="@color/dodger_blue"
-                    android:textSize="@dimen/wd2_normal_text"
-                    android:visibility="invisible"
+                    android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/txt_pw_check" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_pw_check"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:theme="@style/EditTextWD2Style"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_pw_check"
-                    app:passwordToggleTint="@color/wd2_main_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edit_pw_check"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:imeOptions="actionGo"
-                        android:inputType="textPassword"
-                        android:singleLine="true"
-                        android:textColor="#CC999999"
-                        android:textSize="@dimen/wd2_normal_text" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_input_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layout_input_pw_check">
-
-                <TextView
-                    android:id="@+id/txt_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/signup_name"
-                    android:textSize="@dimen/wd2_normal_text"
-                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/txt_img_profile">
 
-                <TextView
-                    android:id="@+id/txt_check_nickname_duplication"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/check_nickname_duplication"
-                    android:textColor="@color/dodger_blue"
-                    android:textSize="@dimen/wd2_normal_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/txt_name" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:theme="@style/EditTextWD2Style"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_name">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edit_name"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_input_id"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:imeOptions="actionGo"
-                        android:singleLine="true"
-                        android:textColor="#CC999999"
-                        android:textSize="@dimen/wd2_normal_text" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/txt_id"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/signin_id"
+                            android:textSize="@dimen/wd2_normal_text"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_check_id_duplication"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/check_id_duplication"
+                            android:textColor="@color/red"
+                            android:textSize="@dimen/wd2_normal_text"
+                            android:visibility="invisible"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/txt_id" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_id"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/EditTextWD2Style"
+                            app:layout_constraintTop_toBottomOf="@+id/txt_id">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edit_id"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:imeOptions="actionGo"
+                                android:singleLine="true"
+                                android:textColor="#CC999999"
+                                android:textSize="@dimen/wd2_normal_text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_input_pw"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/layout_input_id">
+
+                        <TextView
+                            android:id="@+id/txt_pw"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/signin_pw"
+                            android:textSize="@dimen/wd2_normal_text"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_check_correct_pw"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/dodger_blue"
+                            android:textSize="@dimen/wd2_normal_text"
+                            app:layout_constraintBottom_toBottomOf="@+id/txt_pw"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/txt_pw" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_pw"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/EditTextWD2Style"
+                            app:layout_constraintTop_toBottomOf="@+id/txt_pw"
+                            app:passwordToggleTint="@color/wd2_main_color">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edit_pw"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:imeOptions="actionGo"
+                                android:inputType="textPassword"
+                                android:singleLine="true"
+                                android:textColor="#CC999999"
+                                android:textSize="@dimen/wd2_normal_text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_input_pw_check"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/layout_input_pw">
+
+                        <TextView
+                            android:id="@+id/txt_pw_check"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/signup_pw_check"
+                            android:textSize="@dimen/wd2_normal_text"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_check_pw_notification"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/txt_check_pw_notification"
+                            android:textColor="@color/dodger_blue"
+                            android:textSize="@dimen/wd2_normal_text"
+                            android:visibility="invisible"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/txt_pw_check" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_pw_check"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/EditTextWD2Style"
+                            app:layout_constraintTop_toBottomOf="@+id/txt_pw_check"
+                            app:passwordToggleTint="@color/wd2_main_color">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edit_pw_check"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:imeOptions="actionGo"
+                                android:inputType="textPassword"
+                                android:singleLine="true"
+                                android:textColor="#CC999999"
+                                android:textSize="@dimen/wd2_normal_text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_input_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/layout_input_pw_check">
+
+                        <TextView
+                            android:id="@+id/txt_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/signup_name"
+                            android:textSize="@dimen/wd2_normal_text"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txt_check_nickname_duplication"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/check_nickname_duplication"
+                            android:paddingHorizontal="5dp"
+                            android:background="@drawable/public_border_box_small"
+                            android:backgroundTint="@color/wd2_main_color"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/wd2_normal_text"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/txt_name" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/EditTextWD2Style"
+                            app:layout_constraintTop_toBottomOf="@+id/txt_name">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edit_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:imeOptions="actionGo"
+                                android:singleLine="true"
+                                android:textColor="#CC999999"
+                                android:textSize="@dimen/wd2_normal_text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
 
         <com.wd.woodong2.presentation.customview.CustomRegularButton
             android:id="@+id/btn_summit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/wd2_box_padding"
+            android:layout_marginTop="@dimen/wd2_box_padding"
+            app:btn_text="@string/signup"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="parent"
-            app:btn_text="@string/signup" />
+            app:layout_constraintTop_toBottomOf="@id/scrollView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

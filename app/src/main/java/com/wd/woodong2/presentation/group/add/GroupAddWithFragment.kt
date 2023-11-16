@@ -34,22 +34,7 @@ class GroupAddWithFragment: Fragment() {
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                val pwdPattern = Pattern.matches(
-                    "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{8,16}$",
-                    binding.edtPassword.text.toString().trim()
-                )
-                if (pwdPattern) {
-                    binding.txtPasswordValid.apply {
-                        setText(R.string.group_add_txt_password_valid)
-                        setTextColor(Color.GREEN)
-                        sharedViewModel.setItem("password", binding.edtPassword.text.toString())
-                    }
-                } else {
-                    binding.txtPasswordValid.apply {
-                        setText(R.string.group_add_txt_password_invalid)
-                        setTextColor(Color.RED)
-                    }
-                }
+                sharedViewModel.setItem("password", binding.edtPassword.text.toString())
             }
         }
     }
@@ -100,11 +85,10 @@ class GroupAddWithFragment: Fragment() {
                     setBackgroundResource(R.drawable.group_border_box_disabled)
                     removeTextChangedListener(textWatcher)
                     sharedViewModel.setItem("password", "[WD2] No Password")
-                    txtPasswordValid.text = ""
                 } else {
                     setBackgroundResource(R.drawable.public_border_box)
                     addTextChangedListener(textWatcher)
-                    sharedViewModel.setItem("password", "")
+                    sharedViewModel.setItem("password", binding.edtPassword.text.toString())
                 }
             }
         }

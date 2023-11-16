@@ -51,8 +51,7 @@ class MyPageThumbViewModel(
 
     init {
         loadDataFromFirebase()
-        getUser()
-    }
+
 
     fun getUser() = viewModelScope.launch {
         _loadingState.value = true
@@ -71,6 +70,8 @@ class MyPageThumbViewModel(
     }
 
     private fun loadDataFromFirebase() {
+        _loadingState.value = true  // 데이터 로딩 시작
+
         val databaseReference = FirebaseDatabase.getInstance().reference.child("home_list")
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -78,17 +79,22 @@ class MyPageThumbViewModel(
 
                 for (postSnapshot in dataSnapshot.children) {
                     val firebaseData = postSnapshot.getValue(HomeItem::class.java)
-                    if (firebaseData != null) {
+                    if (firebaseData != null && userId in firebaseData.likedBy) {
                         dataList.add(firebaseData)
                     }
                 }
                 _list.value = dataList.reversed()
+                _printList.value = dataList
+                _isEmptyList.value = dataList.isEmpty()
+                _loadingState.value = false  // 데이터 로딩 완료
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
+                _loadingState.value = false  // 데이터 로딩 실패 또는 취소
             }
         })
     }
+
     fun getUserInfo() =
         prefGetUserItem()?.let {
             UserItem(
