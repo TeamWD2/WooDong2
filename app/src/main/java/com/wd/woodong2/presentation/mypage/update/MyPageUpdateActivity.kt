@@ -672,7 +672,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
         AlertDialog.Builder(this@MyPageUpdateActivity).apply {
             setTitle(R.string.public_dialog_rational_title)
             setMessage(R.string.public_dialog_rational_message)
-            setPositiveButton(R.string.public_dialog_rational_ok) { _, _ ->
+            setPositiveButton(R.string.public_dialog_ok) { _, _ ->
                 galleryPermissionLauncher.launch(permissions)
             }
             show()

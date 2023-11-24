@@ -16,7 +16,12 @@
     <string name="public_dialog_rational_title">권한 요청</string>
     <string name="public_dialog_rational_message">프로필 설정 및 게시글 작성, 모임 생성 등의 기능을 원활하게 사용하기 위해서는 해당 권한이 필요합니다.\n
         만약 해당 권한을 거부하시면, 일부 기능이 제한될 수 있습니다.\n\n이후 해당 기능을 사용하고 싶으신 경우, 설정 메뉴에서 권한을 허용하실 수 있습니다.</string>
-    <string name="public_dialog_rational_ok">확인</string>
+    <string name="public_dialog_ok">확인</string>
+    <string name="public_dialog_cancel">취소</string>
+
+    <string name="home_dialog_no_location_title">위치 설정 요청</string>
+    <string name="home_dialog_no_location_message">"우동이" 앱을 사용하기 위해서는 위치 설정이 필요합니다. 위치 설정 페이지로 이동하시겠습니까?\n
+        위치 설정을 하지 않으실 경우, 앱 이용이 제한될 수 있습니다.</string>
 
     <string name="home_list_item_btn_tag_name">같이해요</string>
     <string name="home_list_item_thumbnail_count">99</string>
@@ -110,8 +115,6 @@
     <string name="group_detail_dialog_title_join_group">모임 가입</string>
     <string name="group_detail_dialog_message_join_group">모임에 가입하시겠습니까?</string>
     <string name="group_detail_dialog_title_enter_pw">모임 비밀번호 확인</string>
-    <string name="group_detail_dialog_ok">확인</string>
-    <string name="group_detail_dialog_cancel">취소</string>
     <string name="group_detail_toast_join_group_success">모임에 가입되었습니다.</string>
     <string name="group_detail_toast_join_group_fail">다시 시도해주세요.</string>
     <string name="group_detail_toast_member_limit_full">모임 가입 제한 인원이 가득 찼습니다.</string>
