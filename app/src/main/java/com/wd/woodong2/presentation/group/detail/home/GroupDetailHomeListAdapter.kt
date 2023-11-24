@@ -1,6 +1,5 @@
 package com.wd.woodong2.presentation.group.detail.home
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,8 @@ import java.util.Date
 
 class GroupDetailHomeListAdapter(
     private val onClickBoardItem: (String, GroupItem.Board) -> Unit,
-    private val onClickMoreBtn: (Int) -> Unit
+    private val onClickMoreBtn: (Int) -> Unit,
+    private val onClickAlbumItem: (String) -> Unit
 ) : ListAdapter<GroupItem, GroupDetailHomeListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<GroupItem>() {
         override fun areItemsTheSame(
@@ -95,7 +95,8 @@ class GroupDetailHomeListAdapter(
                         parent,
                         false
                     ),
-                    onClickMoreBtn
+                    onClickMoreBtn,
+                    onClickAlbumItem
                 )
 
             else ->
@@ -222,7 +223,8 @@ class GroupDetailHomeListAdapter(
 
     class HomeAlbumViewHolder(
         private val binding: GroupDetailHomeAlbumItemBinding,
-        private val onClickMoreBtn: (Int) -> Unit
+        private val onClickMoreBtn: (Int) -> Unit,
+        private val onClickAlbumItem: (String) -> Unit
     ) : ViewHolder(binding.root) {
         override fun bind(item: GroupItem) = with(binding) {
             if (item is GroupItem.GroupAlbum) {
@@ -242,6 +244,9 @@ class GroupDetailHomeListAdapter(
                             albumCardView[i].visibility = View.VISIBLE
                             albumPhotos[i].load(image[i]) {
                                 error(R.drawable.public_default_wd2_ivory)
+                            }
+                            albumPhotos[i].setOnClickListener {
+                                onClickAlbumItem(image[i])
                             }
                         }
                     }
