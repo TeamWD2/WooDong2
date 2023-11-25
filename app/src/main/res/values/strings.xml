@@ -124,8 +124,9 @@
     <string name="group_detail_board_add_hint_board_content">내용을 입력하세요.</string>
     <string name="group_detail_board_add_txt_add_image">사진 첨부</string>
     <string name="group_detail_board_detail_no_comment">댓글을 입력해주세요.</string>
-    <string name="group_detail_board_detail_dialog_title">댓글 삭제</string>
-    <string name="group_detail_board_detail_dialog_message">삭제하시겠습니까?</string>
+    <string name="group_detail_board_detail_dialog_delete_comment_title">댓글 삭제</string>
+    <string name="group_detail_board_detail_dialog_delete_board_title">게시글 삭제</string>
+    <string name="group_detail_board_detail_dialog_delete_message">삭제하시겠습니까?</string>
     <string name="group_detail_board_detail_dialog_delete">삭제</string>
     <string name="group_detail_board_detail_dialog_cancel">취소</string>
     <string name="group_detail_board_detail_toast_create_comment_success">댓글이 작성되었습니다.</string>

@@ -40,7 +40,7 @@
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/wd2_layout_padding"
             android:text="@string/my_page_txt_cancel_member"
-            android:textColor="@color/curry_yellow_txt"
+            android:textColor="@color/light_gray_txt"
             android:textSize="@dimen/wd2_normal_text"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>

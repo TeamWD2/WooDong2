@@ -55,8 +55,8 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
         GroupDetailBoardDetailListAdapter(
             onClickDeleteComment = { position ->
                 AlertDialog.Builder(this@GroupDetailBoardDetailActivity).apply {
-                    setTitle(R.string.group_detail_board_detail_dialog_title)
-                    setMessage(R.string.group_detail_board_detail_dialog_message)
+                    setTitle(R.string.group_detail_board_detail_dialog_delete_comment_title)
+                    setMessage(R.string.group_detail_board_detail_dialog_delete_message)
                     setPositiveButton(R.string.group_detail_board_detail_dialog_delete) { _, _ ->
                         viewModel.deleteComment(
                             itemPkId,
@@ -131,6 +131,26 @@ class GroupDetailBoardDetailActivity : AppCompatActivity() {
         txtLocation.text = findUserLocation(groupBoardItem?.location)
         txtDate.text = groupBoardItem?.timestamp?.let { Date(it) }
             ?.let { SimpleDateFormat("yyyy년 MM월 dd일").format(it) }
+        txtDeleteBoard.isVisible = viewModel.isBoardWriter(groupBoardItem?.userId)
+
+        // 게시글 삭제
+        txtDeleteBoard.setOnClickListener {
+            AlertDialog.Builder(this@GroupDetailBoardDetailActivity).apply {
+                setTitle(R.string.group_detail_board_detail_dialog_delete_board_title)
+                setMessage(R.string.group_detail_board_detail_dialog_delete_message)
+                setPositiveButton(R.string.group_detail_board_detail_dialog_delete) { _, _ ->
+                    viewModel.deleteBoard(
+                        itemPkId,
+                        groupBoardItem?.boardId
+                    )
+                    finish() // 현재 화면 닫기
+                }
+                setNegativeButton(R.string.group_detail_board_detail_dialog_cancel) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                show()
+            }
+        }
 
         viewModel.initGroupBoardItem(groupBoardItem)
 
