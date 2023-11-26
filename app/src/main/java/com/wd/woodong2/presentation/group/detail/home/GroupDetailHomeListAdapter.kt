@@ -232,9 +232,9 @@ class GroupDetailHomeListAdapter(
                 txtAlbumCount.text = item.images?.size?.toString() ?: "0"
                 btnMore.isVisible = item.images.isNullOrEmpty().not()
                 if(item.images.isNullOrEmpty()) {
-                    cardViewPhoto1.visibility = View.GONE
-                    cardViewPhoto2.visibility = View.GONE
-                    cardViewPhoto3.visibility = View.GONE
+                    cardViewPhoto1.visibility = View.INVISIBLE
+                    cardViewPhoto2.visibility = View.INVISIBLE
+                    cardViewPhoto3.visibility = View.INVISIBLE
                 }
                 val albumCardView = listOf(cardViewPhoto1, cardViewPhoto2, cardViewPhoto3)
                 val albumPhotos = listOf(imgPhoto1, imgPhoto2, imgPhoto3)
