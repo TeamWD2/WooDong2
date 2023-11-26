@@ -274,72 +274,68 @@ class GroupRepositoryImpl(private val databaseReference: DatabaseReference) : Gr
         })
     }
 
-    override fun deleteGroupBoardItem(
-        itemId: String,
-        boardId: String
-    ) {
-        val boardListQuery = databaseReference.child(itemId).orderByChild("viewType").equalTo("board")
-        boardListQuery.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                snapshot.children.forEach { childSnapshot ->
-                    val boardRef = childSnapshot.ref.child("boardList").child(boardId)
-                    boardRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(boardSnapshot: DataSnapshot) {
-                            val imageList =
-                                boardSnapshot.child("images").children.map { it.value.toString() }
-                            if (imageList.isEmpty()) { // 이미지가 없는 게시글인 경우
+    override suspend fun deleteGroupBoardItem(itemId: String, boardId: String): Flow<List<String>?> =
+        callbackFlow {
+            val boardListQuery = databaseReference.child(itemId).orderByChild("viewType").equalTo("board")
+            boardListQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { childSnapshot ->
+                        val boardRef = childSnapshot.ref.child("boardList").child(boardId)
+                        boardRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(boardSnapshot: DataSnapshot) {
+                                val imageList = boardSnapshot.child("images").children.map { it.value.toString() }
                                 boardRef.removeValue() // 게시글 삭제
-                            } else {
-                                imageList.forEach { imageUrl ->
-                                    val storageRef =
-                                        FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
-                                    storageRef.delete()
-                                        .addOnSuccessListener { // Firebase Storage 이미지 삭제
-                                            Log.d(TAG, "Delete Firebase Storage - Success!")
-
-                                            val albumListQuery = databaseReference.child(itemId)
-                                                .orderByChild("viewType").equalTo("album")
-                                            albumListQuery.addListenerForSingleValueEvent(object :
-                                                ValueEventListener {
-                                                override fun onDataChange(snapshot: DataSnapshot) {
-                                                    snapshot.children.forEach { childSnapshot ->
-                                                        val albumRef =
-                                                            childSnapshot.ref.child("images")
-                                                        albumRef.addListenerForSingleValueEvent(
-                                                            object : ValueEventListener {
-                                                                override fun onDataChange(snapshot: DataSnapshot) {
-                                                                    snapshot.children.firstOrNull { it.value == imageUrl }?.ref?.removeValue() // 앨범 데이터 이미지 삭제
-                                                                }
-
-                                                                override fun onCancelled(error: DatabaseError) {
-                                                                    throw error.toException()
-                                                                }
-                                                            })
-                                                    }
-                                                }
-
-                                                override fun onCancelled(error: DatabaseError) {
-                                                    throw error.toException()
-                                                }
-                                            })
-                                        }.addOnFailureListener { exception ->
-                                        Log.e(TAG, "Delete Firebase Storage - Fail / $exception")
-                                    }
-                                }
-                                boardRef.removeValue() // 게시글 삭제
+                                trySend(imageList)
+                                close()
                             }
-                        }
 
-                        override fun onCancelled(error: DatabaseError) {
-                            throw error.toException()
-                        }
-                    })
+                            override fun onCancelled(error: DatabaseError) {
+                                throw error.toException()
+                            }
+                        })
+                    }
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                throw error.toException()
+                override fun onCancelled(error: DatabaseError) {
+                    throw error.toException()
+                }
+            })
+
+            awaitClose {
+                Log.e(TAG, "awaitClose")
             }
-        })
+        }
+
+    override fun deleteGroupAlbumItem(itemId: String, imageList: List<String>) {
+        imageList.forEach { imageUrl ->
+            val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
+            storageRef.delete().addOnSuccessListener { // Firebase Storage 이미지 삭제
+                Log.d(TAG, "Success : Delete Firebase Storage")
+
+                val albumListQuery = databaseReference.child(itemId).orderByChild("viewType").equalTo("album")
+                albumListQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        snapshot.children.forEach { childSnapshot ->
+                            val albumRef = childSnapshot.ref.child("images")
+                            albumRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    snapshot.children.firstOrNull { it.value == imageUrl }?.ref?.removeValue() // 앨범 데이터 이미지 삭제
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    throw error.toException()
+                                }
+                            })
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        throw error.toException()
+                    }
+                })
+            }.addOnFailureListener { exception ->
+                Log.e(TAG, "Fail : Delete Firebase Storage - $exception")
+            }
+        }
     }
 }

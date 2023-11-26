@@ -13,18 +13,21 @@ import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.usecase.group.GroupAddBoardCommentUseCase
+import com.wd.woodong2.domain.usecase.group.GroupDeleteAlbumItemUseCase
 import com.wd.woodong2.domain.usecase.group.GroupDeleteBoardCommentUseCase
 import com.wd.woodong2.domain.usecase.group.GroupDeleteBoardItemUseCase
 import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import com.wd.woodong2.presentation.group.content.GroupItem
+import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
 import kotlinx.coroutines.launch
 
 class GroupDetailBoardDetailViewModel(
     private val prefGetUserItem: UserPrefGetItemUseCase,
     private val groupAddBoardCommentItem: GroupAddBoardCommentUseCase,
     private val groupDeleteBoardCommentItem: GroupDeleteBoardCommentUseCase,
-    private val groupDeleteBoardItem: GroupDeleteBoardItemUseCase
+    private val groupDeleteBoardItem: GroupDeleteBoardItemUseCase,
+    private val groupDeleteAlbumItem: GroupDeleteAlbumItemUseCase
 ) : ViewModel() {
     companion object {
         private const val TAG = "GroupDetailBoardDetailViewModel"
@@ -173,13 +176,22 @@ class GroupDetailBoardDetailViewModel(
             return
         }
 
-        //Firebase 게시글 데이터 삭제
+        // Firebase 게시글 데이터 삭제
         viewModelScope.launch {
             runCatching {
                 groupDeleteBoardItem(
                     itemPkId,
                     boardId
-                )
+                ).collect { imageList ->
+                    imageList?.let {
+                        if(imageList.isNotEmpty()) { //이미지가 있는 게시글일 경우
+                            groupDeleteAlbumItem( // Firebase Storage & 앨범 데이터 삭제
+                                itemPkId,
+                                it
+                            )
+                        }
+                    }
+                }
             }.onFailure {
                 Log.e(TAG, it.message.toString())
             }
@@ -242,7 +254,8 @@ class GroupDetailBoardDetailViewModelFactory(
                 UserPrefGetItemUseCase(userPrefRepository),
                 GroupAddBoardCommentUseCase(groupBoardRepository),
                 GroupDeleteBoardCommentUseCase(groupBoardRepository),
-                GroupDeleteBoardItemUseCase(groupBoardRepository)
+                GroupDeleteBoardItemUseCase(groupBoardRepository),
+                GroupDeleteAlbumItemUseCase(groupBoardRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")

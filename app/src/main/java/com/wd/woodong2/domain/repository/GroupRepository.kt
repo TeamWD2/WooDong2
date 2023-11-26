@@ -18,5 +18,6 @@ interface GroupRepository {
     fun setGroupMemberItem(itemId: String, groupMemberItem: GroupDetailMemberAddItem)
     suspend fun getGroupItem(groupId: String): Flow<GroupItemsEntity?>
     suspend fun getGroupMemberList(groupId: String): Flow<List<GroupMemberItemEntity>?>
-    fun deleteGroupBoardItem(itemId: String, boardId: String)
+    suspend fun deleteGroupBoardItem(itemId: String, boardId: String): Flow<List<String>?>
+    fun deleteGroupAlbumItem(itemId: String, imageList: List<String>)
 }
