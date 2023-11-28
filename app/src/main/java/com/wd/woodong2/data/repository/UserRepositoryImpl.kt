@@ -326,6 +326,14 @@ class UserRepositoryImpl(
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     userIdRef.removeValue()
+                    // Auth에서 삭제
+                    auth?.currentUser?.delete()?.addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Log.d(TAG, "Firebase Auth user deleted.")
+                        } else {
+                            Log.e(TAG, "Failed to delete Firebase Auth user.", task.exception)
+                        }
+                    }
                 } else {
                     Log.d(TAG, "No data found for userId: $userId")
                 }
@@ -336,6 +344,7 @@ class UserRepositoryImpl(
             }
         })
     }
+
 
     /**
      * groupId에 해당하는 사람들에게
