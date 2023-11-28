@@ -6,7 +6,7 @@ import com.wd.woodong2.presentation.group.detail.board.detail.GroupDetailBoardDe
 class GroupAddBoardCommentUseCase(
     private val repository: GroupRepository
 ) {
-    suspend operator fun invoke(
+    operator fun invoke(
         itemId: String,
         groupId: String,
         boardComment: GroupDetailBoardDetailItem.BoardComment

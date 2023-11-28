@@ -9,7 +9,9 @@ import coil.load
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailAlbumItemBinding
 
-class GroupDetailAlbumListAdapter : ListAdapter<String, GroupDetailAlbumListAdapter.ViewHolder>(
+class GroupDetailAlbumListAdapter(
+    private val imageClick: (String) -> Unit
+) : ListAdapter<String, GroupDetailAlbumListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<String>() {
         override fun areItemsTheSame(
             oldItem: String,
@@ -44,6 +46,9 @@ class GroupDetailAlbumListAdapter : ListAdapter<String, GroupDetailAlbumListAdap
         fun bind(image: String) = with(binding) {
             imgPhoto.load(image) {
                 error(R.drawable.public_default_wd2_ivory)
+            }
+            root.setOnClickListener {
+                imageClick(image)
             }
         }
     }

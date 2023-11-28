@@ -6,7 +6,7 @@ import com.wd.woodong2.presentation.group.detail.board.add.GroupDetailBoardAddIt
 class GroupSetAlbumItemUseCase(
     private val repository: GroupRepository
 ) {
-    suspend operator fun invoke(itemId: String, groupAlbumItems: List<String>) {
+    operator fun invoke(itemId: String, groupAlbumItems: List<String>) {
         return repository.setGroupAlbumItem(itemId, groupAlbumItems)
     }
 }

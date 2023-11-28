@@ -1,6 +1,7 @@
 package com.wd.woodong2.presentation.home.detail
 
 import android.app.AlertDialog
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,10 +56,9 @@ class CommentListAdapter(
         }
 
 
-        if (currentUser?.name == comment.username) {
+        if (currentUser?.name == comment.username ){//|| currentUser?.id == comment.userId) {
             holder.binding.txtCommnetDelete.visibility = View.VISIBLE
             holder.binding.txtCommnetDelete.setOnClickListener {
-
                 AlertDialog.Builder(holder.itemView.context)
                     .setTitle("댓글 삭제")
                     .setMessage("댓글을 삭제 하시겠습니까?")

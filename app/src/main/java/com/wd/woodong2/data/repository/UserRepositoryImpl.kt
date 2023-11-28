@@ -319,6 +319,33 @@ class UserRepositoryImpl(
         auth?.signOut()
     }
 
+    // 회원 탈퇴
+    override suspend fun deleteUser(userId: String) {
+        val userIdRef = databaseReference.child(userId)
+        userIdRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    userIdRef.removeValue()
+                    // Auth에서 삭제
+                    auth?.currentUser?.delete()?.addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Log.d(TAG, "Firebase Auth user deleted.")
+                        } else {
+                            Log.e(TAG, "Failed to delete Firebase Auth user.", task.exception)
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "No data found for userId: $userId")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
+    }
+
+
     /**
      * groupId에 해당하는 사람들에게
      * push 알람 전송 */
@@ -364,6 +391,4 @@ class UserRepositoryImpl(
             }
         }
     }
-
 }
-
