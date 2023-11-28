@@ -112,10 +112,6 @@ class SignInActivity : AppCompatActivity() {
                         uid ?: ""
                     )
                 )
-
-                Toast.makeText(this@SignInActivity, R.string.login_success, Toast.LENGTH_SHORT)
-                    .show()
-
                 finish()
             } else {
                 Toast.makeText(this@SignInActivity, R.string.signin_login_retry, Toast.LENGTH_SHORT)
