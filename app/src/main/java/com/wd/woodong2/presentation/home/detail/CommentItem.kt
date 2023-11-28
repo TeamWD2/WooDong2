@@ -5,6 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class CommentItem(
+    //val userId: String ="",
     val username: String = "",
     val content: String = "",
     val timestamp: Long = System.currentTimeMillis(),

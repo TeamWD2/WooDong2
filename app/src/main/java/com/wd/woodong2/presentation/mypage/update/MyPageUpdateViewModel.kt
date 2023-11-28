@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
@@ -20,7 +22,6 @@ import com.wd.woodong2.domain.usecase.account.SignUpCheckNickNameDupUseCase
 import com.wd.woodong2.domain.usecase.user.UserUpdateInfoUseCase
 import com.wd.woodong2.domain.usecase.user.UserUpdatePasswordUseCase
 import kotlinx.coroutines.launch
-import java.util.UUID
 import java.util.regex.Pattern
 
 class MyPageUpdateViewModel(
@@ -44,6 +45,9 @@ class MyPageUpdateViewModel(
     val _isValidCurrentPassword: MutableLiveData<Boolean?> = MutableLiveData()
     val isValidCurrentPassword: LiveData<Boolean?> get() = _isValidCurrentPassword
 
+    val _isCheckCurrentPassword: MutableLiveData<Boolean?> = MutableLiveData()
+    val isCheckCurrentPassword: LiveData<Boolean?> get() = _isCheckCurrentPassword
+
     val _isValidPassword: MutableLiveData<Boolean?> = MutableLiveData()
     val isValidPassword: LiveData<Boolean?> get() = _isValidPassword
 
@@ -53,13 +57,13 @@ class MyPageUpdateViewModel(
     val _isValidNickname: MutableLiveData<Boolean> = MutableLiveData()
     val isValidNickname: LiveData<Boolean> get() = _isValidNickname
 
-    private var imgProfile: Uri? = null
+    var ImgProfile: Uri? = null
 
     val _isValidImg: MutableLiveData<Boolean> = MutableLiveData()
     val isValidImg: LiveData<Boolean> get() = _isValidImg
 
-    private val _setResult: MutableLiveData<Any> = MutableLiveData()
-    val setResult: LiveData<Any> get() = _setResult
+    val _setResult: MutableLiveData<Boolean> = MutableLiveData()
+    val setResult: LiveData<Boolean> get() = _setResult
 
     // 닉네임 중복 판단 메소드
     fun checkNicknameDuplication(nickname: String) {
@@ -86,13 +90,24 @@ class MyPageUpdateViewModel(
         _isValidSamePassword.value = originalPw == copyPw
     }
 
+    fun checkValidCurrentPassword(userEmail: String,currentpw: String){
+        val auth: FirebaseAuth = FirebaseAuth.getInstance()
+        auth.signInWithEmailAndPassword(userEmail, currentpw)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val uid = auth.currentUser?.uid
+                    _isCheckCurrentPassword.value = true
+                } else {
+                    _isCheckCurrentPassword.value = false               }
+            }
+    }
+
     fun setProfileImage(uri: Uri) = viewModelScope.launch {
         runCatching {
             imageStorageSetItem(uri).collect { imageUri ->
-                imgProfile = imageUri
+                ImgProfile = imageUri
             }
             _isValidImg.value = true
-            _setResult.value = true
         }.onFailure {
             Log.e(TAG, it.message.toString())
             _isValidImg.value = false
@@ -102,6 +117,7 @@ class MyPageUpdateViewModel(
     // 모든 요소 판단 메소드
     fun checkAllConditions(): Boolean {
         return isValidCurrentPassword.value == true
+                && isCheckCurrentPassword.value == true
                     && isValidPassword.value == true
                     && isValidSamePassword.value == true
                     && isValidNickname.value == true
@@ -135,6 +151,7 @@ class MyPageUpdateViewModel(
                         currentPW.toString(),
                         changePW.toString()
                     )
+                    _setResult.value = true
                 }
                 else if(passwordJudge){
                     userUpdatePasswordUseCase(
@@ -142,6 +159,7 @@ class MyPageUpdateViewModel(
                         currentPW.toString(),
                         changePW.toString()
                     )
+                    _setResult.value = true
                 }
                 else{
                     userUpdateInfoUseCase(
@@ -150,11 +168,12 @@ class MyPageUpdateViewModel(
                         name.toString(),
                         firstLocation,
                         secondLocation)
+                    _setResult.value = true
                 }
-                _setResult.value = true
+
             } catch (e: Exception) {
                 // 에러 처리
-                _setResult.value = "ERROR: ${e.message}"
+                _setResult.value = false
             }
         }
     }
@@ -169,7 +188,7 @@ class MyPageUpdateViewModelFactory : ViewModelProvider.Factory {
     }
 
     private val imageStorageRepository =
-        ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference.child("images/${UUID.randomUUID()}"))
+        ImageStorageRepositoryImpl(FirebaseStorage.getInstance().reference)//.child("images/${UUID.randomUUID()}")
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MyPageUpdateViewModel::class.java)) {

@@ -72,11 +72,13 @@ class MyPageFragment : Fragment() {
                             receivedNameData.toString(),
                             receivedProfileData.toString()
                         )
+
                         viewModel.userInfo.value = viewModel.editPrefUserInfo(
                             receivedNameData.toString(),
                             receivedProfileData.toString(),
                             viewModel.userInfo.value?.firstLocation,
                             viewModel.userInfo.value?.secondLocation)
+
                         Glide.with(requireContext())
                             .load(Uri.parse(receivedProfileData))
                             .error(R.drawable.public_default_wd2_ivory)

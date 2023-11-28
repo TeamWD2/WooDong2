@@ -54,6 +54,7 @@ class HomeDetailViewModel(
     fun postComment(homeItem: HomeItem, commentContent: String): HomeItem {
         val currentUser = getUserInfo()
         val comment = CommentItem(
+            //userId = currentUser?.id.toString(),
             username = currentUser?.name ?: "알 수 없음",
             content = commentContent,
             location = HomeMapActivity.extractLocationInfo(currentUser?.firstLocation ?: ""),
