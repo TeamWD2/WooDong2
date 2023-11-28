@@ -110,6 +110,7 @@ class SplashActivity : AppCompatActivity() {
             }
         }.addOnFailureListener { exception ->
             Log.e(TAG, "appUpdateInfoTask Failed : $exception")
+            Toast.makeText(this, R.string.splash_toast_app_update_fail, Toast.LENGTH_SHORT).show()
         }
     }
 
