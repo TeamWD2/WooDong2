@@ -192,6 +192,18 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
+                            <TextView
+                                android:id="@+id/password_dup_check"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="5dp"
+                                android:textColor="@color/light_sky_blue"
+                                android:textSize="@dimen/wd2_normal_text"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@id/my_page_update_user_current_password"
+                                app:layout_constraintEnd_toStartOf="@id/edit_password"
+                                app:layout_constraintTop_toTopOf="@id/my_page_update_user_current_password" />
+
                             <ImageView
                                 android:id="@+id/edit_password"
                                 android:layout_width="wrap_content"
@@ -203,23 +215,40 @@
 
                             <com.google.android.material.textfield.TextInputLayout
                                 android:id="@+id/til_update_user_current_password"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:theme="@style/EditTextWD2Style"
                                 app:hintEnabled="false"
-                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/btn_password_dup_check"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_current_password">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/edit_update_user_current_password"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="match_parent"
                                     android:hint="@string/my_page_update_et_user_current_password_edit"
                                     android:inputType="textPassword"
                                     android:textSize="14sp" />
                             </com.google.android.material.textfield.TextInputLayout>
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_password_dup_check"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:background="@drawable/public_border_btn"
+                                android:padding="@dimen/wd2_box_padding"
+                                android:text="@string/check_password_correct"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/wd2_normal_text"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@id/til_update_user_current_password"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/til_update_user_current_password"
+                                app:layout_constraintTop_toTopOf="@+id/til_update_user_current_password" />
+
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -259,6 +288,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:theme="@style/EditTextWD2Style"
+                                app:hintEnabled="false"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/my_page_update_user_password">

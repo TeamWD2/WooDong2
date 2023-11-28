@@ -52,16 +52,16 @@ class MyPageUpdateViewModel(
     private val _isNicknameDuplication: MutableLiveData<Boolean> = MutableLiveData()
     val isNicknameDuplication: LiveData<Boolean> get() = _isNicknameDuplication
 
-    val _isValidCurrentPassword: MutableLiveData<Boolean?> = MutableLiveData()
-    val isValidCurrentPassword: LiveData<Boolean?> get() = _isValidCurrentPassword
+    private val _isValidCurrentPassword: MutableLiveData<Boolean> = MutableLiveData()
+    val isValidCurrentPassword: LiveData<Boolean> get() = _isValidCurrentPassword
 
-    val _isCheckCurrentPassword: MutableLiveData<Boolean?> = MutableLiveData()
-    val isCheckCurrentPassword: LiveData<Boolean?> get() = _isCheckCurrentPassword
+    private val _isCheckCurrentPassword: MutableLiveData<Boolean> = MutableLiveData()
+    val isCheckCurrentPassword: LiveData<Boolean> get() = _isCheckCurrentPassword
 
-    val _isValidPassword: MutableLiveData<Boolean?> = MutableLiveData()
-    val isValidPassword: LiveData<Boolean?> get() = _isValidPassword
+    private val _isValidPassword: MutableLiveData<Boolean> = MutableLiveData()
+    val isValidPassword: LiveData<Boolean> get() = _isValidPassword
 
-    val _isValidSamePassword: MutableLiveData<Boolean> = MutableLiveData()
+    private val _isValidSamePassword: MutableLiveData<Boolean> = MutableLiveData()
     val isValidSamePassword: LiveData<Boolean> get() = _isValidSamePassword
 
     val _isValidNickname: MutableLiveData<Boolean> = MutableLiveData()
@@ -117,15 +117,11 @@ class MyPageUpdateViewModel(
         _isValidSamePassword.value = originalPw == copyPw
     }
 
-    fun checkValidCurrentPassword(userEmail: String,currentpw: String){
+    fun checkValidCurrentPassword(userEmail: String, currentPw: String){
         val auth: FirebaseAuth = FirebaseAuth.getInstance()
-        auth.signInWithEmailAndPassword(userEmail, currentpw)
+        auth.signInWithEmailAndPassword(userEmail, currentPw)
             .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val uid = auth.currentUser?.uid
-                    _isCheckCurrentPassword.value = true
-                } else {
-                    _isCheckCurrentPassword.value = false               }
+                _isCheckCurrentPassword.value = task.isSuccessful
             }
     }
 
