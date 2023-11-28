@@ -315,7 +315,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
 
-        clientId = BuildConfig.NAVER_MAP_API
+        clientId = getString(R.string.naver_map_api)
 
         //NAVER 지도 API 호출 및 ID 지정
         NaverMapSdk.getInstance(this).client =

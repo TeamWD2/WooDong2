@@ -52,6 +52,8 @@
                     android:text="@string/group_add_chip_exercise"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -62,6 +64,8 @@
                     android:text="@string/group_add_chip_neighbor_friend"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -72,6 +76,8 @@
                     android:text="@string/group_add_chip_study"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -82,6 +88,8 @@
                     android:text="@string/group_add_chip_family"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -92,6 +100,8 @@
                     android:text="@string/group_add_chip_pet"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -102,6 +112,8 @@
                     android:text="@string/group_add_chip_volunteer"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -112,6 +124,8 @@
                     android:text="@string/group_add_chip_food"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -122,6 +136,8 @@
                     android:text="@string/group_add_chip_finance"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -132,6 +148,8 @@
                     android:text="@string/group_add_chip_arts"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -142,6 +160,8 @@
                     android:text="@string/group_add_chip_game"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -152,6 +172,8 @@
                     android:text="@string/group_add_chip_music"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -162,6 +184,8 @@
                     android:text="@string/group_add_chip_making"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
 
                 <com.google.android.material.chip.Chip
@@ -172,6 +196,8 @@
                     android:text="@string/group_add_chip_etc"
                     android:textColor="@color/black"
                     app:chipBackgroundColor="@color/pressed_chip"
+                    app:chipStrokeColor="@color/dark_yellow_btn"
+                    app:chipStrokeWidth="1dp"
                     app:ensureMinTouchTargetSize="false" />
             </com.google.android.material.chip.ChipGroup>
 

@@ -319,6 +319,24 @@ class UserRepositoryImpl(
         auth?.signOut()
     }
 
+    // 회원 탈퇴
+    override suspend fun deleteUser(userId: String) {
+        val userIdRef = databaseReference.child(userId)
+        userIdRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    userIdRef.removeValue()
+                } else {
+                    Log.d(TAG, "No data found for userId: $userId")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                throw error.toException()
+            }
+        })
+    }
+
     /**
      * groupId에 해당하는 사람들에게
      * push 알람 전송 */
@@ -364,6 +382,4 @@ class UserRepositoryImpl(
             }
         }
     }
-
 }
-

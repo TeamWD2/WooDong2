@@ -237,7 +237,7 @@ class GroupDetailActivity : AppCompatActivity() {
         AlertDialog.Builder(this@GroupDetailActivity).apply {
             setTitle(R.string.group_detail_dialog_title_enter_pw)
             setView(container)
-            setPositiveButton(R.string.group_detail_dialog_ok) { _, _ ->
+            setPositiveButton(R.string.public_dialog_ok) { _, _ ->
                 if (viewModel.checkPassword(edtInput.text.toString())) { //비밀번호가 일치하는 경우
                     showDialogJoinGroup()
                 } else {
@@ -248,7 +248,7 @@ class GroupDetailActivity : AppCompatActivity() {
                     ).show()
                 }
             }
-            setNegativeButton(R.string.group_detail_dialog_cancel) { dialog, _ ->
+            setNegativeButton(R.string.public_dialog_cancel) { dialog, _ ->
                 dialog.dismiss()
             }
             show()
@@ -259,10 +259,10 @@ class GroupDetailActivity : AppCompatActivity() {
         AlertDialog.Builder(this@GroupDetailActivity).apply {
             setTitle(R.string.group_detail_dialog_title_join_group)
             setMessage(R.string.group_detail_dialog_message_join_group)
-            setPositiveButton(R.string.group_detail_dialog_ok) { _, _ ->
+            setPositiveButton(R.string.public_dialog_ok) { _, _ ->
                 viewModel.updateUserInfo(itemId)
             }
-            setNegativeButton(R.string.group_detail_dialog_cancel) { dialog, _ ->
+            setNegativeButton(R.string.public_dialog_cancel) { dialog, _ ->
                 dialog.dismiss()
             }
             show()

@@ -22,13 +22,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.MyPageUpdateActivityBinding
 import com.wd.woodong2.presentation.chat.content.UserItem
+import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.mypage.content.MyPageFragment
+import com.wd.woodong2.presentation.signin.SignInActivity
 import kotlinx.coroutines.launch
 
 
@@ -37,11 +40,10 @@ class MyPageUpdateActivity : AppCompatActivity() {
     companion object {
         lateinit var userInfo: UserItem
 
-        fun newIntent(context: Context, userItem: UserItem) =//MutableLiveData<UserItem>)=
+        fun newIntent(context: Context, userItem: UserItem) =
             Intent(context, MyPageUpdateActivity::class.java).apply {
                 userInfo = userItem
             }
-
     }
 
     private var profile = userInfo.imgProfile
@@ -61,6 +63,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
             android.Manifest.permission.READ_EXTERNAL_STORAGE
         )
     }
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             finish()
@@ -68,7 +71,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
     }
 
     private val myPageUpdateViewModel: MyPageUpdateViewModel by viewModels {
-        MyPageUpdateViewModelFactory()
+        MyPageUpdateViewModelFactory(this@MyPageUpdateActivity)
     }
 
     private val galleryPermissionLauncher =
@@ -135,7 +138,13 @@ class MyPageUpdateActivity : AppCompatActivity() {
             finish()
         }
 
-        //기본설정 binding.ivProfile.setImageURI(uri)
+
+        // 회원 탈퇴
+        txtCancelMember.setOnClickListener {
+            showDeleteMemberDialog()
+        }
+
+
         Glide.with(this@MyPageUpdateActivity)
             .load(profile)
             .error(R.drawable.public_default_wd2_ivory)
@@ -149,27 +158,39 @@ class MyPageUpdateActivity : AppCompatActivity() {
         editUpdateUserPassword.isEnabled = false
         editUpdateUserPasswordCheck.isEnabled = false
         if (passwordJudge) {
-            tilUpdateUserCurrentPassword.boxBackgroundColor = (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
-            tilUpdateUserPassword.boxBackgroundColor = (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
-            tilUpdateUserPasswordCheck.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
+            tilUpdateUserCurrentPassword.boxBackgroundColor =
+                (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
+            tilUpdateUserPassword.boxBackgroundColor =
+                (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
+            tilUpdateUserPasswordCheck.boxBackgroundColor =
+                (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
         } else {
-            tilUpdateUserCurrentPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
-            tilUpdateUserPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
-            tilUpdateUserPasswordCheck.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
+            tilUpdateUserCurrentPassword.boxBackgroundColor =
+                (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
+            tilUpdateUserPassword.boxBackgroundColor =
+                (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
+            tilUpdateUserPasswordCheck.boxBackgroundColor =
+                (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
         }
         editPassword.setOnClickListener {
             if (passwordJudge) {
-                tilUpdateUserCurrentPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
-                tilUpdateUserPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
-                tilUpdateUserPasswordCheck.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
+                tilUpdateUserCurrentPassword.boxBackgroundColor =
+                    (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
+                tilUpdateUserPassword.boxBackgroundColor =
+                    (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
+                tilUpdateUserPasswordCheck.boxBackgroundColor =
+                    (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.light_gray_txt))
                 editUpdateUserCurrentPassword.isEnabled = false
                 editUpdateUserPassword.isEnabled = false
                 editUpdateUserPasswordCheck.isEnabled = false
                 passwordJudge = false
             } else {
-                tilUpdateUserCurrentPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
-                tilUpdateUserPassword.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
-                tilUpdateUserPasswordCheck.boxBackgroundColor =(ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
+                tilUpdateUserCurrentPassword.boxBackgroundColor =
+                    (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
+                tilUpdateUserPassword.boxBackgroundColor =
+                    (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
+                tilUpdateUserPasswordCheck.boxBackgroundColor =
+                    (ContextCompat.getColor(this@MyPageUpdateActivity, R.color.white))
                 editUpdateUserCurrentPassword.isEnabled = true
                 editUpdateUserPassword.isEnabled = true
                 editUpdateUserPasswordCheck.isEnabled = true
@@ -679,6 +700,21 @@ class MyPageUpdateActivity : AppCompatActivity() {
         }
     }
 
+    private fun showDeleteMemberDialog() {
+        AlertDialog.Builder(this@MyPageUpdateActivity).apply {
+            setTitle(R.string.my_page_dialog_delete_member_title)
+            setMessage(R.string.my_page_dialog_delete_member_message)
+            setPositiveButton(R.string.public_dialog_ok) { _, _ ->
+                myPageUpdateViewModel.deleteMember(userInfo.id)
+                startActivity(
+                    Intent(context, SignInActivity::class.java)
+                )
+                ActivityCompat.finishAffinity(this@MyPageUpdateActivity)
+            }
+            show()
+        }
+    }
+
     private fun checkPermissions() {
         when {
             permissions.all {
@@ -709,21 +745,24 @@ class MyPageUpdateActivity : AppCompatActivity() {
         AlertDialog.Builder(this@MyPageUpdateActivity).apply {
             setTitle(R.string.public_dialog_rational_title)
             setMessage(R.string.public_dialog_rational_message)
-            setPositiveButton(R.string.public_dialog_rational_ok) { _, _ ->
+            setPositiveButton(R.string.public_dialog_ok) { _, _ ->
                 galleryPermissionLauncher.launch(permissions)
             }
             show()
         }
     }
+
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         val imm: InputMethodManager =
             getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
         return super.dispatchTouchEvent(ev)
     }
+
     private fun hideKeyboard() {
         val view = this.currentFocus
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 

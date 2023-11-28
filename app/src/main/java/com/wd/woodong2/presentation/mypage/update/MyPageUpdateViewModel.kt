@@ -1,5 +1,6 @@
 package com.wd.woodong2.presentation.mypage.update
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -14,13 +15,20 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
+import com.wd.woodong2.R
 import com.wd.woodong2.data.repository.ImageStorageRepositoryImpl
+import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.repository.UserRepositoryImpl
+import com.wd.woodong2.data.sharedpreference.SignInPreferenceImpl
+import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.provider.FirebaseTokenProvider
 import com.wd.woodong2.domain.usecase.ImageStorageSetItemUseCase
 import com.wd.woodong2.domain.usecase.account.SignUpCheckNickNameDupUseCase
+import com.wd.woodong2.domain.usecase.prefs.UserPrefDeleteItemUseCase
+import com.wd.woodong2.domain.usecase.user.UserDeleteUserUseCase
 import com.wd.woodong2.domain.usecase.user.UserUpdateInfoUseCase
 import com.wd.woodong2.domain.usecase.user.UserUpdatePasswordUseCase
+import com.wd.woodong2.presentation.group.detail.board.detail.GroupDetailBoardDetailViewModel
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
@@ -29,8 +37,10 @@ class MyPageUpdateViewModel(
     private val checkNicknameDup: SignUpCheckNickNameDupUseCase,
     private val imageStorageSetItem: ImageStorageSetItemUseCase,
     private val userUpdatePasswordUseCase: UserUpdatePasswordUseCase,
-): ViewModel(
-)  {
+    private val userDeleteUser: UserDeleteUserUseCase,
+    private val userPrefDeleteUseCase: UserPrefDeleteItemUseCase
+) : ViewModel(
+) {
     companion object {
         private val TAG = "MyPageUpdateViewModel"
 
@@ -64,6 +74,23 @@ class MyPageUpdateViewModel(
 
     val _setResult: MutableLiveData<Boolean> = MutableLiveData()
     val setResult: LiveData<Boolean> get() = _setResult
+
+    // 회원 탈퇴
+    fun deleteMember(userId: String?) {
+        if(userId == null) {
+            return
+        }
+        viewModelScope.launch {
+            runCatching {
+                userDeleteUser(
+                    userId
+                )
+                userPrefDeleteUseCase() //SharedPreferences 삭제
+            }.onFailure {
+                Log.e(TAG, it.message.toString())
+            }
+        }
+    }
 
     // 닉네임 중복 판단 메소드
     fun checkNicknameDuplication(nickname: String) {
@@ -123,6 +150,7 @@ class MyPageUpdateViewModel(
                     && isValidNickname.value == true
                     && isNicknameDuplication.value == false
                     && isValidImg.value == true
+
     }
 
     //작성완료 메소드
@@ -136,21 +164,23 @@ class MyPageUpdateViewModel(
         email: String?,
         currentPW: String?,
         changePW: String?
-        ) {
+    ) {
         viewModelScope.launch {
             try {
-                if(checkAllConditions() && passwordJudge){
+                if (checkAllConditions() && passwordJudge) {
                     userUpdateInfoUseCase(
                         userId,
                         imgProfile.toString(),
                         name.toString(),
                         firstLocation,
-                        secondLocation)
+                        secondLocation
+                    )
                     userUpdatePasswordUseCase(
                         email.toString(),
                         currentPW.toString(),
                         changePW.toString()
                     )
+
                     _setResult.value = true
                 }
                 else if(passwordJudge){
@@ -159,6 +189,7 @@ class MyPageUpdateViewModel(
                         currentPW.toString(),
                         changePW.toString()
                     )
+
                     _setResult.value = true
                 }
                 else{
@@ -178,12 +209,27 @@ class MyPageUpdateViewModel(
         }
     }
 }
-class MyPageUpdateViewModelFactory : ViewModelProvider.Factory {
+
+class MyPageUpdateViewModelFactory(
+    private val context: Context
+): ViewModelProvider.Factory {
     private val userRepositoryImpl by lazy {
         UserRepositoryImpl(
             FirebaseDatabase.getInstance().getReference("user_list"),
             Firebase.auth,
             FirebaseTokenProvider(FirebaseMessaging.getInstance())
+        )
+    }
+
+    private val userPrefKey = context.getString(R.string.pref_key_user_preferences_key)
+    private val userPreferencesRepository by lazy {
+        UserPreferencesRepositoryImpl(
+            SignInPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            ),
+            UserInfoPreferenceImpl(
+                context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
+            )
         )
     }
 
@@ -196,7 +242,9 @@ class MyPageUpdateViewModelFactory : ViewModelProvider.Factory {
                 UserUpdateInfoUseCase(userRepositoryImpl),
                 SignUpCheckNickNameDupUseCase(userRepositoryImpl),
                 ImageStorageSetItemUseCase(imageStorageRepository),
-                UserUpdatePasswordUseCase(userRepositoryImpl)
+                UserUpdatePasswordUseCase(userRepositoryImpl),
+                UserDeleteUserUseCase(userRepositoryImpl),
+                UserPrefDeleteItemUseCase(userPreferencesRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not found ViewModel class.")
