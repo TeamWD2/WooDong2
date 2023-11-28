@@ -217,16 +217,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
                 editUpdateUserName.text.toString().trim()
             )
         }
-        //현재 비밀번호랑 동일한 비밀번호 입력 시 변경 가능
-//        editUpdateUserCurrentPassword.apply {
-//            addTextChangedListener(object : TextWatcher {
-//                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-//                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-//                override fun afterTextChanged(p0: Editable?) {
-//
-//                }
-//            })
-//        }
+
         // 비밀번호 형식 확인
         editUpdateUserPassword.apply {
             addTextChangedListener(object : TextWatcher {
@@ -254,13 +245,20 @@ class MyPageUpdateActivity : AppCompatActivity() {
             })
         }
 
+        btnPasswordDupCheck.setOnClickListener {
+            if(passwordJudge) {
+                if(editUpdateUserCurrentPassword.text.isNullOrBlank()) {
+                    Toast.makeText(this@MyPageUpdateActivity, "현재 비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                } else {
+                    myPageUpdateViewModel.checkValidCurrentPassword(
+                        userInfo.email.toString(),editUpdateUserCurrentPassword.text.toString()
+                    )
+                }
+            }
+        }
+
         //이름은 true false만 해야함
         myPageUpdateBtn.setBtnOnClickListener {
-            if(passwordJudge){
-                myPageUpdateViewModel.checkValidCurrentPassword(
-                    userInfo.email.toString(),editUpdateUserCurrentPassword.text.toString()
-                )
-            }
             if (myPageUpdateViewModel.checkAllConditions()) {
                 lifecycleScope.launch {
                     name = editUpdateUserName.text.toString().trim()
@@ -473,6 +471,42 @@ class MyPageUpdateActivity : AppCompatActivity() {
                 ).show()
             }
         }
+
+        myPageUpdateViewModel.isNicknameDuplication.observe(this@MyPageUpdateActivity) { isDup ->
+            if (!isDup) {
+                editUpdateUserName.isEnabled = false
+                nameDupCheck.apply {
+                    text = "사용 가능"
+                    isEnabled = false
+                    setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
+                }
+            } else {
+                nameDupCheck.apply {
+                    text = "중복"
+                    setTextColor(ContextCompat.getColor(context, R.color.red))
+                }
+                tilUpdateUserName.boxStrokeColor = ContextCompat.getColor(this@MyPageUpdateActivity, R.color.red)
+            }
+        }
+
+        myPageUpdateViewModel.isCheckCurrentPassword.observe(this@MyPageUpdateActivity) { isDup ->
+            if (isDup) {
+                editUpdateUserCurrentPassword.isEnabled = false
+                passwordDupCheck.apply {
+                    text = "비밀번호 일치"
+                    isEnabled = false
+                    setTextColor(ContextCompat.getColor(context, R.color.dodger_blue))
+                }
+            } else {
+                passwordDupCheck.apply {
+                    text = "일치하지 않음"
+                    setTextColor(ContextCompat.getColor(context, R.color.red))
+                }
+                tilUpdateUserName.boxStrokeColor =
+                    ContextCompat.getColor(this@MyPageUpdateActivity, R.color.red)
+            }
+        }
+
         myPageUpdateViewModel.isCheckCurrentPassword.observe(this@MyPageUpdateActivity){isCheck ->
             if (isCheck == true){
                 tilUpdateUserCurrentPassword.boxStrokeColor =
@@ -483,6 +517,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
                     ContextCompat.getColor(this@MyPageUpdateActivity, R.color.red)
             }
         }
+
         myPageUpdateViewModel.isValidPassword.observe(this@MyPageUpdateActivity) { isValid ->
             if (isValid == true && myPageUpdateViewModel.isValidCurrentPassword.value == true) {
                 tilUpdateUserPassword.boxStrokeColor =
