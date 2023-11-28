@@ -17,12 +17,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeFragmentBinding
 import com.wd.woodong2.presentation.home.add.HomeAddActivity
 import com.wd.woodong2.presentation.home.detail.HomeDetailActivity
@@ -82,7 +84,11 @@ class HomeFragment : Fragment() {
                         result.data!!.getStringExtra(EXTRA_SECOND_LOCATION)
                     firstLocation = receivedDataFirstLocation
                     secondLocation = receivedDataSecondLocation
-                    binding.toolbarHome.setToolbarTitleText(HomeMapActivity.extractLocationInfo(firstLocation.toString()))
+                    binding.toolbarHome.setToolbarTitleText(
+                        HomeMapActivity.extractLocationInfo(
+                            firstLocation.toString()
+                        )
+                    )
                     // firebase에 있는 값을 변경
                     viewModel.updateUserLocation(
                         receivedDataFirstLocation.toString(),
@@ -182,7 +188,10 @@ class HomeFragment : Fragment() {
             toolbarHome.setRequestFocusEditText()
             toolbarHome.setRightIcVisible(false)
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(toolbarHome.toolbarBinding.edtToolbarSearch, InputMethodManager.SHOW_IMPLICIT)
+            imm.showSoftInput(
+                toolbarHome.toolbarBinding.edtToolbarSearch,
+                InputMethodManager.SHOW_IMPLICIT
+            )
         }
 
         // 검색창 취소 아이콘 클릭 리스너
@@ -197,68 +206,76 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun initViewModel() {
-        with(viewModel) {
+    private fun initViewModel() = with(viewModel) {
+        printList.observe(viewLifecycleOwner) {
+            listAdapter.submitList(it)
+        }
 
-//            list.observe(viewLifecycleOwner) { newList ->
-//                _printList.value = newList.filter { item ->
-//                    circumLocation.contains(item.location)
-//                }
-//            }
+        userInfo.observe(viewLifecycleOwner) { userInfo ->
+            _printList.value =
+                list.value?.filter { it.location == userInfo?.firstLocation } ?: emptyList()
 
-            printList.observe(viewLifecycleOwner) {
-                listAdapter.submitList(it)
-            }
-
-            userInfo.observe(viewLifecycleOwner) { userInfo ->
-                _printList.value =
-                    list.value?.filter { it.location == userInfo?.firstLocation } ?: emptyList()
-
-                printList.value?.let { list ->
-                    if (list.size < 10) {
-                        HomeMapActivity.getLocationFromAddress(
-                            requireContext(),
-                            userInfo?.firstLocation.toString()
-                        )
-                        circumLocationItemSearch(
-                            HomeMapActivity.latitude,
-                            HomeMapActivity.longitude,
-                            20000,
-                            userInfo?.firstLocation.toString(),
-                            userInfo?.firstLocation.toString()
-                        )
-                    }
-
-                    handleTagSelection(currentTag)
-                }
-
-
-                firstLocation = userInfo?.firstLocation
-                secondLocation = userInfo?.secondLocation
-                userName = userInfo?.name
-                userId = userInfo?.id.toString()
-                binding.toolbarHome.setToolbarTitleText(HomeMapActivity.extractLocationInfo(firstLocation.toString()))
-                if (userInfo?.firstLocation == "") {
-
-                    Toast.makeText(requireContext(), "위치 설정이 필요합니다", Toast.LENGTH_SHORT).show()
-
-                    homeMapLauncher.launch(
-                        HomeMapActivity.newIntent(
-                            requireContext(), firstLocation.toString(), secondLocation.toString()
-                        )
+            printList.value?.let { list ->
+                if (list.size < 10) {
+                    HomeMapActivity.getLocationFromAddress(
+                        requireContext(),
+                        userInfo?.firstLocation.toString()
+                    )
+                    circumLocationItemSearch(
+                        HomeMapActivity.latitude,
+                        HomeMapActivity.longitude,
+                        20000,
+                        userInfo?.firstLocation.toString(),
+                        userInfo?.firstLocation.toString()
                     )
                 }
+                handleTagSelection(currentTag)
             }
 
-            searchKeyword.observe(viewLifecycleOwner) { keyword ->
-                listAdapter.submitList(searchItems(keyword))
-            }
-
-            filteredItems.observe(viewLifecycleOwner) { updatedList ->
-                listAdapter.submitList(updatedList)
+            firstLocation = userInfo?.firstLocation
+            secondLocation = userInfo?.secondLocation
+            userName = userInfo?.name
+            userId = userInfo?.id.toString()
+            binding.toolbarHome.setToolbarTitleText(
+                HomeMapActivity.extractLocationInfo(
+                    firstLocation.toString()
+                )
+            )
+            if (userInfo?.firstLocation == "") {
+                showHomeMapDialog()
             }
         }
+
+        searchKeyword.observe(viewLifecycleOwner) { keyword ->
+            listAdapter.submitList(searchItems(keyword))
+        }
+
+        filteredItems.observe(viewLifecycleOwner) { updatedList ->
+            listAdapter.submitList(updatedList)
+        }
     }
+
+    private fun showHomeMapDialog() {
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(R.string.home_dialog_no_location_title)
+            setMessage(R.string.home_dialog_no_location_message)
+            setPositiveButton(R.string.public_dialog_ok) { _, _ ->
+                homeMapLauncher.launch(
+                    HomeMapActivity.newIntent(
+                        requireContext(),
+                        firstLocation.toString(),
+                        secondLocation.toString()
+                    )
+                )
+            }
+            setNegativeButton(R.string.public_dialog_cancel) { _, _ ->
+                requireActivity().finish()
+            }
+            setCancelable(false) //dialog 외부 영역 클릭 시 창 꺼짐 현상 방지
+            show()
+        }
+    }
+
     private fun updateTagSelectionUI() {
         binding.homeTagGroup.clearCheck() // 칩 그룹 내 모든 칩의 선택 해제
     }
@@ -312,5 +329,4 @@ class HomeFragment : Fragment() {
         _binding = null
         super.onDestroyView()
     }
-
 }

@@ -32,6 +32,17 @@
             android:text="@string/my_page_btn_update_profile"
             android:textSize="@dimen/wd2_sub_title"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_cancel_member"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/wd2_layout_padding"
+            android:text="@string/my_page_txt_cancel_member"
+            android:textColor="@color/light_gray_txt"
+            android:textSize="@dimen/wd2_normal_text"
+            android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.cardview.widget.CardView
@@ -155,8 +166,8 @@
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/wd2_normal_text"
                                 android:textStyle="bold"
-                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintBottom_toBottomOf="@id/til_update_user_name"
+                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toEndOf="@id/til_update_user_name"
                                 app:layout_constraintTop_toTopOf="@+id/til_update_user_name" />
                         </androidx.constraintlayout.widget.ConstraintLayout>

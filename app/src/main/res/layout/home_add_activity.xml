@@ -72,6 +72,8 @@
                         android:text="동네질문"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
+                        app:chipStrokeColor="@color/dark_yellow_btn"
+                        app:chipStrokeWidth="1dp"
                         app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
@@ -82,6 +84,8 @@
                         android:text="조심해요!"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
+                        app:chipStrokeColor="@color/dark_yellow_btn"
+                        app:chipStrokeWidth="1dp"
                         app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
@@ -92,6 +96,8 @@
                         android:text="정보공유"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
+                        app:chipStrokeColor="@color/dark_yellow_btn"
+                        app:chipStrokeWidth="1dp"
                         app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
@@ -102,6 +108,8 @@
                         android:text="동네소식"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
+                        app:chipStrokeColor="@color/dark_yellow_btn"
+                        app:chipStrokeWidth="1dp"
                         app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
@@ -112,6 +120,8 @@
                         android:text="사건/사고"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
+                        app:chipStrokeColor="@color/dark_yellow_btn"
+                        app:chipStrokeWidth="1dp"
                         app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
@@ -122,6 +132,8 @@
                         android:text="동네사진전"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
+                        app:chipStrokeColor="@color/dark_yellow_btn"
+                        app:chipStrokeWidth="1dp"
                         app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
@@ -132,6 +144,8 @@
                         android:text="분실/실종"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
+                        app:chipStrokeColor="@color/dark_yellow_btn"
+                        app:chipStrokeWidth="1dp"
                         app:ensureMinTouchTargetSize="false" />
 
                     <com.google.android.material.chip.Chip
@@ -142,6 +156,8 @@
                         android:text="생활정보"
                         android:textColor="@color/black"
                         app:chipBackgroundColor="@color/pressed_chip"
+                        app:chipStrokeColor="@color/dark_yellow_btn"
+                        app:chipStrokeWidth="1dp"
                         app:ensureMinTouchTargetSize="false" />
 
                 </com.google.android.material.chip.ChipGroup>

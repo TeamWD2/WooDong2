@@ -11,23 +11,13 @@ import kotlinx.coroutines.flow.Flow
 interface GroupRepository {
     suspend fun getGroupItems(): Flow<GroupItemsEntity>
     suspend fun setGroupItem(groupAddSetItem: List<GroupAddSetItem>): String
-    suspend fun setGroupBoardItem(itemId: String, groupBoardItem: GroupDetailBoardAddItem)
-
-    suspend fun setGroupAlbumItem(itemId: String, groupAlbumItems: List<String>)
-
-    suspend fun addGroupBoardComment(
-        itemId: String,
-        groupId: String,
-        boardComment: GroupDetailBoardDetailItem.BoardComment,
-    )
-
-    suspend fun deleteGroupBoardComment(
-        itemId: String,
-        groupId: String,
-        commentId: String,
-    )
-
-    suspend fun setGroupMemberItem(itemId: String, groupMemberItem: GroupDetailMemberAddItem)
+    fun setGroupBoardItem(itemId: String, groupBoardItem: GroupDetailBoardAddItem)
+    fun setGroupAlbumItem(itemId: String, groupAlbumItems: List<String>)
+    fun addGroupBoardComment(itemId: String, groupId: String, boardComment: GroupDetailBoardDetailItem.BoardComment, )
+    fun deleteGroupBoardComment(itemId: String, boardId: String, commentId: String, )
+    fun setGroupMemberItem(itemId: String, groupMemberItem: GroupDetailMemberAddItem)
     suspend fun getGroupItem(groupId: String): Flow<GroupItemsEntity?>
     suspend fun getGroupMemberList(groupId: String): Flow<List<GroupMemberItemEntity>?>
+    suspend fun deleteGroupBoardItem(itemId: String, boardId: String): Flow<List<String>?>
+    fun deleteGroupAlbumItem(itemId: String, imageList: List<String>)
 }

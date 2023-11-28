@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.bumptech.glide.Glide
+import com.wd.woodong2.R
+import com.wd.woodong2.databinding.GroupDetailAlbumImagePopupBinding
 import com.wd.woodong2.databinding.GroupDetailHomeFragmentBinding
 import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
 import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModelFactory
@@ -17,7 +21,9 @@ class GroupDetailHomeFragment : Fragment() {
     }
 
     private var _binding: GroupDetailHomeFragmentBinding? = null
+    private var _dialogBinding: GroupDetailAlbumImagePopupBinding? = null
     private val binding get() = _binding!!
+    private val dialogBinding get() = _dialogBinding!!
 
     private val sharedViewModel: GroupDetailSharedViewModel by activityViewModels {
         GroupDetailSharedViewModelFactory(requireContext())
@@ -38,6 +44,9 @@ class GroupDetailHomeFragment : Fragment() {
             },
             onClickMoreBtn = { tabName ->
                 sharedViewModel.modifyTab(tabName)
+            },
+            onClickAlbumItem = { image ->
+                showDialogImageView(image)
             }
         )
     }
@@ -66,8 +75,20 @@ class GroupDetailHomeFragment : Fragment() {
         }
     }
 
+    private fun showDialogImageView(image: String) {
+        _dialogBinding = GroupDetailAlbumImagePopupBinding.inflate(layoutInflater)
+        Glide.with(this).load(image).into(dialogBinding.imgDialog)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
+        dialog.window?.setBackgroundDrawableResource(R.color.transparent)
+        dialog.show()
+    }
+
     override fun onDestroyView() {
         _binding = null
+        _dialogBinding = null
         super.onDestroyView()
     }
 }

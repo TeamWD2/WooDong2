@@ -13,16 +13,21 @@ import com.wd.woodong2.data.repository.GroupRepositoryImpl
 import com.wd.woodong2.data.repository.UserPreferencesRepositoryImpl
 import com.wd.woodong2.data.sharedpreference.UserInfoPreferenceImpl
 import com.wd.woodong2.domain.usecase.group.GroupAddBoardCommentUseCase
+import com.wd.woodong2.domain.usecase.group.GroupDeleteAlbumItemUseCase
 import com.wd.woodong2.domain.usecase.group.GroupDeleteBoardCommentUseCase
+import com.wd.woodong2.domain.usecase.group.GroupDeleteBoardItemUseCase
 import com.wd.woodong2.domain.usecase.prefs.UserPrefGetItemUseCase
 import com.wd.woodong2.presentation.group.GroupUserInfoItem
 import com.wd.woodong2.presentation.group.content.GroupItem
+import com.wd.woodong2.presentation.group.detail.GroupDetailSharedViewModel
 import kotlinx.coroutines.launch
 
 class GroupDetailBoardDetailViewModel(
     private val prefGetUserItem: UserPrefGetItemUseCase,
     private val groupAddBoardCommentItem: GroupAddBoardCommentUseCase,
-    private val groupDeleteBoardCommentItem: GroupDeleteBoardCommentUseCase
+    private val groupDeleteBoardCommentItem: GroupDeleteBoardCommentUseCase,
+    private val groupDeleteBoardItem: GroupDeleteBoardItemUseCase,
+    private val groupDeleteAlbumItem: GroupDeleteAlbumItemUseCase
 ) : ViewModel() {
     companion object {
         private const val TAG = "GroupDetailBoardDetailViewModel"
@@ -34,6 +39,10 @@ class GroupDetailBoardDetailViewModel(
 
     private val _isSuccessAddComment: MutableLiveData<Boolean> = MutableLiveData()
     val isSuccessAddComment: LiveData<Boolean> get() = _isSuccessAddComment
+
+    fun isBoardWriter(userId: String?): Boolean {
+        return userId == prefGetUserItem()?.id
+    }
 
     /**
      * 넘겨받아온 데이터 화면에 출력하기 위해 ViewType 별로 가공
@@ -157,6 +166,39 @@ class GroupDetailBoardDetailViewModel(
     }
 
     /**
+     * Firebase 게시글 데이터 삭제
+     */
+    fun deleteBoard(
+        itemPkId: String?,
+        boardId: String?
+    ) {
+        if(itemPkId == null || boardId == null) {
+            return
+        }
+
+        // Firebase 게시글 데이터 삭제
+        viewModelScope.launch {
+            runCatching {
+                groupDeleteBoardItem(
+                    itemPkId,
+                    boardId
+                ).collect { imageList ->
+                    imageList?.let {
+                        if(imageList.isNotEmpty()) { //이미지가 있는 게시글일 경우
+                            groupDeleteAlbumItem( // Firebase Storage & 앨범 데이터 삭제
+                                itemPkId,
+                                it
+                            )
+                        }
+                    }
+                }
+            }.onFailure {
+                Log.e(TAG, it.message.toString())
+            }
+        }
+    }
+
+    /**
      * Firebase 댓글 데이터 삭제 및 화면 출력
      */
     fun deleteComment(
@@ -205,13 +247,15 @@ class GroupDetailBoardDetailViewModelFactory(
                 context.getSharedPreferences(userPrefKey, Context.MODE_PRIVATE)
             )
         )
-        val groupBoardCommentRepository =
+        val groupBoardRepository =
             GroupRepositoryImpl(FirebaseDatabase.getInstance().getReference("group_list"))
         if (modelClass.isAssignableFrom(GroupDetailBoardDetailViewModel::class.java)) {
             return GroupDetailBoardDetailViewModel(
                 UserPrefGetItemUseCase(userPrefRepository),
-                GroupAddBoardCommentUseCase(groupBoardCommentRepository),
-                GroupDeleteBoardCommentUseCase(groupBoardCommentRepository)
+                GroupAddBoardCommentUseCase(groupBoardRepository),
+                GroupDeleteBoardCommentUseCase(groupBoardRepository),
+                GroupDeleteBoardItemUseCase(groupBoardRepository),
+                GroupDeleteAlbumItemUseCase(groupBoardRepository)
             ) as T
         } else {
             throw IllegalArgumentException("Not Found ViewModel Class")

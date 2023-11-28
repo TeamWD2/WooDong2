@@ -83,6 +83,18 @@
             app:layout_constraintStart_toEndOf="@id/txt_location"
             app:layout_constraintTop_toTopOf="@id/txt_location"
             tools:text="2023년 10월 23일" />
+
+        <TextView
+            android:id="@+id/txt_delete_board"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="삭제"
+            android:textColor="@color/light_gray_txt"
+            android:textSize="@dimen/wd2_normal_text"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView

@@ -36,4 +36,5 @@ interface UserRepository {
     suspend fun updateGroupInfo(userId: String, groupId: String?, chatId: String?)
     suspend fun sendPushMessageToGroupMember(memberList: List<GroupMemberItemEntity>?)
     fun logout()
+    suspend fun deleteUser(userId: String)
 }
