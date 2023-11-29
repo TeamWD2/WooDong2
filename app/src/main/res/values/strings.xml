@@ -19,10 +19,6 @@
     <string name="public_dialog_ok">확인</string>
     <string name="public_dialog_cancel">취소</string>
 
-    <string name="splash_dialog_download_progress_bar_title">Updating...</string>
-    <string name="splash_snack_bar_success_download">다운로드가 완료되었습니다.</string>
-    <string name="splash_toast_app_update_fail">앱을 재설치해주세요.</string>
-
     <string name="home_dialog_no_location_title">위치 설정 요청</string>
     <string name="home_dialog_no_location_message">"우동이" 앱을 사용하기 위해서는 위치 설정이 필요합니다. 위치 설정 페이지로 이동하시겠습니까?\n
         위치 설정을 하지 않으실 경우, 앱 이용이 제한될 수 있습니다.</string>
