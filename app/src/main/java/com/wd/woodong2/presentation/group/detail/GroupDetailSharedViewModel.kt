@@ -230,10 +230,11 @@ class GroupDetailSharedViewModel(
     /**
      * 모임 가입 시, User 정보 업데이트 및 멤버 추가
      */
-    fun updateUserInfo(groupId: String?) {
-        if (groupId == null) {
+    fun updateUserInfo(isGranted: Boolean, groupId: String?) {
+        if(groupId == null) {
             return
         }
+
         viewModelScope.launch {
             runCatching {
                 val groupMainItem =
@@ -262,7 +263,10 @@ class GroupDetailSharedViewModel(
                     )
 
                     // 가입 알람 전송
-                    groupSendPushMessage(groupId)
+                    //Notification Permission 승인 여부에 따른 Noti 전송 여부 결정
+                    if(isGranted) {
+                        groupSendPushMessage(groupId)
+                    }
 
                     _isSuccessJoinGroup.value = true
                 } else {
