@@ -79,7 +79,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
             if (permissions.values.all { it }) {
                 Toast.makeText(
                     this,
-                    R.string.public_toast_permission_grant,
+                    R.string.public_toast_gallery_permission_grant,
                     Toast.LENGTH_SHORT
                 ).show()
                 galleryLauncher.launch(
@@ -91,7 +91,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(
                     this,
-                    R.string.public_toast_permission_deny,
+                    R.string.public_toast_gallery_permission_deny,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -779,7 +779,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
     private fun showRationalDialog() {
         AlertDialog.Builder(this@MyPageUpdateActivity).apply {
             setTitle(R.string.public_dialog_rational_title)
-            setMessage(R.string.public_dialog_rational_message)
+            setMessage(R.string.public_dialog_gallery_rational_message)
             setPositiveButton(R.string.public_dialog_ok) { _, _ ->
                 galleryPermissionLauncher.launch(permissions)
             }

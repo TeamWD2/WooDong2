@@ -11,11 +11,17 @@
     <string name="exit_confirmation_positive_button">예</string>
     <string name="exit_confirmation_negative_button">아니오</string>
 
-    <string name="public_toast_permission_grant">권한 요청을 허용하셨습니다.</string>
-    <string name="public_toast_permission_deny">권한 요청을 거부하셨습니다.</string>
+    <string name="public_toast_gallery_permission_grant">앨범 권한 요청을 허용하셨습니다.</string>
+    <string name="public_toast_gallery_permission_deny">앨범 권한 요청을 거부하셨습니다.</string>
+    <string name="public_toast_noti_permission_grant">알림 권한 요청을 허용하셨습니다.</string>
+    <string name="public_toast_noti_permission_deny">알림 권한 요청을 거부하셨습니다.</string>
     <string name="public_dialog_rational_title">권한 요청</string>
-    <string name="public_dialog_rational_message">프로필 설정 및 게시글 작성, 모임 생성 등의 기능을 원활하게 사용하기 위해서는 해당 권한이 필요합니다.\n
+    <string name="public_dialog_rational_message">알림, 프로필 설정 및 게시글 작성, 모임 생성 등의 기능을 원활하게 사용하기 위해서는 해당 권한이 필요합니다.\n
         만약 해당 권한을 거부하시면, 일부 기능이 제한될 수 있습니다.\n\n이후 해당 기능을 사용하고 싶으신 경우, 설정 메뉴에서 권한을 허용하실 수 있습니다.</string>
+    <string name="public_dialog_gallery_rational_message">프로필 설정 및 게시글 작성, 모임 생성 등의 기능을 원활하게 사용하기 위해서는 해당 권한이 필요합니다.\n
+        만약 해당 권한을 거부하시면, 일부 기능이 제한될 수 있습니다.\n\n이후 해당 기능을 사용하고 싶으신 경우, 설정 메뉴에서 권한을 허용하실 수 있습니다.</string>
+    <string name="public_dialog_noti_rational_message">모임 멤버 신규 가입 시 알림 기능을 원활하게 사용하기 위해서는 해당 권한이 필요합니다.\n
+        만약 해당 권한을 거부하시면, 알림 기능이 제한될 수 있습니다.\n\n이후 해당 기능을 사용하고 싶으신 경우, 설정 메뉴에서 권한을 허용하실 수 있습니다.</string>
     <string name="public_dialog_ok">확인</string>
     <string name="public_dialog_cancel">취소</string>
 

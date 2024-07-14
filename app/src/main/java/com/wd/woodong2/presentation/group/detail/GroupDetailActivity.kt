@@ -2,6 +2,7 @@ package com.wd.woodong2.presentation.group.detail
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -13,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -54,6 +56,23 @@ class GroupDetailActivity : AppCompatActivity() {
     }
 
     private lateinit var groupDetailContentType: GroupDetailContentType
+
+    private val notiPermission =
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            android.Manifest.permission.POST_NOTIFICATIONS
+        } else {
+            null
+        }
+
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            Toast.makeText(
+                this,
+                if(isGranted) R.string.public_toast_noti_permission_grant else R.string.public_toast_noti_permission_deny,
+                Toast.LENGTH_SHORT
+            ).show()
+            viewModel.updateUserInfo(isGranted, itemId)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -260,7 +279,7 @@ class GroupDetailActivity : AppCompatActivity() {
             setTitle(R.string.group_detail_dialog_title_join_group)
             setMessage(R.string.group_detail_dialog_message_join_group)
             setPositiveButton(R.string.public_dialog_ok) { _, _ ->
-                viewModel.updateUserInfo(itemId)
+                checkPermission(itemId)
             }
             setNegativeButton(R.string.public_dialog_cancel) { dialog, _ ->
                 dialog.dismiss()
@@ -288,4 +307,36 @@ class GroupDetailActivity : AppCompatActivity() {
             txtBoardCount.text = detailItem?.filterIsInstance<GroupItem.GroupBoard>()
                 ?.firstOrNull()?.boardList?.size?.toString() ?: "0"
         }
+
+    private fun checkPermission(groupId: String?) {
+        if(notiPermission != null) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    notiPermission
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    viewModel.updateUserInfo(true, groupId)
+                }
+
+                shouldShowRequestPermissionRationale(notiPermission) -> {
+                    showRationalDialog()
+                }
+
+                else -> permissionLauncher.launch(notiPermission)
+            }
+        } else {
+            viewModel.updateUserInfo(true, groupId)
+        }
+    }
+
+    private fun showRationalDialog() {
+        AlertDialog.Builder(this).apply {
+            setTitle(R.string.public_dialog_rational_title)
+            setMessage(R.string.public_dialog_noti_rational_message)
+            setPositiveButton(R.string.public_dialog_ok) { _, _ ->
+                permissionLauncher.launch(notiPermission)
+            }
+            show()
+        }
+    }
 }

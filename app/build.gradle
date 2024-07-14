@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace 'com.wd.woodong2'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.wd.woodong2"
         minSdk 24
-        targetSdk 33
-        versionCode 7
-        versionName "1.4.2"
+        targetSdk 34
+        versionCode 8
+        versionName "1.4.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,7 +50,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
-    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation ('com.google.firebase:firebase-auth-ktx') {
+        exclude module: "play-services-safetynet"
+    }
 
     // viewModel
     implementation 'androidx.activity:activity-ktx:1.7.2'
@@ -72,7 +74,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // naver map
-    implementation 'com.naver.maps:map-sdk:3.17.0'
+    implementation 'com.naver.maps:map-sdk:3.18.0'
 
     // map fusedLocation
     implementation 'com.google.android.gms:play-services-location:21.0.1'
