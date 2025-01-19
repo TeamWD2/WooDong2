@@ -5,6 +5,9 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     namespace 'com.wd.woodong2'
     compileSdk 34
@@ -13,10 +16,14 @@ android {
         applicationId "com.wd.woodong2"
         minSdk 24
         targetSdk 34
-        versionCode 8
-        versionName "1.4.3"
+        versionCode 9
+        versionName "1.4.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "GCM_API_KEY", properties["cloud_messaging_key"]
+        buildConfigField "String", "KAKAO_API_KEY", properties["kakao_key"]
+        buildConfigField "String", "NAVER_MAP_CLIENT_ID", properties["naver_map_client_id"]
     }
 
     buildTypes {

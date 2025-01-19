@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
@@ -18,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
@@ -61,11 +59,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             fullLocationName = ""
 
             for ((index, part) in parts.withIndex()) {
-                fullLocationName += if (index == 0) {
-                    part
-                } else {
-                    " $part"
-                }
+                fullLocationName += if (index == 0) { part } else { " $part" }
 
                 if (part.endsWith("동") || part.endsWith("읍") || part.endsWith("면")) {
                     break
@@ -315,11 +309,21 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
         } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
 
 
-        clientId = getString(R.string.naver_map_api)
+        clientId = BuildConfig.NAVER_MAP_CLIENT_ID
 
         //NAVER 지도 API 호출 및 ID 지정
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NaverCloudPlatformClient(clientId!!)
+
+        // 인증 실패 Listener
+        NaverMapSdk.getInstance(this).setOnAuthFailedListener {
+            Toast.makeText(
+                this,
+                getString(R.string.home_map_naver_map_api_auth_fail),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         overridePendingTransition(
             R.anim.home_map_slide_up_fragment,
@@ -337,9 +341,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun initHomeMapView(){
-
-
-
         //NAVER 객체 얻기 ( 동적 )
         val fm = supportFragmentManager
         val mapFragment = fm.findFragmentById(R.id.home_map_view) as MapFragment?
@@ -349,8 +350,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //인터페이스 객체
         mapFragment.getMapAsync(this)
-
-
 
         //1위치 없을때
         if(firstLocation!!.isEmpty()){
@@ -368,9 +367,7 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             binding.homeMapSecondAddBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.black))
             binding.homeMapSecondAddBtnIvLocation.visibility =  View.VISIBLE
             binding.homeMapSecondCloseBtnIvLocation.visibility =  View.INVISIBLE
-
         } else{//1위치 있을때 -> 1위치 출력
-
             binding.homeMapFirstBtnTvLocation.text = extractLocationInfo(firstLocation.toString())
             binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
             binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
@@ -420,7 +417,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         }
 
-
         //search 클릭시 2위치 없을때
         binding.homeMapTvSearch.setOnClickListener{
             if(binding.homeMapSecondBtnTvLocation.text.toString().isEmpty()){
@@ -450,7 +446,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
             }
             else{
-
                 binding.homeMapClFirstBtn.setBackgroundResource(R.drawable.home_map_btn_check)
                 binding.homeMapFirstBtnTvLocation.setTextColor(ContextCompat.getColor(this, R.color.normal_gray_txt))
                 binding.homeMapFirstCloseBtnIvLocation.setColorFilter(ContextCompat.getColor(this, R.color.normal_gray_txt))
@@ -661,8 +656,6 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                         binding.homeMapFirstAddBtnIvLocation.visibility =  View.INVISIBLE
                         binding.homeMapFirstCloseBtnIvLocation.visibility =  View.VISIBLE
                     }
-                }else{
-
                 }
             }
             else if(firstLocation != "" &&  //1위치만 있을때
@@ -705,14 +698,11 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
                             binding.homeMapFirstCloseBtnIvLocation.visibility =  View.VISIBLE
                         }
                     }
-                } else{
-
                 }
-            }else{
+            } else {
                 Toast.makeText(this, "위치 설정은 최대 두개까지 입니다.", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
     private fun marker(latitude: Double, longitude: Double) {
         marker.position = LatLng(latitude, longitude)
@@ -720,8 +710,4 @@ class HomeMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //getAddressFromLocation(this, latitude, longitude)
     }
-
-
-
-
 }

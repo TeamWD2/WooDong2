@@ -1,5 +1,6 @@
 package com.wd.woodong2.retrofit
 
+import com.wd.woodong2.BuildConfig
 import com.wd.woodong2.R
 import com.wd.woodong2.WooDongApp
 import okhttp3.Interceptor
@@ -10,9 +11,7 @@ class KAKAORequestInterceptor : Interceptor {
         val newRequest = chain.request().newBuilder()
             .addHeader(
                 "Authorization",
-                "KakaoAK %s".format(
-                    WooDongApp.getApp().getString(R.string.kakao_key)
-                )
+                "KakaoAK %s".format(BuildConfig.KAKAO_API_KEY)
             ).build()
         return chain.proceed(newRequest)
     }
