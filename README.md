@@ -119,5 +119,5 @@ GPS 기반 현 위치 설정
 
 Notion 과 Figma 는 해당 블록을 클릭하면 사이트로 이동하실 수 있습니다.
 
-## 🚀 스토어 배포 - 24.07.14 (v1.4.3) 
+## 🚀 스토어 배포 - 25.01.19 (v1.4.4) 
 <a href='https://play.google.com/store/apps/details?id=com.wd.woodong2'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='250'/></a>
