@@ -10,31 +10,46 @@ import com.wd.woodong2.domain.usecase.map.MapSearchGetItemsUseCase
 import kotlinx.coroutines.launch
 
 class HomeMapSearchViewModel (
-    private val MapSearch : MapSearchGetItemsUseCase
+    private val mapSearch : MapSearchGetItemsUseCase
 ) : ViewModel(){
+    companion object {
+        private const val TAG = "HomeMapSearchViewModel"
+    }
+
     private val _list: MutableLiveData<List<HomeMapSearchItem>> = MutableLiveData()
     val list: LiveData<List<HomeMapSearchItem>> get() = _list
 
-    fun search(
-        query: String
-    ) = viewModelScope.launch {
-        runCatching {
-            val items = createItems(
-                Map = MapSearch(query)
-            )
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
+    private val _isSuccess = MutableLiveData<Boolean>()
+    val isSuccess: LiveData<Boolean> get() = _isSuccess
+
+    fun search(query: String) = viewModelScope.launch {
+        _isLoading.value = true
+        runCatching {
+            val items = createItems(map = mapSearch(query))
             _list.postValue(items)
+            _isSuccess.value = true
         }.onFailure { e ->
-            Log.e("Retrofit Error", "Request failed: ${e.message}")
+            if (e is retrofit2.HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                Log.e("Retrofit Error", "$TAG Request failed: code(${e.code()}), message($errorBody)")
+            } else {
+                Log.e("Retrofit Error", "$TAG Request failed: ${e.message}")
+            }
+            _isSuccess.value = false
+        }.also {
+            _isLoading.value = false
         }
     }
 
     private fun createItems(
-        Map: MapSearchEntity
+        map: MapSearchEntity
     ): List<HomeMapSearchItem> {
         fun createMapSearchItems(
-            Map: MapSearchEntity
-        ): List<HomeMapSearchItem.MapSearchItem> = Map.documents.map { document ->
+            map: MapSearchEntity
+        ): List<HomeMapSearchItem.MapSearchItem> = map.documents.map { document ->
             HomeMapSearchItem.MapSearchItem(
                 address = document.addressName,
                 x = document.x,
@@ -42,6 +57,6 @@ class HomeMapSearchViewModel (
             )
         }
 
-        return createMapSearchItems(Map)
+        return createMapSearchItems(map)
     }
 }

@@ -11,9 +11,7 @@ class GCMRequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val newRequest = chain.request().newBuilder()
             .addHeader(
-                "Authorization", "key=%s".format(
-                    WooDongApp.getApp().getString(R.string.cloud_messaging_key)
-                )
+                "Authorization", "key=%s".format(BuildConfig.GCM_API_KEY)
             )
             .addHeader("Content-Type", "application/json")
             .build()

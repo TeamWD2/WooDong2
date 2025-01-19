@@ -3,11 +3,8 @@ package com.wd.woodong2.presentation.home.map
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
-import android.view.View
-import android.view.WindowInsetsController
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -15,14 +12,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeMapSearchActivityBinding
 
-
-
 class HomeMapSearchActivity : AppCompatActivity() {
-
     companion object {
         private var firstLocation : String? ="Unknown Location"
         private var secondLocation : String? ="Unknown Location"
@@ -33,7 +28,6 @@ class HomeMapSearchActivity : AppCompatActivity() {
             firstLocation = firstLoc
             secondLocation = secondLoc
             }
-
     }
 
     private lateinit var binding : HomeMapSearchActivityBinding
@@ -61,10 +55,7 @@ class HomeMapSearchActivity : AppCompatActivity() {
             onClickItem = { _, item ->
                 if(HomeMapActivity.extractLocationSetInfo(item.address.toString()) != HomeMapActivity.extractLocationSetInfo(firstLocation.toString()) && HomeMapActivity.extractLocationSetInfo(item.address.toString()) != HomeMapActivity.extractLocationSetInfo(secondLocation.toString())){
                     val intent = Intent().apply{
-                        putExtra(
-                            EXTRA_ADDRESS,
-                            item.address
-                        )
+                        putExtra(EXTRA_ADDRESS, item.address)
                     }
 
                     setResult(Activity.RESULT_OK, intent)
@@ -78,12 +69,9 @@ class HomeMapSearchActivity : AppCompatActivity() {
     }
     private var address = ""
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = HomeMapSearchActivityBinding.inflate(layoutInflater)
-
 
         //상태바 & 아이콘 색상 변경
         window.statusBarColor = ContextCompat.getColor(this, R.color.egg_yellow_toolbar)
@@ -107,13 +95,9 @@ class HomeMapSearchActivity : AppCompatActivity() {
         initViewModel()
     }
     private fun initView(){
-
         onBackPressedDispatcher.addCallback(this@HomeMapSearchActivity, onBackPressedCallback)
-
         binding.homeMapSearchRc.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.homeMapSearchRc.adapter = listAdapter
-
-
         binding.homeMapSearchClose.setOnClickListener{
             if(firstLocation!!.isNotEmpty()) {
                 finish()
@@ -126,8 +110,6 @@ class HomeMapSearchActivity : AppCompatActivity() {
                 Toast.makeText(this, R.string.home_map_search_location_error, Toast.LENGTH_SHORT).show()
             }
         }
-
-
         binding.homeMapSearchBtn.setOnClickListener{
             address = binding.homeMapEtSearch.text.toString()
             val spaceAddress = address.replace("\\s".toRegex(), "")
@@ -143,18 +125,31 @@ class HomeMapSearchActivity : AppCompatActivity() {
             var handled = false
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 binding.homeMapSearchBtn.performClick()
-
                 handled = true
             }
             handled
         }
-
     }
+
     private fun initViewModel() {
         viewModel.list.observe(this) {
             listAdapter.submitList(it)
         }
+        viewModel.isLoading.observe(this) { isLoading ->
+            binding.txtEmptyMapSearchList.isVisible = isLoading
+            binding.progressBar.isVisible = isLoading
+        }
+        viewModel.isSuccess.observe(this) { isSuccess ->
+            if(!isSuccess) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.home_map_search_fail),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
+
     // 화면 터치 시 키보드 내리기
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         val imm: InputMethodManager =
@@ -167,6 +162,4 @@ class HomeMapSearchActivity : AppCompatActivity() {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
-
-
 }

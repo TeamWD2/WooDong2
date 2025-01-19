@@ -26,8 +26,7 @@
     <string name="public_dialog_cancel">취소</string>
 
     <string name="home_dialog_no_location_title">위치 설정 요청</string>
-    <string name="home_dialog_no_location_message">"우동이" 앱을 사용하기 위해서는 위치 설정이 필요합니다. 위치 설정 페이지로 이동하시겠습니까?\n
-        위치 설정을 하지 않으실 경우, 앱 이용이 제한될 수 있습니다.</string>
+    <string name="home_dialog_no_location_message">"우동이" 앱을 사용하기 위해서는 위치 설정이 필요합니다. 위치 설정 페이지로 이동하시겠습니까?\n위치 설정을 하지 않으실 경우, 앱 이용이 제한될 수 있습니다.</string>
 
     <string name="home_list_item_btn_tag_name">같이해요</string>
     <string name="home_list_item_thumbnail_count">99</string>
@@ -37,6 +36,8 @@
     <string name="home_list_item_tv_views">조회 199</string>
     <string name="home_list_item_tv_thumb">99</string>
     <string name="home_list_item_tv_chat">99</string>
+
+    <string name="home_map_naver_map_api_auth_fail">Naver Map API 인증 실패</string>
 
     <string name="home_map_bottom_sheet_title"> 내 동네 </string>
     <string name="home_map_toolbar_title"> 내 동네 설정 </string>
@@ -49,6 +50,8 @@
 
     <string name="home_map_search_location_error">처음 위치 설정이 완료 되지 않았습니다.</string>
     <string name="home_map_search_location_also_error">주소가 중복설정 되었습니다.</string>
+    <string name="home_map_search_fail">검색에 실패하였습니다. 다시 시도해주십시오.</string>
+    <string name="home_map_search_text_empty_map_list">내 동네를 설정해보세요!</string>
 
     <string name="group_hint_search_group">우리 동네 모임을 검색해보세요.</string>
     <string name="group_text_empty_group_list">모임 정보가 존재하지 않습니다.</string>
@@ -140,8 +143,7 @@
     <string name="chat_txt_title">채팅</string>
 
     <string name="my_page_dialog_delete_member_title">회원 탈퇴</string>
-    <string name="my_page_dialog_delete_member_message">\'확인\' 버튼을 누르시면 회원님의 모든 정보가 삭제됩니다. 이 작업은 되돌릴 수 없습니다.\n\n
-        언제든 저희 \'우동이\' 앱을 이용하고자 하시면 다시 돌아와주세요.\n그동안 \'우동이\' 앱을 사용해주셔서 감사합니다.</string>
+    <string name="my_page_dialog_delete_member_message">\'확인\' 버튼을 누르시면 회원님의 모든 정보가 삭제됩니다. 이 작업은 되돌릴 수 없습니다.\n\n언제든 저희 \'우동이\' 앱을 이용하고자 하시면 다시 돌아와주세요.\n그동안 \'우동이\' 앱을 사용해주셔서 감사합니다.</string>
     <string name="my_page_tv_location">군자동</string>
     <string name="my_page_tv_name">가나다</string>
     <string name="my_page_tv_member_number">#123456789</string>
@@ -206,8 +208,4 @@
     <string name="signin_auto_login">자동 로그인</string>
     <string name="pref_key_user_preferences_key">USER_PREFERENCES</string>
     <string name="signin_login_retry">다시 시도해주세요</string>
-
-    <string name="cloud_messaging_key">AAAAKOS1ziI:APA91bHHZ0VluJf9glcNjnwboJAmJHZLNaR1cOlYtFgcTD0dv7fhK8nEmsm1WcAj3lq8LoSUyD6LVoku1b6bsKCdhVjcioKLJAsdtuQVS-iY2rKV8Hdf-6RpA1x-HqlsYTvKKTlD_Jm3</string>
-    <string name="kakao_key">2944f118955b6cf31d773eea99bcc7d2</string>
-    <string name="naver_map_api">kdzwicc7da</string>
 </resources>

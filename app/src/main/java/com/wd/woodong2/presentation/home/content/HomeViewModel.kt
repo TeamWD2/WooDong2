@@ -34,6 +34,7 @@ import com.wd.woodong2.domain.usecase.user.UserRemoveIdsUseCase
 import com.wd.woodong2.domain.usecase.user.UserUpdateInfoUseCase
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.home.map.HomeMapSearchItem
+import com.wd.woodong2.presentation.home.map.HomeMapSearchViewModel
 import com.wd.woodong2.retrofit.KAKAORetrofitClient
 
 class HomeViewModel(
@@ -241,7 +242,12 @@ class HomeViewModel(
                 }
             }
         }.onFailure { e ->
-            Log.e("Retrofit Error", "Request failed: ${e.message}")
+            if (e is retrofit2.HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                Log.e("Retrofit Error", "$TAG Request failed: code(${e.code()}), message($errorBody)")
+            } else {
+                Log.e("Retrofit Error", "$TAG Request failed: ${e.message}")
+            }
         }
     }
 

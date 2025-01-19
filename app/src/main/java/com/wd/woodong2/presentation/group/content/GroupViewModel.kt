@@ -390,7 +390,12 @@ class GroupViewModel(
                 }
             }
         }.onFailure { e ->
-            Log.e("Retrofit Error", "Request failed: ${e.message}")
+            if (e is retrofit2.HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                Log.e("Retrofit Error", "$TAG Request failed: code(${e.code()}), message($errorBody)")
+            } else {
+                Log.e("Retrofit Error", "$TAG Request failed: ${e.message}")
+            }
         }
     }
 
