@@ -2,14 +2,14 @@ package com.wd.woodong2.presentation.chat.detail
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.WindowInsetsController
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -71,18 +71,10 @@ class ChatDetailActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
-        //상태바 & 아이콘 색상 변경
-        window.statusBarColor =
-            ContextCompat.getColor(this@ChatDetailActivity, R.color.egg_yellow_toolbar)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
-            window.insetsController?.setSystemBarsAppearance(
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 안드로이드 6.0 이상에서만 동작
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = true
+            isAppearanceLightNavigationBars = true
+        }
 
         root.viewTreeObserver.addOnGlobalLayoutListener {
             val r = Rect()

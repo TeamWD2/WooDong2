@@ -4,26 +4,23 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
-import android.view.View
-import android.view.WindowInsetsController
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import com.google.android.material.chip.Chip
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeAddActivityBinding
+import androidx.core.graphics.scale
 
 class HomeAddActivity : AppCompatActivity() {
 
@@ -94,8 +91,7 @@ class HomeAddActivity : AppCompatActivity() {
                 selectedImageUri = result.data?.data
                 selectedImageUri?.let { uri ->
                     val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                    val resizedBitmap = Bitmap.createScaledBitmap(
-                        bitmap,
+                    val resizedBitmap = bitmap.scale(
                         binding.homeThumbnail.width,
                         binding.homeThumbnail.height,
                         false
@@ -119,18 +115,10 @@ class HomeAddActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
-
-        //상태바 & 아이콘 색상 변경
-        window.statusBarColor = ContextCompat.getColor(this@HomeAddActivity, R.color.white)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
-            window.insetsController?.setSystemBarsAppearance(
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 안드로이드 6.0 이상에서만 동작
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = true
+            isAppearanceLightNavigationBars = true
+        }
 
         homeAddAddbtn.setBtnOnClickListener {
             if (selectedTag == null) {

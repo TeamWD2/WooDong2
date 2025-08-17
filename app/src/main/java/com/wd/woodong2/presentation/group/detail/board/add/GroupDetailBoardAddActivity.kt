@@ -4,13 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MotionEvent
-import android.view.View
-import android.view.WindowInsetsController
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,11 +17,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.GroupDetailBoardAddActivityBinding
 import com.wd.woodong2.presentation.group.GroupUserInfoItem
-import com.wd.woodong2.presentation.group.detail.board.detail.GroupDetailBoardDetailActivity
 import java.util.concurrent.atomic.AtomicLong
 
 class GroupDetailBoardAddActivity : AppCompatActivity() {
@@ -127,18 +126,10 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
     }
 
     private fun initView() = with(binding) {
-        //상태바 & 아이콘 색상 변경
-        window.statusBarColor =
-            ContextCompat.getColor(this@GroupDetailBoardAddActivity, R.color.white)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
-            window.insetsController?.setSystemBarsAppearance(
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 안드로이드 6.0 이상에서만 동작
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = true
+            isAppearanceLightNavigationBars = true
+        }
 
         //넘겨 받은 사용자 위치 ToolBar 출력
         toolBar.title = findUserLocation(userInfo?.userFirstLocation)
