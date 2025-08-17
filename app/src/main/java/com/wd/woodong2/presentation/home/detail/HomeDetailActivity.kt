@@ -1,25 +1,20 @@
 package com.wd.woodong2.presentation.home.detail
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.WindowInsetsController
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.view.WindowCompat
 import coil.load
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeDetailActivityBinding
-import com.wd.woodong2.presentation.home.add.HomeAddViewModel
-import com.wd.woodong2.presentation.home.add.HomeAddViewModelFactory
 import com.wd.woodong2.presentation.home.content.HomeItem
 import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import java.text.SimpleDateFormat
@@ -52,26 +47,18 @@ class HomeDetailActivity : AppCompatActivity() {
         initView()
     }
 
-
     private fun initView() {
-
         viewModel.commentsLiveData.observe(this) { comments ->
             commentsAdapter.updateComments(comments)
             updateCommentCount(comments.size) // 댓글 수를 업데이트하는 메소드
             binding.textViewNoComments.visibility = if (comments.isEmpty()) View.VISIBLE else View.GONE
             binding.recyclerviewComment.visibility = if (comments.isEmpty()) View.GONE else View.VISIBLE
         }
-        //상태바 & 아이콘 색상 변경
-        window.statusBarColor = ContextCompat.getColor(this@HomeDetailActivity, R.color.egg_yellow_toolbar)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // 안드로이드 11 이상에서만 동작
-            window.insetsController?.setSystemBarsAppearance(
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 안드로이드 6.0 이상에서만 동작
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        } // 안드로이드 6.0 이하는 상태바 아이콘 색상 변경 지원 안함
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = true
+            isAppearanceLightNavigationBars = true
+        }
 
         homeItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(EXTRA_HOME_ITEM, HomeItem::class.java)
@@ -159,7 +146,7 @@ class HomeDetailActivity : AppCompatActivity() {
         imgDetailProfile.load(R.drawable.public_default_wd2_ivory)
         txtHomeDescription.text = homeItem.description
         txtHomeTag.text = homeItem.tag
-        if (homeItem.thumbnail.isNullOrEmpty()) {
+        if (homeItem.thumbnail.isEmpty()) {
             // 이미지 URL이 없는 경우, 이미지 뷰를 숨깁니다.
             imgHomeThumnail.visibility = View.GONE
             thumbnailCradview.visibility = View.GONE

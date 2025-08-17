@@ -10,6 +10,7 @@ import com.wd.woodong2.R
 import com.wd.woodong2.WooDongApp
 import com.wd.woodong2.data.model.ChatItemsResponse
 import com.wd.woodong2.data.model.ChatResponse
+import com.wd.woodong2.data.model.ChatResponseDeserializer
 import com.wd.woodong2.data.model.MessageItemsResponse
 import com.wd.woodong2.data.model.MessageResponse
 import com.wd.woodong2.domain.model.ChatItemsEntity
@@ -49,11 +50,14 @@ class ChatRepositoryImpl(
             val listener = chatDatabaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
-                        val gson = GsonBuilder().create()
+                        val gson = GsonBuilder()
+                            .registerTypeAdapter(ChatResponse::class.java, ChatResponseDeserializer())
+                            .create()
 
                         val groupChatResponses =
                             snapshot.child("group").children.mapNotNull { childSnapshot ->
                                 val jsonString = gson.toJson(childSnapshot.value)
+                                Log.e("sinwww", "childSnapshot.key=${childSnapshot.key}, json=$jsonString")
                                 val response = gson.fromJson(jsonString, ChatResponse::class.java)
                                 response.copy(id = childSnapshot.key)
                             }

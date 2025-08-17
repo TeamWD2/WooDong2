@@ -10,14 +10,14 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 
 android {
     namespace 'com.wd.woodong2'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.wd.woodong2"
         minSdk 24
-        targetSdk 34
-        versionCode 9
-        versionName "1.4.4"
+        targetSdk 36
+        versionCode 10
+        versionName "1.4.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -88,6 +88,8 @@ dependencies {
 
     // google gson
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.20'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

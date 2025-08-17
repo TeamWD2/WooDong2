@@ -13,5 +13,5 @@ data class ChatEntity(
     val memberLimit: String?,
     val message: List<MessageEntity>?,
     val title: String?,
-    val lastSeemTime: Map<String, Long>?,
+    val lastSeemTime: Map<String?, Long>?,
 )
