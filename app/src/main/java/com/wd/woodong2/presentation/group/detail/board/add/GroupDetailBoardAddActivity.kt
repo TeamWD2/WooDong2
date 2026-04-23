@@ -1,22 +1,17 @@
 package com.wd.woodong2.presentation.group.detail.board.add
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
 import com.wd.woodong2.R
@@ -59,56 +54,20 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
 
     private val idGenerate = AtomicLong(1L)
 
-    private val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(
-            android.Manifest.permission.READ_MEDIA_IMAGES,
-            android.Manifest.permission.READ_MEDIA_VIDEO
-        )
-    } else {
-        arrayOf(
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-    }
-
-    private val galleryPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            if (permissions.values.all { it }) {
-                Toast.makeText(
-                    this,
-                    R.string.public_toast_gallery_permission_grant,
-                    Toast.LENGTH_SHORT
-                ).show()
-                galleryLauncher.launch(
-                    Intent(Intent.ACTION_PICK).setDataAndType(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        "image/*"
-                    )
-                )
-            } else {
-                Toast.makeText(
-                    this,
-                    R.string.public_toast_gallery_permission_deny,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
     private var currentItem: GroupDetailBoardAddImageItem? = null
     private val galleryLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                result.data?.data?.let { uri ->
-                    updateImageItem(uri)
-                    addImageItem()
-                }
-            }
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri ?: return@registerForActivityResult
+
+            updateImageItem(uri)
+            addImageItem()
         }
 
     private val boardAddListAdapter by lazy {
         GroupDetailBoardAddListAdapter(
             onClickPlusImage = { item ->
                 currentItem = item
-                checkPermissions()
+                launchGallery()
             },
             onClickRemoveImage = { position ->
                 viewModel.removeBoardImageItem(position)
@@ -198,41 +157,10 @@ class GroupDetailBoardAddActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkPermissions() {
-        when {
-            permissions.all {
-                ContextCompat.checkSelfPermission(
-                    this,
-                    it
-                ) == PackageManager.PERMISSION_GRANTED
-            } -> {
-                galleryLauncher.launch(
-                    Intent(Intent.ACTION_PICK).setDataAndType(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        "image/*"
-                    )
-                )
-            }
-
-            permissions.any {
-                shouldShowRequestPermissionRationale(it)
-            } -> { //이전에 권한 요청을 거부한 적이 있는 경우
-                showRationalDialog()
-            }
-
-            else -> galleryPermissionLauncher.launch(permissions)
-        }
-    }
-
-    private fun showRationalDialog() {
-        AlertDialog.Builder(this@GroupDetailBoardAddActivity).apply {
-            setTitle(R.string.public_dialog_rational_title)
-            setMessage(R.string.public_dialog_gallery_rational_message)
-            setPositiveButton(R.string.public_dialog_ok) { _, _ ->
-                galleryPermissionLauncher.launch(permissions)
-            }
-            show()
-        }
+    private fun launchGallery() {
+        galleryLauncher.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
     }
 
     private fun addImageItem() {

@@ -3,7 +3,6 @@ package com.wd.woodong2.presentation.main
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -37,23 +36,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: MainActivityBinding
 
-    /**
-     * 갤러리 접근 권한 설정
-     * Target SDK 33 부터 READ_EXTERNAL_STORAGE 권한 세분화 (이미지/동영상/오디오)
-     * Android 13(VERSION_CODES.TIRAMISU) 버전 체크하여 권한 요청 필요
-     */
-    private val galleryPermissions =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(
-                android.Manifest.permission.READ_MEDIA_IMAGES,
-                android.Manifest.permission.READ_MEDIA_VIDEO,
-            )
-        } else {
-            arrayOf(
-                android.Manifest.permission.READ_EXTERNAL_STORAGE
-            )
-        }
-
     private val notificationPermission =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             android.Manifest.permission.POST_NOTIFICATIONS
@@ -62,16 +44,10 @@ class MainActivity : AppCompatActivity() {
         }
 
     private val permissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             Toast.makeText(
                 this,
-                if (galleryPermissions.all { permissions[it] == true }) R.string.public_toast_gallery_permission_grant else R.string.public_toast_gallery_permission_deny,
-                Toast.LENGTH_SHORT
-            ).show()
-
-            Toast.makeText(
-                this,
-                if (permissions[notificationPermission] == true) R.string.public_toast_noti_permission_grant else R.string.public_toast_noti_permission_deny,
+                if (granted) R.string.public_toast_noti_permission_grant else R.string.public_toast_noti_permission_deny,
                 Toast.LENGTH_SHORT
             ).show()
 
@@ -99,39 +75,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissions() {
-        val allPermission = if(notificationPermission != null) {
-            galleryPermissions + notificationPermission
-        } else {
-            galleryPermissions
+        if (notificationPermission == null) {
+            initView()
+            return
         }
 
-        val galleryGranted = galleryPermissions.all {
-            ContextCompat.checkSelfPermission(
-                this,
-                it
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-        val notificationGranted = if(notificationPermission != null) {
-            ContextCompat.checkSelfPermission(
-                this,
-                notificationPermission
-            ) == PackageManager.PERMISSION_GRANTED
-        } else {
-            true
-        }
+        val granted = ContextCompat.checkSelfPermission(
+            this,
+            notificationPermission
+        ) == PackageManager.PERMISSION_GRANTED
 
         when {
-            galleryGranted && notificationGranted -> {
-                initView()
+            granted -> initView()
+
+            shouldShowRequestPermissionRationale(notificationPermission) -> {
+                showRationalDialog()
             }
 
-            allPermission.any {
-                shouldShowRequestPermissionRationale(it)
-            } -> { //이전에 권한 요청을 거부한 적이 있는 경우
-                showRationalDialog(allPermission)
-            }
-
-            else -> permissionLauncher.launch(allPermission)
+            else -> permissionLauncher.launch(notificationPermission)
         }
     }
 
@@ -152,12 +113,14 @@ class MainActivity : AppCompatActivity() {
             .replace(frameLayout.id, HomeFragment()).commit()
     }
 
-    private fun showRationalDialog(allPermission: Array<String>) {
+    private fun showRationalDialog() {
         AlertDialog.Builder(this@MainActivity).apply {
             setTitle(R.string.public_dialog_rational_title)
             setMessage(R.string.public_dialog_rational_message)
             setPositiveButton(R.string.public_dialog_ok) { _, _ ->
-                permissionLauncher.launch(allPermission)
+                notificationPermission?.let {
+                    permissionLauncher.launch(it)
+                }
             }
             show()
         }

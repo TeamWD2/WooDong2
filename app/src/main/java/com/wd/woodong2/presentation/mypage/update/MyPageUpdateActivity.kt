@@ -3,11 +3,7 @@ package com.wd.woodong2.presentation.mypage.update
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -17,6 +13,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -29,7 +26,6 @@ import com.bumptech.glide.Glide
 import com.wd.woodong2.R
 import com.wd.woodong2.databinding.MyPageUpdateActivityBinding
 import com.wd.woodong2.presentation.chat.content.UserItem
-import com.wd.woodong2.presentation.home.map.HomeMapActivity
 import com.wd.woodong2.presentation.mypage.content.MyPageFragment
 import com.wd.woodong2.presentation.signin.SignInActivity
 import kotlinx.coroutines.launch
@@ -53,17 +49,6 @@ class MyPageUpdateActivity : AppCompatActivity() {
     private var changePassword = ""
     private lateinit var binding: MyPageUpdateActivityBinding
 
-    private val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(
-            android.Manifest.permission.READ_MEDIA_IMAGES,
-            android.Manifest.permission.READ_MEDIA_VIDEO
-        )
-    } else {
-        arrayOf(
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-    }
-
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             finish()
@@ -74,42 +59,17 @@ class MyPageUpdateActivity : AppCompatActivity() {
         MyPageUpdateViewModelFactory(this@MyPageUpdateActivity)
     }
 
-    private val galleryPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            if (permissions.values.all { it }) {
-                Toast.makeText(
-                    this,
-                    R.string.public_toast_gallery_permission_grant,
-                    Toast.LENGTH_SHORT
-                ).show()
-                galleryLauncher.launch(
-                    Intent(Intent.ACTION_PICK).setDataAndType(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        "image/*"
-                    )
-                )
-            } else {
-                Toast.makeText(
-                    this,
-                    R.string.public_toast_gallery_permission_deny,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
     private val galleryLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                result.data?.data?.let { uri ->
-                    binding.myPageUpdateUserImgProfile.setImageURI(uri)
-                    Glide.with(this)
-                        .load(uri)
-                        .error(R.drawable.public_default_wd2_ivory)
-                        .fitCenter()
-                        .into(binding.myPageUpdateUserImgProfile)
-                    myPageUpdateViewModel.setProfileImage(uri)
-                }
-            }
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri ?: return@registerForActivityResult
+
+            binding.myPageUpdateUserImgProfile.setImageURI(uri)
+            Glide.with(this)
+                .load(uri)
+                .error(R.drawable.public_default_wd2_ivory)
+                .fitCenter()
+                .into(binding.myPageUpdateUserImgProfile)
+            myPageUpdateViewModel.setProfileImage(uri)
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -194,7 +154,7 @@ class MyPageUpdateActivity : AppCompatActivity() {
         }
 
         myPageUpdateUserImgProfile.setOnClickListener {
-            checkPermissions()
+            launchGallery()
         }
         //이름 변경
         editUpdateUserName.apply {
@@ -745,41 +705,10 @@ class MyPageUpdateActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkPermissions() {
-        when {
-            permissions.all {
-                ContextCompat.checkSelfPermission(
-                    this,
-                    it
-                ) == PackageManager.PERMISSION_GRANTED
-            } -> {
-                galleryLauncher.launch(
-                    Intent(Intent.ACTION_PICK).setDataAndType(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        "image/*"
-                    )
-                )
-            }
-
-            permissions.any {
-                shouldShowRequestPermissionRationale(it)
-            } -> { //이전에 권한 요청을 거부한 적이 있는 경우
-                showRationalDialog()
-            }
-
-            else -> galleryPermissionLauncher.launch(permissions)
-        }
-    }
-
-    private fun showRationalDialog() {
-        AlertDialog.Builder(this@MyPageUpdateActivity).apply {
-            setTitle(R.string.public_dialog_rational_title)
-            setMessage(R.string.public_dialog_gallery_rational_message)
-            setPositiveButton(R.string.public_dialog_ok) { _, _ ->
-                galleryPermissionLauncher.launch(permissions)
-            }
-            show()
-        }
+    private fun launchGallery() {
+        galleryLauncher.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {

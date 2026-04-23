@@ -16,8 +16,8 @@ android {
         applicationId "com.wd.woodong2"
         minSdk 24
         targetSdk 36
-        versionCode 10
-        versionName "1.4.5"
+        versionCode 16
+        versionName "1.4.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -42,6 +42,11 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+    }
+    packagingOptions {
+        jniLibs {
+            excludes += ["**/arm64-v8a/libnavermap.so"]
+        }
     }
 }
 
@@ -81,7 +86,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // naver map
-    implementation 'com.naver.maps:map-sdk:3.18.0'
+    implementation 'com.naver.maps:map-sdk:3.20.0'
 
     // map fusedLocation
     implementation 'com.google.android.gms:play-services-location:21.0.1'

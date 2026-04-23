@@ -1,18 +1,12 @@
 package com.wd.woodong2.presentation.group.add
 
-import android.app.Activity
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -34,57 +28,21 @@ class GroupAddImageFragment: Fragment() {
 
     private lateinit var currentItem: String
 
-    private val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(
-            android.Manifest.permission.READ_MEDIA_IMAGES,
-            android.Manifest.permission.READ_MEDIA_VIDEO
-        )
-    } else {
-        arrayOf(
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-    }
-
-    private val galleryPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            if (permissions.values.all { it }) {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.public_toast_gallery_permission_grant,
-                    Toast.LENGTH_SHORT
-                ).show()
-                galleryLauncher.launch(
-                    Intent(Intent.ACTION_PICK).setDataAndType(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        "image/*"
-                    )
-                )
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.public_toast_gallery_permission_deny,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
     private val galleryLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                result.data?.data?.let { uri ->
-                    when(currentItem) {
-                        "imgMainImage" -> {
-                            binding.imgMainImage.load(uri)
-                            binding.imgMainImageInit.isVisible = false
-                        }
-                        "imgBackgroundImage" -> {
-                            binding.imgBackgroundImage.load(uri)
-                            binding.imgBackgroundImageInit.isVisible = false
-                        }
-                    }
-                    sharedViewModel.setImage(currentItem, uri)
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri ?: return@registerForActivityResult
+
+            when (currentItem) {
+                "imgMainImage" -> {
+                    binding.imgMainImage.load(uri)
+                    binding.imgMainImageInit.isVisible = false
+                }
+                "imgBackgroundImage" -> {
+                    binding.imgBackgroundImage.load(uri)
+                    binding.imgBackgroundImageInit.isVisible = false
                 }
             }
+            sharedViewModel.setImage(currentItem, uri)
         }
 
     override fun onCreateView(
@@ -104,12 +62,12 @@ class GroupAddImageFragment: Fragment() {
     private fun initView() = with(binding) {
         imgMainImage.setOnClickListener {
             currentItem = "imgMainImage"
-            checkPermissions()
+            launchGallery()
         }
 
         imgBackgroundImage.setOnClickListener {
             currentItem = "imgBackgroundImage"
-            checkPermissions()
+            launchGallery()
         }
 
         btnAddGroup.setBtnOnClickListener {
@@ -136,41 +94,10 @@ class GroupAddImageFragment: Fragment() {
         }
     }
 
-    private fun checkPermissions() {
-        when {
-            permissions.all {
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    it
-                ) == PackageManager.PERMISSION_GRANTED
-            } -> {
-                galleryLauncher.launch(
-                    Intent(Intent.ACTION_PICK).setDataAndType(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        "image/*"
-                    )
-                )
-            }
-
-            permissions.any {
-                shouldShowRequestPermissionRationale(it)
-            } -> { //이전에 권한 요청을 거부한 적이 있는 경우
-                showRationalDialog()
-            }
-
-            else -> galleryPermissionLauncher.launch(permissions)
-        }
-    }
-
-    private fun showRationalDialog() {
-        AlertDialog.Builder(requireContext()).apply {
-            setTitle(R.string.public_dialog_rational_title)
-            setMessage(R.string.public_dialog_gallery_rational_message)
-            setPositiveButton(R.string.public_dialog_ok) { _, _ ->
-                galleryPermissionLauncher.launch(permissions)
-            }
-            show()
-        }
+    private fun launchGallery() {
+        galleryLauncher.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
     }
 
     override fun onDestroyView() {

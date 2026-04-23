@@ -1,26 +1,19 @@
 package com.wd.woodong2.presentation.home.add
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Color
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
-import com.wd.woodong2.R
 import com.wd.woodong2.databinding.HomeAddActivityBinding
-import androidx.core.graphics.scale
+import coil.load
 
 class HomeAddActivity : AppCompatActivity() {
 
@@ -51,59 +44,17 @@ class HomeAddActivity : AppCompatActivity() {
         HomeAddViewModelFactory(this)
     }
 
-    private val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(
-            android.Manifest.permission.READ_MEDIA_IMAGES,
-            android.Manifest.permission.READ_MEDIA_VIDEO
-        )
-    } else {
-        arrayOf(
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-    }
 
-    private val galleryPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            if (permissions.values.all { it }) {
-                Toast.makeText(
-                    this,
-                    R.string.public_toast_gallery_permission_grant,
-                    Toast.LENGTH_SHORT
-                ).show()
-                imagePicker.launch(
-                    Intent(Intent.ACTION_PICK).setDataAndType(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        "image/*"
-                    )
-                )
-            } else {
-                Toast.makeText(
-                    this,
-                    R.string.public_toast_gallery_permission_deny,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri ?: return@registerForActivityResult
 
-    private val imagePicker =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                selectedImageUri = result.data?.data
-                selectedImageUri?.let { uri ->
-                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                    val resizedBitmap = bitmap.scale(
-                        binding.homeThumbnail.width,
-                        binding.homeThumbnail.height,
-                        false
-                    )
-                    binding.homeThumbnail.setImageBitmap(resizedBitmap)
-                    binding.imgPlusPhoto.isVisible = false
-                    //사진 갯수 추가
-                    if (selectedImageUri != null && selectedImageUri.toString().isNotEmpty()) {
-                        selectedThumbnailCount = selectedThumbnailCount?.plus(1)
-                    }
-                }
-            }
+            binding.homeThumbnail.load(uri)
+            binding.imgPlusPhoto.isVisible = false
+
+            selectedImageUri = uri
+            selectedThumbnailCount = (selectedThumbnailCount ?: 0) + 1
+
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,7 +100,7 @@ class HomeAddActivity : AppCompatActivity() {
         }
 
         homeThumbnail.setOnClickListener {
-            checkPermissions()
+            launchGallery()
         }
 
         toolBar.setNavigationOnClickListener {
@@ -189,41 +140,10 @@ class HomeAddActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkPermissions() {
-        when {
-            permissions.all {
-                ContextCompat.checkSelfPermission(
-                    this,
-                    it
-                ) == PackageManager.PERMISSION_GRANTED
-            } -> {
-                imagePicker.launch(
-                    Intent(Intent.ACTION_PICK).setDataAndType(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        "image/*"
-                    )
-                )
-            }
-
-            permissions.any {
-                shouldShowRequestPermissionRationale(it)
-            } -> { //이전에 권한 요청을 거부한 적이 있는 경우
-                showRationalDialog()
-            }
-
-            else -> galleryPermissionLauncher.launch(permissions)
-        }
-    }
-
-    private fun showRationalDialog() {
-        AlertDialog.Builder(this@HomeAddActivity).apply {
-            setTitle(R.string.public_dialog_rational_title)
-            setMessage(R.string.public_dialog_gallery_rational_message)
-            setPositiveButton(R.string.public_dialog_ok) { _, _ ->
-                galleryPermissionLauncher.launch(permissions)
-            }
-            show()
-        }
+    private fun launchGallery() {
+        galleryLauncher.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
     }
 
     private fun selectTag(selectedChip: Chip, tag: String) = with(binding) {
